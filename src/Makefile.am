@@ -32,6 +32,7 @@ VECLIBS= ../libs/libvectree.a ../libs/libvec.a ../libs/libvl2.a ../libs/libocl.a
 DLIBS= ../libs/libfileio.a ../libs/libhips.a ../libs/libdobj.a ../libs/libports.a ../libs/librawvol.a
 #JLIBS= -linterpreter -lunix_util
 JLIBS= ../libs/libinterpreter.a ../libs/libunix_util.a
+JSLIB= ../libs/libjson.a
 PLIB= ../libs/libpsych.a ../libs/libcstepit.a
 SVRLIB= ../libs/libserver.a
 GUILIB=	../libs/libgui.a
@@ -63,7 +64,7 @@ if HAVE_NUMREC
   quip_LDADD += -lnumrec
 endif
 
-quip_LDADD += $(MYFANNLIB) $(DASLIB) $(DVLIB) $(PGRLIB) $(FLYLIB) $(SPINKLIB) $(OCVLIB) $(OGL_LIB) $(CUDALIBS) $(V4LIB) $(RQLIB) $(VISCALIB) $(KNOXLIB) $(PICLIB) $(METEORLIB) $(GUILIB) $(VLIBS) $(MVILIBS) $(PLIB) $(VECLIBS) $(GSLLIB) $(DLIBS) $(JLIBS) $(SVRLIB)
+quip_LDADD += $(MYFANNLIB) $(DASLIB) $(DVLIB) $(PGRLIB) $(FLYLIB) $(SPINKLIB) $(OCVLIB) $(OGL_LIB) $(CUDALIBS) $(V4LIB) $(RQLIB) $(VISCALIB) $(KNOXLIB) $(PICLIB) $(METEORLIB) $(GUILIB) $(VLIBS) $(MVILIBS) $(PLIB) $(VECLIBS) $(GSLLIB) $(DLIBS) $(JLIBS) $(SVRLIB) $(JSLIB)
 
 # this doesn't work any more because lib dobj has dependencies on libcuda - should FIXME?  BUG?
 #math_drill_LDADD = $(VLIBS) $(VECLIBS) $(RQLIB) $(DLIBS) $(JLIBS)

@@ -21,6 +21,7 @@
 #
 
 SUBDIRS =			\
+		json		\
 		opencl		\
 		veclib		\
 		veclib2		\

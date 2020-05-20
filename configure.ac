@@ -1702,6 +1702,7 @@ AC_CONFIG_FILES([Makefile
 		 libsrc/veclib2/Makefile
 		 libsrc/vec_util/Makefile
 		 libsrc/vectree/Makefile
+		 libsrc/json/Makefile
 		 libsrc/mvimenu/Makefile
 		 libsrc/seq/Makefile
 		 libsrc/view/Makefile

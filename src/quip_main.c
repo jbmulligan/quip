@@ -10,6 +10,7 @@
 #include "camera_api.h"
 #include "view_cmds.h"
 #include "server.h"	// do_http_menu
+#include "json.h"	// do_json_menu
 #include "polh_menu.h"	// do_polh
 #include "query_stack.h"	// BUG?  elim dependency...
 
@@ -39,6 +40,7 @@ ADD_CMD(	veclib,		do_vl_menu,	vector function submenu )
 ADD_CMD(	expressions,	do_exprs,	vector expression language submenu )
 ADD_CMD(	fileio,		do_fio_menu,	file I/O submenu )
 ADD_CMD(	http,		do_http_menu,	http server submenu )
+ADD_CMD(	json,		do_json_menu,	JSON I/O testing )
 
 #ifdef VIEWERS
 ADD_CMD(	view,		do_view_menu,	image viewer submenu )

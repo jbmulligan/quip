@@ -1497,6 +1497,8 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.yacc;
 			fileType = sourcecode.yacc;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 			);
@@ -1506,6 +1508,8 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.yacc;
 			fileType = sourcecode.yacc;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 			);
@@ -1515,6 +1519,8 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.yacc;
 			fileType = sourcecode.yacc;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 			);
@@ -1524,6 +1530,8 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.yacc;
 			fileType = sourcecode.yacc;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 			);
@@ -1533,6 +1541,8 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.yacc;
 			fileType = sourcecode.yacc;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 			);
@@ -2644,6 +2654,7 @@
 				TargetAttributes = {
 					7106ECFC16004437006BF850 = {
 						DevelopmentTeam = 6NC2ML6K22;
+						ProvisioningStyle = Automatic;
 					};
 					7C43318B1D4D43FC0033687C = {
 						DevelopmentTeam = 6NC2ML6K22;
@@ -4205,8 +4216,6 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Jeffrey Mulligan (DUA4CS8273)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Jeffrey Mulligan (DUA4CS8273)";
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = 6NC2ML6K22;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -4237,7 +4246,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = iQuIP;
-				PROVISIONING_PROFILE = "e3b7b8c1-2c88-4567-abed-13faa3b2ff95";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4266,8 +4274,6 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Jeffrey Mulligan (6NC2ML6K22)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Jeffrey Mulligan (6NC2ML6K22)";
 				COPY_PHASE_STRIP = YES;
 				DEVELOPMENT_TEAM = 6NC2ML6K22;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -4287,7 +4293,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PRODUCT_NAME = iQuIP;
-				PROVISIONING_PROFILE = "e3b7b8c1-2c88-4567-abed-13faa3b2ff95";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -4299,8 +4304,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Jeffrey Mulligan (DUA4CS8273)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Jeffrey Mulligan (DUA4CS8273)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6NC2ML6K22;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iQuIP/iQuIP-Prefix.pch";
@@ -4322,7 +4327,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "NASA.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = iQuIP;
-				PROVISIONING_PROFILE_SPECIFIER = JBM_DevProf_11_24_2018;
+				PROVISIONING_PROFILE_SPECIFIER = "JBM Dev Prof 2-23-2020";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = /usr/local/include;
@@ -4335,8 +4340,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Jeffrey Mulligan (6NC2ML6K22)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Jeffrey Mulligan (6NC2ML6K22)";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6NC2ML6K22;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iQuIP/iQuIP-Prefix.pch";
@@ -4353,7 +4358,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "NASA.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = iQuIP;
-				PROVISIONING_PROFILE_SPECIFIER = TarregaDistProfile;
+				PROVISIONING_PROFILE_SPECIFIER = "JBM Dev Prof 2-23-2020";
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = /usr/local/include;
@@ -4366,8 +4371,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Jeffrey Mulligan (DUA4CS8273)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Jeffrey Mulligan (DUA4CS8273)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 6NC2ML6K22;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -4393,8 +4396,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = NASA.CSF;
 				PRODUCT_NAME = CSF;
-				PROVISIONING_PROFILE = "973c9247-52b3-4895-924b-8d45c22c1266";
-				PROVISIONING_PROFILE_SPECIFIER = JBM_DevProf_11_24_2018;
+				PROVISIONING_PROFILE_SPECIFIER = "JBM Dev Prof 2-23-2020";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = /usr/local/include;
@@ -4407,8 +4409,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Jeffrey Mulligan (6NC2ML6K22)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Jeffrey Mulligan (6NC2ML6K22)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 6NC2ML6K22;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -4435,8 +4435,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = NASA.CSF;
 				PRODUCT_NAME = CSF;
-				PROVISIONING_PROFILE = "973c9247-52b3-4895-924b-8d45c22c1266";
-				PROVISIONING_PROFILE_SPECIFIER = JBM_DevProf_11_24_2018;
+				PROVISIONING_PROFILE_SPECIFIER = "JBM Dev Prof 2-23-2020";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = /usr/local/include;
@@ -4449,8 +4448,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Jeffrey Mulligan (DUA4CS8273)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Jeffrey Mulligan (DUA4CS8273)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iQuIP/iQuIP-Prefix.pch";
 				"HEADER_SEARCH_PATHS[arch=*]" = ../../include;
@@ -4476,8 +4473,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "Apple Distribution: Jeffrey Mulligan (6NC2ML6K22)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Distribution: Jeffrey Mulligan (6NC2ML6K22)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iQuIP/iQuIP-Prefix.pch";
 				"HEADER_SEARCH_PATHS[sdk=iphoneos*]" = ../../include;
@@ -4490,8 +4485,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "NASA.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = TarregaDistProfile;
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=*]" = TarregaDistProfile;
 				RUN_CLANG_STATIC_ANALYZER = NO;
 				SDKROOT = iphoneos;
 				USER_HEADER_SEARCH_PATHS = /usr/local/include;
@@ -4504,8 +4497,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iQuIP/iQuIP-Prefix.pch";
 				INFOPLIST_FILE = "AFalert-Info.plist";
@@ -4529,8 +4520,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iQuIP/iQuIP-Prefix.pch";
 				"HEADER_SEARCH_PATHS[arch=*]" = ../../include;
@@ -4555,8 +4544,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 6NC2ML6K22;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iQuIP/iQuIP-Prefix.pch";
@@ -4584,8 +4571,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				DEVELOPMENT_TEAM = 6NC2ML6K22;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iQuIP/iQuIP-Prefix.pch";
