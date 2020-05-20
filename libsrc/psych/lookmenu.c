@@ -13,6 +13,17 @@ static int fit_log_flag=0;
 static int the_slope_constraint;
 //SET_FIT_SLOPE_CONSTRAINT(fdp, ctype - 1 );	// -1, 0, or +1
 
+static COMMAND_FUNC( do_clear_data )
+{
+	Sequential_Data_Tbl *qdt_p;
+	qdt_p = EXPT_SEQ_DTBL(&expt1);
+
+	// This suppresses the warning about clearing unsaved data
+	CLEAR_QDT_FLAG_BITS(qdt_p,SEQUENTIAL_DATA_DIRTY);
+	
+	clear_sequential_data( qdt_p );
+}
+
 static COMMAND_FUNC( do_read_data )	/** read a data file */
 {
 	FILE *fp;
@@ -102,17 +113,25 @@ static void _print_psychometric_pts(QSP_ARG_DECL  FILE *fp, Trial_Class * tcp)
         Summary_Data_Tbl *dtp;
 
 	assert(CLASS_XVAL_OBJ(tcp)!=NULL);
+
+	if( CLASS_SUMM_DTBL(tcp) == NULL ){
+		init_class_summary(tcp);
+	}
+	assert(CLASS_SUMM_DTBL(tcp)!=NULL);
+
 	dtp=CLASS_SUMM_DTBL(tcp);
 	for(j=0;j<SUMM_DTBL_SIZE(dtp);j++){
 		if( DATUM_NTOTAL(SUMM_DTBL_ENTRY(dtp,j)) > 0 ){
 			float *xv_p;
 			xv_p = indexed_data( CLASS_XVAL_OBJ(tcp), j);
 			assert(xv_p!=NULL);
-			fprintf(fp,"%f\t", *xv_p);
-			fprintf(fp,"%f\n",DATUM_FRACTION(SUMM_DTBL_ENTRY(dtp,j)));
+			sprintf(MSG_STR,"%f\t", *xv_p);
+			fputs(MSG_STR,fp);
+			sprintf(MSG_STR,"%f\n",DATUM_FRACTION(SUMM_DTBL_ENTRY(dtp,j)));
+			fputs(MSG_STR,fp);
+			//fflush(fp);
 		}
 	}
-	fclose(fp);
 }
 
 static COMMAND_FUNC( pntgrph )
@@ -458,6 +477,7 @@ ADD_CMD( ogive,		do_new_ogive,	do fits with ogive (new method) )
 ADD_CMD( weibull,	do_weibull,	do fits to weibull function )
 ADD_CMD( split,		do_split,	split data at zeroes )
 ADD_CMD( lump,		do_lump,	lump data conditions )
+ADD_CMD( clear_data,	do_clear_data,	clear all data )
 #ifdef QUIK
 ADD_CMD( Quick,		prquic,		print data in QUICK format )
 #endif /* QUIK */
