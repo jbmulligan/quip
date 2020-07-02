@@ -1,0 +1,7 @@
+*.scr
+*.txt
+*.json
+json.c
+Makefile
+Makefile.in
+

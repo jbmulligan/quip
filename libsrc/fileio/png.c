@@ -159,8 +159,7 @@ static dimension_t _count_png_frames(QSP_ARG_DECL  Image_File *ifp, long *frame_
 
 	fp = ifp->if_fp;
 
-	// We need to save this offset to add to the seek offsets!
-	// Or do we?
+	// We assume we have already read part of the first header
 	file_pos = ftell(fp);
 
 	// get to the first header - why are we not there already!?
@@ -214,12 +213,8 @@ static dimension_t _count_png_frames(QSP_ARG_DECL  Image_File *ifp, long *frame_
 	}
 	*frame_size_p = file_pos2;	// return the frame size
 
-	// rewind to initial position
-	if( fseek(fp,file_pos,SEEK_SET) < 0 )
-		warn("count_png_frames:  reset seek error!?");
-
 	return nf;
-}
+} // count_png_frames
 
 #define read_png_signature(ifp) _read_png_signature(QSP_ARG  ifp)
 
@@ -357,6 +352,10 @@ static int init_png_for_reading(QSP_ARG_DECL  Image_File *ifp /* , png_infop inf
 	init_frame_count(ifp);
 
 	fill_hdr(HDR_P);		// fill the header struct using png_ptr and info_ptr
+
+	// rewind
+	if( fseek(ifp->if_fp,0L,SEEK_SET) < 0 )
+		warn("init_png_for_reading:  rewind seek error!?");
 
 	return 0;
 }
@@ -510,7 +509,6 @@ FIO_OPEN_FUNC( pngfio )		// unix version
 	memset(ifp->if_hdr_p,0,sizeof(Png_Hdr));
 
 	if( IS_READABLE(ifp) ) {
-//fprintf(stderr,"checking header info, reading png file...\n");
 		if(get_hdr_info(QSP_ARG  ifp) < 0)
 			return(NULL);
 
@@ -637,6 +635,7 @@ static u_char *get_image( QSP_ARG_DECL  Image_File *ifp, u_long *pRowbytes )
 	return png_image_data;
 }
 
+// How do we know whether or not to read the header???
 
 FIO_RD_FUNC( pngfio )
 {
@@ -1051,7 +1050,7 @@ int _pngfio_conv(QSP_ARG_DECL  Data_Obj *dp,void *hd_pp)
 #include <UIKit/UIKit.h>
 
 //extern QUIP_IMAGE_TYPE *objc_img_for_dp(Data_Obj *dp);
-#include "quipImageView.h"	// objc_img_for_dp
+#include "quipImage.h"	// objc_img_for_dp
 
 // BUG  A hack:  we'd like to keep a pointer to the UIImage in the img_file struct,
 // but currently that's not an Objective C IOS_Item, and I don't want to take

@@ -176,18 +176,20 @@ static int has_stdin=0;		// where should we set this?
 
 #ifdef BUILD_FOR_OBJC
 
+// in iOS, it is possible for qp to be NULL...
+
 #define DECLARE_QP						\
 								\
 	Query *qp;						\
-	qp = CURR_QRY(THIS_QSP);				\
-	assert(qp!=NULL);
+	qp = CURR_QRY(THIS_QSP);
 
 #else // ! BUILD_FOR_OBJC
 
 #define DECLARE_QP						\
 								\
 	Query *qp;						\
-	qp = CURR_QRY(THIS_QSP);
+	qp = CURR_QRY(THIS_QSP);				\
+	assert(qp!=NULL);
 
 #endif // ! BUILD_FOR_OBJC
 
@@ -2536,6 +2538,7 @@ void set_query_readfunc( QSP_ARG_DECL  char * (*rfunc)(QSP_ARG_DECL  void *buf, 
 	DECLARE_QP
 	assert( QS_FLAGS(THIS_QSP) & QS_INITED );
 	assert( QLEVEL >= 0 );
+    assert(qp!=NULL);
 
 	SET_QRY_READFUNC(qp, rfunc);
 }
@@ -3327,7 +3330,7 @@ static void _close_foreach_or_repeat_loop(QSP_ARG_DECL  Query *loop_qp)
 		close_foreach_loop(loop_qp);
 	} else if( QRY_COUNT(qp) < 0 ){		// should never happen???
 		// should never happen?
-		warn("Unexpected negative loop count!?");
+		warn("close_foreach_or_repeat_loop:  unexpected negative loop count!?");
 	} else {		// regular repeat loop
 		close_repeat_loop(loop_qp);
 	}

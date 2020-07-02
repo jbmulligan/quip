@@ -2298,7 +2298,7 @@ static int _parse_script_args(QSP_ARG_DECL Vec_Expr_Node *enp,int index,int max_
 			dp=eval_obj_ref(enp);
 			if( IS_SCALAR(dp) ){
 				char buf[64];
-				format_scalar_obj(buf,64,dp,OBJ_DATA_PTR(dp));
+				format_scalar_obj(buf,64,dp,OBJ_DATA_PTR(dp),NO_PADDING);
 				store_script_arg( buf, index );
 			} else {
 				store_script_arg( OBJ_NAME(dp), index );
@@ -2538,7 +2538,7 @@ static const char *_eval_mixed_list(QSP_ARG_DECL Vec_Expr_Node *enp)
 			dp = eval_obj_ref(enp);
 			if( dp==NULL ) return("(null)");
 			if( IS_SCALAR(dp) )
-				format_scalar_obj(buf,128,dp,OBJ_DATA_PTR(dp));
+				format_scalar_obj(buf,128,dp,OBJ_DATA_PTR(dp),NO_PADDING);
 			else {
 				/*
 				node_error(enp);
@@ -2568,7 +2568,6 @@ static void _eval_print_stat(QSP_ARG_DECL Vec_Expr_Node *enp)
 	long n;
 	double d;
 	const char *s;
-
 
 	eval_enp = enp;
 
@@ -2674,7 +2673,7 @@ print_float:
 			else if( VN_CODE(enp) == T_PREDEC ) dec_obj(dp);
 
 			if( IS_SCALAR(dp) ){
-				format_scalar_obj(msg_str,LLEN,dp,OBJ_DATA_PTR(dp));
+				format_scalar_obj(msg_str,LLEN,dp,OBJ_DATA_PTR(dp),NO_PADDING);
 				prt_msg_frag(msg_str);
 			} else {
 				/*
@@ -3893,8 +3892,12 @@ static const char *name_for_ref( Reference *ref_p )
 static void dump_ref( Identifier *idp )
 {
 	Reference *refp;
+	assert(idp!=NULL);
+	refp = ID_REF(idp);
+	assert(refp!=NULL);
 
-	fprintf(stderr,"Showing reference info for identifier %s\n",ID_NAME(idp));
+	fprintf(stderr,"Showing reference info for identifier %s:\n",ID_NAME(idp));
+	fprintf(stderr,"\tReference name: %s\n", name_for_ref(refp) );
 }
 
 // Used to be long, but long is 32 bits on iOS!

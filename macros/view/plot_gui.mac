@@ -1,6 +1,5 @@
 # How to use:
 #
-# < $macro_dir/view/plot_gui.mac
 # Init_Plot_GUI_Defaults
 # Declare_Plot_GUI
 
@@ -349,7 +348,6 @@ data
 Set legend_line_delta 12
 
 Define Refresh_Series_Legend 0
-#advise "Refresh_Series_Legend BEGIN"
 Unit_Font
 Left_Justify
 S_At $series_legend_text $series_legend_x $series_legend_y
@@ -491,7 +489,7 @@ Set plot_ready 0
 
 Define Refresh_Plot 0
 If !$plot_ready exit_macro
-#advise "Refresh_Plot BEGIN"
+Label_Viewer $plotwin $plot_name
 Erase_Plot
 Select_Pen $black
 If $show_frame Draw_Frame
@@ -550,6 +548,7 @@ Panel_On $image_panel
 .
 
 Define LegendPanel 0
+If $n_extra_legends>0 Update_Legend_Choices
 Panel_Off $main_panel
 Panel_On $legend_panel
 .
@@ -567,7 +566,6 @@ Panel_On $grid_panel
 # Axis panel actions
 
 Define TogAxisLogValues 0
-advise TogAxisLogValues
 Set $axis_logv_name $toggle_state
 Refresh_Plot
 .
@@ -725,7 +723,6 @@ Set plot_type $choice
 .
 
 Define GenPanel 0
-advise "GenPanel BEGIN"
 interface
   decorate $gen_panel
     set_edit_text $plot_legend_text_widget_name "$plot_legend_text"
@@ -734,7 +731,6 @@ interface
     # set the chooser state???
     quit
   quit
-advise "GenPanel will update toggles"
 Update_Toggle $plot_frame_toggle_widget_name $show_frame $gen_panel
 Update_Toggle $plot_legend_toggle_widget_name $show_plot_legend $gen_panel
 Panel_Off $main_panel
@@ -804,7 +800,6 @@ Load_Series_Var $1 legend_y
 .
 
 Define Store_Tick_Vars 0
-advise Store_Tick_Vars
 Set vname ${which_axis}_tick_${current_tick_index}_posn
 Set $vname $custom_tick_posn
 Set vname ${which_axis}_tick_${current_tick_index}_label
@@ -814,7 +809,6 @@ Set $vname $custom_tick_label
 # Store_Series_Vars - transfer the general global vars into  the variables for a particular series
 
 Define Store_Series_Vars 1 series_name
-#advise "Store_Series_Vars $1 BEGIN"
 Store_Series_Var $1 filename
 Store_Series_Var $1 nickname
 Store_Series_Var $1 color
@@ -841,7 +835,6 @@ Load_Image_Var $1 zoom_x
 Load_Image_Var $1 zoom_y
 
 Set vname ${1}_posn_y
-advise "Load_Image_Vars $1:  ${1}_posn_y = $$vname"
 .
 
 Define Store_Image_Vars 1 image_name
@@ -962,12 +955,12 @@ repeat $n_embedded_images
 .
 
 Define Find_Legend_From_Nickname 1 nickname
-Set legend_nickname no_legend
+Set curr_legend_name no_legend
 If $n_extra_legends==0 exit_macro
 Set i 1
 repeat $n_extra_legends
   Set vname legend_${i}_nickname
-  If !strcmp('$1','$$vname') "Set legend_nickname legend_$i exit_macro"
+  If !strcmp('$1','$$vname') "Set curr_legend_name legend_$i exit_macro"
   Increment i
   end
 .
@@ -987,7 +980,6 @@ Define EditData 0
 If !strcmp('$selected_series_nickname','no_series') "No_Series_Msg exit_macro"
 Find_Series_From_Nickname $selected_series_nickname
 If !strcmp('$curr_series_name','no_series') "advise 'Could not find series with nickname $selected_series_nickname!?' exit_macro"
-#advise "EditData BEGIN  curr_series_name = $curr_series_name"
 Load_Series_Vars $curr_series_name
 interface
   decorate $data_edit_panel
@@ -1011,7 +1003,6 @@ Panel_On $data_edit_panel
 .
 
 Define Find_Tick_From_ID_String 2 varname string
-advise "Find_Tick_From_ID_String '$2' BEGIN"
 Set $1 -1	# error indicator
 If $$tick_count_name<=0 "error_exit 'Find_Tick_From_Label:  no ticks!?'"
 Set tick_idx 0
@@ -1077,29 +1068,27 @@ Panel_Off $image_panel
 Panel_On $image_edit_panel
 .
 
+Define SelectLegend 0
+Set selected_legend_nickname $selection
+Print selected_legend_nickname
+.
 
 Define EditLegend 0
 If !strcmp('$selected_legend_nickname','no_legend') "No_Legend_Msg exit_macro"
-Find_Image_From_Nickname $selected_image_nickname
-If !strcmp('$curr_image_name','no_image') "advise 'Could not find image with nickname $selected_image_nickname!?' exit_macro"
-Load_Image_Vars $curr_image_name
+Find_Legend_From_Nickname $selected_legend_nickname
+If !strcmp('$curr_legend_name','no_legend') "advise 'Could not find legend with nickname $selected_legend_nickname!?' exit_macro"
+Load_Legend_Vars $curr_legend_name
+Print curr_legend_name
 interface
-  decorate $image_edit_panel
-    set_edit_text $image_nickname_widget_name $image_nickname
-    set_edit_text $image_source_file_widget_name $image_filename
-    set_edit_text $image_posn_x_widget_name $image_posn_x
-    set_edit_text $image_posn_y_widget_name $image_posn_y
-    set_edit_text $image_extent_x_widget_name $image_extent_x
-    set_edit_text $image_extent_y_widget_name $image_extent_y
-    advise "set_edit_text '$image_zoom_x_widget_name' '$image_zoom_x'"
-    set_edit_text $image_zoom_x_widget_name $image_zoom_x
-    advise "set_edit_text '$image_zoom_y_widget_name' '$image_zoom_y'"
-    set_edit_text $image_zoom_y_widget_name $image_zoom_y
-
+  decorate $legend_edit_panel
+    set_edit_text $legend_nickname_widget_name $legend_nickname
+    set_edit_text $legend_text_widget_name $legend_text
+    set_edit_text $legend_posn_x_widget_name $legend_posn_x
+    set_edit_text $legend_posn_y_widget_name $legend_posn_y
     quit
   quit
-Panel_Off $image_panel
-Panel_On $image_edit_panel
+Panel_Off $legend_panel
+Panel_On $legend_edit_panel
 .
 
 
@@ -1186,6 +1175,7 @@ Get_Text_Var $tick_edit_panel $tick_label_widget_name custom_tick_label
 
 Define SetLegendX 0
 Get_Text_Var $legend_edit_panel $legend_posn_x_widget_name legend_posn_x
+# Need to save it in the legend-specific var!
 .
 
 Define SetLegendY 0
@@ -1233,9 +1223,9 @@ Load_Image_Vars $curr_image_name
 .
 
 Define LegendEditRefreshPlot 0
-Store_Legend_Vars $legend_nickname
+Store_Legend_Vars $curr_legend_name
 Refresh_Plot
-Load_Legend_Vars $legend_nickname
+Load_Legend_Vars $curr_legend_name
 .
 
 Define SetGridSourceFile 0
@@ -1363,7 +1353,8 @@ repeat $n_extra_legends
   Set $1 "$$1 $$vname"
   Increment i
   end
-#Print $1
+echo "Make_Legend_List_Cmd:"
+Print $1
 .
 
 Define Make_Grid_List_Cmd 1 varname
@@ -1434,11 +1425,8 @@ Panel_On $custom_tick_panel_name
 .
 
 Define SeriesEditDone 0
-advise "SeriesEditDone, curr_series_name = $curr_series_name"
 Store_Series_Vars $curr_series_name
-advise 'vars stored'
 Update_Series_Choices
-advise 'choices updated'
 Panel_Off $data_edit_panel
 Panel_On $data_panel
 Refresh_Data
@@ -1648,7 +1636,6 @@ echo "Set $1 '$$1' "
 .
 
 Define Save_Data_Params 0
-advise "Save_Data_Params BEGIN  n_data_series = $n_data_series"
 Save_Param n_data_series
 Set i 1
 If $n_data_series<1 exit_macro
@@ -1685,7 +1672,6 @@ repeat $n_embedded_images
   Save_Image_Param $i posn_y
   Save_Image_Param $i extent_x
   Save_Image_Param $i extent_y
-advise "saving zoom params..."
   Save_Image_Param $i zoom_x
   Save_Image_Param $i zoom_y
 
@@ -1851,6 +1837,7 @@ Emit_Curve series_pts $series_line_thickness
 .
 
 Define Emit_Curve 2 object linewidth
+If $2==0 exit_macro
 echo "$2 numberedlinewidth"
 Set pt_idx 0
 Assign x value($1[$pt_idx]{0})
@@ -1889,8 +1876,12 @@ echo "/gx0 1.5 in def"
 echo "/gy0 1.5 in def"
 #echo "/gdx pspan def"
 #echo "/gdy pspan def"
+# 100 pixels is one inch?
+# Changing this makes the fonts too big...
 echo "/gdx $plot_w 100 div in def"
 echo "/gdy $plot_h 100 div in def"
+#echo "/gdx $plot_w 200 div in def"
+#echo "/gdy $plot_h 200 div in def"
 echo "/guxmin $xmin def"
 echo "/guxmax $xmax def"
 echo "/guymin $ymin def"
@@ -2416,8 +2407,8 @@ interface
   decorate $legend_edit_panel
     text $legend_nickname_widget_name SetLegendNickname legendNNN
     text $legend_text_widget_name SetLegendText 'legend text' # Use file chooser?
-    text $legend_posn_x_widget_name SetImageOriginX 0
-    text $legend_posn_y_widget_name SetImageOriginY 0
+    text $legend_posn_x_widget_name SetLegendX 0
+    text $legend_posn_y_widget_name SetLegendY 0
     button 'Refresh_Plot' LegendEditRefreshPlot
     button Done LegendEditDone
     quit
@@ -2507,7 +2498,6 @@ repeat $n_extra_legends
 .
 
 Define Render_One_Legend 3 text x y
-advise "Render_One_Legend '$1' $2 $3"
 S_At $1 $2 $3
 .
 

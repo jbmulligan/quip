@@ -52,7 +52,8 @@ extern void _rls_macro(QSP_ARG_DECL  Macro *mp);
 #define rls_macro(mp) _rls_macro(QSP_ARG  mp)
 
 extern int qs_level(SINGLE_QSP_ARG_DECL);
-extern FILE * qs_msg_file(SINGLE_QSP_ARG_DECL);
+extern FILE * _qs_msg_file(SINGLE_QSP_ARG_DECL);
+#define qs_msg_file() _qs_msg_file(SINGLE_QSP_ARG)
 
 extern void push_vector_parser_data(SINGLE_QSP_ARG_DECL);
 extern void pop_vector_parser_data(SINGLE_QSP_ARG_DECL);
@@ -338,6 +339,8 @@ extern void set_query_readfunc( QSP_ARG_DECL
 	char * (*func)(QSP_ARG_DECL  void *buf, int size, void *fp ) );
 extern void resume_execution(SINGLE_QSP_ARG_DECL);
 extern void resume_quip(SINGLE_QSP_ARG_DECL);
+extern void _suspend_quip(SINGLE_QSP_ARG_DECL);
+#define suspend_quip() _suspend_quip(SINGLE_QSP_ARG)
 extern const char *query_filename(SINGLE_QSP_ARG_DECL);
 extern void set_query_filename(Query *, const char *);
 extern void set_query_macro(Query *,Macro *);

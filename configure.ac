@@ -364,6 +364,9 @@ AC_CHECK_FILE([/home/craik/jbm/inst/usr/local/lib],[LDFLAGS="$LDFLAGS -L/home/cr
 AC_CHECK_FILE([/home/craik/jbm/inst/usr/local/include],[CFLAGS="$CFLAGS -I/home/craik/jbm/inst/usr/local/include"],[])
 
 
+AC_CHECK_FILE([/Users/jmulliga/inst/usr/local/lib],[LDFLAGS="$LDFLAGS -L/Users/jmulliga/inst/usr/local/lib"],[])
+AC_CHECK_FILE([/Users/jmulliga/inst/usr/local/include],[CFLAGS="$CFLAGS -I/Users/jmulliga/inst/usr/local/include"],[])
+
 #################################################
 #
 # cuda CUDA checks
@@ -483,7 +486,10 @@ if test "x${use_x11}" = xyes; then
 fi
 
 if test "x${use_spinnaker}" = xyes; then
+  # linux:  /usr/include/spinnaker
+  # mac:  /usr/local/include/spinnaker
   AC_CHECK_FILE([/usr/include/spinnaker/spinc],[CPPFLAGS="$CPPFLAGS -I/usr/include/spinnaker/spinc"])
+  AC_CHECK_FILE([/usr/local/include/spinnaker/spinc],[CPPFLAGS="$CPPFLAGS -I/usr/local/include/spinnaker/spinc"])
 fi
 
 # must come before compiler stuff
@@ -1239,6 +1245,7 @@ if test "x${use_flycap}" = xyes; then
 fi
 
 if test "x${use_spinnaker}" = xyes; then
+  AC_CHECK_HEADERS([SpinnakerC.h])
   AC_SEARCH_LIBS([spinSystemGetInstance],[Spinnaker_C],[have_libspinnaker=yes],[have_libspinnaker=no])
   if test "x${have_libspinnaker}" = xyes; then
     AC_SEARCH_LIBS([spinVideoClose],[SpinVideo_C],[have_libspinvideo=yes],[have_libspinvideo=no])
@@ -1699,6 +1706,7 @@ AC_CONFIG_FILES([Makefile
 		 libsrc/veclib2/Makefile
 		 libsrc/vec_util/Makefile
 		 libsrc/vectree/Makefile
+		 libsrc/json/Makefile
 		 libsrc/mvimenu/Makefile
 		 libsrc/seq/Makefile
 		 libsrc/view/Makefile

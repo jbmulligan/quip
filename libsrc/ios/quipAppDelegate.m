@@ -103,7 +103,8 @@ static NSString *kCellIdentifier = @"MyIdentifier2";
 @synthesize qvc;
 @synthesize nvc;
 @synthesize dev_type;
-@synthesize dev_size;
+@synthesize dev_size;		// old - in points?
+@synthesize native_size;
 @synthesize wakeup_timer;
 @synthesize wakeup_lp;
 
@@ -244,8 +245,9 @@ static void perform_text_action(NSString *s, Screen_Obj *sop)
 	UITableViewCell *c;
 
 	Screen_Obj *sop=find_any_scrnobj(tableView);
-	CHECK_SCRNOBJ_INT(sop,tableView,cellForRowAtIndexPath,1);
-
+	//CHECK_SCRNOBJ_INT(sop,tableView,cellForRowAtIndexPath,1);
+    assert(sop!=NULL);
+    
 	int r = (int) indexPath.row;
 	assert( r >= 0 && r < SOB_N_SELECTORS(sop) );
 
@@ -642,11 +644,23 @@ event_done:
 	// We create the dummy panel so that we can use expressions
 	// like ncols(iPad2)...
 
+	// BUG we need to check landscape vs. portrait.
+	// This code was written with portrait in mind, but iPhone4s introduced
+	// when using landscale, really same as iPod retina!?  FIXME
+
 	// dev_size fields are float, can't switch
 	int w = dev_size.width, h = dev_size.height;
+fprintf(stderr,"getDevTypeForSize:  w = %d, h = %d\n",w,h);
 
 	//Gen_Win *po;
 	switch( w ){
+		case 480:	// iPhone4s?
+			dev_type = DEV_TYPE_IPHONE4S;
+			force_reserved_var(DEFAULT_QSP_ARG  "DISPLAY","iPhone4s");
+			dummy_panel(DEFAULT_QSP_ARG  "iPhone4s",
+				dev_size.width, dev_size.height);
+			break;
+
 		case 568:	// iPhone5?
 			dev_type = DEV_TYPE_IPHONE5;
 			force_reserved_var(DEFAULT_QSP_ARG  "DISPLAY","iPhone5");
@@ -706,7 +720,7 @@ ipad_pro_9_7:
 			NWARN(DEFAULT_ERROR_STRING);
 			break;
 	}
-}
+} // getDevTypeForSize
 
 int is_portrait(void)
 {
@@ -920,6 +934,34 @@ static void init_ios_device(void)
 	}
 }
 
+static void showOneMode( UIScreenMode *mode )
+{
+	CGSize sz;
+	sz = [mode size];
+	fprintf(stderr,"\tMode w = %f, h = %f\n",
+		sz.width,sz.height);
+}
+
+static void showModes(UIScreen *screen)
+{
+	NSArray *modes;
+	NSUInteger i, n_modes;
+
+	fprintf(stderr,"Current mode:\n");
+	showOneMode([screen currentMode]);
+	fprintf(stderr,"\n");
+
+	modes = [ screen availableModes ];
+	n_modes = [modes count];
+fprintf(stderr,"There are %d available display modes\n",n_modes);
+	for(i=0;i<n_modes; i++){
+		UIScreenMode *mode;
+		mode = [modes objectAtIndex:i];
+		showOneMode(mode);
+	}
+
+}
+
 - (BOOL)application:(QUIP_APPLICATION_TYPE *)application
 	didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -928,6 +970,8 @@ static void init_ios_device(void)
 	// This assignment used to be down lower, but we need it for console
 	// initialization...
 	globalAppDelegate = self;
+
+showModes([UIScreen mainScreen]);
 
 	// Apparently the bounds always reflect portrait orientation?
 	window = [[UIWindow alloc]
@@ -942,7 +986,9 @@ static void init_ios_device(void)
 		withAnimation:UIStatusBarAnimationFade];
 
 	dev_size = [[UIScreen mainScreen] bounds].size;
-//fprintf(stderr,"didFinishLaunching:  dev_size = %f x %f\n",dev_size.width,dev_size.height);
+	native_size = [[UIScreen mainScreen] nativeBounds].size;
+fprintf(stderr,"didFinishLaunching:  dev_size = %f x %f\n",dev_size.width,dev_size.height);
+fprintf(stderr,"didFinishLaunching:  native_size = %f x %f\n",native_size.width,native_size.height);
 
 	// This returns the same thing regardless of the device
 	// orientation.  The dimensions correspond to portrait mode.
@@ -962,7 +1008,7 @@ static void init_ios_device(void)
 
 	init_ios_device();	// set the uuid to a script var
 
-	// now interpreter the startup file...
+	// now interpret the startup file...
 	// We'd like the startup file to define the navigation interface...
 
 	// we can't call this thread synchronously, and then
@@ -1212,7 +1258,7 @@ static NSString *applicationName=NULL;
 //	[self init_main_menu];
 
 	dev_size = [[NSScreen mainScreen] visibleFrame].size;
-//fprintf(stderr,"dev_size initialized, %f x %f\n",dev_size.width,dev_size.height);
+fprintf(stderr,"applicationDidFinishLaunching:  dev_size initialized, %f x %f\n",dev_size.width,dev_size.height);
 
 	// these things use the dev_size property
 	init_dynamic_var(DEFAULT_QSP_ARG  "DISPLAY_WIDTH",get_display_width);
