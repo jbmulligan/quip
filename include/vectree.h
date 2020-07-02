@@ -417,7 +417,7 @@ extern char *		node_desc(Vec_Expr_Node *);
 extern void		_reeval_decl_stat(QSP_ARG_DECL  Precision *prec_p,Vec_Expr_Node *,int ro);
 extern const char *	_eval_string(QSP_ARG_DECL Vec_Expr_Node *);
 extern void		_missing_case(QSP_ARG_DECL  Vec_Expr_Node *,const char *);
-extern long		_eval_int_exp(QSP_ARG_DECL Vec_Expr_Node *);
+extern int64_t		_eval_int_exp(QSP_ARG_DECL Vec_Expr_Node *);
 extern double		_eval_flt_exp(QSP_ARG_DECL Vec_Expr_Node *);
 extern void		_eval_decl_tree(QSP_ARG_DECL  Vec_Expr_Node *);
 

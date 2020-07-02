@@ -2363,6 +2363,14 @@ Query_Stack *new_qstk(QSP_ARG_DECL  const char *name)
 {
 	Query_Stack *new_qsp;
 	Query_Stack *qsp_to_free=NULL;
+
+	if( n_active_threads >= MAX_QUERY_STACKS ){
+		sprintf(ERROR_STRING,"too many query stacks (%d max)!?",
+			MAX_QUERY_STACKS);
+		warn(ERROR_STRING);
+		return NULL;
+	}
+
 #ifdef THREAD_SAFE_QUERY
 	// Why would this be null?  First time?
 	//
@@ -2669,7 +2677,6 @@ void init_query_stack(Query_Stack *qsp)
 	memset(qsp,0,sizeof(*qsp));
 	SET_QS_NAME(qsp,save_name);
 	SET_QS_SERIAL(qsp,save_serial);
-
 
 	SET_QS_FLAGS(qsp,
 			  QS_INITED
