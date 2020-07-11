@@ -338,7 +338,7 @@ static void dbl_to_scalar(Scalar_Value *svp,double dblval,Precision *prec_p)
 }
 
 
-static void int_to_scalar(Scalar_Value *svp,long intval,Precision *prec_p)
+static void int_to_scalar(Scalar_Value *svp,int64_t intval,Precision *prec_p)
 {
 	switch( PREC_CODE(prec_p) ){
 		case PREC_BY:  svp->u_b = (char) intval; break;
@@ -3900,7 +3900,9 @@ static void dump_ref( Identifier *idp )
 	fprintf(stderr,"\tReference name: %s\n", name_for_ref(refp) );
 }
 
-long _eval_int_exp(QSP_ARG_DECL Vec_Expr_Node *enp)
+// Used to be long, but long is 32 bits on iOS!
+
+int64_t _eval_int_exp(QSP_ARG_DECL Vec_Expr_Node *enp)
 {
 	long lval,lval2;
 	double dval1,dval2;

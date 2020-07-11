@@ -103,7 +103,8 @@ static NSString *kCellIdentifier = @"MyIdentifier2";
 @synthesize qvc;
 @synthesize nvc;
 @synthesize dev_type;
-@synthesize dev_size;
+@synthesize dev_size;		// old - in points?
+@synthesize native_size;
 @synthesize wakeup_timer;
 @synthesize wakeup_lp;
 
@@ -649,6 +650,7 @@ event_done:
 
 	// dev_size fields are float, can't switch
 	int w = dev_size.width, h = dev_size.height;
+fprintf(stderr,"getDevTypeForSize:  w = %d, h = %d\n",w,h);
 
 	//Gen_Win *po;
 	switch( w ){
@@ -932,6 +934,34 @@ static void init_ios_device(void)
 	}
 }
 
+static void showOneMode( UIScreenMode *mode )
+{
+	CGSize sz;
+	sz = [mode size];
+	fprintf(stderr,"\tMode w = %f, h = %f\n",
+		sz.width,sz.height);
+}
+
+static void showModes(UIScreen *screen)
+{
+	NSArray *modes;
+	NSUInteger i, n_modes;
+
+	fprintf(stderr,"Current mode:\n");
+	showOneMode([screen currentMode]);
+	fprintf(stderr,"\n");
+
+	modes = [ screen availableModes ];
+	n_modes = [modes count];
+fprintf(stderr,"There are %d available display modes\n",n_modes);
+	for(i=0;i<n_modes; i++){
+		UIScreenMode *mode;
+		mode = [modes objectAtIndex:i];
+		showOneMode(mode);
+	}
+
+}
+
 - (BOOL)application:(QUIP_APPLICATION_TYPE *)application
 	didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -940,6 +970,8 @@ static void init_ios_device(void)
 	// This assignment used to be down lower, but we need it for console
 	// initialization...
 	globalAppDelegate = self;
+
+showModes([UIScreen mainScreen]);
 
 	// Apparently the bounds always reflect portrait orientation?
 	window = [[UIWindow alloc]
@@ -954,7 +986,9 @@ static void init_ios_device(void)
 		withAnimation:UIStatusBarAnimationFade];
 
 	dev_size = [[UIScreen mainScreen] bounds].size;
-//fprintf(stderr,"didFinishLaunching:  dev_size = %f x %f\n",dev_size.width,dev_size.height);
+	native_size = [[UIScreen mainScreen] nativeBounds].size;
+fprintf(stderr,"didFinishLaunching:  dev_size = %f x %f\n",dev_size.width,dev_size.height);
+fprintf(stderr,"didFinishLaunching:  native_size = %f x %f\n",native_size.width,native_size.height);
 
 	// This returns the same thing regardless of the device
 	// orientation.  The dimensions correspond to portrait mode.
@@ -1224,7 +1258,7 @@ static NSString *applicationName=NULL;
 //	[self init_main_menu];
 
 	dev_size = [[NSScreen mainScreen] visibleFrame].size;
-//fprintf(stderr,"dev_size initialized, %f x %f\n",dev_size.width,dev_size.height);
+fprintf(stderr,"applicationDidFinishLaunching:  dev_size initialized, %f x %f\n",dev_size.width,dev_size.height);
 
 	// these things use the dev_size property
 	init_dynamic_var(DEFAULT_QSP_ARG  "DISPLAY_WIDTH",get_display_width);

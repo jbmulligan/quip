@@ -169,14 +169,15 @@ struct item_context {
 #define NEW_ITEM_CONTEXT(icp)	icp=((Item_Context *)getbuf(sizeof(Item_Context)))
 
 #ifdef THREAD_SAFE_QUERY
-#define MAX_QUERY_STACKS	5	// why do we need to have a limit?
+#define MAX_QUERY_STACKS	51	// why do we need to have a limit?
 					// Because we have fixed size arrays
 					// of per-query stack ptrs...
 #else // ! THREAD_SAFE_QUERY
 #define MAX_QUERY_STACKS	1
 #endif // ! THREAD_SAFE_QUERY
 
-// This struct contains all of the things that we need to have copied for each thread...
+// This struct contains all of the things that we need to have copied
+// for each thread...
 // The main thing is the context stack
 
 typedef struct item_type_context_info {

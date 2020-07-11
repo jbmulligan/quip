@@ -91,6 +91,7 @@ typedef enum {
 @property (nonatomic, retain) quipViewController *qvc;
 //@property (nonatomic, retain) Panel_Obj *console_panel;
 @property CGSize dev_size;
+@property CGSize native_size;
 
 @end
 
