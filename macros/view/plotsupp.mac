@@ -53,7 +53,7 @@ Require_Var xmin	# need x axis limits to draw y legend?
 Require_Var ymin
 Require_Var xmax
 Require_Var ymax
-Require_Var y_legend
+#Require_Var y_legend
 Require_Var y_tick_auto
 If $y_tick_auto "Require_Var y_tick_spacing"
 Check_Var y_tick_offset 0
@@ -63,7 +63,8 @@ If !$vars_ok exit_macro
 
 Plot_Data_Range $xmin $ymin $xmax $ymax
 
-Y_Legend $y_legend
+If var_exists('y_legend')
+  'Y_Legend $y_legend'
 If $y_tick_auto
   Then 'Plot_Y_Axis_With_Ticks $ymin $ymax $xmin $y_tick_first $y_tick_last $y_tick_spacing \
         Label_Y_Ticks $y_tick_first $y_tick_last $y_tick_spacing'
@@ -111,7 +112,7 @@ Require_Var xmin
 Require_Var ymin	# need y axis limits to draw x legend?
 Require_Var xmax
 Require_Var ymax
-Require_Var x_legend
+#Require_Var x_legend
 Require_Var x_tick_auto
 If $x_tick_auto "Require_Var x_tick_spacing"
 Check_Var x_tick_offset 0
@@ -119,7 +120,8 @@ Check_Var x_tick_last $xmax
 Check_Var x_tick_first $xmin
 If !$vars_ok exit_macro
 
-X_Legend $x_legend
+If var_exists('x_legend')
+  'X_Legend $x_legend'
 #Plot_X_Axis $xmin $xmax $x_tick_spacing $ymin
 advise "Setup_X_Axis:  x_tick_auto = $x_tick_auto, x_tick_last = $x_tick_last"
 If $x_tick_auto
@@ -1485,6 +1487,7 @@ view draw $the_plotter line_width $1 quit quit
 # BUG should have shared code for x and y!
 
 Define Label_X_Ticks 3 first last delta
+If var_exists('suppress_tick_labels') exit_macro
 Select_Pen $label_color
 Assign tick_x $1
 do
@@ -1528,6 +1531,7 @@ repeat $n_x_ticks
 .
 
 Define Label_Y_Ticks 3 first last delta 
+If var_exists('suppress_tick_labels') exit_macro
 If !$allow_color_tick_labels "Push_Var pen_color Select_Pen $label_color"
 Assign n_y_ticks 1+floor($tiny+abs($2-($1))/$3)
 #advise "Label_Y_Ticks $1 $2 $3"
@@ -1544,6 +1548,7 @@ Left_Justify
 .
 
 Define Label_Y_Ticks_Right 3 first max delta 
+If var_exists('suppress_tick_labels') exit_macro
 If !$allow_color_tick_labels "Push_Var pen_color Select_Pen $label_color"
 Assign n_y_ticks 1+floor(($2-$1)/$3)
 Set tick_y $1
@@ -1602,8 +1607,8 @@ Define Assume_Unix_Plot_Locale 0
 # Now execute a few commands...
 
 Set the_plotter no_plotter
-Set y_legend none
-Set x_legend none
+#Set y_legend none
+#Set x_legend none
 Set current_window you_need_to_set_current_window
 Set exit_on_plotter_click 0
 

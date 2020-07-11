@@ -166,8 +166,9 @@ Set y_tick__spacing 0.2
 #Set y_tick_last 0
 Set y_tick_auto 1
 
-Set x_axis_legend 'text abcissa'
-Set y_axis_legend 'text ordinate'
+# don't define these by default - if undefined, then no legend
+#Set x_axis_legend 'text abcissa'
+#Set y_axis_legend 'text ordinate'
 
 Set font_bold 1
 Set font_size 24	# default
@@ -430,7 +431,8 @@ Posn_Window $plotwin $plotwin_x0 $plotwin_y0
 Define Install_Linear_Axis_Vars 0
 Set $api_axis_min_name $$axis_min_name
 Set $api_axis_max_name $$axis_max_name
-Set $api_axis_legend_name $$axis_legend_name
+If var_exists('$axis_legend_name')
+  'Set $api_axis_legend_name $$axis_legend_name'
 
 If $$tick_auto_name
   Then Install_Std_Linear_Axis_Vars
@@ -456,7 +458,8 @@ If $$axis_min_name<=0
 Assign $api_axis_min_name log10($$axis_min_name)
 Assign $api_axis_max_name log10($$axis_max_name)
 #Set $api_axis_legend_name "log $$axis_legend_name"
-Set $api_axis_legend_name "$$axis_legend_name"
+If var_exists('$axis_legend_name')
+  'Set $api_axis_legend_name "$$axis_legend_name"'
 
 If $$tick_auto_name
   Then Install_Std_Log_Axis_Vars
@@ -1553,7 +1556,8 @@ Set_Axis_Varnames $1
 Save_Param $axis_min_name
 Save_Param $axis_max_name
 Save_Param $axis_logv_name
-Save_Text_Param $axis_legend_name
+If var_exists('$axis_legend_name')
+  'Save_Text_Param $axis_legend_name'
 Save_Tick_Params
 .
 
@@ -1775,7 +1779,10 @@ echo "($plot_legend_text) show"
 Define Emit_Std_Y_Axis 0
 Set y $y_tick_first
 do
-  echo "($y) $y	ylabeltick"
+  If var_exists('suppress_tick_labels')
+    Then 'Set tick_label ""'
+    Else 'Set tick_label $y'
+  echo "($tick_label) $y	ylabeltick"
   Add_Var y $y_tick_spacing
   while $y<=$y_tick_last
 .
@@ -1792,8 +1799,11 @@ If $y_tick_auto
   Then Emit_Std_Y_Axis
   Else Emit_Custom_Y_Axis
 
-echo "($y_legend) ylegend"
-echo "($x_legend) xlegend"
+If var_exists('y_legend')
+  'echo "($y_legend) ylegend"'
+If var_exists('x_legend')
+  'echo "($x_legend) xlegend"'
+
 If $x_tick_auto
   Then Emit_Std_X_Axis
   Else Emit_Custom_X_Axis
@@ -1805,7 +1815,9 @@ repeat $n_x_custom_ticks
   Set varname x_tick_${tick_idx}_posn
   Set x $$varname
   Set varname x_tick_${tick_idx}_label
-  Set s $$varname
+  If var_exists('suppress_tick_labels')
+    Then 'Set s ""'
+    Else 'Set s $$varname'
   echo "($s) $x	xlabeltick"
   Increment tick_idx
   end
@@ -1817,7 +1829,9 @@ repeat $n_y_custom_ticks
   Set varname y_tick_${tick_idx}_posn
   Set y $$varname
   Set varname y_tick_${tick_idx}_label
-  Set s $$varname
+  If var_exists('suppress_tick_labels')
+    Then 'Set s ""'
+    Else 'Set s $$varname'
   echo "($s) $y	ylabeltick"
   Increment tick_idx
   end
@@ -1827,7 +1841,10 @@ Define Emit_Std_X_Axis 0
 Set x $x_tick_first
 do
   # BUG we should trim decimal places?
-  echo "($x) $x	xlabeltick"
+  If var_exists('suppress_tick_labels')
+    Then 'Set tick_label ""'
+    Else 'Set tick_label $x'
+  echo "($tick_label) $x	xlabeltick"
   Add_Var x $x_tick_spacing
   while $x<=$x_tick_last
 .
@@ -2233,7 +2250,8 @@ Set_Axis_Varnames $1
 #    quit
 #  quit
 Update_Toggle $axis_logv_widget_name $$axis_logv_name $axis_panel_name
-Update_Edit_Text $axis_legend_widget_name $$axis_legend_name $axis_panel_name
+If var_exists('$axis_legend_name')
+  Then 'Update_Edit_Text $axis_legend_widget_name $$axis_legend_name $axis_panel_name'
 Update_Edit_Text $axis_min_widget_name $$axis_min_name $axis_panel_name
 Update_Edit_Text $axis_max_widget_name $$axis_max_name $axis_panel_name
 Update_Toggle $tick_auto_widget_name $$tick_auto_name $axis_panel_name
