@@ -1,0 +1,318 @@
+%!
+% generally useful things for plotting data
+%
+% typical usage:
+%
+/in { 72 mul } def
+/m { moveto } def
+
+/framewidth 0.01 in def
+/gridwidth 0.005 in def
+/datawidth 0.02 in def
+/fatdatawidth 0.060 in def
+/thindatawidth 0.020 in def
+
+/tx -0.06 in def
+/ty -0.06 in def
+/tfact 1.5 def
+/smfsiz 0.15 in def
+/lgfsiz 0.25 in def
+/hugefsiz 0.35 in def
+
+% default values...
+
+/gx0 1.0 in def
+/gy0 1.0 in def
+/gdx 6.5 in def
+/gdy 9 in def
+
+
+% graph units to be mapped to graphing region
+% set these to suit the particular application
+/guxmin 0.0 def
+/guxmax 4.0 def
+/guymin -2.0 def
+/guymax 2.0 def
+/gudx guxmax guxmin sub def
+/gudy guymax guymin sub def
+
+/Times-Roman findfont smfsiz scalefont setfont
+
+% convert a relative motion from graph units to points
+/gdxu { gudx div gdx mul } def
+/gdyu { gudy div gdy mul } def
+
+% convert graph units to points
+% these macros take a point to a point - to convert vectors, use gdxu, gdyu
+%/gxu { guxmin sub gudx div gdx mul gx0 add } def
+%/gyu { guymin sub gudy div gdy mul gy0 add } def
+/gxu { guxmin sub gdxu gx0 add } def
+/gyu { guymin sub gdyu gy0 add } def
+
+/fntfct 3 def
+
+% /y 0 def
+/ylabel {
+	/Times-Roman findfont smfsiz scalefont setfont
+	gyu /y exch def
+	dup stringwidth pop neg
+	gx0 tx tfact mul add
+	add
+	y smfsiz fntfct div sub
+	moveto
+	show
+} def
+
+/xlabel {
+	gxu /x exch def
+	dup stringwidth pop 2 div neg
+	x add
+	gy0 ty tfact mul add
+	smfsiz sub
+	moveto
+	/Times-Roman findfont smfsiz scalefont setfont
+	show
+} def
+
+% string y  ylabeltick -
+
+/ylabeltick {
+% first two lines make the tick on the opposite side of frame
+%	dup gyu guxmax gxu exch moveto
+%	tx neg 0 rlineto
+%
+% the next 4 lines draw in thin gridlines
+	% gridwidth setlinewidth
+	% dup gyu gx0 exch moveto
+	% dup gyu guxmax gxu  exch lineto
+	% stroke
+
+	framewidth setlinewidth
+	dup gyu gx0 exch moveto
+	tx 0 rlineto
+	stroke
+	ylabel
+} def
+
+/ytick {
+% first two lines make the tick on the opposite side of frame
+%	dup gyu guxmax gxu exch moveto
+%	tx neg 0 rlineto
+%
+% the next 4 lines draw in thin gridlines
+	% gridwidth setlinewidth
+	% dup gyu gx0 exch moveto
+	% dup gyu guxmax gxu  exch lineto
+	% stroke
+
+	framewidth setlinewidth
+	dup gyu gx0 exch moveto
+	tx 0 rlineto
+	stroke
+} def
+
+/xlabeltick {
+% the next 4 lines draw in thin gridlines
+	% gridwidth setlinewidth
+	% dup gxu gy0 moveto
+	% dup gxu guymax gyu lineto
+	% stroke
+%
+	framewidth setlinewidth
+% the next 2 lines draw a tick on the far side of the frame
+%	dup gxu guymax gyu moveto
+%	0 ty neg rlineto
+%
+	dup gxu gy0 moveto
+	0 ty rlineto
+	stroke
+	xlabel
+} def
+
+/xtick {
+% the next 4 lines draw in thin gridlines
+	% gridwidth setlinewidth
+	% dup gxu gy0 moveto
+	% dup gxu guymax gyu lineto
+	% stroke
+%
+	framewidth setlinewidth
+% the next 2 lines draw a tick on the far side of the frame
+%	dup gxu guymax gyu moveto
+%	0 ty neg rlineto
+%
+	dup gxu gy0 moveto
+	0 ty rlineto
+	stroke
+} def
+
+/yaxis {
+	framewidth setlinewidth
+	gx0 gy0 m
+	gx0 guymax gyu lineto
+	stroke
+} def
+
+/xaxis {
+	framewidth setlinewidth
+	gx0 gy0 moveto
+	guxmax gxu gy0 lineto
+	stroke
+} def
+
+/frame {
+	framewidth setlinewidth
+%	gx0		gy0		m
+%	gx0		guymax gyu	lineto
+%	guxmax gxu	guymax gyu	lineto
+%	guxmax gxu	gy0		lineto
+%	gx0		gy0		lineto
+	guxmin gxu	guymin gyu	m
+	guxmin gxu	guymax gyu	lineto
+	guxmax gxu	guymax gyu	lineto
+	guxmax gxu	guymin gyu	lineto
+	guxmin gxu	guymin gyu	lineto
+	stroke
+} def
+
+/xlegend {
+	/Times-Roman findfont lgfsiz scalefont setfont
+	dup stringwidth pop 2 div neg
+	gx0 gdx 2 div add add
+	gy0 ty tfact mul add smfsiz 2 mul sub lgfsiz sub
+	moveto
+	show
+} def
+
+
+/ylegend {
+	/Times-Roman findfont lgfsiz scalefont setfont
+	dup stringwidth pop 2 div neg
+	gy0 gdy 2 div add add
+	gx0 tx tfact mul add smfsiz 2 mul sub lgfsiz sub
+	gsave
+	exch moveto
+	90 rotate
+	show
+	grestore
+} def
+
+
+
+/smxlegend {
+	/Times-Roman findfont smfsiz scalefont setfont
+	dup stringwidth pop 2 div neg
+	gx0 gdx 2 div add add
+	gy0 ty tfact mul add smfsiz 2 mul sub smfsiz sub
+	moveto
+	show
+} def
+
+
+/smylegend {
+	/Times-Roman findfont smfsiz scalefont setfont
+	dup stringwidth pop 2 div neg
+	gy0 gdy 2 div add add
+	gx0 tx tfact mul add smfsiz 2 mul sub smfsiz sub
+	gsave
+	exch moveto
+	90 rotate
+	show
+	grestore
+} def
+
+/l {
+	lineto
+	currentpoint
+	stroke
+	moveto
+} def
+
+/plot_title {
+	/Times-Roman findfont hugefsiz scalefont setfont
+	dup stringwidth pop 2 div neg
+	gx0 gdx 2 div add add
+	gy0 gdy add hugefsiz add
+	moveto
+	show
+} def
+
+
+%symbols
+
+/dotsize 3 def
+
+% with this definition, the line width scales with the dot size!?
+/open_circle {
+  gsave translate dotsize dup scale newpath
+   0 0 1  0 360 arc closepath 
+  stroke grestore } def
+
+/filled_circle  {
+  gsave translate dotsize dup scale newpath
+   0 0 1  0 360 arc closepath 
+  fill grestore } def
+
+/open_square { 
+  gsave translate dotsize dup scale
+  newpath
+  1  1 moveto -1  1 lineto
+ -1 -1 lineto  1 -1 lineto
+  closepath stroke grestore } def
+
+/filled_square { 
+  gsave translate dotsize dup scale
+  newpath
+  1  1 moveto -1  1 lineto
+ -1 -1 lineto  1 -1 lineto
+  closepath fill grestore } def
+
+/open_inverted_triangle {
+  gsave translate dotsize dup scale
+  newpath
+  0 -1.414 moveto  1.414 1 lineto  -1.414 1 lineto
+  closepath stroke grestore } def
+
+/filled_inverted_triangle {
+  gsave translate dotsize dup scale
+  newpath
+  0 -1.414 moveto  1.414 1 lineto  -1.414 1 lineto
+  closepath fill grestore } def
+
+/open_triangle {
+  gsave translate dotsize dup scale
+  newpath
+  0 1.414 moveto  1.414 -1 lineto  -1.414 -1 lineto
+  closepath stroke grestore } def
+
+/filled_triangle {
+  gsave translate dotsize dup scale
+  newpath
+  0 1.414 moveto  1.414 -1 lineto  -1.414 -1 lineto
+  closepath fill grestore } def
+
+/open_diamond {
+  gsave translate dotsize dup scale
+  newpath
+  0 1.414 moveto  1.414 0 lineto  0 -1.414 lineto  -1.414 0 lineto
+  closepath stroke grestore } def
+
+/filled_diamond {
+  gsave translate dotsize dup scale
+  newpath
+  0 1.414 moveto  1.414 0 lineto  0 -1.414 lineto  -1.414 0 lineto
+  closepath fill grestore } def
+
+% angle size x y arrow
+/arrow {
+  gsave translate dup scale rotate
+  newpath
+%  1 setlinewidth
+  1 setlinejoin
+  -30 0 moveto
+  30 0 lineto
+  -10 10 rlineto
+  10 -10 rmoveto
+  -10 -10 rlineto
+  closepath stroke grestore } def
+

@@ -1,0 +1,18 @@
+some postscript stuff
+
+These files get concatenated together to make figures.
+
+5/7/2015
+
+There seems to need to be a bounding box comment for the current version of epstool (3.08) to adjust it!?
+We'll add a dummy bounding box to the header...
+BUG - we should add the bounding box intelligently!?
+
+############################################
+
+Landscape mode
+
+Landscape mode works well for printing, but not for import to open office;
+Following tests with the approaches given here:
+http://pages.cs.wisc.edu/~rjl/landscape/
+only the third method produces a rotated image in OpenOffice.

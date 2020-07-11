@@ -1,0 +1,26 @@
+%%BoundingBox:    26   80   842   616
+%%HiResBoundingBox:    26   80   842   616
+% this can be Landscape or Portait and makes no difference???
+%%Orientation: Landscape
+%%DocumentMedia: a4land 842 595 80 () ()
+%%Pages: 1
+%%EndComments
+%%EndProlog
+% What about US letter instead of A4?
+% and how can we make the bounding box correct?
+%%BeginSetup
+  % A4 landscape orientation
+  << /PageSize [842 595] /Orientation 0 >> setpagedevice
+%%EndSetup
+%%Page: 1 1
+%%BeginPageSetup
+%%PageBoundingBox:    26   80   842   616
+%%EndPageSetup
+
+% don't need to rotate etc if we specify landscape paper?
+%614 25 translate
+%90 rotate
+
+% this helps with some figures...
+0.9 0.9 scale
+
