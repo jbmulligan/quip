@@ -13,7 +13,7 @@
 // to have a single disk-writer thread for each disk to prevent parallel writes...
 // How do we communicate between this thread and the event functions?
 
-static spinImageEvent ev1;
+static spinImageEventHandler ev1;
 static int using_image_events=0;
 
 Grab_Frame_Status _cam_frame_status(QSP_ARG_DECL  Spink_Cam *skc_p, int index)

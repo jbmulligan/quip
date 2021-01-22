@@ -1,5 +1,6 @@
 *.scr
 *.txt
+*.output
 *.json
 json.c
 Makefile

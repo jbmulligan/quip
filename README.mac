@@ -1,0 +1,5 @@
+
+focus follows mouse:
+
+% defaults write com.apple.Terminal FocusFollowsMouse -bool true
+
