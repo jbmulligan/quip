@@ -2366,6 +2366,7 @@ Query_Stack *new_qstk(QSP_ARG_DECL  const char *name)
 	Query_Stack *new_qsp;
 	Query_Stack *qsp_to_free=NULL;
 
+#ifdef THREAD_SAFE_QUERY
 	if( n_active_threads >= MAX_QUERY_STACKS ){
 		sprintf(ERROR_STRING,"too many query stacks (%d max)!?",
 			MAX_QUERY_STACKS);
@@ -2373,7 +2374,6 @@ Query_Stack *new_qstk(QSP_ARG_DECL  const char *name)
 		return NULL;
 	}
 
-#ifdef THREAD_SAFE_QUERY
 	// Why would this be null?  First time?
 	//
 	// We need to have a non-null arg to pass to new_qstack...
