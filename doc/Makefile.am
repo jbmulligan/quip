@@ -19,9 +19,12 @@ TARGETS			+= html quip.info
 .texi.html:
 	$(MAKEINFO) --html $<
 
+# The automatically-generated target "pdf" is not working...  Not sure why not?
+quip.pdf:	quip.texi
+	texi2dvi --pdf --batch --output=quip.pdf quip.texi
 
 # makeinfo --html is not making the html when called from automake
-all:	$(TARGETS) pdf
+all:	$(TARGETS) quip.pdf
 	cp quip.pdf ../docs/quip_manual.pdf
 #	cp -R quip.html ../docs/quip_web_manual
 #	BUG ../docs/quip_web_manual must exist!
