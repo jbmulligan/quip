@@ -184,7 +184,8 @@ repeat $n_isamps
     If $j>=ncols(cum_tdist)
       "Display cum_tdist error_exit 'OOPS i=$i t=$t j=$j'"
     Assign v value(cum_tdist[$j])
-    If $v>=0.5&&!$half_passed "advise 'j = $j  v = $v' Set half_passed 1"
+    #If $v>=0.5&&!$half_passed "advise 'j = $j  v = $v' Set half_passed 1"
+    If $v>=0.5&&!$half_passed "Set half_passed 1"
     If $v>$t
       Then "Select_IIdx Set found 1"
       Else "Increment j"
@@ -201,12 +202,14 @@ Map_S inv_cum inv_idx domain
 # bin center is 0.005 - bin width is 0.01?
 #advise "DOF = $1   p = 0.01"
 # first bin is 0.001, last is 0.999
-advise "t value for p=0.001"
-Display inv_cum[998]
-advise "t value for p=0.01"
-Display inv_cum[989]
-advise "t value for p=0.05"
-Display inv_cum[949]
+
+#advise "t value for p=0.001"
+#Display inv_cum[998]
+#advise "t value for p=0.01"
+#Display inv_cum[989]
+#advise "t value for p=0.05"
+#Display inv_cum[949]
+
 #Display inv_cum[0]
 #Display inv_cum[1]
 #advise "DOF = $1   p = 0.05"
@@ -333,13 +336,15 @@ Assign signif_idx round(($n_isamps+1)*(1-$_p))-1
 advise "idx for p=0.$significance is $signif_idx"
 .
 
+# Puts the answer in $p_string
+# BUG?  is this one- or two-tailed???
+
 Define Get_P_Value 1 t_value
-advise "Get_P_Value $1 BEGIN"
 Set idx 0
 repeat $n_isamps
   Assign v value(inv_cum[$idx])
   #advise "idx $idx   v $v   t $1"
-  If $v>$1
+  If $v>abs($1)
     'Assign p_value 1-($idx/($n_isamps+1)) Set p_string "= $p_value" exit_macro'
   Increment idx
   end
