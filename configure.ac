@@ -131,18 +131,18 @@ AC_ARG_ENABLE([tty-ctl],
 	[ use_tty_ctl=${enableval}], [use_tty_ctl=yes])
 
 # Enable script interrupt handler by default:
-AC_ARG_ENABLE([use_my_intr],
+AC_ARG_ENABLE([use-my-intr],
 	[AS_HELP_STRING([--disable-my-intr],[disable scriptable interrupt handler @<:@default: no@:>@])],
 	[ use_my_intr=${enableval}], [use_my_intr=yes])
 
 # Enable viewers by default:
-AC_ARG_ENABLE([use_viewers],
-	[AS_HELP_STRING([--disable-use_viewers],[disable graphical viewing window support @<:@default: no@:>@])],
+AC_ARG_ENABLE([use-viewers],
+	[AS_HELP_STRING([--disable-use-viewers],[disable graphical viewing window support @<:@default: no@:>@])],
 	[ use_viewers=${enableval}], [use_viewers=yes])
 
 # Enable history by default:
-AC_ARG_ENABLE([use_history],
-	[AS_HELP_STRING([--disable-use_history],[disable history features @<:@default: no@:>@])],
+AC_ARG_ENABLE([use-history],
+	[AS_HELP_STRING([--disable-history],[disable history features @<:@default: no@:>@])],
 	[ use_history=${enableval}], [use_history=yes])
 
 # Disable rt_sched by default:
@@ -156,32 +156,32 @@ AC_ARG_ENABLE([rt-sched],
 #	[ use_rt_sched=${enableval}], [use_rt_sched=yes])
 
 # Enable gui stuff by default:
-AC_ARG_ENABLE([use_motif_gui],
+AC_ARG_ENABLE([use-motif-gui],
 	[AS_HELP_STRING([--disable-gui],[disable GUI features @<:@default: no@:>@])],
 	[ use_motif_gui=${enableval}], [use_motif_gui=yes])
 
 # Enable cstepit stuff by default:
-AC_ARG_ENABLE([use_stepit],
+AC_ARG_ENABLE([use-stepit],
 	[AS_HELP_STRING([--disable-stepit],[disable STEPIT optimization @<:@default: no@:>@])],
 	[ use_stepit=${enableval}], [use_stepit=yes])
 
 # Enable numrec support by default:
-AC_ARG_ENABLE([use_numrec],
+AC_ARG_ENABLE([use-numrec],
 	[AS_HELP_STRING([--disable-numrec],[disable Numerical Recipes support@<:@default: no@:>@])],
 	[ use_numrec=${enableval}], [use_numrec=yes])
 
 # Enable sparselm support by default:
-AC_ARG_ENABLE([use_sparselm],
+AC_ARG_ENABLE([use-sparselm],
 	[AS_HELP_STRING([--disable-sparselm],[disable Sparse L-M support@<:@default: no@:>@])],
 	[ use_sparselm=${enableval}], [use_sparselm=yes])
 
 # Enable sound support by default:
-AC_ARG_ENABLE([use_sound],
+AC_ARG_ENABLE([use-sound],
 	[AS_HELP_STRING([--disable-sound],[disable sound support@<:@default: no@:>@])],
 	[ use_sound=${enableval}], [use_sound=yes])
 
 # Enable debug by default:
-AC_ARG_ENABLE([use_debug],
+AC_ARG_ENABLE([use-debug],
 	[AS_HELP_STRING([--disable-debug],[disable debug features @<:@default: no@:>@])],
 	[ use_debug=${enableval}], [use_debug=yes])
 
@@ -196,27 +196,27 @@ AC_ARG_ENABLE([use_debug],
 #	[ async_exec=${enableval}], [async_exec=no])
 
 # Disable getbuf by default:
-AC_ARG_ENABLE([use_getbuf],
+AC_ARG_ENABLE([use-getbuf],
 	[AS_HELP_STRING([--enable-getbuf],[enable internal memory manager @<:@default: yes@:>@])],
 	[ use_getbuf=${enableval}], [use_getbuf=no])
 
 # Enable cautious checks by default:
-AC_ARG_ENABLE([use_cautious],
+AC_ARG_ENABLE([use-cautious],
 	[AS_HELP_STRING([--disable-cautious],[disable cautious checks @<:@default: no@:>@])],
 	[ use_cautious=${enableval}], [use_cautious=yes])
 
 # Enable avi support by default:
-AC_ARG_ENABLE([use_avi],
+AC_ARG_ENABLE([use-avi],
 	[AS_HELP_STRING([--disable-avi],[disable ffmpeg avi support @<:@default: no@:>@])],
 	[ use_avi=${enableval}], [use_avi=yes])
 
 # Enable cuda by default:
-AC_ARG_ENABLE([use_cuda],
+AC_ARG_ENABLE([use-cuda],
 	[AS_HELP_STRING([--disable-cuda],[disable GPU operations with CUDA @<:@default: no@:>@])],
 	[ use_cuda=${enableval}], [use_cuda=yes])
 
 # Enable opencl by default - but only for Mac!:
-AC_ARG_ENABLE([use_opencl],
+AC_ARG_ENABLE([use-opencl],
 	[AS_HELP_STRING([--disable-opencl],[disable GPU operations with OpenCL @<:@default: no@:>@])],
 	[ use_opencl=${enableval}], [use_opencl=yes])
 if test "x$os_is_darwin" == xno; then
@@ -232,27 +232,27 @@ fi
 #	[ use_metal=${enableval}], [use_metal=yes])
 
 # Enable X11 by default:
-AC_ARG_ENABLE([use_x11],
+AC_ARG_ENABLE([use-x11],
 	[AS_HELP_STRING([--disable-x11],[disable X11 @<:@default: no@:>@])],
 	[ use_x11=${enableval}], [use_x11=yes])
 
 # Enable GSL by default:
-AC_ARG_ENABLE([use_gsl],
+AC_ARG_ENABLE([use-gsl],
 	[AS_HELP_STRING([--disable-gsl],[disable GNU Scientific Library @<:@default: no@:>@])],
 	[ use_gsl=${enableval}], [use_gsl=yes])
 
 # Enable pthreads by default:
-AC_ARG_ENABLE([use_pthreads],
+AC_ARG_ENABLE([use-pthreads],
 	[AS_HELP_STRING([--disable-pthreads],[disable pthread support@<:@default: no@:>@])],
 	[ use_pthreads=${enableval}], [use_pthreads=yes])
 
 # Enable curl by default:
-AC_ARG_ENABLE([use_curl],
+AC_ARG_ENABLE([use-curl],
 	[AS_HELP_STRING([--disable-curl],[disable curl support@<:@default: no@:>@])],
 	[ use_curl=${enableval}], [use_curl=yes])
 
 # Enable matio by default:
-AC_ARG_ENABLE([use_matio],
+AC_ARG_ENABLE([use-matio],
 	[AS_HELP_STRING([--disable-matio],[disable Matlab I/O support@<:@default: no@:>@])],
 	[ use_matio=${enableval}], [use_matio=yes])
 
@@ -262,22 +262,22 @@ AC_ARG_ENABLE([opencv],
 	[ use_opencv=${enableval}], [use_opencv=yes])
 
 # Enable FANN by default:
-AC_ARG_ENABLE([use_fann],
+AC_ARG_ENABLE([use-fann],
 	[AS_HELP_STRING([--disable-fann],[disable support for neural networks w/ libfann@<:@default: no@:>@])],
 	[ use_fann=${enableval}], [use_fann=yes])
 
 # Enable fileio by default:
-AC_ARG_ENABLE([use_fileio],
+AC_ARG_ENABLE([use-fileio],
 	[AS_HELP_STRING([--disable-fileio],[disable support for image file I/O@<:@default: no@:>@])],
 	[ use_fileio=${enableval}], [use_fileio=yes])
 
 # Enable ncurses by default:
-AC_ARG_ENABLE([use_ncurses],
+AC_ARG_ENABLE([use-ncurses],
 	[AS_HELP_STRING([--disable-ncurses],[disable support terminal control w/ ncurses@<:@default: no@:>@])],
 	[ use_ncurses=${enableval}], [use_ncurses=yes])
 
 # Enable flycap by default:
-AC_ARG_ENABLE([use_flycap],
+AC_ARG_ENABLE([use-flycap],
 	[AS_HELP_STRING([--disable-flycap],[disable support for PGR cameras with libflycap@<:@default: no@:>@])],
 	[ use_flycap=${enableval}], [use_flycap=yes])
 
@@ -1246,6 +1246,8 @@ if test "x${use_flycap}" = xyes; then
 #  fi
 fi
 
+# BUG - spinnaker now needs libomp
+
 if test "x${use_spinnaker}" = xyes; then
   AC_CHECK_HEADERS([SpinnakerC.h])
   AC_SEARCH_LIBS([spinSystemGetInstance],[Spinnaker_C],[have_libspinnaker=yes],[have_libspinnaker=no])
@@ -1665,6 +1667,7 @@ AC_CHECK_FUNCS([ioperm],[have_ioperm=yes],[have_ioperm=no])
 #		 macros/colors/Makefile
 
 AC_CONFIG_FILES([Makefile
+		 postscript/Makefile
 		 macros/Makefile
 		 macros/system/Makefile
 		 macros/compute/Makefile

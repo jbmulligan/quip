@@ -78,7 +78,24 @@ installed:
 
 NEW:  use homebrew...
 
-Need to write down the list of homebrew packages...
+packages:
+
+libjpeg
+libpng
+libtiff
+libgcrypt
+gsl
+portaudio
+curl
+mactex (--cask)
+texinfo
+ffmpeg
+openmotif
+libmatio
+ncurses
+
+for OpenGL?
+glew	?
 
 OLD:  used fink
 

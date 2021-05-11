@@ -694,7 +694,8 @@ Panel_On $image_edit_panel
 Define AddLegend 0
 Increment n_extra_legends
 Set legend_nickname legend_$n_extra_legends
-Update_Edit_Text $legend_text_widget_name $legend_nickname $legend_edit_panel
+Set curr_legend_name $legend_nickname
+Update_Edit_Text $legend_nickname_widget_name $legend_nickname $legend_edit_panel
 Panel_Off $legend_panel
 Panel_On $legend_edit_panel
 .
@@ -1622,7 +1623,7 @@ Save_Param $vname
 
 Define Save_Legend_Param 2 idx varname
 Set vname legend_${1}_$2
-Save_Param $vname
+Save_Text_Param $vname
 .
 
 Define Save_Grid_Param 2 idx varname
@@ -1763,7 +1764,8 @@ Load_Series_Vars $curr_series_name
 # We should use the dimensions of the plotting window to determine gdx and gdy!
 
 # BUG - should move this to a /usr/local/share/quip subdir!
-Set postscript_lib $HOME/working/postscript
+If !var_exists(INST_DIR) "Set INST_DIR ''"
+Set postscript_dir $INST_DIR/usr/local/share/quip/postscript
 
 #cat $psdir/jbm_head.ps $psdir/jbm_page.ps $psdir/plotmacs.ps \
 #	$psfile $psdir/jbm_trailer.ps > /tmp/psfile
@@ -1993,7 +1995,7 @@ If $plot_w>$plot_h
   Then "Set page_orientation landscape"
   Else "Set page_orientation portrait"
 
-Set f1 $postscript_lib/jbm_head.ps
+Set f1 $postscript_dir/jbm_head.ps
 # %!PS-Adobe-3.0 EPSF-3.0
 append no
 output_file $psfile
@@ -2002,14 +2004,14 @@ echo "%!PS-Adobe-3.0 EPSF-3.0"
 If !strcmp('$page_orientation','landscape')
   Then Write_Landscape_PS_Header
   Else Write_Portrait_PS_Header
-#Set f2 $postscript_lib/jbm_${page_orientation}_page.ps
+#Set f2 $postscript_dir/jbm_${page_orientation}_page.ps
 
 If var_exists('ps_scale_factor')
   'echo "$ps_scale_factor $ps_scale_factor scale"'
 
 output_file -	# close file
 
-Set plot_macro_file $postscript_lib/plotmacs.ps
+Set plot_macro_file $postscript_dir/plotmacs.ps
 
 #If !file_exists('$f1') "warn 'File $f1 does not exist!?' exit_macro"
 #If !file_exists('$f2') "warn 'File $f2 does not exist!?' exit_macro"
@@ -2029,7 +2031,7 @@ Emit_Plot_Content
 output_file -	# close file
 
 os
-  system "cat $postscript_lib/jbm_trailer.ps >> $psfile"
+  system "cat $postscript_dir/jbm_trailer.ps >> $psfile"
 
   # epstool is broken?
 #  advise "epstool --copy --bbox $psfile $final_psfile"
@@ -2039,6 +2041,7 @@ os
 
   system "mv $psfile $final_psfile"
   quit
+echo "Plot saved to $final_psfile"
 .
 
 Define Emit_All_Series 0
@@ -2492,8 +2495,8 @@ Define Draw_Plot_Legend 0
 If !$show_plot_legend exit_macro
 Select_Pen $black
 Legend_Font
-#Center_Text
-Left_Justify
+Center_Text
+#Left_Justify
 S_At "$plot_legend_text" $plot_legend_x $plot_legend_y
 .
 
