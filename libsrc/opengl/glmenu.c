@@ -9,11 +9,10 @@
 #endif	// HAVE_GL_GLEW_H
 #endif // BUILD_FOR_OBJC
 
-#ifdef HAVE_GL_GLEXT_H
-#include <GL/gl.h>
+#ifdef HAVE_GL_GL_H
 #define GL_GLEXT_PROTOTYPES
-#include <GL/glext.h>
-#endif // HAVE_GL_GLEXT_H
+#include <GL/gl.h>
+#endif
 
 #ifdef HAVE_GLUT
 #include "glut_supp.h"

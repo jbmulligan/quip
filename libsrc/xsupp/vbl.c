@@ -4,7 +4,6 @@
 #include "quip_config.h"
 
 #ifdef HAVE_X11
-#ifdef HAVE_VBL
 
 #ifdef HAVE_SYS_IO_H
 #include <sys/io.h>		/* ioperm (glibc) */
