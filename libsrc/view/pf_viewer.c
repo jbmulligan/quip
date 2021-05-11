@@ -12,14 +12,10 @@
 #include <string.h>
 #include <math.h>
 
-//#ifdef HAVE_GL_GL_H
-//#include <GL/gl.h>
-//#endif
-//#ifdef HAVE_GL_GLEXT_H
-//#define GL_GLEXT_PROTOTYPES	// glBindBuffer
-//#include <GL/glext.h>
-//#endif
-
+#ifdef HAVE_GL_GL_H
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
+#endif
 
 #ifndef BUILD_FOR_OBJC
 #ifdef HAVE_GL_GLEW_H

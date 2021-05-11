@@ -75,6 +75,7 @@ static int _dop_open( QSP_ARG_DECL  Disp_Obj *dop )
 	 * We ought to put a watchdog timer here...
 	 */
 
+fprintf(stderr,"Calling XOpenDisplay...\n");
 	if ( (SET_DO_DISPLAY(dop,XOpenDisplay(DO_NAME(dop)))) == NULL) {
 		sprintf(ERROR_STRING,
 			"dop_open:  Can't open display \"%s\"\n",DO_NAME(dop));

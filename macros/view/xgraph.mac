@@ -113,7 +113,8 @@ Set argname argv$i_arg
 advise "Y_Axis_Option:  3rd arg $argname = $$argname"
 # If the next arg is not a number, then it is probably a filename...
 If isdigit(string_obj('$$argname')[0])
-  "Set y_tick_spacing $$argname Increment i_arg"
+  Then "advise 'digit' Set y_tick_spacing $$argname Increment i_arg"
+  Else "advise 'Not a digit'"
 Set y_scale_determined 1
 Print y_tick_spacing
 If $x_scale_determined&&$y_scale_determined "Set scale_determined 1"
@@ -199,7 +200,6 @@ warn "unrecognized long option $1"
 # BUG we can't get args $1 etc from within macro...
 
 Define Process_Options 0
-If $argc<1 "exit_macro"
 
 Set_Default_Plotter_Params
 

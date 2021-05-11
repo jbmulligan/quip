@@ -78,6 +78,9 @@ installed:
 
 NEW:  use homebrew...
 
+to build, we need autotools!
+
+
 packages:
 
 libjpeg

@@ -8,8 +8,8 @@
 
 # How can we turn off optimization??
 
-#AC_PREREQ([2.63])
-AC_INIT([quip], [1.0.02], [jeffrey.b.mulligan@nasa.gov])
+#AC_PREREQ([2.71])
+AC_INIT([quip],[1.0.02],[jeffrey.b.mulligan@nasa.gov])
 
 # this line prevents -O2...
 #: ${CXXFLAGS=-g}
@@ -286,6 +286,8 @@ AC_ARG_ENABLE([spinnaker],
 	[AS_HELP_STRING([--disable-spinnaker],[disable support for PGR cameras with libspinnaker@<:@default: no@:>@])],
 	[ use_spinnaker=${enableval}], [use_spinnaker=yes])
 
+echo use_spinnaker = $use_spinnaker
+
 # Enable dc1394 by default:
 AC_ARG_ENABLE([dc1394],
 	[AS_HELP_STRING([--disable-dc1394],[disable support terminal control w/ dc1394@<:@default: no@:>@])],
@@ -496,7 +498,7 @@ fi
 # This allows us to use GNU stuff, e.g. O_DIRECT...
 
 echo calling ac_gnu_source
-AC_GNU_SOURCE
+AC_USE_SYSTEM_EXTENSIONS
 echo DONE calling ac_gnu_source
 
 #################################################
@@ -645,7 +647,11 @@ AC_CHECK_PROGS(YACC,'bison -y' byacc yacc,[AM_MISSING_PROG(YACC,yacc)])
 
 # Check for compilers
 AC_PROG_CC
-AC_PROG_CC_C99
+#m4_warn([obsolete],
+#[AC_PROG_CC_C99 is obsolete; use AC_PROG_CC
+#])dnl
+#AC_REQUIRE(AC_PROG_CC)
+
 AC_PROG_CXX
 
 AM_PROG_CC_C_O
