@@ -45,7 +45,7 @@ static void init_##prompt##_menu(SINGLE_QSP_ARG_DECL)			\
 	prompt##_menu = (Menu *)getbuf(sizeof(Menu));			\
 	prompt##_menu->mn_prompt = savestr(#prompt);			\
 	/*prompt##_menu->mn_dict = create_dictionary(#prompt);*/	\
-	prompt##_menu->mn_cnt_p = create_container(#prompt,LIST_CONTAINER);		\
+	prompt##_menu->mn_cnt_p = create_container(#prompt,LIST_CONTAINER);\
 	CLEAR_MENU_FLAGS(prompt)
 
 #define ADD_COMMAND(mp,selector,function,help_string)			\

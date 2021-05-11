@@ -61,6 +61,7 @@ Check_Var y_tick_last $ymax
 Check_Var y_tick_first $ymin
 If !$vars_ok exit_macro
 
+advise "Plot_Data_Range $xmin $ymin $xmax $ymax"
 Plot_Data_Range $xmin $ymin $xmax $ymax
 
 If var_exists('y_legend')

@@ -177,6 +177,9 @@ view
 .
 
 Define Validate_Fonts 0
+advise "Validate_Fonts:  doing nothing!?"
+Set fonts_present 0
+exit_macro
 Set fonts_present 0
 #Print unit_font
 Validate_Font $unit_font
@@ -281,7 +284,8 @@ Set legend_font "-misc-fixed-bold-r-normal--14-130-75-75-c-70-iso8859-2"
 
 Validate_Fonts
 Print_If fonts_present
-If $fonts_present exit_macro
+#If $fonts_present
+  exit_macro
 
 error_exit "Couldn't find any fonts for plotting!?"
 Tell_If 'Init_Font_Stuff DONE'

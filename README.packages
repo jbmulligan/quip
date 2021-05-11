@@ -94,6 +94,8 @@ openmotif
 libmatio
 ncurses
 
+libomp (new dependency of spinnaker)
+
 for OpenGL?
 glew	?
 

@@ -1665,7 +1665,6 @@ AC_CHECK_FUNCS([ioperm],[have_ioperm=yes],[have_ioperm=no])
 #		 macros/colors/Makefile
 
 AC_CONFIG_FILES([Makefile
-		 postscript/Makefile
 		 macros/Makefile
 		 macros/system/Makefile
 		 macros/compute/Makefile
