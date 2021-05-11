@@ -12,11 +12,6 @@
 #include <string.h>
 #include <math.h>
 
-#ifdef HAVE_GL_GL_H
-#define GL_GLEXT_PROTOTYPES
-#include <GL/gl.h>
-#endif
-
 #ifndef BUILD_FOR_OBJC
 #ifdef HAVE_GL_GLEW_H
 #include <GL/glew.h>
@@ -25,6 +20,11 @@
 #include <OpenGL/gl.h>
 #include <GLUT/glut.h>
 #endif // BUILD_FOR_OBJC
+
+#ifdef HAVE_GL_GL_H
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
+#endif
 
 // used to include GL/glut.h and rendercheck_gl.h...
 
