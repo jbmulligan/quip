@@ -282,9 +282,11 @@ AC_ARG_ENABLE([use_flycap],
 	[ use_flycap=${enableval}], [use_flycap=yes])
 
 # Enable spinnaker by default:
-AC_ARG_ENABLE([use_spinnaker],
+AC_ARG_ENABLE([spinnaker],
 	[AS_HELP_STRING([--disable-spinnaker],[disable support for PGR cameras with libspinnaker@<:@default: no@:>@])],
 	[ use_spinnaker=${enableval}], [use_spinnaker=yes])
+
+echo use_spinnaker = $use_spinnaker
 
 # Enable dc1394 by default:
 AC_ARG_ENABLE([dc1394],

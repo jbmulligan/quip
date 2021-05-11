@@ -276,17 +276,17 @@ static int vfa_cmp(const void *vfp1,const void *vfp2)
 	else return(-1);
 }
 
-int _check_vfa_tbl_size(QSP_ARG_DECL  Vec_Func_Array vfa_tbl[], int size)
+int _check_vfa_tbl_size(QSP_ARG_DECL  Vec_Func_Array vfa_tbl[], size_t size)
 {
 	assert( size == N_VEC_FUNCS );
 	return 0;
 }
 
-void _check_vfa_tbl(QSP_ARG_DECL  Vec_Func_Array *vfa_tbl, int size)
+void _check_vfa_tbl(QSP_ARG_DECL  Vec_Func_Array *vfa_tbl, size_t size)
 {
 	int i;
 	if( size != N_VEC_FUNCS ){
-		sprintf(ERROR_STRING,"check_vfa_tbl:  size (%d) not equal to N_VEC_FUNCS (%d)!?",
+		sprintf(ERROR_STRING,"check_vfa_tbl:  size (%ld) not equal to N_VEC_FUNCS (%d)!?",
 			size,N_VEC_FUNCS);
 		warn(ERROR_STRING);
 	}

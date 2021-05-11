@@ -398,7 +398,7 @@ typedef struct vec_func_array {
 
 extern Vec_Func_Array vl2_vfa_tbl[];	// BUG put in platform-specific file
 
-extern void _check_vfa_tbl(QSP_ARG_DECL  Vec_Func_Array vfa_tbl[], int size );
+extern void _check_vfa_tbl(QSP_ARG_DECL  Vec_Func_Array vfa_tbl[], size_t size );
 #define check_vfa_tbl(vfa_tbl, size ) _check_vfa_tbl(QSP_ARG  vfa_tbl, size )
 
 // BUG - these should be part of the platform code?

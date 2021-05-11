@@ -117,7 +117,7 @@ extern int _check_bitmap(QSP_ARG_DECL  Data_Obj *,Data_Obj *);
 extern COMMAND_FUNC( do_samp_menu );
 
 /* typtbl.c */
-extern int _check_vfa_tbl_size(QSP_ARG_DECL  Vec_Func_Array vfa_tbl[], int size);
+extern int _check_vfa_tbl_size(QSP_ARG_DECL  Vec_Func_Array vfa_tbl[], size_t size);
 #define check_vfa_tbl_size(vfa_tbl, size) _check_vfa_tbl_size(QSP_ARG  vfa_tbl, size)
 
 #include "veclib_prot.h"

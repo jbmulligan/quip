@@ -1,5 +1,5 @@
 // To run this code, we need seteuid, getuid, ioperm, and inb...
-//#ifdef HAVE_VBL
+#ifdef HAVE_VBL
 
 #include "quip_config.h"
 
@@ -165,6 +165,7 @@ advise(ERROR_STRING);
 	}
 }
 
-//#endif /* HAVE_VBL */
-
 #endif /* HAVE_X11 */
+
+#endif /* HAVE_VBL */
+
