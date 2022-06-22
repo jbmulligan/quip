@@ -80,8 +80,21 @@ int _png_to_dp( QSP_ARG_DECL  Data_Obj *dp, Png_Hdr *hdr_p )	// unix version
 	SET_OBJ_ROWS(dp, png_get_image_height(hdr_p->png_ptr,hdr_p->info_ptr) );
 	SET_OBJ_COMPS(dp, png_get_channels(hdr_p->png_ptr,hdr_p->info_ptr) );
 
+	int n = png_get_bit_depth(hdr_p->png_ptr,hdr_p->info_ptr);
+	prec_t p;
+	if( n == 8 ){
+		p = PREC_UBY;
+	} else if( n == 16 ){
+		p = PREC_UIN;
+	} else {
+		sprintf(ERROR_STRING,"Unexpected bit depth %d",n);
+		warn(ERROR_STRING);
+		p = PREC_UBY;	// probably not going to work...
+	}
+
+	// BUG - can have 16 bpp!!!
 	/* prec will always get converted to 8 bits */
-	SET_OBJ_PREC_PTR(dp,PREC_FOR_CODE(PREC_UBY) );
+	SET_OBJ_PREC_PTR(dp,PREC_FOR_CODE(p) );
 
 	// BUG scan the file to get number of frames!?
 	//SET_OBJ_FRAMES(dp, 1);	// default, set later
@@ -240,7 +253,8 @@ static int _create_read_struct(QSP_ARG_DECL  Image_File *ifp)
 {
 	assert( HDR_P->png_ptr == NULL );
 
-	HDR_P->png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING,	NULL, NULL, NULL);
+	HDR_P->png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING,	NULL,
+								NULL, NULL);
 	if (!HDR_P->png_ptr){
 		warn("error creating png read struct");
 		return(-1);   /* out of memory */
@@ -580,6 +594,8 @@ static int get_bgcolor(QSP_ARG_DECL  Image_File *ifp, u_char *red, u_char *green
 	return 0;
 }
 
+#define PXL_TYPE u_short
+
 static u_char *get_image( QSP_ARG_DECL  Image_File *ifp, u_long *pRowbytes )
 {
 	png_uint_32  i, rowbytes;
@@ -600,10 +616,10 @@ static u_char *get_image( QSP_ARG_DECL  Image_File *ifp, u_long *pRowbytes )
 
 	*pRowbytes = rowbytes = png_get_rowbytes(HDR_P->png_ptr, HDR_P->info_ptr);
 
-	if ((png_image_data = (u_char *)getbuf(rowbytes*HDR_P->height)) == NULL) {
+	if ((png_image_data = (PXL_TYPE *)getbuf(rowbytes*HDR_P->height)) == NULL) {
 		warn("get_image:  getbuf error #1!?");
 		pngfio_close(QSP_ARG  ifp);
-		return (u_char *)NULL;
+		return (PXL_TYPE *)NULL;
 	}
 
 	if ((row_pointers = (png_bytepp)getbuf(HDR_P->height*sizeof(png_bytep))) == NULL) {
@@ -616,8 +632,10 @@ static u_char *get_image( QSP_ARG_DECL  Image_File *ifp, u_long *pRowbytes )
 
 	/* set the individual row_pointers to point at the correct offsets */
 
-	for (i = 0;  i < HDR_P->height;  ++i)
+	for (i = 0;  i < HDR_P->height;  ++i){
 		row_pointers[i] = png_image_data + i*rowbytes;
+//fprintf(stderr,"row_pointers[%d] = 0x%lx\n",i,(u_long)row_pointers[i]);
+	}
 
 	/* now we can go ahead and just read the whole image */
 	png_read_image(HDR_P->png_ptr, row_pointers);
@@ -640,10 +658,12 @@ static u_char *get_image( QSP_ARG_DECL  Image_File *ifp, u_long *pRowbytes )
 FIO_RD_FUNC( pngfio )
 {
 	// u_char *data_ptr;
+	// BUG - need to have two versions based on bpp!?
+	// or C++ template!
 	u_long rowbytes;
 	u_char *png_image_data;
-	u_char *src;
-	u_char *dst;
+	PXL_TYPE *src;
+	PXL_TYPE *dst;
 	dimension_t row,col,comp;
 
 #ifdef HAVE_ANY_GPU
@@ -666,6 +686,7 @@ FIO_RD_FUNC( pngfio )
 	if( ! dp_same_dim(dp,ifp->if_dp,0,"png_rd") ) return;	/* same # components? */
 	if( ! dp_same_dim(dp,ifp->if_dp,1,"png_rd") ) return;	/* same # columns? */
 	if( ! dp_same_dim(dp,ifp->if_dp,2,"png_rd") ) return;	/* same # rows? */
+	if( ! dp_same_prec(dp,ifp->if_dp,"png_rd") ) return;	/* same type? */
 
 	// data_ptr = OBJ_DATA_PTR(dp);
 
@@ -692,10 +713,11 @@ FIO_RD_FUNC( pngfio )
 
 	for (row = 0;  row < OBJ_ROWS(dp);  row++ ) {
 		src = png_image_data + row*rowbytes;
-		dst = ((u_char *)OBJ_DATA_PTR(dp)) + row*OBJ_ROW_INC(dp);
+		dst = ((PXL_TYPE *)OBJ_DATA_PTR(dp)) + row*OBJ_ROW_INC(dp);
 		for (col = 0;  col < OBJ_COLS(dp);  col++ ) {
-			for(comp=0;comp<OBJ_COMPS(dp);comp++)
+			for(comp=0;comp<OBJ_COMPS(dp);comp++){
 				*dst++ = *src++;
+			}
 		}
 	}
 

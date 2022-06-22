@@ -81,12 +81,14 @@ int open_client_port(QSP_ARG_DECL  const char *name,const char *hostname,int por
 	int first_attempt = TRUE;
 	struct hostent FAR *hp;
 
+	/*
 	if ( (port_no < 2001) || (port_no > 6999) ) {
 		warn("Illegal port number");
 		advise("Use 2001-6999");
 		advise("Check /etc/services for other conflicts");
 		return(-1);
 	}
+	*/
 
 fresh_start:
 

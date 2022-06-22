@@ -3,29 +3,13 @@
 #include "fio_prot.h"
 #include "quip_prot.h"
 #include "query_bits.h"	// LLEN - BUG
-
-//#include "../datamenu/dataprot.h"
-//#include "submenus.h"
-//#include "debug.h"
-//#include "data_obj.h"
-//#include "submenus.h"
 #include "img_file.h"
 #include "fio_api.h"
-//#include "filetype.h"
-//
-//#include "rv_api.h"
-//
-//#include "raw.h"	/* set_raw_sizes() ? */
-//#include "bdf.h"	/* bdf_menu */
-//#include "menuname.h"
-
 #include "warn.h"
-
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-
 
 #include "quip_menu.h"
 #include "dobj_prot.h"

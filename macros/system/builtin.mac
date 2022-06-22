@@ -4,6 +4,13 @@
 
 #verbose yes
 
+If var_exists("builtin_mac_loaded")
+  "echo 'File builtin.mac already loaded' exit"
+
+variables
+  set builtin_mac_loaded 1
+  quit
+
 If $verbose "echo 'interpreting file builtin.mac'"
 
 # macro control

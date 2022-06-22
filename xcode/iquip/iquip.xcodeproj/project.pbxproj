@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F9A0B9027D7E2E800825064 /* include in Resources */ = {isa = PBXBuildFile; fileRef = 1F9A0B8F27D7E2E800825064 /* include */; };
+		1F9A0B9127D7E2E800825064 /* include in Resources */ = {isa = PBXBuildFile; fileRef = 1F9A0B8F27D7E2E800825064 /* include */; };
+		1F9A0B9227D7E2E800825064 /* include in Resources */ = {isa = PBXBuildFile; fileRef = 1F9A0B8F27D7E2E800825064 /* include */; };
+		1F9A0B9327D7E2E800825064 /* include in Resources */ = {isa = PBXBuildFile; fileRef = 1F9A0B8F27D7E2E800825064 /* include */; };
+		1F9A0B9427D7E2E800825064 /* include in Resources */ = {isa = PBXBuildFile; fileRef = 1F9A0B8F27D7E2E800825064 /* include */; };
 		1FFBEEEA22CEAD6A00318A39 /* CSF-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1FFBEEE922CEAD6A00318A39 /* CSF-Info.plist */; };
 		2299DE11196C6EF800844988 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2299DE10196C6EF800844988 /* CoreMotion.framework */; };
 		2299DE13196C6F2500844988 /* sched.c in Sources */ = {isa = PBXBuildFile; fileRef = 2299DE12196C6F2500844988 /* sched.c */; };
@@ -1551,6 +1556,7 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
+		1F9A0B8F27D7E2E800825064 /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; name = include; path = ../../include; sourceTree = "<group>"; };
 		1FFBEEE922CEAD6A00318A39 /* CSF-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "CSF-Info.plist"; path = "xcode/iquip/CSF-Info.plist"; sourceTree = "<group>"; };
 		2299DE10196C6EF800844988 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		2299DE12196C6F2500844988 /* sched.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sched.c; sourceTree = "<group>"; };
@@ -1988,6 +1994,7 @@
 		7106ECF216004437006BF850 = {
 			isa = PBXGroup;
 			children = (
+				1F9A0B8F27D7E2E800825064 /* include */,
 				71BA647817D4FBE700446D65 /* Default.png */,
 				71BA647917D4FBE700446D65 /* Default@2x.png */,
 				71BA647617D4F67B00446D65 /* Default-568h@2x.png */,
@@ -2651,7 +2658,7 @@
 		7106ECF416004437006BF850 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1010;
+				LastUpgradeCheck = 1320;
 				TargetAttributes = {
 					7106ECFC16004437006BF850 = {
 						DevelopmentTeam = 6NC2ML6K22;
@@ -2703,11 +2710,11 @@
 				71BA647C17D5076F00446D65 /* Default.png in Resources */,
 				7C6B33C91953AC0C00967093 /* InfoPlist.strings in Resources */,
 				711F118B1637B6D50069EF13 /* Icon@2x.png in Resources */,
-				1F088D5E2309FAD2006A15FC /* CSF-Info.plist in Resources */,
 				711F118C1637B6D50069EF13 /* Icon.png in Resources */,
 				711F118D1637B6D50069EF13 /* Icon-Small@2x.png in Resources */,
 				711F118E1637B6D50069EF13 /* Icon-Small.png in Resources */,
 				711F118F1637B6D50069EF13 /* Icon-Small-50.png in Resources */,
+				1F9A0B9027D7E2E800825064 /* include in Resources */,
 				711F11901637B6D50069EF13 /* Icon-72@2x.png in Resources */,
 				711F11911637B6D50069EF13 /* Icon-72.png in Resources */,
 				71BA647717D4F67B00446D65 /* Default-568h@2x.png in Resources */,
@@ -2720,6 +2727,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7C43329D1D4D43FC0033687C /* Default@2x.png in Resources */,
+				1F9A0B9127D7E2E800825064 /* include in Resources */,
 				7C4332B11D4D48220033687C /* csf_startup.enc in Resources */,
 				7C43329E1D4D43FC0033687C /* Default.png in Resources */,
 				7C43329F1D4D43FC0033687C /* InfoPlist.strings in Resources */,
@@ -2747,6 +2755,7 @@
 				7C4333CA1D4D49450033687C /* Icon-Small@2x.png in Resources */,
 				7C4333CB1D4D49450033687C /* Icon-Small.png in Resources */,
 				7C4333CC1D4D49450033687C /* Icon-Small-50.png in Resources */,
+				1F9A0B9227D7E2E800825064 /* include in Resources */,
 				7C4333D71D4D4A250033687C /* ezjet_startup.enc in Resources */,
 				7C4333CD1D4D49450033687C /* Icon-72@2x.png in Resources */,
 				7C4333CE1D4D49450033687C /* Icon-72.png in Resources */,
@@ -2766,6 +2775,7 @@
 				7C4D6E961D5111A400D34AC4 /* Icon-Small@2x.png in Resources */,
 				7C4D6E971D5111A400D34AC4 /* Icon-Small.png in Resources */,
 				7C4D6E981D5111A400D34AC4 /* Icon-Small-50.png in Resources */,
+				1F9A0B9327D7E2E800825064 /* include in Resources */,
 				7C4D6EA61D51144000D34AC4 /* afalert_startup.enc in Resources */,
 				7C4D6E9A1D5111A400D34AC4 /* Icon-72@2x.png in Resources */,
 				7C4D6E9B1D5111A400D34AC4 /* Icon-72.png in Resources */,
@@ -2785,6 +2795,7 @@
 				7CB671C41F9484C5001FFADF /* Icon.png in Resources */,
 				7CB671C51F9484C5001FFADF /* Icon-Small@2x.png in Resources */,
 				7CB671C61F9484C5001FFADF /* Icon-Small.png in Resources */,
+				1F9A0B9427D7E2E800825064 /* include in Resources */,
 				7CB671C71F9484C5001FFADF /* Icon-Small-50.png in Resources */,
 				7CB671C81F9484C5001FFADF /* Icon-72@2x.png in Resources */,
 				7CB671C91F9484C5001FFADF /* Icon-72.png in Resources */,
@@ -4200,6 +4211,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -4213,6 +4225,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -4245,7 +4258,11 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					$SRCROOT/../../include,
+					$SRCROOT/../../../numrec/include,
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = iQuIP;
 				RUN_CLANG_STATIC_ANALYZER = NO;
@@ -4258,6 +4275,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -4271,6 +4289,7 @@
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -4292,7 +4311,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
 				"HEADER_SEARCH_PATHS[sdk=iphoneos*]" = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PRODUCT_NAME = iQuIP;
 				RUN_CLANG_STATIC_ANALYZER = NO;
@@ -4321,7 +4340,7 @@
 					../../libsrc/vectree,
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/iQuIP/iQuIP-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = "";
 				"OTHER_CFLAGS[arch=*]" = (
 					"-DBUILD_FOR_IOS",
@@ -4352,7 +4371,7 @@
 					../../libsrc/vectree,
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/iQuIP/iQuIP-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = "";
 				"OTHER_CFLAGS[arch=*]" = (
 					"-DBUILD_FOR_IOS",
@@ -4389,7 +4408,7 @@
 					../../libsrc/vectree,
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/iQuIP/iQuIP-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = "";
 				"OTHER_CFLAGS[arch=*]" = (
 					"-DBUILD_FOR_IOS",
@@ -4430,7 +4449,7 @@
 					../../libsrc/vectree,
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/iQuIP/iQuIP-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CFLAGS = "";
 				"OTHER_CFLAGS[arch=*]" = (
@@ -4463,7 +4482,7 @@
 					../../../numrec/include,
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/iQuIP/iQuIP-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = "";
 				"OTHER_CFLAGS[arch=*]" = (
 					"-DBUILD_FOR_IOS",
@@ -4493,7 +4512,7 @@
 					../../../numrec/include,
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/iQuIP/iQuIP-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = "";
 				"OTHER_CFLAGS[arch=*]" = (
 					"-DBUILD_FOR_IOS",
@@ -4518,7 +4537,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iQuIP/iQuIP-Prefix.pch";
 				INFOPLIST_FILE = "AFalert-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = "";
 				"OTHER_CFLAGS[arch=*]" = (
 					"-DBUILD_FOR_IOS",
@@ -4542,7 +4561,7 @@
 				GCC_PREFIX_HEADER = "iQuIP/iQuIP-Prefix.pch";
 				"HEADER_SEARCH_PATHS[arch=*]" = ../../include;
 				INFOPLIST_FILE = "AFalert-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = "";
 				"OTHER_CFLAGS[arch=*]" = (
 					"-DBUILD_FOR_IOS",
@@ -4568,7 +4587,7 @@
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = NO;
 				GCC_WARN_UNUSED_LABEL = YES;
 				INFOPLIST_FILE = "CSF copy-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = "";
 				"OTHER_CFLAGS[arch=*]" = (
 					"-DBUILD_FOR_IOS",
@@ -4599,7 +4618,7 @@
 					../../../numrec/include,
 				);
 				INFOPLIST_FILE = "CSF copy-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CFLAGS = "";
 				"OTHER_CFLAGS[arch=*]" = (

@@ -209,6 +209,7 @@ static Visual *_GetSpecifiedVisual(QSP_ARG_DECL  Disp_Obj * dop, int depth )
 
 	XVisualInfo *vi_p;
 	Visual *vis_p;
+fprintf(stderr,"GetSpecifiedVisual:  requested depth = %d\n",depth);
 	GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, depth, GLX_DOUBLEBUFFER, None };
 	vi_p = glXChooseVisual(DO_DISPLAY(dop),0,att);
 	if( vi_p == NULL ){

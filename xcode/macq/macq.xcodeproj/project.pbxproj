@@ -161,7 +161,6 @@
 		71CE755D17E59B1600D93DE7 /* mlfit.c in Sources */ = {isa = PBXBuildFile; fileRef = 71CE755717E59B1600D93DE7 /* mlfit.c */; };
 		71CE756017E59B1600D93DE7 /* stc_edit.c in Sources */ = {isa = PBXBuildFile; fileRef = 71CE755A17E59B1600D93DE7 /* stc_edit.c */; };
 		71CE756117E59B1600D93DE7 /* weibull.c in Sources */ = {isa = PBXBuildFile; fileRef = 71CE755B17E59B1600D93DE7 /* weibull.c */; };
-		71CE756217E59B1600D93DE7 /* xvalmenu.c in Sources */ = {isa = PBXBuildFile; fileRef = 71CE755C17E59B1600D93DE7 /* xvalmenu.c */; };
 		71CE756417E59B2700D93DE7 /* exp.c in Sources */ = {isa = PBXBuildFile; fileRef = 71CE756317E59B2700D93DE7 /* exp.c */; };
 		71CE756717E59B3B00D93DE7 /* stair.c in Sources */ = {isa = PBXBuildFile; fileRef = 71CE756517E59B3B00D93DE7 /* stair.c */; };
 		71CE756817E59B3B00D93DE7 /* stc_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 71CE756617E59B3B00D93DE7 /* stc_menu.c */; };
@@ -551,7 +550,6 @@
 		7CE62E131DCD5CAF000FED59 /* mlfit.c in Sources */ = {isa = PBXBuildFile; fileRef = 71CE755717E59B1600D93DE7 /* mlfit.c */; };
 		7CE62E151DCD5CB6000FED59 /* stc_edit.c in Sources */ = {isa = PBXBuildFile; fileRef = 71CE755A17E59B1600D93DE7 /* stc_edit.c */; };
 		7CE62E161DCD5CBB000FED59 /* weibull.c in Sources */ = {isa = PBXBuildFile; fileRef = 71CE755B17E59B1600D93DE7 /* weibull.c */; };
-		7CE62E171DCD5CBE000FED59 /* xvalmenu.c in Sources */ = {isa = PBXBuildFile; fileRef = 71CE755C17E59B1600D93DE7 /* xvalmenu.c */; };
 		7CE62E181DCD5CC2000FED59 /* asc_data.c in Sources */ = {isa = PBXBuildFile; fileRef = 71CE754D17E59B0300D93DE7 /* asc_data.c */; };
 		7CE62E1A1DCD5CCA000FED59 /* errbars.c in Sources */ = {isa = PBXBuildFile; fileRef = 71CE754F17E59B0300D93DE7 /* errbars.c */; };
 		7CE62E1B1DCD5CCE000FED59 /* lookmenu.c in Sources */ = {isa = PBXBuildFile; fileRef = 71CE755017E59B0300D93DE7 /* lookmenu.c */; };
@@ -749,7 +747,6 @@
 		71CE755717E59B1600D93DE7 /* mlfit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mlfit.c; sourceTree = "<group>"; };
 		71CE755A17E59B1600D93DE7 /* stc_edit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stc_edit.c; sourceTree = "<group>"; };
 		71CE755B17E59B1600D93DE7 /* weibull.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = weibull.c; sourceTree = "<group>"; };
-		71CE755C17E59B1600D93DE7 /* xvalmenu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = xvalmenu.c; sourceTree = "<group>"; };
 		71CE756317E59B2700D93DE7 /* exp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = exp.c; sourceTree = "<group>"; };
 		71CE756517E59B3B00D93DE7 /* stair.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stair.c; sourceTree = "<group>"; };
 		71CE756617E59B3B00D93DE7 /* stc_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stc_menu.c; sourceTree = "<group>"; };
@@ -1274,7 +1271,6 @@
 				71CE755717E59B1600D93DE7 /* mlfit.c */,
 				71CE755A17E59B1600D93DE7 /* stc_edit.c */,
 				71CE755B17E59B1600D93DE7 /* weibull.c */,
-				71CE755C17E59B1600D93DE7 /* xvalmenu.c */,
 				71CE754D17E59B0300D93DE7 /* asc_data.c */,
 				71CE754F17E59B0300D93DE7 /* errbars.c */,
 				71CE755017E59B0300D93DE7 /* lookmenu.c */,
@@ -1526,6 +1522,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 71AC49C817E000A300AABB78;
@@ -1774,7 +1771,6 @@
 				71CE755D17E59B1600D93DE7 /* mlfit.c in Sources */,
 				71CE756017E59B1600D93DE7 /* stc_edit.c in Sources */,
 				71CE756117E59B1600D93DE7 /* weibull.c in Sources */,
-				71CE756217E59B1600D93DE7 /* xvalmenu.c in Sources */,
 				71CE756417E59B2700D93DE7 /* exp.c in Sources */,
 				71CE756717E59B3B00D93DE7 /* stair.c in Sources */,
 				71CE756817E59B3B00D93DE7 /* stc_menu.c in Sources */,
@@ -1871,7 +1867,6 @@
 				7CE62D631DCD3008000FED59 /* index.c in Sources */,
 				7CE62DC21DCD33A6000FED59 /* pointer.c in Sources */,
 				7CE62D741DCD3067000FED59 /* vectbl.c in Sources */,
-				7CE62E171DCD5CBE000FED59 /* xvalmenu.c in Sources */,
 				7CE62D291DCD0BEE000FED59 /* which1.c in Sources */,
 				7CE62D1B1DCD08A3000FED59 /* ocl.c in Sources */,
 				7CE62DC11DCD33A2000FED59 /* opt_tree.c in Sources */,
