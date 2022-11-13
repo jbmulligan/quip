@@ -649,11 +649,14 @@ COMMAND_FUNC( do_view_menu )
 		 * So perhaps the objection given above is no longer relevant?
 		 */
 
+fprintf(stderr,"do_view_menu:  calling window_sys_init...\n");
 		window_sys_init(SINGLE_QSP_ARG);
 
+fprintf(stderr,"do_view_menu:  calling init_viewer_genwin...\n");
 		/* genwin support */
 		init_viewer_genwin();	
 
+fprintf(stderr,"do_view_menu:  ready!\n");
 		inited=1;
 	}
 

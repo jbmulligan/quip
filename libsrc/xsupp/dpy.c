@@ -84,6 +84,7 @@ fprintf(stderr,"Calling XOpenDisplay...\n");
 		del_disp_obj(dop);
 		return(-1);
 	}
+fprintf(stderr,"XOpenDisplay opened the display.\n");
 	return(0);
 }
 
@@ -210,7 +211,14 @@ static Visual *_GetSpecifiedVisual(QSP_ARG_DECL  Disp_Obj * dop, int depth )
 	XVisualInfo *vi_p;
 	Visual *vis_p;
 	GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, depth, GLX_DOUBLEBUFFER, None };
+if( depth == 24 ){
+fprintf(stderr,"GetSpecifiedVisual:  changing bit depth 24 to 32...\n");
+	depth=32;
+}
+
+fprintf(stderr,"Calling glXChooseVisual...\n");
 	vi_p = glXChooseVisual(DO_DISPLAY(dop),0,att);
+fprintf(stderr,"back from glXChooseVisual...\n");
 	if( vi_p == NULL ){
 		error1("glXChooseVisual failed!?");
 	}
@@ -316,7 +324,9 @@ static int _dop_setup( QSP_ARG_DECL   Disp_Obj *dop, int desired_depth)
 #ifdef HAVE_OPENGL
 // This is per-display instead of per-viewer because it just depends on the visual
 // use XGLMakeCurrent to select a window...
+fprintf(stderr,"dop_setup:  calling SET_DO_OGL_CTX\n");
 	SET_DO_OGL_CTX(dop, NULL);
+fprintf(stderr,"dop_setup:  back from SET_DO_OGL_CTX\n");
 #endif /* HAVE_OPENGL */
 
 #ifdef QUIP_DEBUG
@@ -335,6 +345,7 @@ sprintf(ERROR_STRING,"desired depth is %d",desired_depth);
 advise(ERROR_STRING);
 	}
 
+fprintf(stderr,"desired_depth = %d\n",desired_depth);
 	if( desired_depth == 8 ){
 		SET_DO_VISUAL(dop, GetEightBitVisual(dop) );
 	} else if( desired_depth == 24 ){
@@ -346,6 +357,7 @@ advise(ERROR_STRING);
 	} else {
 		SET_DO_VISUAL(dop, DefaultVisual(DO_DISPLAY(dop),DO_SCREEN(dop)) );
 	}
+fprintf(stderr,"visual set.\n");
 
 	if( DO_VISUAL(dop) == 0 ){
 		if( verbose )
@@ -454,12 +466,14 @@ Disp_Obj *_open_display(QSP_ARG_DECL  const char *name,int desired_depth)
 		return(NULL);
 	}
 
+fprintf(stderr,"open_display calling dop_setup\n");
 	if( dop_setup(dop,desired_depth) < 0 ){
 		/* Bug - XCloseDisplay?? */
 		/* need to destroy object here */
 		del_disp_obj(dop);
 		return(NULL);
 	}
+fprintf(stderr,"open_display back from dop_setup\n");
 	set_display(dop);
 
 	if( ! siz_done ){
@@ -543,6 +557,7 @@ static Disp_Obj * default_x_display(SINGLE_QSP_ARG_DECL)
 	dop = disp_obj_of(dname);
 	if( dop != NULL ) return(dop);
 
+fprintf(stderr,"default_x_display:  calling check_for_desired_depth...\n");
 	dop = check_for_desired_depth(dname);
 	if( dop != NULL ) return dop;
 
@@ -777,7 +792,9 @@ void window_sys_init(SINGLE_QSP_ARG_DECL)
 	window_sys_inited=1;
 
 	if( current_dop == NULL ){
+fprintf(stderr,"window_sys_init calling default_x_display\n");
 		current_dop = default_x_display(SINGLE_QSP_ARG);
+fprintf(stderr,"window_sys_init back from default_x_display\n");
 		if( current_dop == NULL ){
 			warn("Couldn't open default display!?");
 			return;
