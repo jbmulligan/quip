@@ -12,7 +12,7 @@
 #else
 
 #./configure --enable-thread-safe-query --enable-n-processors=16
-./configure --enable-thread-safe-query --enable-n-processors=16 --disable-spinnaker
+./configure --disable-avi --enable-thread-safe-query --enable-n-processors=16 --disable-spinnaker
 
 #endif
 

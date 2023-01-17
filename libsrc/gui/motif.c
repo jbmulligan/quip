@@ -258,7 +258,7 @@ void make_panel(QSP_ARG_DECL  Panel_Obj *po,int width,int height)
 	XtSetArg(al[ac], XmNwidth, width); ac++;
 	XtSetArg(al[ac], XmNheight, height); ac++;
 
-//fprintf(stderr,"make_panel calling XtAppCreateShell\n");
+fprintf(stderr,"make_panel calling XtAppCreateShell\n");
 	po->po_frame_obj = (Widget) XtAppCreateShell(PO_NAME(po), "guimenu",
 				applicationShellWidgetClass, display,
 				al, ac);
@@ -267,16 +267,17 @@ void make_panel(QSP_ARG_DECL  Panel_Obj *po,int width,int height)
 		error1("error creating frame");
 
 	ac = 0;
-//fprintf(stderr,"make_panel calling XmNautoUnmanage\n");
+fprintf(stderr,"make_panel calling XmNautoUnmanage\n");
 	XtSetArg(al[ac], XmNautoUnmanage, FALSE); ac++;
-//fprintf(stderr,"make_panel calling XmCreateForm\n");
+fprintf(stderr,"make_panel calling XmCreateForm\n");
 	po->po_panel_obj = XmCreateForm(po->po_frame_obj, (String) NULL,
 				al, ac);
+fprintf(stderr,"make_panel back from XmCreateForm\n");
 
 	if( (Widget) po->po_panel_obj == (Widget) NULL )
 		error1("error creating panel");
 
-//fprintf(stderr,"make_panel calling XtDisplay\n");
+fprintf(stderr,"make_panel calling XtDisplay\n");
 	po->po_dpy = XtDisplay(po->po_frame_obj);
 	po->po_screen_no = DefaultScreen(po->po_dpy);
 	po->po_gc = DefaultGC(po->po_dpy,DefaultScreen(po->po_dpy));
@@ -286,7 +287,7 @@ void make_panel(QSP_ARG_DECL  Panel_Obj *po,int width,int height)
 	po->po_realized = 0;
 	/* po->po_flags = 0; */		/* the caller did this already... */
 
-//fprintf(stderr,"make_panel calling XtManageChild\n");
+fprintf(stderr,"make_panel calling XtManageChild\n");
 	XtManageChild(po->po_panel_obj);
 
 	/* XXX unsupported until I figure this out */
@@ -296,7 +297,7 @@ void make_panel(QSP_ARG_DECL  Panel_Obj *po,int width,int height)
 	/* po->po_xwin = po->po_panel_obj->core.window; */
 
 	po->po_xwin = XtWindow( po->po_panel_obj );
-//fprintf(stderr,"XtWindow returned 0x%lx\n",(long)po->po_xwin);
+fprintf(stderr,"XtWindow returned 0x%lx\n",(long)po->po_xwin);
 
 #endif /* HAVE_MOTIF */
 
