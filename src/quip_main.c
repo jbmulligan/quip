@@ -92,6 +92,10 @@ ADD_CMD(	cuda,		do_cuda_menu,	nVidia CUDA submenu)
 ADD_CMD(	pic,		do_pic_menu,	Microchip PIC submenu )
 #endif /* HAVE_PIC */
 
+#ifdef OPTIK
+ADD_CMD(	optik,		do_optik_menu,	optics ray-tracing submenu )
+#endif /* STEPIT */
+
 #ifdef STEPIT
 ADD_CMD(	stepit,		do_step_menu,	stepit submenu )
 #endif /* STEPIT */
