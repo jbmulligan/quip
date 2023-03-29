@@ -14,6 +14,10 @@
 #include "polh_menu.h"	// do_polh
 #include "query_stack.h"	// BUG?  elim dependency...
 
+#ifdef HAVE_OPTIK
+#include "optik_menu.h"
+#endif /* HAVE_OPTIK */
+
 #ifdef HAVE_CUDA
 #include "cuda_api.h"
 #endif /* HAVE_CUDA */
@@ -92,9 +96,9 @@ ADD_CMD(	cuda,		do_cuda_menu,	nVidia CUDA submenu)
 ADD_CMD(	pic,		do_pic_menu,	Microchip PIC submenu )
 #endif /* HAVE_PIC */
 
-#ifdef OPTIK
+#ifdef HAVE_OPTIK
 ADD_CMD(	optik,		do_optik_menu,	optics ray-tracing submenu )
-#endif /* STEPIT */
+#endif /* HAVE_OPTIK */
 
 #ifdef STEPIT
 ADD_CMD(	stepit,		do_step_menu,	stepit submenu )

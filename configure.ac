@@ -1226,6 +1226,10 @@ if test "x${use_fileio}" = xyes; then
   AC_SEARCH_LIBS([BZ2_bzDecompressInit],[bz2],[have_libbz2=yes],[have_libbz2=no])
 fi
 
+if test "x${use_optik}" = xyes; then
+  AC_SEARCH_LIBS([do_optik_menu],[optik],[have_optik=yes],[have_optik=no])
+fi
+
 if test "x${use_ncurses}" = xyes; then
   AC_SEARCH_LIBS([initscr],[ncurses],[have_ncurses=yes],[have_ncurses=no])
 fi
@@ -2201,10 +2205,6 @@ if test "x${use_stepit}" = xyes; then
   AC_DEFINE([STEPIT], 1, [STEPIT optimization enabled])
 fi
 
-if test "x${use_optik}" = xyes; then
-  AC_DEFINE([OPTIK], 1, [optics ray-tracing enabled])
-fi
-
 if test "x${have_sound}" = xyes; then
   AC_DEFINE([HAVE_SOUND], 1, [Sound support enabled])
   if test "x${have_portaudio}" = xyes; then
@@ -2403,6 +2403,10 @@ fi
 
 if test "x${have_ncurses}" = xyes; then
   AC_DEFINE([HAVE_NCURSES], 1, [Screen drawing with ncurses])
+fi
+
+if test "x${have_optik}" = xyes; then
+  AC_DEFINE([HAVE_OPTIK], 1, [optics ray-tracing enabled])
 fi
 
 if test "x${have_pthreads}" = xyes; then
@@ -2614,6 +2618,16 @@ if test "x${have_ncurses}" != xyes; then
 ------------------------------------------
 Unable to find ncurses library.
 Building without ncurses support.
+------------------------------------------])
+  fi
+fi
+
+if test "x${have_optik}" != xyes; then
+  if test "x${use_optik}" = xyes; then
+    AC_MSG_WARN([
+------------------------------------------
+Unable to find optik library.
+Building without optik support.
 ------------------------------------------])
   fi
 fi
