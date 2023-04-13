@@ -1,66 +1,74 @@
-<html lang="en">
+<!DOCTYPE html>
+<html>
+<!-- Created by GNU Texinfo 7.0.3, https://www.gnu.org/software/texinfo/ -->
 <head>
-<title>First steps - QuIP Manual</title>
-<meta http-equiv="Content-Type" content="text/html">
-<meta name="description" content="QuIP Manual">
-<meta name="generator" content="makeinfo 4.8">
-<link title="Top" rel="start" href="index.html#Top">
-<link rel="up" href="Overview.html#Overview" title="Overview">
-<link rel="prev" href="History.html#History" title="History">
-<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
-<meta http-equiv="Content-Style-Type" content="text/css">
-<style type="text/css"><!--
-  pre.display { font-family:inherit }
-  pre.format  { font-family:inherit }
-  pre.smalldisplay { font-family:inherit; font-size:smaller }
-  pre.smallformat  { font-family:inherit; font-size:smaller }
-  pre.smallexample { font-size:smaller }
-  pre.smalllisp    { font-size:smaller }
-  span.sc    { font-variant:small-caps }
-  span.roman { font-family:serif; font-weight:normal; } 
-  span.sansserif { font-family:sans-serif; font-weight:normal; } 
---></style>
-</head>
-<body>
-<div class="node">
-<p>
-<a name="First-steps"></a>
-Previous:&nbsp;<a rel="previous" accesskey="p" href="History.html#History">History</a>,
-Up:&nbsp;<a rel="up" accesskey="u" href="Overview.html#Overview">Overview</a>
-<hr>
-</div>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>First steps (QuIP Manual)</title>
 
-<h3 class="section">1.2 First steps</h3>
+<meta name="description" content="First steps (QuIP Manual)">
+<meta name="keywords" content="First steps (QuIP Manual)">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="index.html" rel="start" title="Top">
+<link href="QuIPindex.html" rel="index" title="QuIPindex">
+<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
+<link href="Overview.html" rel="up" title="Overview">
+<link href="History.html" rel="prev" title="History">
+<style type="text/css">
+<!--
+kbd.kbd {font-style: oblique}
+kbd.key {font-style: normal}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<div class="section-level-extent" id="First-steps">
+<div class="nav-panel">
+<p>
+Previous: <a href="History.html" accesskey="p" rel="prev">History</a>, Up: <a href="Overview.html" accesskey="u" rel="up">Overview</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="QuIPindex.html" title="Index" rel="index">Index</a>]</p>
+</div>
+<hr>
+<h3 class="section" id="First-steps-1">1.2 First steps</h3>
 
 <p>Here we present the simplest possible QuIP script.  Invoke QuIP by typing
-'quip' at your command shell prompt.  (QuIP command prompts typically end
-with the string '&gt; '; the top level prompt is 'quip&gt; '.) 
-Characters typed by the user are appear as <kbd>user_input</kbd>.
-
-<p>quip&gt;  <kbd>echo "Hello world" &lt;RET&gt;</kbd> <br>
+&rsquo;quip&rsquo; at your command shell prompt.  (QuIP command prompts typically end
+with the string &rsquo;&gt; &rsquo;; the top level prompt is &rsquo;quip&gt; &rsquo;.)
+Characters typed by the user are appear as <kbd class="kbd">user_input</kbd>.
+</p>
+<p>quip&gt;  <kbd class="kbd">echo &quot;Hello world&quot; <kbd class="key">RET</kbd></kbd> <br>
 Hello world <br>
 quip&gt;
-
-<p>If you type this example in, you might notice that after the first 'e' is typed,
-the interpreter completes the word 'expressions', but that the
-completion disappears as soon as the following 'c' is typed.
-
+</p>
+<p>If you type this example in, you might notice that after the first &rsquo;e&rsquo; is typed,
+the interpreter completes the word &rsquo;expressions&rsquo;, but that the
+completion disappears as soon as the following &rsquo;c&rsquo; is typed.
+</p>
 <p>Here is a slightly longer version:
-
-<p>quip&gt; <kbd>view &lt;RET&gt;</kbd> <br>
-quip/view&gt; <kbd>viewers &lt;RET&gt;</kbd> <br>
-quip/view/viewers&gt; <kbd> new v 300 100 &lt;RET&gt;</kbd> <br>
-quip/view/viewers&gt; <kbd> quit &lt;RET&gt;</kbd> <br>
-quip/view&gt; <kbd> draw v &lt;RET&gt;</kbd> <br>
-quip/view/draw&gt; <kbd> string "Hello world" 20 20 &lt;RET&gt;</kbd> <br>
-quip/view/draw&gt; <kbd> quit &lt;RET&gt;</kbd> <br>
-quip/view&gt; <kbd> quit &lt;RET&gt;</kbd> <br>
+</p>
+<p>quip&gt; <kbd class="kbd">view <kbd class="key">RET</kbd></kbd> <br>
+quip/view&gt; <kbd class="kbd">viewers <kbd class="key">RET</kbd></kbd> <br>
+quip/view/viewers&gt; <kbd class="kbd"> new v 300 100 <kbd class="key">RET</kbd></kbd> <br>
+quip/view/viewers&gt; <kbd class="kbd"> quit <kbd class="key">RET</kbd></kbd> <br>
+quip/view&gt; <kbd class="kbd"> draw v <kbd class="key">RET</kbd></kbd> <br>
+quip/view/draw&gt; <kbd class="kbd"> string &quot;Hello world&quot; 20 20 <kbd class="key">RET</kbd></kbd> <br>
+quip/view/draw&gt; <kbd class="kbd"> quit <kbd class="key">RET</kbd></kbd> <br>
+quip/view&gt; <kbd class="kbd"> quit <kbd class="key">RET</kbd></kbd> <br>
 quip&gt;
-
-<p>The first command <code>view</code> causes the interpreter to enter a submenu,
+</p>
+<p>The first command <code class="code">view</code> causes the interpreter to enter a submenu,
 which is reflected in the prompt.  By convention, submenus are exited
-with the <code>quit</code> command.
+with the <code class="code">quit</code> command.
+</p>
 
-<!-- CHAPTER 2 - COMMAND LANGUAGE -->
-</body></html>
+</div>
 
+
+
+</body>
+</html>

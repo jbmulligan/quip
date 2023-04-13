@@ -358,16 +358,11 @@ if test "x${minimal_build}" = xyes; then
 	use_dv=no
 fi
 
-# a hack to get around the fact that jbm is not allowed to administer his own machines...
-AC_CHECK_FILE([/home/ardent/jbm/inst/usr/local/lib],[LDFLAGS="$LDFLAGS -L/home/ardent/jbm/inst/usr/local/lib"],[])
-AC_CHECK_FILE([/home/ardent/jbm/inst/usr/local/include],[CFLAGS="$CFLAGS -I/home/ardent/jbm/inst/usr/local/include"],[])
+AC_CHECK_FILE([/opt/homebrew/include],[CFLAGS="$CFLAGS -I/opt/homebrew/include"],[])
+AC_CHECK_FILE([/usr/local/include],[CFLAGS="$CFLAGS -I/usr/local/include"],[])
 
-AC_CHECK_FILE([/home/craik/jbm/inst/usr/local/lib],[LDFLAGS="$LDFLAGS -L/home/craik/jbm/inst/usr/local/lib"],[])
-AC_CHECK_FILE([/home/craik/jbm/inst/usr/local/include],[CFLAGS="$CFLAGS -I/home/craik/jbm/inst/usr/local/include"],[])
-
-
-AC_CHECK_FILE([/Users/jmulliga/inst/usr/local/lib],[LDFLAGS="$LDFLAGS -L/Users/jmulliga/inst/usr/local/lib"],[])
-AC_CHECK_FILE([/Users/jmulliga/inst/usr/local/include],[CFLAGS="$CFLAGS -I/Users/jmulliga/inst/usr/local/include"],[])
+AC_CHECK_FILE([/opt/homebrew/lib],[LDFLAGS="$LDFLAGS -L/opt/homebrew/lib"])
+AC_CHECK_FILE([/usr/local/lib],[LDFLAGS="$LDFLAGS -L/usr/local/lib"])
 
 #################################################
 #
