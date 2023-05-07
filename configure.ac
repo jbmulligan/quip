@@ -102,6 +102,11 @@ AC_ARG_ENABLE([use-visca],
 	[AS_HELP_STRING([--disable-visca],[disable Sony VISCA protocol support @<:@default: no@:>@])],
 	[ use_visca=${enableval}], [use_visca=yes])
 
+# Enable optik by default:
+AC_ARG_ENABLE([use-optik],
+	[AS_HELP_STRING([--disable-optik],[disable optics ray-tracing support @<:@default: no@:>@])],
+	[ use_optik=${enableval}], [use_optik=yes])
+
 
 # Enable fb_dev by default:
 AC_ARG_ENABLE([use-fb-dev],
@@ -224,6 +229,15 @@ if test "x$os_is_darwin" == xno; then
 fi
 
 
+# Enable metal by default - but only for Mac!:
+AC_ARG_ENABLE([use-metal],
+	[AS_HELP_STRING([--disable-metal],[disable GPU operations with Metal @<:@default: no@:>@])],
+	[ use_metal=${enableval}], [use_metal=yes])
+if test "x$os_is_darwin" == xno; then
+  use_metal=no
+fi
+
+
 # Metal seems to only work with objective C, so we can't test for it
 # with a regular C program...
 ## Enable metal by default:
@@ -323,6 +337,7 @@ if test "x${minimal_build}" = xyes; then
 	use_meteor=no
 	use_das1602=no
 	use_visca=no
+	use_optik=no
 	use_fb_dev=no
 	use_knox=no
 	use_pic=no
@@ -342,7 +357,7 @@ if test "x${minimal_build}" = xyes; then
 	use_avi=no
 	use_cuda=no
 	use_opencl=no
-#	use_metal=no
+	use_metal=no
 	use_x11=no
 	use_gsl=no
 	use_pthreads=no
@@ -516,11 +531,11 @@ fi
 #
 ## how to do this on Mac?
 ## until we figure this out, we enable by default...
-#
-#if test "x${use_metal}" = xyes; then
-#  have_libmetal=yes
-#fi
-#
+
+if test "x${use_metal}" = xyes; then
+  have_libmetal=yes
+fi
+
 ##################################################
 
 #AC_CHECK_FILE([/sw/lib],[LDFLAGS="$LDFLAGS -L/sw/lib"])
@@ -1172,6 +1187,10 @@ if test "x${use_matio}" = xyes; then
 fi
 
 if test "x${use_opencl}" = xyes; then
+  AC_SEARCH_LIBS([clfftSetup],[clFFT],[have_clfft=yes],[have_clfft=no])
+fi
+
+if test "x${use_opencl}" = xyes; then
 # On pavlov w/ 2.8, we need clfftSetup
   AC_SEARCH_LIBS([clfftSetup],[clFFT],[have_clfft=yes],[have_clfft=no])
 #  AC_SEARCH_LIBS([clfftInitSetupData],[clFFT],[have_clfft=yes],[have_clfft=no])
@@ -1211,6 +1230,10 @@ if test "x${use_avi}" = xyes; then
   #have_libavutil=no
   #AC_SEARCH_LIBS([av_open_input_file],[avutil],[have_libavutil=yes])
   AC_SEARCH_LIBS([BZ2_bzDecompressInit],[bz2],[have_libbz2=yes],[have_libbz2=no])
+fi
+
+if test "x${use_optik}" = xyes; then
+  AC_SEARCH_LIBS([do_optik_menu],[optik],[have_optik=yes],[have_optik=no])
 fi
 
 if test "x${use_ncurses}" = xyes; then
@@ -1281,11 +1304,6 @@ fi
 if test "x${use_opencl}" = xyes; then
   # opencl libraries
   # On mac, this is not in user lib, rather it's included with a -framework option!?
-  # EOF
-  #AC_SEARCH_LIBS([cudaUnbindTexture],[cudart],[have_libcudart=yes],[have_libcudart=no])
-  # If we have the cudart lib, then we can determine the compute
-  # capability of the device.
-  # what about linux?
   AC_MSG_CHECKING([for OpenCL])
   cat>ocl_test.c<<EOF
 #ifdef __APPLE__ //Mac OSX has a different name for the header file
@@ -1323,39 +1341,39 @@ EOF
 fi
 
 
-#if test "x${use_metal}" = xyes; then
-#  # metal libraries
-#  # On mac, this is not in user lib, rather it's included with a -framework option!?
-#  # EOF
-#  AC_MSG_CHECKING([for Metal])
-#  cat>mtl_test.c<<EOF
-##ifdef __APPLE__ //Mac OSX has a different name for the header file
-##include <Metal/Metal.h>
-##endif
-# 
-#  int main(int ac,char **av)
-#  {
-#  }
-#EOF
+if test "x${use_metal}" = xyes; then
+  # metal libraries
+  # On mac, this is not in user lib, rather it's included with a -framework option!?
+  # EOF
+  AC_MSG_CHECKING([for Metal])
+  cat>mtl_test.c<<EOF
+#ifdef __APPLE__ //Mac OSX has a different name for the header file
+#include <Metal/Metal.h>
+#endif
+ 
+  int main(int ac,char **av)
+  {
+  }
+EOF
 #  echo $CC $CPPFLAGS $LDFLAGS mtl_test.c $LIBS
-#  if $CC $CPPFLAGS $LDFLAGS mtl_test.c $LIBS 2> /tmp/mtl_errs # /dev/null
-#  then
-#    have_libmetal=yes
-#  else
-#    # try adding -framework option
-#    #AC_MSG_CHECKING([for OpenCL with -framework option])
-#    if $CC $CPPFLAGS $LDFLAGS -framework Metal mtl_test.c $LIBS 2> /dev/null
-#    then
-#      LDFLAGS="$LDFLAGS -framework Metal"
-#      have_libmetal=yes
-#      /bin/rm a.out
-#    else
-#      have_libmetal=no
-#    fi
-#  fi
-#  /bin/rm mtl_test.c
-#  echo $have_libmetal
-#fi
+  if $CC $CPPFLAGS $LDFLAGS mtl_test.c $LIBS 2> /tmp/mtl_errs # /dev/null
+  then
+    have_libmetal=yes
+  else
+    # try adding -framework option
+    AC_MSG_CHECKING([for Metal with -framework option])
+    if $CC $CPPFLAGS $LDFLAGS -framework Metal mtl_test.c $LIBS 2> /dev/null
+    then
+      LDFLAGS="$LDFLAGS -framework Metal"
+      have_libmetal=yes
+      /bin/rm a.out
+    else
+      have_libmetal=no
+    fi
+  fi
+  /bin/rm mtl_test.c
+  echo have_libmetal = $have_libmetal
+fi
 
 if test "x${use_cuda}" = xyes; then
   # cuda libraries
@@ -1575,6 +1593,10 @@ if test "x${use_opencl}" = xyes; then
   AC_CHECK_HEADERS([clFFT.h])
 fi
 
+if test "x${use_metal}" = xyes; then
+  AC_CHECK_HEADERS([Metal.h])
+fi
+
 if test "x${use_dv}" = xyes; then
   # libdv
   AC_CHECK_HEADERS([libdv/dv.h])
@@ -1747,6 +1769,7 @@ AC_CONFIG_FILES([Makefile
 		 libsrc/sound/Makefile
 		 libsrc/parport/Makefile
 		 libsrc/opencl/Makefile
+		 libsrc/metal/Makefile
 		 libsrc/opencl/Random123/Makefile
 		 libsrc/opencl/Random123/features/Makefile
 		 libsrc/cu2/Makefile
@@ -2150,6 +2173,19 @@ Building without OpenCL support.
   fi
 fi
 
+if test "x${use_metal}" = xyes; then
+  if test "x{$have_metal}" = xyes; then
+    AC_DEFINE([HAVE_METAL], 1, [GPU operations with Metal enabled])
+  else
+    AC_MSG_WARN([
+-------------------------------------------------
+Unable to find libmetal (although requested).
+Building without Metal support.
+-------------------------------------------------])
+  fi
+fi
+
+
 if test "x${use_history}" = xyes; then
   AC_DEFINE([HAVE_HISTORY], 1, [response history enabled])
 fi
@@ -2375,6 +2411,10 @@ if test "x${have_ncurses}" = xyes; then
   AC_DEFINE([HAVE_NCURSES], 1, [Screen drawing with ncurses])
 fi
 
+if test "x${have_optik}" = xyes; then
+  AC_DEFINE([HAVE_OPTIK], 1, [optics ray-tracing enabled])
+fi
+
 if test "x${have_pthreads}" = xyes; then
   AC_DEFINE([HAVE_PTHREADS], 1, [Multi-threading with pthreads])
 fi
@@ -2452,6 +2492,16 @@ if test "x${use_opencl}" = xyes; then
 ---------------------------------------------
 Unable to find OpenCL library.
 Building without OpenCL support...
+---------------------------------------------])
+  fi
+fi
+
+if test "x${use_metal}" = xyes; then
+  if test "x${have_libmetal}" = xno ;  then
+    AC_MSG_WARN([
+---------------------------------------------
+Unable to find Metal library.
+Building without Metal support...
 ---------------------------------------------])
   fi
 fi
@@ -2574,6 +2624,16 @@ if test "x${have_ncurses}" != xyes; then
 ------------------------------------------
 Unable to find ncurses library.
 Building without ncurses support.
+------------------------------------------])
+  fi
+fi
+
+if test "x${have_optik}" != xyes; then
+  if test "x${use_optik}" = xyes; then
+    AC_MSG_WARN([
+------------------------------------------
+Unable to find optik library.
+Building without optik support.
 ------------------------------------------])
   fi
 fi

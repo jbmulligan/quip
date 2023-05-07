@@ -12,7 +12,6 @@ struct node {
 
 extern void rls_node(Node *np);
 extern void init_node(Node *np,void* dp);
-//extern Node *nodeOf( struct list *lp, void * ip );
 
 #define NODE_DATA(np)		(np)->n_data
 #define SET_NODE_DATA(np,d)	(np)->n_data=d

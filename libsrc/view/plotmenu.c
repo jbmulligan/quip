@@ -538,9 +538,6 @@ ADD_CMD( plot,		do_rdplot,	interpret plot(5) file )
 ADD_CMD( dump,		do_dumpdraw,	dump viewer drawlist to stdout )
 ADD_CMD( info,		do_tell_plot_space, report plotting space )
 ADD_CMD( update,	do_update_plot,	force refresh of plot )
-#ifdef FOOBAR
-ADD_CMD( quit,		do_end_plot,	exit submenu )
-#endif /* FOOBAR */
 MENU_END(xplot)
 
 COMMAND_FUNC( do_xp_menu )
