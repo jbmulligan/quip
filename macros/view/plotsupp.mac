@@ -35,6 +35,7 @@ If var_exists(plotsupp_loaded) "warn 'plotsupp.mac already read!?' exit_macro"
 
 Set plotsupp_loaded 1
 Set margins_set 0
+Set n_x_custom_ticks 0
 
 # basic plotting macros
 
