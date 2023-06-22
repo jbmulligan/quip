@@ -211,7 +211,7 @@ AC_ARG_ENABLE([use-cautious],
 	[ use_cautious=${enableval}], [use_cautious=yes])
 
 # Enable avi support by default:
-AC_ARG_ENABLE([use-avi],
+AC_ARG_ENABLE([avi],
 	[AS_HELP_STRING([--disable-avi],[disable ffmpeg avi support @<:@default: no@:>@])],
 	[ use_avi=${enableval}], [use_avi=yes])
 
@@ -281,7 +281,7 @@ AC_ARG_ENABLE([use-fann],
 	[ use_fann=${enableval}], [use_fann=yes])
 
 # Enable fileio by default:
-AC_ARG_ENABLE([use-fileio],
+AC_ARG_ENABLE([fileio],
 	[AS_HELP_STRING([--disable-fileio],[disable support for image file I/O@<:@default: no@:>@])],
 	[ use_fileio=${enableval}], [use_fileio=yes])
 
@@ -373,16 +373,6 @@ if test "x${minimal_build}" = xyes; then
 	use_dv=no
 fi
 
-# a hack to get around the fact that jbm is not allowed to administer his own machines...
-AC_CHECK_FILE([/home/ardent/jbm/inst/usr/local/lib],[LDFLAGS="$LDFLAGS -L/home/ardent/jbm/inst/usr/local/lib"],[])
-AC_CHECK_FILE([/home/ardent/jbm/inst/usr/local/include],[CFLAGS="$CFLAGS -I/home/ardent/jbm/inst/usr/local/include"],[])
-
-AC_CHECK_FILE([/home/craik/jbm/inst/usr/local/lib],[LDFLAGS="$LDFLAGS -L/home/craik/jbm/inst/usr/local/lib"],[])
-AC_CHECK_FILE([/home/craik/jbm/inst/usr/local/include],[CFLAGS="$CFLAGS -I/home/craik/jbm/inst/usr/local/include"],[])
-
-
-AC_CHECK_FILE([/Users/jmulliga/inst/usr/local/lib],[LDFLAGS="$LDFLAGS -L/Users/jmulliga/inst/usr/local/lib"],[])
-AC_CHECK_FILE([/Users/jmulliga/inst/usr/local/include],[CFLAGS="$CFLAGS -I/Users/jmulliga/inst/usr/local/include"],[])
 
 #################################################
 #
@@ -502,6 +492,10 @@ if test "x${use_x11}" = xyes; then
   AC_CHECK_FILE([/opt/X11/include],[CPPFLAGS="$CPPFLAGS -I/opt/X11/include"])
 fi
 
+if test "x${use_motif_gui}" = xyes; then
+  AC_CHECK_FILE([/opt/brew/include],[CPPFLAGS="$CPPFLAGS -I/opt/brew/include"])
+fi
+
 if test "x${use_spinnaker}" = xyes; then
   # linux:  /usr/include/spinnaker
   # mac:  /usr/local/include/spinnaker
@@ -555,22 +549,30 @@ fi
 #  AC_CHECK_FILE([/sw/lib/ffmpeg-2.0/lib],[LDFLAGS="$LDFLAGS -L/sw/lib/ffmpeg-2.0/lib"])
 #fi
 
+# hack for Silverhawk???
+AC_CHECK_FILE([/opt/brew/opt/mesa/lib],[LDFLAGS="$LDFLAGS -L/opt/brew/opt/mesa/lib"])
+
 # this is for Ubuntu...
 AC_CHECK_FILE([/usr/lib/x86_64-linux-gnu],[LDFLAGS="$LDFLAGS -L/usr/lib/x86_64-linux-gnu"])
 
 AC_CHECK_FILE([/usr/lib64],[LDFLAGS="$LDFLAGS -L/usr/lib64"])
 AC_CHECK_FILE([/usr/local/lib],[LDFLAGS="$LDFLAGS -L/usr/local/lib"])
 AC_CHECK_FILE([/usr/local/include],[CPPFLAGS="$CPPFLAGS -I/usr/local/include"])
-AC_CHECK_FILE([/usr/include/ffmpeg],[CPPFLAGS="$CPPFLAGS -I/usr/include/ffmpeg"])
 #AC_CHECK_FILE([/sw/lib/ffmpeg-1.2/include],[CPPFLAGS="$CPPFLAGS -I/sw/lib/ffmpeg-1.2/include"])
 
 # ffmpeg headers may be installed under /usr/include OR /usr/include/ffmpeg...
 AC_CHECK_FILE([/usr/include/ffmpeg],[CPPFLAGS="$CPPFLAGS -I/usr/include/ffmpeg"])
+# OR - /opt/brew!?
+AC_CHECK_FILE([/opt/brew/include/ffmpeg],[CPPFLAGS="$CPPFLAGS -I/opt/brew/include/ffmpeg"])
 
 if test "x${use_x11}" = xyes; then
   AC_CHECK_FILE([/usr/X11/lib],[LDFLAGS="$LDFLAGS -L/usr/X11/lib"])
   AC_CHECK_FILE([/usr/X11R6/lib],[LDFLAGS="$LDFLAGS -L/usr/X11R6/lib"])
   AC_CHECK_FILE([/opt/X11/lib],[LDFLAGS="$LDFLAGS -L/opt/X11/lib"])
+fi
+
+if test "x${use_motif_gui}" = xyes; then
+  AC_CHECK_FILE([/opt/brew/lib],[LDFLAGS="$LDFLAGS -L/opt/brew/lib"])
 fi
 
 if test "x${use_cuda}" = xyes; then
@@ -1208,6 +1210,10 @@ if test "x${use_fileio}" = xyes; then
   AC_SEARCH_LIBS([jpeg_start_decompress],[jpeg],[have_libjpeg=yes],[have_libjpeg=no])
 
   AC_SEARCH_LIBS([qt_read_scanlines],[qt],[have_libqt=yes],[have_libqt=no])
+  AC_SEARCH_LIBS([BZ2_bzDecompressInit],[bz2],[have_libbz2=yes],[have_libbz2=no])
+fi
+
+if test "x${use_avi}" = xyes; then
   AC_SEARCH_LIBS([av_crc],[avutil],[have_libavutil=yes],[have_libavutil=no])
   AC_SEARCH_LIBS([sws_scale],[swscale],[have_libswscale=yes],[have_libswscale=no])
   # with fink, libavformat is installed separately from lbiavcodec,

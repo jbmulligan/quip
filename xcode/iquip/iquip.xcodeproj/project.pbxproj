@@ -1557,6 +1557,7 @@
 
 /* Begin PBXFileReference section */
 		1F9A0B8F27D7E2E800825064 /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; name = include; path = ../../include; sourceTree = "<group>"; };
+		1F5F6EBF28811F6B0093DB11 /* quip_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = quip_config.h; path = ../include/quip_config.h; sourceTree = "<group>"; };
 		1FFBEEE922CEAD6A00318A39 /* CSF-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "CSF-Info.plist"; path = "xcode/iquip/CSF-Info.plist"; sourceTree = "<group>"; };
 		2299DE10196C6EF800844988 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		2299DE12196C6F2500844988 /* sched.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sched.c; sourceTree = "<group>"; };
@@ -2063,6 +2064,7 @@
 		7106ED1816004452006BF850 /* libsrc */ = {
 			isa = PBXGroup;
 			children = (
+				1F5F6EBF28811F6B0093DB11 /* quip_config.h */,
 				7CB44FF51D63EBFE00B6783F /* nrmenu */,
 				7CB44FF41D63E86200B6783F /* numrec */,
 				7C5940161BB512EB00F655B1 /* vl2 */,
@@ -4586,6 +4588,14 @@
 				GCC_PREFIX_HEADER = "iQuIP/iQuIP-Prefix.pch";
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = NO;
 				GCC_WARN_UNUSED_LABEL = YES;
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					"$(SRCROOT)/../../include",
+					../../../numrec/include,
+				);
+				"HEADER_SEARCH_PATHS[sdk=iphoneos*]" = (
+					"$(SRCROOT)/../../include",
+					../../../numrec/include,
+				);
 				INFOPLIST_FILE = "CSF copy-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LIBRARY_SEARCH_PATHS = "";
@@ -4614,6 +4624,10 @@
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = NO;
 				GCC_WARN_UNUSED_LABEL = YES;
 				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../include",
+					../../../numrec/include,
+				);
+				"HEADER_SEARCH_PATHS[arch=*]" = (
 					"$(SRCROOT)/../../include",
 					../../../numrec/include,
 				);

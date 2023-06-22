@@ -272,6 +272,7 @@ void make_panel(QSP_ARG_DECL  Panel_Obj *po,int width,int height)
 //fprintf(stderr,"make_panel calling XmCreateForm\n");
 	po->po_panel_obj = XmCreateForm(po->po_frame_obj, (String) NULL,
 				al, ac);
+//fprintf(stderr,"make_panel back from XmCreateForm\n");
 
 	if( (Widget) po->po_panel_obj == (Widget) NULL )
 		error1("error creating panel");
@@ -1769,13 +1770,13 @@ void _remove_nav_group(QSP_ARG_DECL  Nav_Group *ng_p)
 	// first remove the items
 	Item_Context *icp;
 
-fprintf(stderr,"remove_nav_group %s BEGIN\n",NAVGRP_NAME(ng_p));
+//fprintf(stderr,"remove_nav_group %s BEGIN\n",NAVGRP_NAME(ng_p));
 	icp = NAVGRP_ITEM_CONTEXT(ng_p);
 	assert(icp!=NULL);
 
-fprintf(stderr,"removing item context for nav group %s\n",NAVGRP_NAME(ng_p));
+//fprintf(stderr,"removing item context for nav group %s\n",NAVGRP_NAME(ng_p));
 	delete_item_context(icp);
-fprintf(stderr,"DONE removing item context for nav group %s\n",NAVGRP_NAME(ng_p));
+//fprintf(stderr,"DONE removing item context for nav group %s\n",NAVGRP_NAME(ng_p));
 
 	// Now update the panel itself...
 	delete_widget( NAVGRP_SCRNOBJ(ng_p) );
@@ -1790,7 +1791,7 @@ fprintf(stderr,"DONE removing item context for nav group %s\n",NAVGRP_NAME(ng_p)
 
 void _remove_nav_item(QSP_ARG_DECL  Nav_Item *ni_p)
 {
-fprintf(stderr,"remove_nav_item %s BEGIN\n",NAVITM_NAME(ni_p));
+//fprintf(stderr,"remove_nav_item %s BEGIN\n",NAVITM_NAME(ni_p));
 
 	// need to remove from panel
 	delete_widget( NAVITM_SCRNOBJ(ni_p) );
@@ -1988,13 +1989,13 @@ void _push_nav(QSP_ARG_DECL  Gen_Win *gwp)
 
 	// We can push a viewer or anything!?
 
-fprintf(stderr,"push_nav %s BEGIN\n",GW_NAME(gwp));
+//fprintf(stderr,"push_nav %s BEGIN\n",GW_NAME(gwp));
 	if( nav_stack == NULL )
 		nav_stack = new_stack();
 
 	// We need to keep a stack of panels...
 	if( (current_gwp=TOP_OF_STACK(nav_stack)) != NULL ){
-fprintf(stderr,"push_nav %s:  un-showing %s\n",GW_NAME(gwp),GW_NAME(current_gwp));
+//fprintf(stderr,"push_nav %s:  un-showing %s\n",GW_NAME(gwp),GW_NAME(current_gwp));
 		unshow_genwin(current_gwp);
 	}
 
@@ -2009,23 +2010,23 @@ void _pop_nav(QSP_ARG_DECL  int count)
 {
 	Gen_Win *gwp;
 
-fprintf(stderr,"pop_nav %d BEGIN\n",count);
+//fprintf(stderr,"pop_nav %d BEGIN\n",count);
 	if( nav_stack == NULL )
 		nav_stack = new_stack();
 
 	gwp = POP_FROM_STACK(nav_stack);
 	assert( gwp != NULL );
-fprintf(stderr,"pop_nav un-showing current top-of-stack %s\n",GW_NAME(gwp));
+//fprintf(stderr,"pop_nav un-showing current top-of-stack %s\n",GW_NAME(gwp));
 	unshow_genwin(gwp);
 
 	count --;
 	while( count -- ){
-fprintf(stderr,"pop_nav popping again, count = %d\n",count);
+//fprintf(stderr,"pop_nav popping again, count = %d\n",count);
 		gwp = POP_FROM_STACK(nav_stack);
 		assert( gwp != NULL );
 	}
 
-fprintf(stderr,"pop_nav done popping\n");
+//fprintf(stderr,"pop_nav done popping\n");
 	assert( (gwp=TOP_OF_STACK(nav_stack)) != NULL );
 	show_genwin(gwp);
 }
