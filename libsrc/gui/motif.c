@@ -258,7 +258,7 @@ void make_panel(QSP_ARG_DECL  Panel_Obj *po,int width,int height)
 	XtSetArg(al[ac], XmNwidth, width); ac++;
 	XtSetArg(al[ac], XmNheight, height); ac++;
 
-fprintf(stderr,"make_panel calling XtAppCreateShell\n");
+//fprintf(stderr,"make_panel calling XtAppCreateShell\n");
 	po->po_frame_obj = (Widget) XtAppCreateShell(PO_NAME(po), "guimenu",
 				applicationShellWidgetClass, display,
 				al, ac);
@@ -267,17 +267,17 @@ fprintf(stderr,"make_panel calling XtAppCreateShell\n");
 		error1("error creating frame");
 
 	ac = 0;
-fprintf(stderr,"make_panel calling XmNautoUnmanage\n");
+//fprintf(stderr,"make_panel calling XmNautoUnmanage\n");
 	XtSetArg(al[ac], XmNautoUnmanage, FALSE); ac++;
-fprintf(stderr,"make_panel calling XmCreateForm\n");
+//fprintf(stderr,"make_panel calling XmCreateForm\n");
 	po->po_panel_obj = XmCreateForm(po->po_frame_obj, (String) NULL,
 				al, ac);
-fprintf(stderr,"make_panel back from XmCreateForm\n");
+//fprintf(stderr,"make_panel back from XmCreateForm\n");
 
 	if( (Widget) po->po_panel_obj == (Widget) NULL )
 		error1("error creating panel");
 
-fprintf(stderr,"make_panel calling XtDisplay\n");
+//fprintf(stderr,"make_panel calling XtDisplay\n");
 	po->po_dpy = XtDisplay(po->po_frame_obj);
 	po->po_screen_no = DefaultScreen(po->po_dpy);
 	po->po_gc = DefaultGC(po->po_dpy,DefaultScreen(po->po_dpy));
@@ -287,7 +287,7 @@ fprintf(stderr,"make_panel calling XtDisplay\n");
 	po->po_realized = 0;
 	/* po->po_flags = 0; */		/* the caller did this already... */
 
-fprintf(stderr,"make_panel calling XtManageChild\n");
+//fprintf(stderr,"make_panel calling XtManageChild\n");
 	XtManageChild(po->po_panel_obj);
 
 	/* XXX unsupported until I figure this out */
@@ -297,7 +297,7 @@ fprintf(stderr,"make_panel calling XtManageChild\n");
 	/* po->po_xwin = po->po_panel_obj->core.window; */
 
 	po->po_xwin = XtWindow( po->po_panel_obj );
-fprintf(stderr,"XtWindow returned 0x%lx\n",(long)po->po_xwin);
+//fprintf(stderr,"XtWindow returned 0x%lx\n",(long)po->po_xwin);
 
 #endif /* HAVE_MOTIF */
 
@@ -1770,13 +1770,13 @@ void _remove_nav_group(QSP_ARG_DECL  Nav_Group *ng_p)
 	// first remove the items
 	Item_Context *icp;
 
-fprintf(stderr,"remove_nav_group %s BEGIN\n",NAVGRP_NAME(ng_p));
+//fprintf(stderr,"remove_nav_group %s BEGIN\n",NAVGRP_NAME(ng_p));
 	icp = NAVGRP_ITEM_CONTEXT(ng_p);
 	assert(icp!=NULL);
 
-fprintf(stderr,"removing item context for nav group %s\n",NAVGRP_NAME(ng_p));
+//fprintf(stderr,"removing item context for nav group %s\n",NAVGRP_NAME(ng_p));
 	delete_item_context(icp);
-fprintf(stderr,"DONE removing item context for nav group %s\n",NAVGRP_NAME(ng_p));
+//fprintf(stderr,"DONE removing item context for nav group %s\n",NAVGRP_NAME(ng_p));
 
 	// Now update the panel itself...
 	delete_widget( NAVGRP_SCRNOBJ(ng_p) );
@@ -1791,7 +1791,7 @@ fprintf(stderr,"DONE removing item context for nav group %s\n",NAVGRP_NAME(ng_p)
 
 void _remove_nav_item(QSP_ARG_DECL  Nav_Item *ni_p)
 {
-fprintf(stderr,"remove_nav_item %s BEGIN\n",NAVITM_NAME(ni_p));
+//fprintf(stderr,"remove_nav_item %s BEGIN\n",NAVITM_NAME(ni_p));
 
 	// need to remove from panel
 	delete_widget( NAVITM_SCRNOBJ(ni_p) );
@@ -1989,13 +1989,13 @@ void _push_nav(QSP_ARG_DECL  Gen_Win *gwp)
 
 	// We can push a viewer or anything!?
 
-fprintf(stderr,"push_nav %s BEGIN\n",GW_NAME(gwp));
+//fprintf(stderr,"push_nav %s BEGIN\n",GW_NAME(gwp));
 	if( nav_stack == NULL )
 		nav_stack = new_stack();
 
 	// We need to keep a stack of panels...
 	if( (current_gwp=TOP_OF_STACK(nav_stack)) != NULL ){
-fprintf(stderr,"push_nav %s:  un-showing %s\n",GW_NAME(gwp),GW_NAME(current_gwp));
+//fprintf(stderr,"push_nav %s:  un-showing %s\n",GW_NAME(gwp),GW_NAME(current_gwp));
 		unshow_genwin(current_gwp);
 	}
 
@@ -2010,23 +2010,23 @@ void _pop_nav(QSP_ARG_DECL  int count)
 {
 	Gen_Win *gwp;
 
-fprintf(stderr,"pop_nav %d BEGIN\n",count);
+//fprintf(stderr,"pop_nav %d BEGIN\n",count);
 	if( nav_stack == NULL )
 		nav_stack = new_stack();
 
 	gwp = POP_FROM_STACK(nav_stack);
 	assert( gwp != NULL );
-fprintf(stderr,"pop_nav un-showing current top-of-stack %s\n",GW_NAME(gwp));
+//fprintf(stderr,"pop_nav un-showing current top-of-stack %s\n",GW_NAME(gwp));
 	unshow_genwin(gwp);
 
 	count --;
 	while( count -- ){
-fprintf(stderr,"pop_nav popping again, count = %d\n",count);
+//fprintf(stderr,"pop_nav popping again, count = %d\n",count);
 		gwp = POP_FROM_STACK(nav_stack);
 		assert( gwp != NULL );
 	}
 
-fprintf(stderr,"pop_nav done popping\n");
+//fprintf(stderr,"pop_nav done popping\n");
 	assert( (gwp=TOP_OF_STACK(nav_stack)) != NULL );
 	show_genwin(gwp);
 }
