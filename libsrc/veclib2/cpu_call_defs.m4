@@ -459,7 +459,6 @@ DECLARE_BASES_IDX_2
 DECLARE_LOOP_COUNT
 	std_type *tmp_ptr;
 	std_type *orig_s1_ptr;
-	/*index_type this_index;*/
 ')
 
 define(`PROJ_LOOP_DECLS_3',`
@@ -698,7 +697,7 @@ define(`INIT_PTRS_QQR_3',`INIT_PTRS_QUAT_2 INIT_PTRS_SRC2')
 define(`INIT_PTRS_QR_2',`INIT_PTRS_QUAT_1 INIT_PTRS_SRC1')
 define(`INIT_PTRS_RQ_2',`INIT_PTRS_1 INIT_PTRS_QUAT_SRC1')
 
-define(`INIT_PTRS_IDX_1',`INIT_PTRS_1 /*this_index = index_base[0];*/')
+define(`INIT_PTRS_IDX_1',`INIT_PTRS_1')
 define(`INIT_PTRS_IDX_2',`INIT_PTRS_IDX_1 INIT_PTRS_SRC1')
 
 
@@ -757,7 +756,7 @@ define(`INC_PTRS_3',`INC_PTRS_2 INC_PTRS_SRC2')
 define(`INC_PTRS_4',`INC_PTRS_3 INC_PTRS_SRC3')
 define(`INC_PTRS_5',`INC_PTRS_4 INC_PTRS_SRC4')
 
-define(`INC_PTRS_IDX_2',`INC_PTRS_2 /*this_index++;*/')
+define(`INC_PTRS_IDX_2',`INC_PTRS_2')
 define(`INC_PTRS_X_2',`INC_PTRS_2')
 
 /* compiler BUG?
