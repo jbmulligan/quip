@@ -16,6 +16,8 @@
 
 #define BUILD_FOR_OPENCL
 
+#define GL_SILENCE_DEPRECATION		// apple only?
+
 #include "quip_prot.h"
 #include "my_ocl.h"
 #include "ocl_platform.h"
@@ -627,7 +629,10 @@ static void _ocl_mem_free(QSP_ARG_DECL  void *ptr)
 	cl_int		ret;
 
 	ret = clReleaseMemObject( (cl_mem) ptr ); //free memory on device
-	// BUG check return value
+
+	// BUG need to add error checking on the return values...
+fprintf(stderr,"ret = %d, need to test!?\n",ret);
+
 }
 
 static void _ocl_obj_free(QSP_ARG_DECL  Data_Obj *dp)
@@ -636,6 +641,7 @@ static void _ocl_obj_free(QSP_ARG_DECL  Data_Obj *dp)
 
 	ret = clReleaseMemObject( (cl_mem) OBJ_DATA_PTR(dp) ); //free memory on device
 	// BUG check return value
+fprintf(stderr,"ret = %d, need to test!?\n",ret);
 }
 
 //void *TMPVEC_NAME(Platform_Device *pdp, size_t size,size_t len,const char *whence)
@@ -814,7 +820,8 @@ static int ocl_map_buf(QSP_ARG_DECL  Data_Obj *dp)
 {
 	cl_int status;
 
-	glFlush();
+	glFlush();	// why???
+			// this call is deprecated by Apple!?
 
 	// Acquire ownership of GL texture for OpenCL Image
 	status = clEnqueueAcquireGLObjects(//cl_cmd_queue,
@@ -1096,10 +1103,12 @@ static int init_ocl_platforms(SINGLE_QSP_ARG_DECL)
 	cl_int		ret;
 	int		i;
 
-	// BUG need to add error checking on the return values...
 
 	ret = clGetPlatformIDs(MAX_CL_PLATFORMS, platform_ids, &num_platforms);
 //fprintf(stderr,"init_ocl_platform:  %d platform%s found\n",num_platforms,num_platforms==1?"":"s");
+
+	// BUG need to add error checking on the return values...
+fprintf(stderr,"ret = %d, need to test!?\n",ret);
 
 	for(i=0;i<num_platforms;i++)
 		init_ocl_platform(QSP_ARG  platform_ids[i]);

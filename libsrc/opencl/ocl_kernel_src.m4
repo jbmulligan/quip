@@ -58,16 +58,11 @@ define(`_VEC_FUNC_MM',`__VEC_FUNC_MM($1,$2 );')
 
 define(`__VEC_FUNC_MM',`char KERN_SOURCE_NAME($1,mm)[]=QUOTE_IT(___VEC_FUNC_MM($1,$2 ) );')
 
-define(`_VEC_FUNC_MM_IND',__VEC_FUNC_MM_IND($1,$2,$3)')
-
-define(`__VEC_FUNC_MM_IND',`char KERN_SOURCE_NAME($1,mm_ind)[] = QUOTE_IT( ___VEC_FUNC_MM_IND($1,$2,$3 ) );')
-
 /* For nocc_setup, we index directly into the value and count temp arrays
  * (a and b, respectively), but we have to double the index for the source
  * array c, and the index array d.  Because we are comparing adjacent pairs, 
  */
 
-dnl define(`__VEC_FUNC_FAST_MM_NOCC',`
 define(`_VEC_FUNC_FAST_MM_NOCC',`
 char KERN_SOURCE_NAME($1`_setup',fast)[]= QUOTE_IT( ___VEC_FUNC_FAST_MM_NOCC_SETUP($1,$2,$3) );
 char KERN_SOURCE_NAME($1`_nocc_helper',fast)[]= QUOTE_IT( ___VEC_FUNC_FAST_MM_NOCC_HELPER($1,$2,$3) );
