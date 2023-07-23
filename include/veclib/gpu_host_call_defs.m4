@@ -243,6 +243,7 @@ define(`CHECK_MM',`
 // max indices.  The subsequent passes need to use these indices to
 // lookup data to make the comparison...
 
+// vmaxi, vmini, ?
 
 define(`H_CALL_PROJ_2V_IDX',`
 
@@ -251,7 +252,7 @@ static void HOST_FAST_CALL_NAME($1)(LINK_FUNC_ARG_DECLS)
 	index_type *indices;
 	std_type *src1_values;
 	std_type *src2_values;
-	std_type *orig_src_values;
+	/*std_type *orig_src_values;*/
 	index_type *idx1_values,*idx2_values;
 	index_type *dst_to_free=(index_type *)NULL;
 	index_type *src_to_free=(index_type *)NULL;
@@ -261,7 +262,7 @@ static void HOST_FAST_CALL_NAME($1)(LINK_FUNC_ARG_DECLS)
 	src1_values = (std_type *) VA_SRC1_PTR(vap);
 	len = VA_SRC1_LEN(vap);
 	SETUP_IDX_ITERATION(src1_values,src2_values,$1)
-	orig_src_values = src1_values;
+	/*orig_src_values = src1_values;*/
 	/*max_threads_per_block = OBJ_MAX_THREADS_PER_BLOCK(OA_DEST(oap));*/
 	CALL_GPU_FAST_INDEX_SETUP_FUNC($1)
 	FINISH_IDX_MM_ITERATION($1)

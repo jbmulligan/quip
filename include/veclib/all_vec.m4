@@ -80,9 +80,6 @@ _VEC_FUNC_2V_SCAL( vscmp2, dst= (dest_type) src1<=scalar1_val?1:0 )
 _VEC_FUNC_MM_NOCC( vmaxg, src1==extval, src1>extval, extval= src1, src_vals[IDX2]>src_vals[IDX2+1],src_vals[IDX2]<src_vals[IDX2+1])
 _VEC_FUNC_MM_NOCC( vming, src1==extval, src1<extval, extval= src1, src_vals[IDX2]<src_vals[IDX2+1],src_vals[IDX2]>src_vals[IDX2+1])
 
-dnl	VEC_FUNC_MM_NOCC(vmaxg,src_vals[IDX2]>src_vals[IDX2+1],src_vals[IDX2]<src_vals[IDX2+1])
-dnl	VEC_FUNC_MM_NOCC(vming,src_vals[IDX2]<src_vals[IDX2+1],src_vals[IDX2]>src_vals[IDX2+1])
-
 /* used to be EXTREME_VALUE_METHOD, but logic incorporating projection operation
  * (dimension collapsing) was brought in from the java macros.
  * Now would be a nice time to merge some of the macros...
@@ -178,10 +175,6 @@ _VEC_FUNC_2V_3SCAL( ss_vs_ne, dst = (dest_type) ( src1 != scalar3_val ? scalar1_
 _VEC_FUNC_2V_PROJ( vmaxv, dst = (dest_type) src1, if( src1 > dst ) dst = (dest_type)  src1, psrc1 > psrc2 ? psrc1 : psrc2 )
 
 _VEC_FUNC_2V_PROJ( vminv, dst = (dest_type) src1, if( src1 < dst ) dst = (dest_type)  src1, psrc1 < psrc2 ? psrc1 : psrc2 )
-
-
-dnl VEC_FUNC_MM_IND(vmaxi, dst = (src1 > src2 ? IDX2 : IDX3+len1), dst = (orig[src1] > orig[src2] ? src1 : src2) )
-dnl VEC_FUNC_MM_IND(vmini, dst = (src1 < src2 ? IDX2 : IDX3+len1), dst = (orig[src1] < orig[src2] ? src1 : src2) )
 
 
 dnl _VF_2V_PROJ_IDX( name, cpu_s1, cpu_s2, gpu_s1, gpu_s2 )
