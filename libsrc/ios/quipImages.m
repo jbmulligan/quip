@@ -1,6 +1,7 @@
 //
 //  quipImages.m
 //
+// macOS or iOS???
 #include <QuartzCore/QuartzCore.h>
 
 // for mach_absolute_time()
@@ -160,10 +161,13 @@ foobar // testing only
 	if( refresh_func != NULL ){
 		[self exec_refresh_func];
 	} else {
-        if( afterAnimation != NULL && animationStarted ){
+	        if( afterAnimation != NULL && animationStarted ){
+			// Not sure where the old code is???
+#ifdef BUILD_FOR_IOS
 			if( ! self.animating ){
 				[self animationDone];
 			}
+#endif
 		}
 	}
 }
@@ -175,7 +179,9 @@ foobar // testing only
 	// enableRefreshEventProcessing is called
 	// if and when we set _afterAnimation
 
+#ifdef BUILD_FOR_IOS
 	[self startAnimating];
+#endif // BUILD_FOR_IOS
 }
 
 -(NSInteger) subviewCount
@@ -232,6 +238,7 @@ foobar // testing only
 	_queue_idx = 0;
 }
 
+#ifdef BUILD_FOR_IOS
 -(void) queueFrame: (UIImage *)uii_p
 {
 	//assert( [self hasSubview:qiv_p] );
@@ -244,6 +251,7 @@ foobar // testing only
 	assert( self.frameQueue != NULL );
 	[ self.frameQueue addObject:uii_p];	// adds at end of array
 }
+#endif // BUILD_FOR_IOS
 
 -(void) enableRefreshEventProcessing
 {
@@ -302,7 +310,6 @@ foobar // testing only
 			displayLinkWithTarget:self
 			selector:@selector(_onScreenRefresh)];
 //fprintf(stderr,"initWithSize:  created updateTimer\n");
-#endif // BUILD_FOR_IOS
 
 	//self.opaque = YES;		// no longer allowed?  read-only
 	self.alpha = 1.0;
@@ -311,6 +318,7 @@ foobar // testing only
 	//self.imageScaling = NSScaleNone;	// not with iOS?
 
 	self.contentMode = UIViewContentModeTopLeft;
+#endif // BUILD_FOR_IOS
 
 	return self;
 }  // end initWithSize

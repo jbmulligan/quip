@@ -28,7 +28,7 @@ all:	$(TARGETS) quip.pdf
 	cp quip.pdf ../docs/quip_manual.pdf
 #	cp -R quip.html ../docs/quip_web_manual
 #	BUG ../docs/quip_web_manual must exist!
-	cp -R quip/*.html ../docs/quip_web_manual
+	cp -R quip_html/*.html ../docs/quip_web_manual
 
 .PHONY:	html
 html:	version.texi $(HTML_DOCS)
