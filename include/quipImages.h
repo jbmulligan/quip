@@ -75,6 +75,8 @@
 //-(void) send_to_back:(struct data_obj *)dp;
 @end
 
+extern uint64_t my_absolute_to_nanoseconds( uint64_t *t );
+
 // flag bits
 #define QI_CHECK_TIMESTAMP	1
 #define QI_TRAP_REFRESH		2

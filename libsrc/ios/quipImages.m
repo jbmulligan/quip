@@ -29,6 +29,7 @@ uint64_t my_absolute_to_nanoseconds( uint64_t *t )
 @implementation quipImages
 
 #ifdef BUILD_FOR_IOS
+foobar // testing only
 @synthesize _updateTimer;
 #endif // BUILD_FOR_IOS
 
@@ -170,7 +171,10 @@ uint64_t my_absolute_to_nanoseconds( uint64_t *t )
 -(void) startAnimation
 {
 	animationStarted = 1;
-	// enableRefreshEventProcessing is called if an when we set _afterAnimation
+
+	// enableRefreshEventProcessing is called
+	// if and when we set _afterAnimation
+
 	[self startAnimating];
 }
 
@@ -300,7 +304,7 @@ uint64_t my_absolute_to_nanoseconds( uint64_t *t )
 //fprintf(stderr,"initWithSize:  created updateTimer\n");
 #endif // BUILD_FOR_IOS
 
-	self.opaque = YES;
+	//self.opaque = YES;		// no longer allowed?  read-only
 	self.alpha = 1.0;
 	self.hidden=NO;
 

@@ -265,7 +265,6 @@
 		7C63B36F17E1173800CBA8CA /* viewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B36E17E1173800CBA8CA /* viewer.m */; };
 		7C63B37117E1180800CBA8CA /* ios_supp.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37017E1180800CBA8CA /* ios_supp.m */; };
 		7C63B37317E11E1900CBA8CA /* quipCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37217E11E1900CBA8CA /* quipCanvas.m */; };
-		7C63B37517E11E8900CBA8CA /* quipImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37417E11E8900CBA8CA /* quipImageView.m */; };
 		7C63B37717E11F8D00CBA8CA /* quipImages.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37617E11F8D00CBA8CA /* quipImages.m */; };
 		7C63B37B17E12A3000CBA8CA /* linear.c in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37A17E12A3000CBA8CA /* linear.c */; };
 		7C63B37D17E2573E00CBA8CA /* quipNavController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37C17E2573E00CBA8CA /* quipNavController.m */; };
@@ -356,7 +355,6 @@
 		7CE62D4A1DCD1445000FED59 /* encrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B38417E27B4100CBA8CA /* encrypt.m */; };
 		7CE62D4C1DCD144E000FED59 /* quipNavController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37C17E2573E00CBA8CA /* quipNavController.m */; };
 		7CE62D4D1DCD1452000FED59 /* quipImages.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37617E11F8D00CBA8CA /* quipImages.m */; };
-		7CE62D4E1DCD1457000FED59 /* quipImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37417E11E8900CBA8CA /* quipImageView.m */; };
 		7CE62D4F1DCD145C000FED59 /* quipCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37217E11E1900CBA8CA /* quipCanvas.m */; };
 		7CE62D501DCD1460000FED59 /* quipAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B34F17E1012000CBA8CA /* quipAppDelegate.m */; };
 		7CE62D511DCD1465000FED59 /* screen_obj.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B34D17E0FFDA00CBA8CA /* screen_obj.m */; };
@@ -849,7 +847,6 @@
 		7C63B36E17E1173800CBA8CA /* viewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = viewer.m; sourceTree = "<group>"; };
 		7C63B37017E1180800CBA8CA /* ios_supp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ios_supp.m; sourceTree = "<group>"; };
 		7C63B37217E11E1900CBA8CA /* quipCanvas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = quipCanvas.m; sourceTree = "<group>"; };
-		7C63B37417E11E8900CBA8CA /* quipImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = quipImageView.m; sourceTree = "<group>"; };
 		7C63B37617E11F8D00CBA8CA /* quipImages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = quipImages.m; sourceTree = "<group>"; };
 		7C63B37A17E12A3000CBA8CA /* linear.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = linear.c; sourceTree = "<group>"; };
 		7C63B37C17E2573E00CBA8CA /* quipNavController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = quipNavController.m; sourceTree = "<group>"; };
@@ -1392,7 +1389,6 @@
 				7C63B37E17E274EC00CBA8CA /* macos_main.m */,
 				7C63B37C17E2573E00CBA8CA /* quipNavController.m */,
 				7C63B37617E11F8D00CBA8CA /* quipImages.m */,
-				7C63B37417E11E8900CBA8CA /* quipImageView.m */,
 				7C63B37217E11E1900CBA8CA /* quipCanvas.m */,
 				7C63B34F17E1012000CBA8CA /* quipAppDelegate.m */,
 				7C63B34D17E0FFDA00CBA8CA /* screen_obj.m */,
@@ -1675,7 +1671,6 @@
 				7C63B37117E1180800CBA8CA /* ios_supp.m in Sources */,
 				7C63B37317E11E1900CBA8CA /* quipCanvas.m in Sources */,
 				7CE624B12190EF4900DE68C9 /* vl2_fft.c in Sources */,
-				7C63B37517E11E8900CBA8CA /* quipImageView.m in Sources */,
 				7C6CDC051CBF76BD001AC12F /* slow_len.c in Sources */,
 				7C63B37717E11F8D00CBA8CA /* quipImages.m in Sources */,
 				7C63B37B17E12A3000CBA8CA /* linear.c in Sources */,
@@ -1895,7 +1890,6 @@
 				7CE62D551DCD1477000FED59 /* ios_list.m in Sources */,
 				7CE62DFD1DCD59BD000FED59 /* ppm.c in Sources */,
 				7CE62DE61DCD3941000FED59 /* slow_len.c in Sources */,
-				7CE62D4E1DCD1457000FED59 /* quipImageView.m in Sources */,
 				7CE62D481DCD143D000FED59 /* camera.m in Sources */,
 				7CE62D3A1DCD0CD1000FED59 /* history.c in Sources */,
 				7CE62D201DCD0BC8000FED59 /* quip_exec.c in Sources */,
