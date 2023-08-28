@@ -153,6 +153,8 @@ static const char *insure_item_prompt(Item_Type *itp, const char *prompt)
 	return prompt;
 }
 
+#ifdef HAVE_HISTORY
+
 static void _remove_from_history_list(QSP_ARG_DECL  const char *prompt, const char *s)
 {
 	const char *pline;
@@ -160,6 +162,7 @@ static void _remove_from_history_list(QSP_ARG_DECL  const char *prompt, const ch
 	rem_def(pline,s);
 }
 
+#endif // HAVE_HISTORY
 
 /*
  * Use this function instead of get_xxx(nameof("item name"))

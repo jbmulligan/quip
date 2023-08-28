@@ -67,7 +67,9 @@
 -(void) discard_subviews;
 -(void) enableRefreshEventProcessing;
 -(void) disableRefreshEventProcessing;
+#ifdef BUILD_FOR_IOS
 -(void) queueFrame: (UIImage *)uii_p;
+#endif // BUILD_FOR_IOS
 -(void) clearQueue;
 //-(void) bring_to_front:(struct data_obj *)dp;
 //-(void) send_to_back:(struct data_obj *)dp;

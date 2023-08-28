@@ -707,7 +707,7 @@ static void intrupt()
  * Here if control-C noticed
  */
 
-static void ccseen()
+static void ccseen(void)
 {
 
 	ccflag = 0;
@@ -722,7 +722,7 @@ static void ccseen()
  * Report and exit
  */
 
-static void done()
+static void done(void)
 {
 	int     i;
 

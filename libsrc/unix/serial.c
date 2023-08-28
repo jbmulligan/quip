@@ -741,7 +741,7 @@ static COMMAND_FUNC( do_select_serial )
 	default_spp = spp;
 }
 
-Serial_Port *default_serial_port()
+Serial_Port *default_serial_port(void)
 {
 	return(default_spp);
 }

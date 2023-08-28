@@ -275,7 +275,7 @@ void _normalize_filter(QSP_ARG_DECL  Data_Obj *fdp)
 	for(j=0;j<OBJ_ROWS(fdp);j++){
 		for(i=0;i<OBJ_COLS(fdp);i++){
 			offset = (incr_t)j*OBJ_ROW_INC(fdp) + (incr_t)i;
-			*(fptr+offset) /= length;
+			*(fptr+offset) /= (float) length;
 		}
 	}
 }

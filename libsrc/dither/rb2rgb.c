@@ -129,7 +129,7 @@ void show_mat( float matrix[3][3], char *name )
 static float _rgb_norm(QSP_ARG_DECL  float *vec)	/* un-normalized rgb */
 {
 	int i;
-	float totlum;
+	double totlum;
 
 #ifdef CAUTIOUS
 	if( !know_white )
@@ -156,11 +156,11 @@ showvec(lumscal);
 		vec[0]=vec[1]=vec[2]=0.0;
 		return(0.0);
 	}
-	for(i=0;i<3;i++) vec[i] /= totlum;
+	for(i=0;i<3;i++) vec[i] /= (float) totlum;
 
 	/* vec now contains fractional luminance from each gun */
 
-	return(totlum);
+	return( (float) totlum );
 }
 
 static void apply_mat3x3(float *vec,float mat[3][3])
@@ -229,7 +229,7 @@ static void _rb2rgb(QSP_ARG_DECL  float *vec)			/** luminance given in vec[2] */
 	/* values are now fractional luminances */
 
 	for(i=0;i<3;i++)
-		vec[i]*=totlum;
+		vec[i]*= totlum;
 
 	/* values are now relative luminances */
 
@@ -289,7 +289,7 @@ advise("white transformed to opponent space");
 showvec(wc);
 
 	for(j=0;j<3;j++) uv[j] = wc[j];
-	uv[0]+= 0.1;	/* take a step in the red cone direction */
+	uv[0] += 0.1f;	/* take a step in the red cone direction */
 	rb2rgb(uv);
 	for(j=0;j<3;j++) uv[j] -= _white[j];
 
@@ -305,7 +305,7 @@ showvec(wc);
 	for(j=0;j<3;j++) o2p_mat[j][0] = uv[j];
 
 	for(j=0;j<3;j++) uv[j] = wc[j];
-	uv[1]+= 0.1;	/* take a step in the blue cone  direction */
+	uv[1] += 0.1f;	/* take a step in the blue cone  direction */
 	rb2rgb(uv);
 	for(j=0;j<3;j++) uv[j] -= _white[j];
 
