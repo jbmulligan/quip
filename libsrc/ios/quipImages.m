@@ -30,7 +30,6 @@ uint64_t my_absolute_to_nanoseconds( uint64_t *t )
 @implementation quipImages
 
 #ifdef BUILD_FOR_IOS
-foobar // testing only
 @synthesize _updateTimer;
 #endif // BUILD_FOR_IOS
 

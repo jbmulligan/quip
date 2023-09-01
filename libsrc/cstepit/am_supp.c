@@ -40,7 +40,7 @@ void halt_amoeba(void)
 	warn("Sorry, don't know how to halt amoeba!?");
 }
 
-static void show_simplex_verts()
+static void show_simplex_verts(void)
 {
 	int i,j,n;
 

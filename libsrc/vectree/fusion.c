@@ -80,7 +80,7 @@ static void _check_index_initialization(QSP_ARG_DECL  String_Buf *sbp)
 	indices_inited=1;
 }
 
-static void rls_global_var_list()
+static void rls_global_var_list(void)
 {
 	Node *np;
 

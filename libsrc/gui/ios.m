@@ -1801,7 +1801,7 @@ void notify_busy(QSP_ARG_DECL  const char *type, const char *msg)
 	busy_alert_p=alert;	// remember for later
 } // notify_busy
 
-static int deliver_one_deferred_alert()
+static int deliver_one_deferred_alert(void)
 {
 	Alert_Data *ad_p;
 	Node *np;

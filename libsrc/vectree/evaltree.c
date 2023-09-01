@@ -2825,7 +2825,7 @@ static void push_hidden_context(Context_Pair *cpp)
 	n_hidden_contexts++;
 }
 
-static void pop_hidden_context()
+static void pop_hidden_context(void)
 {
 	assert( n_hidden_contexts > 0 );
 	n_hidden_contexts--;
@@ -2898,7 +2898,7 @@ advise(ERROR_STRING);
 	givbuf(cpp);
 }
 
-static Run_Info *new_rip()
+static Run_Info *new_rip(void)
 {
 	Run_Info *rip;
 
