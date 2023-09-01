@@ -1,6 +1,7 @@
 //
 //  quipImages.m
 //
+// macOS or iOS???
 #include <QuartzCore/QuartzCore.h>
 
 // for mach_absolute_time()
@@ -159,10 +160,13 @@ uint64_t my_absolute_to_nanoseconds( uint64_t *t )
 	if( refresh_func != NULL ){
 		[self exec_refresh_func];
 	} else {
-        if( afterAnimation != NULL && animationStarted ){
+	        if( afterAnimation != NULL && animationStarted ){
+			// Not sure where the old code is???
+#ifdef BUILD_FOR_IOS
 			if( ! self.animating ){
 				[self animationDone];
 			}
+#endif
 		}
 	}
 }
@@ -170,8 +174,13 @@ uint64_t my_absolute_to_nanoseconds( uint64_t *t )
 -(void) startAnimation
 {
 	animationStarted = 1;
-	// enableRefreshEventProcessing is called if an when we set _afterAnimation
+
+	// enableRefreshEventProcessing is called
+	// if and when we set _afterAnimation
+
+#ifdef BUILD_FOR_IOS
 	[self startAnimating];
+#endif // BUILD_FOR_IOS
 }
 
 -(NSInteger) subviewCount
@@ -228,6 +237,7 @@ uint64_t my_absolute_to_nanoseconds( uint64_t *t )
 	_queue_idx = 0;
 }
 
+#ifdef BUILD_FOR_IOS
 -(void) queueFrame: (UIImage *)uii_p
 {
 	//assert( [self hasSubview:qiv_p] );
@@ -240,6 +250,7 @@ uint64_t my_absolute_to_nanoseconds( uint64_t *t )
 	assert( self.frameQueue != NULL );
 	[ self.frameQueue addObject:uii_p];	// adds at end of array
 }
+#endif // BUILD_FOR_IOS
 
 -(void) enableRefreshEventProcessing
 {
@@ -298,15 +309,15 @@ uint64_t my_absolute_to_nanoseconds( uint64_t *t )
 			displayLinkWithTarget:self
 			selector:@selector(_onScreenRefresh)];
 //fprintf(stderr,"initWithSize:  created updateTimer\n");
-#endif // BUILD_FOR_IOS
 
-	self.opaque = YES;
+	//self.opaque = YES;		// no longer allowed?  read-only
 	self.alpha = 1.0;
 	self.hidden=NO;
 
 	//self.imageScaling = NSScaleNone;	// not with iOS?
 
 	self.contentMode = UIViewContentModeTopLeft;
+#endif // BUILD_FOR_IOS
 
 	return self;
 }  // end initWithSize

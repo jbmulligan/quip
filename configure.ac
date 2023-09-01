@@ -1075,6 +1075,28 @@ fi
 
 if test "x${use_opengl}" = xyes; then
   AC_SEARCH_LIBS([glVertex2d],[GL],[have_libgl=yes],[have_libgl=no])
+fi
+if test "x${have_libgl}" = xno; then
+  # are we on a mac?  try framework option...
+  AC_MSG_CHECKING([for OpenGL])
+  cat>ogl_test.c<<EOF
+#include <GL/ll.h>
+ 
+  int main(int ac,char **av)
+  {
+  }
+EOF
+  if $CC $CPPFLAGS $LDFLAGS -framework OpenGL ogl_test.c $LIBS 2> /dev/null
+    then
+      LDFLAGS="$LDFLAGS -framework OpenGL"
+      have_libgl=yes
+      /bin/rm a.out
+    else
+      have_libgl=no
+    fi
+fi
+
+if test "x${use_opengl}" = xyes; then
   ## # This function is provided by cuda!?
   ## AC_SEARCH_LIBS([glXGetVideoSyncSGI],[GL],[have_sgisync=yes],[have_sgisync=no])
   AC_SEARCH_LIBS([gluLookAt],[GLU],[have_libglu=yes],[have_libglu=no])

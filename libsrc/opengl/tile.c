@@ -129,7 +129,7 @@ static int vertex_index(Vertex *vp)
 }
 #endif /* NOT_USED */
 
-void init_dir_names()
+void init_dir_names(void)
 {
 	dir_name[NORTH]="north";
 	dir_name[SOUTH]="south";
@@ -1224,8 +1224,8 @@ DEBUG_MSG(gl_debug,"glEnd GL_TRIANGLE_FAN");
 
 		qc=(*qcp);
 
-		qc.qc_delx /= 2.0;
-		qc.qc_dely /= 2.0;
+		qc.qc_delx /= 2.0f;
+		qc.qc_dely /= 2.0f;
 		xdraw_tile(tp->t_q[SW],&qc);
 		qc.qc_x0 += qc.qc_delx;
 		xdraw_tile(tp->t_q[SE],&qc);

@@ -275,7 +275,7 @@ static int tnt_cmp(const void *vp1, const void *vp2)
 	else return(0);
 }
 
-void sort_tree_tbl()
+void sort_tree_tbl(void)
 {
 	qsort(tnt_tbl,N_TREE_CODES,sizeof(Tree_Node_Type),tnt_cmp);
 

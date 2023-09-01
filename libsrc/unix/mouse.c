@@ -304,7 +304,7 @@ static void decode_motion_packet(int *px, int *py, unsigned char pkt[])
 	*py = (int)( (char) *py );	// extend the sign bit
 }
 
-static void show_history()
+static void show_history(void)
 {
 	int i;
 

@@ -5,6 +5,7 @@ Start_File common.mac
 
 Define Do_Ascii 2 object filestem
 Tell_If "Do_Ascii $1 $2"
+Insure_Directory ascii
 Set adir ascii/$RUN_STEM.$EYE_CAMERA_INDEX
 Insure_Directory $adir
 Set dafn $adir/$2

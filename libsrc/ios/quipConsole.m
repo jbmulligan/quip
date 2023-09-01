@@ -198,7 +198,7 @@ static void ios_error(QSP_ARG_DECL  const char *msg)
 // and material destined for stdout and stderr goes to console
 // (when enabled)
 
-void init_ios_text_output()
+void init_ios_text_output(void)
 {
 	set_warn_func(ios_warn);
 	set_error_func(ios_error);

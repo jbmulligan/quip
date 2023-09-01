@@ -291,7 +291,7 @@ void _normalize_filter3d(QSP_ARG_DECL  Data_Obj *fdp)
 			BEG2(1,fdp)
 				BEG2(0,fdp)
 					offset = os[0]+os[1]+os[2]+os[3];
-					*(fptr+offset) /= length;
+					*(fptr+offset) /= (float) length;
 				}
 			}
 		}

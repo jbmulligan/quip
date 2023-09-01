@@ -66,7 +66,7 @@ String_Buf *qs_expr_string(SINGLE_QSP_ARG_DECL)
 	return VPD_EXPR_STRING( THIS_VPD );
 }
 
-Vector_Parser_Data *new_vector_parser_data()
+Vector_Parser_Data *new_vector_parser_data(void)
 {
 	Vector_Parser_Data *vpd_p;
 	vpd_p = getbuf( sizeof(Vector_Parser_Data) );

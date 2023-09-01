@@ -961,12 +961,12 @@ void set_response_cmd( Trial_Class *tc_p, const char *s )
 
 // new_class_for_index creates a new class...
 
-Trial_Class *_new_class_for_index( QSP_ARG_DECL  int class_index )
+Trial_Class *_new_class_for_index( QSP_ARG_DECL  int class_idx )
 {
 	char newname[32];
 	Trial_Class *tc_p;
 
-	sprintf(newname,"class%d",class_index);
+	sprintf(newname,"class%d",class_idx);
 
 	tc_p = trial_class_of(newname);
 	if( tc_p != NULL ){
