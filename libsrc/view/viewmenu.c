@@ -496,7 +496,7 @@ static COMMAND_FUNC( do_animate_viewer )
 	// For unix we ought to give a duration?
 	// Can we get an event at the refresh???
 
-	cycle_viewer_images(vp, frame_duration);
+	cycle_viewer_images(vp, frame_duration, n_repeats);
 #endif // ! BUILD_FOR_OBJC
 }
 
@@ -521,6 +521,9 @@ static COMMAND_FUNC( do_after_animation )
 	if( vp == NULL ) return;
 #ifdef BUILD_FOR_OBJC
 	exec_after_animation(vp,s);
+#else // ! BUILD_FOR_OBJC
+	sprintf(ERROR_STRING,"ignoring after-animation string '%s'",s);
+	advise(ERROR_STRING);
 #endif // BUILD_FOR_OBJC
 }
 
@@ -649,14 +652,11 @@ COMMAND_FUNC( do_view_menu )
 		 * So perhaps the objection given above is no longer relevant?
 		 */
 
-fprintf(stderr,"do_view_menu:  calling window_sys_init...\n");
 		window_sys_init(SINGLE_QSP_ARG);
 
-fprintf(stderr,"do_view_menu:  calling init_viewer_genwin...\n");
 		/* genwin support */
 		init_viewer_genwin();	
 
-fprintf(stderr,"do_view_menu:  ready!\n");
 		inited=1;
 	}
 

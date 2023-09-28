@@ -413,6 +413,9 @@ void _rls_vectree(QSP_ARG_DECL  Vec_Expr_Node *enp)
 // BUG?  we could use the expected number of children based on node code...
 	for(i=0;i<MAX_CHILDREN(enp);i++)
 		if( VN_CHILD(enp,i) != NULL ){
+			if( VN_PARENT(VN_CHILD(enp,i)) != enp ){
+				dump_tree(enp);
+			}
 			assert( VN_PARENT(VN_CHILD(enp,i)) == enp );
 			rls_vectree(VN_CHILD(enp,i));
 		}

@@ -49,11 +49,11 @@ extern void update_shm_viewer(Viewer *,char *,int pinc, int cinc,int dx,int dy,i
 
 extern void _wait_for_mapped(QSP_ARG_DECL  Viewer *, int);
 extern void _show_geom(QSP_ARG_DECL  Viewer *vp);
-extern void _cycle_viewer_images(QSP_ARG_DECL  Viewer *vp, int frame_duration);
+extern void _cycle_viewer_images(QSP_ARG_DECL  Viewer *vp, int frame_duration, int n_repeats);
 
 #define wait_for_mapped(vp,i)		_wait_for_mapped(QSP_ARG  vp,i)
 #define show_geom(vp)			_show_geom(QSP_ARG  vp)
-#define cycle_viewer_images(vp,d)	_cycle_viewer_images(QSP_ARG  vp,d)
+#define cycle_viewer_images(vp,d,n)	_cycle_viewer_images(QSP_ARG  vp,d,n)
 
 /* lut_xlib.c */
 extern void	 x_dump_lut(Dpyable *dpyp);

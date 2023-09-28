@@ -63,7 +63,7 @@ Check_Var y_tick_last $ymax
 Check_Var y_tick_first $ymin
 If !$vars_ok exit_macro
 
-advise "Plot_Data_Range $xmin $ymin $xmax $ymax"
+#advise "Plot_Data_Range $xmin $ymin $xmax $ymax"
 Plot_Data_Range $xmin $ymin $xmax $ymax
 
 If var_exists('y_legend')
@@ -126,7 +126,7 @@ If !$vars_ok exit_macro
 If var_exists('x_legend')
   'X_Legend $x_legend'
 #Plot_X_Axis $xmin $xmax $x_tick_spacing $ymin
-advise "Setup_X_Axis:  x_tick_auto = $x_tick_auto, x_tick_last = $x_tick_last"
+#advise "Setup_X_Axis:  x_tick_auto = $x_tick_auto, x_tick_last = $x_tick_last"
 If $x_tick_auto
   Then 'Plot_X_Axis_Offset $xmin $xmax $x_tick_spacing $ymin $x_tick_offset $x_tick_last\
         Label_X_Ticks $xmin+$x_tick_offset $x_tick_last $x_tick_spacing'
