@@ -2111,12 +2111,15 @@ void relabel_viewer(Viewer *vp,const char *s)
 
 #endif /* ! HAVE_X11 */
 
-void _cycle_viewer_images(QSP_ARG_DECL  Viewer *vp, int frame_duration )
+void _cycle_viewer_images(QSP_ARG_DECL  Viewer *vp, int frame_duration, int n_repeats )
 {
 	// BUG are we displaying the head or the tail???
 	Node *np;
 	Window_Image *wip;
 
+if( n_repeats != 1 ){
+warn("ignoring passed value of n_repeats, using 1");
+}
 	assert( VW_IMAGE_LIST(vp) != NULL );
 	assert( QLIST_HEAD( VW_IMAGE_LIST(vp) ) != NULL );
 
