@@ -82,7 +82,7 @@ Set viewers_ready 1
 
 Tell_If "Setting up viewers"
 Viewer_For v1 bigf
-Posn_Viewer v1 20 20
+Posn_Window v1 20 20
 Assign h $max_out_height
 Set i 2
 Set xp 600
@@ -91,7 +91,7 @@ do
   Increment i
   advise "Viewer_For $vn smallf.$h"
   Viewer_For $vn "smallf.$h"
-  Posn_Viewer $vn $xp 20
+  Posn_Window $vn $xp 20
   Add_Var xp $h+10
   Mul_Var h 0.5
   while "$h>=$min_height"
