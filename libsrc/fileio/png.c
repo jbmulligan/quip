@@ -30,7 +30,7 @@
 		and contributors for the book, "PNG: The Definitive Guide,"
 		published by O'Reilly and Associates.
 
-********************************************************************************/
+*******************************************************************************/
 
 #include "quip_prot.h" /* warn */
 #include "fio_prot.h"
@@ -594,7 +594,10 @@ static int get_bgcolor(QSP_ARG_DECL  Image_File *ifp, u_char *red, u_char *green
 	return 0;
 }
 
-#define PXL_TYPE u_short
+// This used to be u_short, but that caused a seg fault reading a file...
+// Perhaps this needs to be a variable, determined from the file header???
+//#define PXL_TYPE u_short
+#define PXL_TYPE u_char
 
 static u_char *get_image( QSP_ARG_DECL  Image_File *ifp, u_long *pRowbytes )
 {
@@ -713,6 +716,8 @@ FIO_RD_FUNC( pngfio )
 
 	for (row = 0;  row < OBJ_ROWS(dp);  row++ ) {
 		src = png_image_data + row*rowbytes;
+		// This cast will be problematic if PXL_TYPE does not match
+		// the object's type!?
 		dst = ((PXL_TYPE *)OBJ_DATA_PTR(dp)) + row*OBJ_ROW_INC(dp);
 		for (col = 0;  col < OBJ_COLS(dp);  col++ ) {
 			for(comp=0;comp<OBJ_COMPS(dp);comp++){
