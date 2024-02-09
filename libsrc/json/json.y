@@ -356,7 +356,7 @@ static const char *_match_quote(QSP_ARG_DECL  const char **spp)
 	}
 	if( c != '"' ) {
 		warn("missing quote");
-		sprintf(ERROR_STRING,"string \"%s\" stored",JSON_CURR_STRING);
+		snprintf(ERROR_STRING,LLEN,"string \"%s\" stored",JSON_CURR_STRING);
 		advise(ERROR_STRING);
 	} else (*spp)++;			/* skip over closing quote */
 
@@ -476,7 +476,7 @@ nexttok:
 
 #ifdef QUIP_DEBUG
 if( debug ){
-sprintf(ERROR_STRING,"yylex scanning \"%s\"",YY_CP);
+snprintf(ERROR_STRING,LLEN,"yylex scanning \"%s\"",YY_CP);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -555,7 +555,7 @@ if( debug ){ advise("yylex returning LEX_STRING"); }
 		// read the args, and push the string onto the
 		// input stack
 #ifdef QUIP_DEBUG
-//if( debug ){ sprintf(ERROR_STRING,"yylex returning token %d (%s)",tok,name_for_token(tok)); advise(ERROR_STRING); }
+//if( debug ){ snprintf(ERROR_STRING,LLEN,"yylex returning token %d (%s)",tok,name_for_token(tok)); advise(ERROR_STRING); }
 #endif // QUIP_DEBUG
 		return(tok);
 
@@ -564,11 +564,11 @@ if( debug ){ advise("yylex returning LEX_STRING"); }
 		yylvp->jt_yy_char = c;
 
 #ifdef QUIP_DEBUG
-if( debug ){ sprintf(ERROR_STRING,"yylex returning char '%c' (0x%x)",c,c); advise(ERROR_STRING); }
+if( debug ){ snprintf(ERROR_STRING,LLEN,"yylex returning char '%c' (0x%x)",c,c); advise(ERROR_STRING); }
 #endif /* QUIP_DEBUG */
 		return(c);
 	} else {
-		sprintf(ERROR_STRING,"yylex:  no case for char '%c' (0x%x)",
+		snprintf(ERROR_STRING,LLEN,"yylex:  no case for char '%c' (0x%x)",
 			c,c);
 		warn(ERROR_STRING);
 		return(0);
@@ -618,7 +618,7 @@ JSON_Obj * _parse_json(SINGLE_QSP_ARG_DECL)		/** parse expression */
 	} else {
 		// Do we get here on a syntax error???
 		warn("Unsuccessfully parsed statement (top_node=NULL");
-		sprintf(ERROR_STRING,"status = %d\n",stat);	// suppress compiler warning
+		snprintf(ERROR_STRING,LLEN,"status = %d\n",stat);	// suppress compiler warning
 		advise(ERROR_STRING);
 	}
 
@@ -666,7 +666,7 @@ static void emit_obj_after(QSP_ARG_DECL  JSON_Obj *obj_p, int lvl){
 			prt_msg_frag("]");
 			break;
 		default:
-			sprintf(ERROR_STRING,"Bad object type %d",obj_p->jo_type);
+			snprintf(ERROR_STRING,LLEN,"Bad object type %d",obj_p->jo_type);
 			warn(ERROR_STRING);
 			break;
 	}
@@ -679,15 +679,15 @@ static void emit_one_thing(QSP_ARG_DECL  JSON_Thing * thing_p, int lvl){
 			break;
 
 		case JSON_TYPE_NUMBER:
-			sprintf(MSG_STR,"\"%g\"",thing_p->jt_u.u_number);
+			snprintf(MSG_STR,LLEN,"\"%g\"",thing_p->jt_u.u_number);
 			prt_msg_frag(MSG_STR);
 			break;
 		case JSON_TYPE_STRING:
-			sprintf(MSG_STR,"\"%s\"",thing_p->jt_u.u_string);
+			snprintf(MSG_STR,LLEN,"\"%s\"",thing_p->jt_u.u_string);
 			prt_msg_frag(MSG_STR);
 			break;
 		case JSON_TYPE_ID:
-			sprintf(MSG_STR,"ObjectId(\"%s\")",
+			snprintf(MSG_STR,LLEN,"ObjectId(\"%s\")",
 				thing_p->jt_u.u_string);
 			prt_msg_frag(MSG_STR);
 			break;
@@ -697,7 +697,7 @@ static void emit_one_thing(QSP_ARG_DECL  JSON_Thing * thing_p, int lvl){
 			
 			
 		default:
-			sprintf(MSG_STR,"Unhandled thing type case %d!?",
+			snprintf(MSG_STR,LLEN,"Unhandled thing type case %d!?",
 				thing_p->jt_type);
 			prt_msg(MSG_STR);
 			warn(MSG_STR);
@@ -707,7 +707,7 @@ static void emit_one_thing(QSP_ARG_DECL  JSON_Thing * thing_p, int lvl){
 
 static void emit_one_pair(QSP_ARG_DECL JSON_Pair *pair_p, int lvl){
 	emit_indentation(QSP_ARG  lvl);
-	sprintf(MSG_STR,"\"%s\"",pair_p->jp_key);
+	snprintf(MSG_STR,LLEN,"\"%s\"",pair_p->jp_key);
 	prt_msg_frag(MSG_STR);
 	prt_msg_frag(" : ");
 	emit_one_thing(QSP_ARG  pair_p->jp_thing_p,lvl);
@@ -757,10 +757,10 @@ void yyerror(Query_Stack *qsp,  char *s)
 	//n = THIS_QSP->qs_query[ql].q_lineno;
 	n = current_line_number(SINGLE_QSP_ARG);
 
-	sprintf(ERROR_STRING,"%s, line %d:  %s",filename,n,s);
+	snprintf(ERROR_STRING,LLEN,"%s, line %d:  %s",filename,n,s);
 	warn(ERROR_STRING);
 
-	sprintf(ERROR_STRING,"\t%s",sb_buffer(YY_INPUT_LINE));
+	snprintf(ERROR_STRING,LLEN,"\t%s",sb_buffer(YY_INPUT_LINE));
 	advise(ERROR_STRING);
 	/* print an arrow at the problem point... */
 	n=(int)(strlen(sb_buffer(YY_INPUT_LINE))-strlen(YY_CP));
@@ -774,7 +774,7 @@ void yyerror(Query_Stack *qsp,  char *s)
 	/* we might use this to print an arrow at the problem point... */
 	/*
 	if( *YY_CP ){
-		sprintf(ERROR_STRING,"\"%s\" left in the buffer",YY_CP);
+		snprintf(ERROR_STRING,LLEN,"\"%s\" left in the buffer",YY_CP);
 		advise(ERROR_STRING);
 	} else advise("no buffered text");
 	*/

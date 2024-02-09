@@ -31,15 +31,15 @@ static int pic_nlcr_echo=1;	/* newer firmware echos cr-nl for cr, and nl-cr for 
 static const char *pic_prompt=NULL;
 #define DEFAULT_PIC_PROMPT	"LED> "
 
-#define INSURE_PROMPT								\
-										\
-		if( pic_prompt == NULL ){					\
-			pic_prompt=DEFAULT_PIC_PROMPT;				\
-			if( verbose ){						\
-				sprintf(ERROR_STRING,				\
-		"No prompt defined, defaulting to \"%s\"",pic_prompt);		\
-				advise(ERROR_STRING);				\
-			}							\
+#define ENSURE_PROMPT							\
+									\
+		if( pic_prompt == NULL ){				\
+			pic_prompt=DEFAULT_PIC_PROMPT;			\
+			if( verbose ){					\
+				snprintf(ERROR_STRING,LLEN,		\
+		"No prompt defined, defaulting to \"%s\"",pic_prompt);	\
+				advise(ERROR_STRING);			\
+			}						\
 		}
 
 
@@ -58,10 +58,10 @@ static struct termios tiobuf;
 #define WAIT_FOR_PROMPT(pdp)					\
 								\
 	if( (pdp)->pd_prompt_seen ){					\
-		sprintf(ERROR_STRING,"WAIT_FOR_PROMPT %s:  prompt already seen!?",(pdp)->pd_name);	\
+		snprintf(ERROR_STRING,LLEN,"WAIT_FOR_PROMPT %s:  prompt already seen!?",(pdp)->pd_name);	\
 		warn(ERROR_STRING);				\
 	} else {						\
-		INSURE_PROMPT					\
+		ENSURE_PROMPT					\
 		expected_response((pdp)->pd_sbp,pic_prompt);	\
 		reset_buffer((pdp)->pd_sbp);			\
 		(pdp)->pd_prompt_seen=1;					\
@@ -80,7 +80,7 @@ static struct timeval tv_now, tv_zero;
 			zero_set = 1;						\
 		}								\
 		delta_ms = 1000*(tv_now.tv_sec - tv_zero.tv_sec) + (tv_now.tv_usec - tv_zero.tv_usec)/1000; \
-		sprintf(ERROR_STRING,"%s:  %2d.%03d",s,delta_ms/1000,delta_ms%1000);	\
+		snprintf(ERROR_STRING,LLEN,"%s:  %2d.%03d",s,delta_ms/1000,delta_ms%1000);	\
 		advise(ERROR_STRING); }
 #else
 #define MARK(s)
@@ -177,7 +177,7 @@ static ITEM_CHECK_FUNC(PIC_Device,pic_dev)
 {								\
 	range_ok=1;						\
 	if( number < min || number > max ) {			\
-		sprintf(ERROR_STRING,				\
+		snprintf(ERROR_STRING,LLEN,				\
 "%s (%d) must be between %d and %d", name, number, min, max);	\
 		warn(ERROR_STRING);				\
 		range_ok=0;					\
@@ -209,7 +209,7 @@ static int ask_addr(QSP_ARG_DECL  char *prompt,int max)
 
 	a=HOW_MANY(prompt);
 	if( a < 0 || a > max ){
-		sprintf(ERROR_STRING,"Address (0x%x) must be between 0 and 0x%d",a,max);
+		snprintf(ERROR_STRING,LLEN,"Address (0x%x) must be between 0 and 0x%d",a,max);
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -224,16 +224,16 @@ static void _send_pic_cmd(QSP_ARG_DECL  PIC_Device *pdp, const char* buf )
 	char cmd[LLEN];
 
 	if( pdp == NULL ){
-		sprintf(ERROR_STRING,"send_pic_cmd:  no PIC device specified");
+		snprintf(ERROR_STRING,LLEN,"send_pic_cmd:  no PIC device specified");
 		warn(ERROR_STRING);
 		return;
 	}
 
 	/* append carriage return */
-	sprintf(cmd, "%s\n", buf);		/* in cbreak mode, \r is echoed as \n?? */
+	snprintf(cmd,LLEN, "%s\n", buf);		/* in cbreak mode, \r is echoed as \n?? */
 
 if( debug & pic_debug ){
-sprintf(ERROR_STRING,"send_pic_cmd:  sending \"%s\"",buf);
+snprintf(ERROR_STRING,LLEN,"send_pic_cmd:  sending \"%s\"",buf);
 advise(ERROR_STRING);
 }
 	send_serial(pdp->pd_fd, (u_char *)cmd, strlen(cmd));
@@ -257,10 +257,10 @@ static void _get_firmware_version(SINGLE_QSP_ARG_DECL)
 	char buf[16];
 	int i;
 
-	sprintf(buf, "%s", pic_tbl[PIC_RPT_VER].pc_str);
+	snprintf(buf,16, "%s", pic_tbl[PIC_RPT_VER].pc_str);
 	reset_buffer(curr_pdp->pd_sbp);
 if( debug & pic_debug ){
-sprintf(ERROR_STRING,"Sending \"%s\" to PIC",printable_string(buf));
+snprintf(ERROR_STRING,LLEN,"Sending \"%s\" to PIC",printable_string(buf));
 advise(ERROR_STRING);
 }
 	send_pic_cmd(curr_pdp,buf);
@@ -288,7 +288,7 @@ static COMMAND_FUNC( do_report_version )
 
 	get_firmware_version();
 
-	sprintf(msg_str,"Firmware version:  %s",firmware_version);
+	snprintf(msg_str,LLEN,"Firmware version:  %s",firmware_version);
 	prt_msg(msg_str);
 
 	assign_var("firmware_version",firmware_version);
@@ -296,13 +296,13 @@ static COMMAND_FUNC( do_report_version )
 
 static char *fmt_addr(int addr)
 {
-	sprintf(addr_str,"%04x",addr);
+	snprintf(addr_str,8,"%04x",addr);
 	return(addr_str);
 }
 
 static char *fmt_byte(int val)
 {
-	sprintf(byte_str,"%02x",val);
+	snprintf(byte_str,8,"%02x",val);
 	return(byte_str);
 }
 
@@ -321,10 +321,10 @@ static int _read_pgm_mem(QSP_ARG_DECL  int addr)
 	char buf[LLEN];
 	int ra,rd;
 
-	sprintf(buf, "%s", pic_tbl[PIC_RD_PGM].pc_str);
+	snprintf(buf,LLEN, "%s", pic_tbl[PIC_RD_PGM].pc_str);
 	reset_buffer(curr_pdp->pd_sbp);
 if( debug & pic_debug ){
-sprintf(ERROR_STRING,"Sending \"%s\" to PIC",printable_string(buf));
+snprintf(ERROR_STRING,LLEN,"Sending \"%s\" to PIC",printable_string(buf));
 advise(ERROR_STRING);
 }
 	send_pic_cmd(curr_pdp,buf);
@@ -339,7 +339,7 @@ if( debug & pic_debug ) advise("listening for reply");
 
 	// now parse the string
 	sscanf(buf,"%4x:  %4x",&ra,&rd);
-//sprintf(ERROR_STRING,"string \"%s\", ra = 0x%04x, rd = 0x%04x",buf,ra,rd);
+//snprintf(ERROR_STRING,LLEN,"string \"%s\", ra = 0x%04x, rd = 0x%04x",buf,ra,rd);
 //advise(ERROR_STRING);
 
 	WAIT_FOR_PROMPT(curr_pdp)
@@ -355,10 +355,10 @@ static int _read_mem(QSP_ARG_DECL  int addr)
 	char buf[LLEN];
 	int ra,rd;
 
-	sprintf(buf, "%s", pic_tbl[PIC_RD_DATA].pc_str);
+	snprintf(buf,LLEN, "%s", pic_tbl[PIC_RD_DATA].pc_str);
 	reset_buffer(curr_pdp->pd_sbp);
 if( debug & pic_debug ){
-sprintf(ERROR_STRING,"Sending \"%s\" to PIC",printable_string(buf));
+snprintf(ERROR_STRING,LLEN,"Sending \"%s\" to PIC",printable_string(buf));
 advise(ERROR_STRING);
 }
 	send_pic_cmd(curr_pdp,buf);
@@ -373,7 +373,7 @@ if( debug & pic_debug ) advise("listening for reply");
 
 	// now parse the string
 	sscanf(buf,"%4x:  %4x",&ra,&rd);
-//sprintf(ERROR_STRING,"string \"%s\", ra = 0x%04x, rd = 0x%04x",buf,ra,rd);
+//snprintf(ERROR_STRING,LLEN,"string \"%s\", ra = 0x%04x, rd = 0x%04x",buf,ra,rd);
 //advise(ERROR_STRING);
 
 	WAIT_FOR_PROMPT(curr_pdp)
@@ -388,10 +388,10 @@ static void _pic_echo(QSP_ARG_DECL  int onoff)
 	const char *s;
 	char buf[4];
 
-	sprintf(buf, "%s", pic_tbl[PIC_ECHO].pc_str);
+	snprintf(buf,4, "%s", pic_tbl[PIC_ECHO].pc_str);
 	reset_buffer(curr_pdp->pd_sbp);
 if( debug & pic_debug ){
-sprintf(ERROR_STRING,"Sending \"%s\" to PIC",printable_string(buf));
+snprintf(ERROR_STRING,LLEN,"Sending \"%s\" to PIC",printable_string(buf));
 advise(ERROR_STRING);
 }
 	send_pic_cmd(curr_pdp,buf);
@@ -421,10 +421,10 @@ static void _goto_pgm_mem(QSP_ARG_DECL  int addr)
 	const char *s;
 	char buf[LLEN];
 
-	sprintf(buf, "%s", pic_tbl[PIC_GOTO].pc_str);
+	snprintf(buf,LLEN, "%s", pic_tbl[PIC_GOTO].pc_str);
 	reset_buffer(curr_pdp->pd_sbp);
 if( debug & pic_debug ){
-sprintf(ERROR_STRING,"Sending \"%s\" to PIC",printable_string(buf));
+snprintf(ERROR_STRING,LLEN,"Sending \"%s\" to PIC",printable_string(buf));
 advise(ERROR_STRING);
 }
 	send_pic_cmd(curr_pdp,buf);
@@ -438,7 +438,7 @@ if( debug & pic_debug ) advise("listening for reply");
 	/* We might expect some printout here, such as a boot message...
 	 * Therefore, we don't expect the prompt immediately, but read until we see it.
 	 */
-	INSURE_PROMPT
+	ENSURE_PROMPT
 	read_until_string(buf,curr_pdp->pd_sbp,pic_prompt,CONSUME_MARKER);
 	reset_buffer(curr_pdp->pd_sbp);
 	curr_pdp->pd_prompt_seen=1;
@@ -461,7 +461,7 @@ static COMMAND_FUNC( do_read_pgm_mem )
 
 	while(n--){
 		d=read_pgm_mem(addr);
-		sprintf(msg_str,"P 0x%04x:  0x%04x",addr,d);
+		snprintf(msg_str,LLEN,"P 0x%04x:  0x%04x",addr,d);
 		prt_msg(msg_str);
 		addr++;
 	}
@@ -487,7 +487,7 @@ static COMMAND_FUNC( do_read_mem )
 
 	while(n--){
 		d=read_mem(addr);
-		sprintf(msg_str,"D 0x%04x:  0x%04x",addr,d);
+		snprintf(msg_str,LLEN,"D 0x%04x:  0x%04x",addr,d);
 		prt_msg(msg_str);
 		addr++;
 	}
@@ -500,10 +500,10 @@ static void _write_pgm_mem(QSP_ARG_DECL  int addr, int data)
 	const char *s;
 	char buf[LLEN];
 
-	sprintf(buf, "%s", pic_tbl[PIC_WR_PGM].pc_str);
+	snprintf(buf,LLEN, "%s", pic_tbl[PIC_WR_PGM].pc_str);
 	reset_buffer(curr_pdp->pd_sbp);
 if( debug & pic_debug ){
-sprintf(ERROR_STRING,"Sending \"%s\" to PIC",printable_string(buf));
+snprintf(ERROR_STRING,LLEN,"Sending \"%s\" to PIC",printable_string(buf));
 advise(ERROR_STRING);
 }
 	send_pic_cmd(curr_pdp,buf);
@@ -525,10 +525,10 @@ static void _write_mem(QSP_ARG_DECL  int addr, int data)
 	const char *s;
 	char buf[LLEN];
 
-	sprintf(buf, "%s", pic_tbl[PIC_WR_DATA].pc_str);
+	snprintf(buf,LLEN, "%s", pic_tbl[PIC_WR_DATA].pc_str);
 	reset_buffer(curr_pdp->pd_sbp);
 if( debug & pic_debug ){
-sprintf(ERROR_STRING,"Sending \"%s\" to PIC",printable_string(buf));
+snprintf(ERROR_STRING,LLEN,"Sending \"%s\" to PIC",printable_string(buf));
 advise(ERROR_STRING);
 }
 	send_pic_cmd(curr_pdp,buf);
@@ -595,13 +595,13 @@ static void _open_pic_device(QSP_ARG_DECL  const char *s)
 
 	pdp = pic_dev_of(s);
 	if( pdp != NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"open_pic_device:  pic device %s is already open",s);
 		warn(ERROR_STRING);
 		return;
 	}
 	if( n_pics_active >= MAX_PIC_DEVICES ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Max number (%d) of PIC devices already open, won't attempt to open %s.",
 			MAX_PIC_DEVICES,s);
 		warn(ERROR_STRING);
@@ -609,7 +609,7 @@ static void _open_pic_device(QSP_ARG_DECL  const char *s)
 	}
 
 	if( (fd = open_serial_device(s)) < 0 ){ 
-		sprintf(ERROR_STRING,"Unable to open pic device %s",s);
+		snprintf(ERROR_STRING,LLEN,"Unable to open pic device %s",s);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -774,7 +774,7 @@ static int _scan_line(QSP_ARG_DECL  const char **sp, int what_to_do )
 
 	s = *sp;
 	if( *s != ':' ){
-		sprintf(ERROR_STRING,"hex file line \"%s\" does not begin with ':' !?",s);
+		snprintf(ERROR_STRING,LLEN,"hex file line \"%s\" does not begin with ':' !?",s);
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -786,7 +786,7 @@ static int _scan_line(QSP_ARG_DECL  const char **sp, int what_to_do )
 		return(-1);
 	}
 	if( count & 1 ){
-		sprintf(ERROR_STRING,"count (0x%02x) should be even for PIC",count);
+		snprintf(ERROR_STRING,LLEN,"count (0x%02x) should be even for PIC",count);
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -796,7 +796,7 @@ static int _scan_line(QSP_ARG_DECL  const char **sp, int what_to_do )
 		return(-1);
 	}
 	if( a & 1 ){
-		sprintf(ERROR_STRING,"Address (0x%04x) is odd, should be even for PIC",a);
+		snprintf(ERROR_STRING,LLEN,"Address (0x%04x) is odd, should be even for PIC",a);
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -817,7 +817,7 @@ static int _scan_line(QSP_ARG_DECL  const char **sp, int what_to_do )
 		if( what_to_do == WRITE_DATA ){
 			write_pgm_mem(a,w);
 			if( verbose ){
-				sprintf(ERROR_STRING,"P %04x %04x",a,w);
+				snprintf(ERROR_STRING,LLEN,"P %04x %04x",a,w);
 				advise(ERROR_STRING);
 			}
 			a++;
@@ -825,7 +825,7 @@ static int _scan_line(QSP_ARG_DECL  const char **sp, int what_to_do )
 			int d;
 			d = read_pgm_mem(a);
 			if( d != w ){
-				sprintf(ERROR_STRING,"0x%04x:  0x%04x  --  0x%04x expected",a,d,w);
+				snprintf(ERROR_STRING,LLEN,"0x%04x:  0x%04x  --  0x%04x expected",a,d,w);
 				warn(ERROR_STRING);
 			}
 			a++;
@@ -840,7 +840,7 @@ static int _scan_line(QSP_ARG_DECL  const char **sp, int what_to_do )
 	s = *sp;
 	b = strlen(s);
 	if( b != 0 ){
-		sprintf(ERROR_STRING,"scan_line:  %d extra characters at end of record!?",b);
+		snprintf(ERROR_STRING,LLEN,"scan_line:  %d extra characters at end of record!?",b);
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -853,7 +853,7 @@ static int _scan_line(QSP_ARG_DECL  const char **sp, int what_to_do )
 			advise("\nignoring configuration word");
 			return(1);
 		}
-		sprintf(ERROR_STRING,"Address 0x%x out of range",a);
+		snprintf(ERROR_STRING,LLEN,"Address 0x%x out of range",a);
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -919,7 +919,7 @@ static void _verify_hex_line(QSP_ARG_DECL  const char *s)
 #define VALIDATE_CMD_CHAR(c)							\
 										\
 	if( c != 'L' && c != 'T' ){						\
-		sprintf(ERROR_STRING,"CAUTIOUS:  cmd_char 0x%x should be 'L' (0x%x) or 'T' (0x%x)",	\
+		snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  cmd_char 0x%x should be 'L' (0x%x) or 'T' (0x%x)",	\
 			c,'L','T');						\
 		warn(ERROR_STRING);						\
 		return;								\
@@ -939,14 +939,14 @@ static void _send_short_data(QSP_ARG_DECL  int cmd_char, Data_Obj *dp)	/* send a
 #endif
 
 	if( OBJ_COMPS(dp) != 4 ){
-		sprintf(ERROR_STRING,"send_short_data:  object %s (%d) should have 4 components",
+		snprintf(ERROR_STRING,LLEN,"send_short_data:  object %s (%d) should have 4 components",
 			OBJ_NAME(dp),OBJ_COMPS(dp));
 		warn(ERROR_STRING);
 		return;
 	}
 	/* we don't need to do this, but for now we will because we are lazy */
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,"Sorry, object %s should be contiguous for send_short_data",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"Sorry, object %s should be contiguous for send_short_data",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}
@@ -958,7 +958,7 @@ static void _send_short_data(QSP_ARG_DECL  int cmd_char, Data_Obj *dp)	/* send a
 		s2 = *sp++;
 		s3 = *sp++;
 		s4 = *sp++;
-		sprintf(buf,"%c%04x%04x%04x%04x",cmd_char,s1,s2,s3,s4);
+		snprintf(buf,32,"%c%04x%04x%04x%04x",cmd_char,s1,s2,s3,s4);
 		send_pic_cmd(curr_pdp,buf);
 	}
 }
@@ -980,7 +980,7 @@ static void _stream_long_data(QSP_ARG_DECL  Proc_Info *pip)
 	count = pip->ppi_count;
 	cmd_char = pip->ppi_cmd;
 
-	sprintf(buf,"z");		/* wait_even command */
+	snprintf(buf,32,"z");		/* wait_even command */
 	send_pic_cmd(pdp,buf);
 
 	WAIT_FOR_PROMPT(pdp)
@@ -989,7 +989,7 @@ static void _stream_long_data(QSP_ARG_DECL  Proc_Info *pip)
 	while(count--){
 		l1 = *lp;
 		l2 = *(lp+1);
-		sprintf(buf,"%c%08lx%08lx",cmd_char,l1,l2);
+		snprintf(buf,32,"%c%08lx%08lx",cmd_char,l1,l2);
 		send_pic_cmd(pdp,buf);
 		WAIT_FOR_PROMPT(pdp)
 		lp += inc/sizeof(long);
@@ -1035,7 +1035,7 @@ static void _start_pic_threads(QSP_ARG_DECL  Data_Obj *dp, int cmd_char)
 	pthread_attr_setinheritsched(&attr1,PTHREAD_INHERIT_SCHED);
 
 	for(i=0;i<channels_per_pixel;i++){
-		sprintf(ERROR_STRING,"pic_thread%d",i);
+		snprintf(ERROR_STRING,LLEN,"pic_thread%d",i);
 		ppi[i].ppi_name = savestr(ERROR_STRING);
 
 		ppi[i].ppi_index=i;
@@ -1129,11 +1129,11 @@ static COMMAND_FUNC( do_led8 )
 	send_pic_cmd(curr_pdp,"l");
 
 	expected_response(curr_pdp->pd_sbp,"Enter channel number: ");
-	sprintf(buf,"%02x",chan);
+	snprintf(buf,4,"%02x",chan);
 	send_pic_cmd(curr_pdp,buf);
 
 	expected_response(curr_pdp->pd_sbp,"Enter led byte: ");
-	sprintf(buf,"%02x",data);
+	snprintf(buf,4,"%02x",data);
 	send_pic_cmd(curr_pdp,buf);
 
 	WAIT_FOR_PROMPT(curr_pdp)
@@ -1156,11 +1156,11 @@ static COMMAND_FUNC( do_set_timer )
 	send_pic_cmd(curr_pdp,"t");
 
 	//expected_response(curr_pdp->pd_sbp,"Enter LED counterl: ");
-	//sprintf(buf,"%02x",countl);
+	//snprintf(buf,LLEN,"%02x",countl);
 	//send_pic_cmd(curr_pdp,buf);
 
 	expected_response(curr_pdp->pd_sbp,"Enter LED counterh: ");
-	sprintf(buf,"%02x",counth);
+	snprintf(buf,4,"%02x",counth);
 	send_pic_cmd(curr_pdp,buf);
 
 	WAIT_FOR_PROMPT(curr_pdp)
@@ -1190,13 +1190,13 @@ static void _stream_byte_data(QSP_ARG_DECL  int cmd_char, Data_Obj *dp)
 	char buf[32];
 
 	if( OBJ_COMPS(dp) != 1 ){
-		sprintf(ERROR_STRING,"stream_byte_data:  object %s (%d) should have 1 component",
+		snprintf(ERROR_STRING,LLEN,"stream_byte_data:  object %s (%d) should have 1 component",
 			OBJ_NAME(dp),OBJ_COMPS(dp));
 		warn(ERROR_STRING);
 		return;
 	}
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,"Sorry, object %s should be contiguous for stream_byte_data",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"Sorry, object %s should be contiguous for stream_byte_data",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}
@@ -1204,7 +1204,7 @@ static void _stream_byte_data(QSP_ARG_DECL  int cmd_char, Data_Obj *dp)
 	cp = OBJ_DATA_PTR(dp);
 	while(n--){
 		c1 = *cp++;
-		sprintf(buf,"%c%02x",cmd_char,c1);
+		snprintf(buf,32,"%c%02x",cmd_char,c1);
 		send_pic_cmd(curr_pdp,buf);
 		WAIT_FOR_PROMPT(curr_pdp)
 	}
@@ -1232,10 +1232,10 @@ static void stream_data(QSP_ARG_DECL  int cmd_char)
 
 	bytes_per_pixel = ELEMENT_SIZE(dp) * OBJ_COMPS(dp);
 	if( bytes_per_pixel%8 != 0 ){
-		sprintf(ERROR_STRING,"stream_data:  data vector %s has %d bytes per pixel.",
+		snprintf(ERROR_STRING,LLEN,"stream_data:  data vector %s has %d bytes per pixel.",
 			OBJ_NAME(dp),bytes_per_pixel);
 		warn(ERROR_STRING);
-		sprintf(ERROR_STRING,"which is not an integral number of 64 bit channels.");
+		snprintf(ERROR_STRING,LLEN,"which is not an integral number of 64 bit channels.");
 		advise(ERROR_STRING);
 		return;
 	}
@@ -1243,7 +1243,7 @@ static void stream_data(QSP_ARG_DECL  int cmd_char)
 	channels_per_pixel = bytes_per_pixel/8;
 
 	if( channels_per_pixel > n_pics_active ){
-		sprintf(ERROR_STRING,"stream_data:  vector %s has data for %d channels, but only %d devices are active",
+		snprintf(ERROR_STRING,LLEN,"stream_data:  vector %s has data for %d channels, but only %d devices are active",
 			OBJ_NAME(dp),channels_per_pixel,n_pics_active);
 		warn(ERROR_STRING);
 		return;
@@ -1254,18 +1254,18 @@ static void stream_data(QSP_ARG_DECL  int cmd_char)
 	 */
 	if( channels_per_pixel != n_pics_active ){
 		if( channels_per_pixel > 1 ){
-			sprintf(ERROR_STRING,"stream_data:  vector %s has data for %d channels, will use the first %d of %d active devices",
+			snprintf(ERROR_STRING,LLEN,"stream_data:  vector %s has data for %d channels, will use the first %d of %d active devices",
 				OBJ_NAME(dp),channels_per_pixel,channels_per_pixel,n_pics_active);
 			advise(ERROR_STRING);
 		} else {
-			sprintf(ERROR_STRING,"stream_data:  using active device %s",curr_pdp->pd_name);
+			snprintf(ERROR_STRING,LLEN,"stream_data:  using active device %s",curr_pdp->pd_name);
 			advise(ERROR_STRING);
 		}
 	}
 
 	/* we don't need to do this, but for now we will because we are lazy */
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,"Sorry, object %s should be contiguous for stream_long_data",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"Sorry, object %s should be contiguous for stream_long_data",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}
@@ -1287,7 +1287,7 @@ static void stream_bytes(QSP_ARG_DECL  int cmd_char)
 		return;
 	}
 	if( OBJ_MACH_PREC(dp) != PREC_UBY ){
-		sprintf(ERROR_STRING,"stream_bytes:  data vector %s (%s) should have %s precision",
+		snprintf(ERROR_STRING,LLEN,"stream_bytes:  data vector %s (%s) should have %s precision",
 			OBJ_NAME(dp),PREC_NAME(OBJ_MACH_PREC_PTR(dp)),NAME_FOR_PREC_CODE(PREC_UBY));
 		warn(ERROR_STRING);
 		return;
@@ -1386,7 +1386,7 @@ static COMMAND_FUNC( do_need )
 	if( firmware_version == NULL )
 		get_firmware_version();
 	if( strcmp(s,firmware_version) ){
-		sprintf(ERROR_STRING,"Expected firmware version %s, but version %s is running!?",
+		snprintf(ERROR_STRING,LLEN,"Expected firmware version %s, but version %s is running!?",
 			s,firmware_version);
 		error1(ERROR_STRING);
 	}
@@ -1503,7 +1503,7 @@ static void _check_pic_tbl(SINGLE_QSP_ARG_DECL)		// make sure it's in the right 
 
 	for(i=0;i<N_PIC_CMDS;i++){
 		if( pic_tbl[i].pc_code != i ){
-			sprintf(ERROR_STRING,"Command code at tbl location %d is %d, expected %d",i,
+			snprintf(ERROR_STRING,LLEN,"Command code at tbl location %d is %d, expected %d",i,
 				pic_tbl[i].pc_code,i);
 			error1(ERROR_STRING);
 		}

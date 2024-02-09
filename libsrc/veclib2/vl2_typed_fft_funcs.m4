@@ -94,7 +94,7 @@ define(`XFER_FFT_SINC',`
 	} else if( IS_COLVEC($3) ){
 		SET_FFT_SINC($2, OBJ_ROW_INC( ($3) ) );
 	} else {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"%s:  %s is neither a row nor a column!?","$1",OBJ_NAME($3));
 		warn(ERROR_STRING);
 		return;
@@ -110,7 +110,7 @@ define(`XFER_FFT_DINC',`
 	} else if( IS_COLVEC($3) ){
 		SET_FFT_DINC($2, OBJ_ROW_INC( ($3) ) );
 	} else {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"%s:  %s is neither a row nor a column!?","$1",OBJ_NAME($3));
 		warn(ERROR_STRING);
 		return;
@@ -158,13 +158,13 @@ static void init_twiddle (dimension_t len)
 #ifdef ONLY_FOR_DEBUG
 static void show_fa(FFT_Args *fap)
 {
-	sprintf(DEFAULT_ERROR_STRING,"dst_addr = 0x%"PRIxPTR", inc = %ld",
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"dst_addr = 0x%"PRIxPTR", inc = %ld",
 		(uintptr_t)FFT_DST(fap),(long)FFT_DINC(fap));
 	NADVISE(DEFAULT_ERROR_STRING);
-	sprintf(DEFAULT_ERROR_STRING,"src_addr = 0x%"PRIxPTR", inc = %ld",
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"src_addr = 0x%"PRIxPTR", inc = %ld",
 		(uintptr_t)FFT_SRC(fap),(long)FFT_SINC(fap));
 	NADVISE(DEFAULT_ERROR_STRING);
-	sprintf(DEFAULT_ERROR_STRING,"len = %ld, isi = %d",
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"len = %ld, isi = %d",
 		(long)FFT_LEN(fap),FFT_ISI(fap));
 	NADVISE(DEFAULT_ERROR_STRING);
 }
@@ -858,7 +858,7 @@ dnl	the space before the opening paren is important!!!
 		total += *op;
 	}
 /*
-sprintf(DEFAULT_ERROR_STRING,"rvift:  total = %g    B0 = %g",total,B0);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"rvift:  total = %g    B0 = %g",total,B0);
 NADVISE(DEFAULT_ERROR_STRING);
 */
 
@@ -877,7 +877,7 @@ NADVISE(DEFAULT_ERROR_STRING);
 	total /= (len);
 	diff = (std_type)( 2*(B0 - total) );
 /*
-sprintf(DEFAULT_ERROR_STRING,"rvift:  after normalizing total = %g    diff = %g",total,diff);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"rvift:  after normalizing total = %g    diff = %g",total,diff);
 NADVISE(DEFAULT_ERROR_STRING);
 */
 

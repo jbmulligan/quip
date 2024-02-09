@@ -34,7 +34,7 @@ int _hips2_to_dp(QSP_ARG_DECL  Data_Obj *dp,Hips2_Header *hd_p)
 		case PFDOUBLE:prec=PREC_DP; break;
 		case PFCOMPLEX: prec=PREC_SP; type_dim=2; break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"hips2_to_dp:  unsupported pixel format code %d",
 				hd_p->pixel_format);
 			warn(ERROR_STRING);
@@ -167,7 +167,7 @@ static void _rewrite_hips2_nf(QSP_ARG_DECL  FILE *fp,dimension_t n)
 
 	/* print the new nframes string */
 
-	sprintf(str,"%6d",n);
+	snprintf(str,16,"%6d",n);
 	if( fwrite(str,1,6,fp) != 6 ){
 		warn("error overwriting header nframes");
 		return;
@@ -181,7 +181,7 @@ FIO_CLOSE_FUNC( hips2 )
 		&& ifp->if_dp != NULL	/* may be closing 'cause of error */
 		&& ifp->if_nfrms != ifp->if_frms_to_wt ){
 		if( ifp->if_nfrms <= 0 ){
-			sprintf(ERROR_STRING, "file %s nframes=%d!?",
+			snprintf(ERROR_STRING,LLEN, "file %s nframes=%d!?",
 				ifp->if_name,ifp->if_nfrms);
 			warn(ERROR_STRING);
 		}

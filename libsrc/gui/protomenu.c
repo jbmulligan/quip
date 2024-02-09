@@ -74,7 +74,7 @@ static COMMAND_FUNC( do_hide_back )
 	qvc= (quipViewController *)PO_VC(curr_panel);
 	[ qvc hideBackButton:hide ];
 #else // ! BUILD_FOR_IOS
-	sprintf(ERROR_STRING,"do_hide_back:  not implemented, ignoring value %d",hide);
+	snprintf(ERROR_STRING,LLEN,"do_hide_back:  not implemented, ignoring value %d",hide);
 	advise(ERROR_STRING);
 #endif // ! BUILD_FOR_IOS
 }
@@ -91,7 +91,7 @@ static COMMAND_FUNC( do_show_done )
 	qvc= (quipViewController *)PO_VC(curr_panel);
 	[ qvc setDoneAction:s ];
 #else // ! BUILD_FOR_IOS
-	sprintf(ERROR_STRING,"do_show_done:  not implemented, ignoring action '%s'",s);
+	snprintf(ERROR_STRING,LLEN,"do_show_done:  not implemented, ignoring action '%s'",s);
 	advise(ERROR_STRING);
 #endif // ! BUILD_FOR_IOS
 }
@@ -163,13 +163,13 @@ static COMMAND_FUNC( do_scrnobj_info )
 
 	switch(SOB_TYPE(sop)){
 		case SOT_CHOOSER:
-			sprintf(MSG_STR, "Chooser '%s':",SOB_NAME(sop));
+			snprintf(MSG_STR,LLEN, "Chooser '%s':",SOB_NAME(sop));
 			prt_msg(MSG_STR);
-			sprintf(MSG_STR, "\t%d x %d",SOB_WIDTH(sop),SOB_HEIGHT(sop));
+			snprintf(MSG_STR,LLEN, "\t%d x %d",SOB_WIDTH(sop),SOB_HEIGHT(sop));
 			prt_msg(MSG_STR);
 			break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"Sorry, info for '%s' (type %d) not implemented yet.",
 				SOB_NAME(sop),SOB_TYPE(sop));
 			advise(ERROR_STRING);
@@ -277,7 +277,7 @@ static COMMAND_FUNC(do_scroll)
 	else
 		[po disableScrolling];
 #else /* ! BUILD_FOR_IOS */
-	sprintf(ERROR_STRING,"do_scroll:  not implemented, ignoring value %d",yn);
+	snprintf(ERROR_STRING,LLEN,"do_scroll:  not implemented, ignoring value %d",yn);
 	advise(ERROR_STRING);
 #endif /* ! BUILD_FOR_IOS */
 }
@@ -517,8 +517,9 @@ static void _do_table_item(QSP_ARG_DECL  Table_Item_Type t)
 	Screen_Obj *bo;
 	char *str;
 
-	str=getbuf( strlen(s)+strlen(e)+6 );
-	sprintf(str,"%s  -  %s",s,e);
+	int l = strlen(s)+strlen(e)+6;
+	str=getbuf(l);
+	snprintf(str,l,"%s  -  %s",s,e);
 
 	bo = simple_object(str);
 	if( bo == NULL ) return;
@@ -790,7 +791,7 @@ static COMMAND_FUNC( mk_console )
 
 	console_po = panel_obj_of(s);
 #else /* ! BUILD_FOR_IOS */
-	sprintf(ERROR_STRING,"mk_console:  not implemented, ignoring value '%s'",s);
+	snprintf(ERROR_STRING,LLEN,"mk_console:  not implemented, ignoring value '%s'",s);
 	advise(ERROR_STRING);
 #endif /* ! BUILD_FOR_IOS */
 }
@@ -901,7 +902,7 @@ COMMAND_FUNC( do_protomenu )
 		display_name = which_display();
 		// the next lines suppress a warning about unused value of s
 		if( verbose ){
-			sprintf(MSG_STR,"Using display '%s'",display_name);
+			snprintf(MSG_STR,LLEN,"Using display '%s'",display_name);
 			prt_msg(MSG_STR);
 		}
 #endif /* HAVE_X11 */

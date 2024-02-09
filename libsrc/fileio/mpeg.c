@@ -130,7 +130,7 @@ static ImVfb *dp_to_ImVfb(Data_Obj *dp)
 		wt_img = MPEGe_ImVfbAlloc(dp->dt_cols, dp->dt_rows, 
 						(IMVFBRGB | IMVFBALPHA) , TRUE);
 	} else {
-		sprintf(error_string, "ERROR: Unsupported number of components(%ld)",
+		snprintf(error_string,LLEN, "ERROR: Unsupported number of components(%ld)",
 									dp->dt_tdim);
 		advise(error_string);
 		return NULL;
@@ -242,7 +242,7 @@ printf("mpeg_open: IN\n");
 		/* Initialize SDL */
 		
 		if ((SDL_Init(SDL_INIT_VIDEO) < 0) || !SDL_VideoDriverName(buf, 1)) {
-			sprintf(error_string,"Couldn't init SDL video: %s\n",
+			snprintf(error_string,LLEN,"Couldn't init SDL video: %s\n",
 				SDL_GetError());
 			warn(error_string);
 		}
@@ -296,7 +296,7 @@ void mpeg_close(Image_File *ifp)
 		
 		/* Create MPEG end sequences and close output file. */
 		if( !MPEGe_close(ifp->hdr->enc_opts) ) {
-			sprintf(error_string,"ERROR: %s", ifp->hdr->enc_opts->error);
+			snprintf(error_string,LLEN,"ERROR: %s", ifp->hdr->enc_opts->error);
 			advise(error_string);
 		}
 
@@ -383,7 +383,7 @@ printf("mpeg_rd: IN\n");
 
 	if( FILE_FINISHED(ifp) ){	/* BUG?  if autoclose is set to no, do we make sure we don't read past eof? */
 		if( verbose ){
-			sprintf(error_string,
+			snprintf(error_string,LLEN,
 				"closing file \"%s\" after reading %ld frames",
 				ifp->if_name,ifp->if_nfrms);
 			advise(error_string);
@@ -425,7 +425,7 @@ int mpeg_wt(Data_Obj *dp,Image_File *ifp)
 
 	if( ifp->if_nfrms == ifp->if_frms_to_wt ){
 		if( verbose ){
-			sprintf(error_string, "closing file \"%s\" after writing %ld frames",
+			snprintf(error_string,LLEN, "closing file \"%s\" after writing %ld frames",
 				ifp->if_name,ifp->if_nfrms);
 			advise(error_string);
 		}
@@ -437,13 +437,13 @@ int mpeg_wt(Data_Obj *dp,Image_File *ifp)
 
 void report_mpeg_info(Image_File *ifp)
 {
-	sprintf(msg_str,"\timage depth (bits) %d", ifp->hdr->idp->Depth);
+	snprintf(msg_str,LLEN,"\timage depth (bits) %d", ifp->hdr->idp->Depth);
 	prt_msg(msg_str);
 	
-	sprintf(msg_str,"\tbits per pixel %d", ifp->hdr->idp->PixelSize);
+	snprintf(msg_str,LLEN,"\tbits per pixel %d", ifp->hdr->idp->PixelSize);
 	prt_msg(msg_str);
 	
-	sprintf(msg_str,"\tsize of image %d bytes", ifp->hdr->idp->Size);
+	snprintf(msg_str,LLEN,"\tsize of image %d bytes", ifp->hdr->idp->Size);
 	prt_msg(msg_str);
 }
 

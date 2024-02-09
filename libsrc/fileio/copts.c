@@ -85,7 +85,7 @@ static COMMAND_FUNC( do_set_quality )
 	q=HOW_MANY("quality factor (1-99)");
 
 	if( q < 1 || q > 99 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"JPEG quality factor (%d) should be between 1 and 99",q);
 		WARN(ERROR_STRING);
 		return;

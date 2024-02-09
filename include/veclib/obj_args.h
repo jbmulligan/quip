@@ -60,7 +60,7 @@ typedef struct argset_prec Argset_Prec;
 		( args_prec + (arg_type-1) * N_ARGSET_PRECISIONS )
 
 #define TELL_FUNCTYPE(argsprec,arg_type)				\
-sprintf(ERROR_STRING,"functype = %d, argsprec = %d (%s), arg_type = %d (%s)",\
+snprintf(ERROR_STRING,LLEN,"functype = %d, argsprec = %d (%s), arg_type = %d (%s)",\
 ( argsprec + (arg_type-1) * N_ARGSET_PRECISIONS ), \
 argsprec, NAME_FOR_ARGSPREC_CODE(argsprec), \
 arg_type, NAME_FOR_ARGTYPE(arg_type) );\

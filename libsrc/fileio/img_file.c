@@ -127,7 +127,7 @@ static void update_pathname(Image_File *ifp)
 
 	if( iofile_directory != NULL && *ifp->if_name != '/' ){
 		char str[LLEN];
-		sprintf(str,"%s/%s",iofile_directory,ifp->if_name);
+		snprintf(str,LLEN,"%s/%s",iofile_directory,ifp->if_name);
 		ifp->if_pathname = savestr(str);
 	} else {
 		ifp->if_pathname = ifp->if_name;
@@ -137,7 +137,7 @@ static void update_pathname(Image_File *ifp)
 void _set_iofile_directory(QSP_ARG_DECL  const char *dirname)
 {
 	if( !directory_exists(dirname) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Directory %s does not exist or is not a directory", dirname);
 		WARN(ERROR_STRING);
 		return;
@@ -170,7 +170,7 @@ static FIO_CLOSE_FUNC( null ) {}
 
 static FIO_SEEK_FUNC(null)
 {
-	sprintf(ERROR_STRING,"Sorry, can't seek on file %s",ifp->if_name);
+	snprintf(ERROR_STRING,LLEN,"Sorry, can't seek on file %s",ifp->if_name);
 	WARN(ERROR_STRING);
 	return(-1);
 }
@@ -474,7 +474,7 @@ int open_fd(QSP_ARG_DECL  Image_File *ifp)
 			struct statvfs vfsbuf;
 
 			if( statvfs(ifp->if_pathname,&vfsbuf)< 0 ){
-				sprintf(ERROR_STRING,"statvfs (%s):",
+				snprintf(ERROR_STRING,LLEN,"statvfs (%s):",
 					ifp->if_pathname);
 				tell_sys_error(ERROR_STRING);
 				warn("Couldn't determine fs type, not using O_DIRECT");
@@ -515,7 +515,7 @@ retry:
 		/* can't do O_DIRECT across NFS */
 		if( o_direct && errno==EINVAL ){
 			o_direct = 0;
-sprintf(ERROR_STRING,"Couldn't open file \"%s\" with direct i/o.",
+snprintf(ERROR_STRING,LLEN,"Couldn't open file \"%s\" with direct i/o.",
 ifp->if_pathname);
 warn(ERROR_STRING);
 advise("retrying to open write file w/o DIRECT_IO");
@@ -524,7 +524,7 @@ advise("retrying to open write file w/o DIRECT_IO");
 #endif /* HAVE_DIRECT_IO */
 
 		tell_sys_error("open");
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"open_fd:  error getting descriptor for %s file %s",
 			IS_READABLE(ifp)?"read":"write",ifp->if_pathname);
 		warn(ERROR_STRING);
@@ -536,7 +536,7 @@ advise("retrying to open write file w/o DIRECT_IO");
 #ifdef HAVE_IOPEN
 int ifp_iopen(Image_File *ifp)
 {
-sprintf(ERROR_STRING,"name %s  rows %d cols %d",
+snprintf(ERROR_STRING,LLEN,"name %s  rows %d cols %d",
 ifp->if_name,OBJ_ROWS(ifp->if_dp),OBJ_COLS(ifp->if_dp));
 advise(ERROR_STRING);
 
@@ -545,7 +545,7 @@ advise(ERROR_STRING);
 		OBJ_ROWS(ifp->if_dp),OBJ_COLS(ifp->if_dp),OBJ_COMPS(ifp->if_dp));
 
 	if( ifp->if_hd.rgb_ip == NULL ){
-		sprintf(ERROR_STRING,"Error iopening file %s",ifp->if_pathname);
+		snprintf(ERROR_STRING,LLEN,"Error iopening file %s",ifp->if_pathname);
 		warn(ERROR_STRING);
 		return(-1);
 	} else return(0);
@@ -573,7 +573,7 @@ int _open_fp(QSP_ARG_DECL  Image_File *ifp)
 		if(  FT_CODE(IF_TYPE(ifp))  == IFT_RGB ){
 			ifp->if_hd.rgb_ip = iopen(ifp->if_pathname,"r");
 			if( ifp->if_hd.rgb_ip == NULL ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"open_fp:  error getting RGB descriptor for file %s",
 					ifp->if_pathname);
 				warn(ERROR_STRING);
@@ -613,7 +613,7 @@ static int check_clobber(QSP_ARG_DECL  Image_File *ifp)
 
 	if( file_exists(ifp->if_pathname) ){
 		if( no_clobber ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"Not clobbering existing file \"%s\"",
 				ifp->if_pathname);
 			warn(ERROR_STRING);
@@ -622,7 +622,7 @@ static int check_clobber(QSP_ARG_DECL  Image_File *ifp)
 			return(-1);
 	} else {
 		if( !file_exists(dir) ){
-			sprintf(ERROR_STRING, "No directory \"%s\"!?", dir);
+			snprintf(ERROR_STRING,LLEN, "No directory \"%s\"!?", dir);
 			warn(ERROR_STRING);
 			return(-1);
 		}
@@ -630,7 +630,7 @@ static int check_clobber(QSP_ARG_DECL  Image_File *ifp)
 		 * write permissions on the directory, e.g. /dev/null
 		 */
 		if( !can_write_to(dir) ){
-			sprintf(ERROR_STRING, "Can't write to directory \"%s\"!?", dir);
+			snprintf(ERROR_STRING,LLEN, "Can't write to directory \"%s\"!?", dir);
 			warn(ERROR_STRING);
 			return(-1);
 		}
@@ -661,12 +661,12 @@ Image_File *_img_file_creat(QSP_ARG_DECL  const char *name,int rw,Filetype * ftp
 	int had_error=0;
 
 	if( rw == FILE_READ && CANNOT_READ(ftp) ){
-		sprintf(ERROR_STRING,"Sorry, don't know how to read %s files",
+		snprintf(ERROR_STRING,LLEN,"Sorry, don't know how to read %s files",
 			FT_NAME(ftp));
 		warn(ERROR_STRING);
 		return(NULL);
 	} else if( rw == FILE_WRITE && CANNOT_WRITE(ftp) ){
-		sprintf(ERROR_STRING,"Sorry, don't know how to write %s files",
+		snprintf(ERROR_STRING,LLEN,"Sorry, don't know how to write %s files",
 			FT_NAME(ftp));
 		warn(ERROR_STRING);
 		return(NULL);
@@ -725,7 +725,7 @@ dun:
 int same_size(QSP_ARG_DECL  Data_Obj *dp,Image_File *ifp)
 {
 	if( ifp->if_dp == NULL ){
-		sprintf(ERROR_STRING,"No size/prec info about image file %s",
+		snprintf(ERROR_STRING,LLEN,"No size/prec info about image file %s",
 			ifp->if_name);
 		WARN(ERROR_STRING);
 		return(0);
@@ -736,16 +736,16 @@ int same_size(QSP_ARG_DECL  Data_Obj *dp,Image_File *ifp)
 		( OBJ_COLS(ifp->if_dp) != 0 && OBJ_COLS(ifp->if_dp) != OBJ_COLS(dp) )
 		){
 
-		sprintf(ERROR_STRING,"size mismatch, object %s and file %s",
+		snprintf(ERROR_STRING,LLEN,"size mismatch, object %s and file %s",
 			OBJ_NAME(dp),ifp->if_name);
 		WARN(ERROR_STRING);
-		sprintf(ERROR_STRING,"      %-24s %-24s",
+		snprintf(ERROR_STRING,LLEN,"      %-24s %-24s",
 			OBJ_NAME(dp),ifp->if_name);
 		advise(ERROR_STRING);
-		sprintf(ERROR_STRING,"rows: %-24d %-24d",OBJ_ROWS(dp),
+		snprintf(ERROR_STRING,LLEN,"rows: %-24d %-24d",OBJ_ROWS(dp),
 			OBJ_ROWS(ifp->if_dp));
 		advise(ERROR_STRING);
-		sprintf(ERROR_STRING,"cols: %-24d %-24d",OBJ_COLS(dp),
+		snprintf(ERROR_STRING,LLEN,"cols: %-24d %-24d",OBJ_COLS(dp),
 			OBJ_COLS(ifp->if_dp));
 		advise(ERROR_STRING);
 		return(0);
@@ -758,7 +758,7 @@ int _same_type(QSP_ARG_DECL  Data_Obj *dp,Image_File *ifp)
 	int retval=1;
 
 	if( ifp->if_dp == NULL ){
-		sprintf(ERROR_STRING,"No size/prec info about image file %s",
+		snprintf(ERROR_STRING,LLEN,"No size/prec info about image file %s",
 			ifp->if_name);
 		WARN(ERROR_STRING);
 		return(0);
@@ -773,7 +773,7 @@ int _same_type(QSP_ARG_DECL  Data_Obj *dp,Image_File *ifp)
 		){
 			/* it's ok */
 		} else {
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"Pixel format (%s) for file %s\n\tdoes not match object %s precision (%s)",
 	PREC_NAME(OBJ_PREC_PTR(ifp->if_dp)),ifp->if_name,
 	OBJ_NAME(dp),PREC_NAME(OBJ_PREC_PTR(dp)));
@@ -783,7 +783,7 @@ int _same_type(QSP_ARG_DECL  Data_Obj *dp,Image_File *ifp)
 	}
 
 	if( OBJ_COMPS(dp) != OBJ_COMPS(ifp->if_dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Pixel dimension (%d) for file %s\n\tdoes not match pixel dimension (%d) for object %s",
 	OBJ_COMPS(ifp->if_dp),ifp->if_name,OBJ_COMPS(dp),OBJ_NAME(dp));
 		WARN(ERROR_STRING);
@@ -809,27 +809,27 @@ void copy_dimensions(Data_Obj *dpto,Data_Obj *dpfr)	/* used by write routines...
 
 void _if_info(QSP_ARG_DECL  Image_File *ifp)
 {
-	sprintf(msg_str,"File %s:",ifp->if_name);
+	snprintf(msg_str,LLEN,"File %s:",ifp->if_name);
 	prt_msg(msg_str);
-	sprintf(msg_str,"\tpathname:  %s:",ifp->if_pathname);
+	snprintf(msg_str,LLEN,"\tpathname:  %s:",ifp->if_pathname);
 	prt_msg(msg_str);
-	sprintf(msg_str,"\t%s format (%d)",FT_NAME(IF_TYPE(ifp)),FT_CODE(IF_TYPE(ifp)) );
+	snprintf(msg_str,LLEN,"\t%s format (%d)",FT_NAME(IF_TYPE(ifp)),FT_CODE(IF_TYPE(ifp)) );
 	prt_msg(msg_str);
 	if( ifp->if_dp != NULL ){
-		sprintf(msg_str,"\t%s pixels",PREC_NAME(OBJ_PREC_PTR(ifp->if_dp)));
+		snprintf(msg_str,LLEN,"\t%s pixels",PREC_NAME(OBJ_PREC_PTR(ifp->if_dp)));
 		prt_msg(msg_str);
 		if( OBJ_SEQS(ifp->if_dp) > 1 ){
-			sprintf(msg_str,
+			snprintf(msg_str,LLEN,
 			"\t%d sequences, ",OBJ_SEQS(ifp->if_dp));
 			prt_msg_frag(msg_str);
 		} else {
-			sprintf(msg_str,"\t");
+			snprintf(msg_str,LLEN,"\t");
 			prt_msg_frag(msg_str);
 		}
 
 #define INFO_ARGS( n )	n , n==1?"":"s"
 
-		sprintf(msg_str,
+		snprintf(msg_str,LLEN,
 		"%d frame%s, %d row%s, %d column%s, %d component%s",
 			INFO_ARGS( OBJ_FRAMES(ifp->if_dp) ),
 			INFO_ARGS( OBJ_ROWS(ifp->if_dp) ),
@@ -839,17 +839,17 @@ void _if_info(QSP_ARG_DECL  Image_File *ifp)
 		prt_msg(msg_str);
 	}
 	if( ifp->if_extra_p != NULL ){
-		sprintf(msg_str,"Extra info at 0x%lx",(long)ifp->if_extra_p);
+		snprintf(msg_str,LLEN,"Extra info at 0x%lx",(long)ifp->if_extra_p);
 		prt_msg(msg_str);
 	}
 	if( IS_READABLE(ifp) ){
 		prt_msg("\topen for reading");
-		sprintf(msg_str,"\t%d frame%s already read",
+		snprintf(msg_str,LLEN,"\t%d frame%s already read",
 			INFO_ARGS(ifp->if_nfrms));
 		prt_msg(msg_str);
 	} else if( IS_WRITABLE(ifp) ){
 		prt_msg("\topen for writing");
-		sprintf(msg_str,"\t%d frame%s already written",
+		snprintf(msg_str,LLEN,"\t%d frame%s already written",
 			INFO_ARGS(ifp->if_nfrms));
 		prt_msg(msg_str);
 	}
@@ -976,7 +976,7 @@ Filetype *filetype_for_code(QSP_ARG_DECL  filetype_code code)
 		np = NODE_NEXT(np);
 	}
 
-	sprintf(ERROR_STRING,"filetype_for_code:  no filetype defined for code %d!?",code);
+	snprintf(ERROR_STRING,LLEN,"filetype_for_code:  no filetype defined for code %d!?",code);
 	WARN(ERROR_STRING);
 
 	return NULL;
@@ -1095,10 +1095,10 @@ static Filetype* infer_filetype_from_name(QSP_ARG_DECL  const char *name)
 	sfx_p = suffix_of(suffix);
 	if( sfx_p == NULL ){
 		// Print an advisory
-		sprintf(ERROR_STRING,"File suffix \"%s\" is not known!?",
+		snprintf(ERROR_STRING,LLEN,"File suffix \"%s\" is not known!?",
 			suffix);
 		WARN(ERROR_STRING);
-		sprintf(ERROR_STRING,"Using current file type %s",
+		snprintf(ERROR_STRING,LLEN,"Using current file type %s",
 			FT_NAME(curr_ftp) );
 		advise(ERROR_STRING);
 		return(NULL);
@@ -1120,13 +1120,13 @@ Image_File *_read_image_file(QSP_ARG_DECL  const char *name)
 		assert( curr_ftp != NULL );
 		ftp=curr_ftp;	/* use default if can't figure it out */
 	} else if( verbose && ftp!=curr_ftp ){
-		sprintf(ERROR_STRING,"Inferring filetype %s from filename %s, overriding default %s",
+		snprintf(ERROR_STRING,LLEN,"Inferring filetype %s from filename %s, overriding default %s",
 			FT_NAME(ftp),name,FT_NAME(curr_ftp));
 		advise(ERROR_STRING);
 	}
 
 	if( CANNOT_READ(ftp) ){
-		sprintf(ERROR_STRING,"Sorry, can't read files of type %s",
+		snprintf(ERROR_STRING,LLEN,"Sorry, can't read files of type %s",
 			FT_NAME(ftp));
 		warn(ERROR_STRING);
 		return(NULL);
@@ -1136,7 +1136,7 @@ Image_File *_read_image_file(QSP_ARG_DECL  const char *name)
 	ifp=(*ftp->op_func)( QSP_ARG  name, FILE_READ );
 
 	if( ifp == NULL ) {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"error reading %s file \"%s\"",FT_NAME(ftp),name);
 		warn(ERROR_STRING);
 	}
@@ -1156,14 +1156,14 @@ Image_File *_write_image_file(QSP_ARG_DECL  const char *filename,dimension_t n)
 		//assert( curr_ftp != NULL );
 		ftp=curr_ftp;	/* use default if can't figure it out */
 	} else if( ftp != curr_ftp ){
-		sprintf(ERROR_STRING,"Inferring filetype %s from filename %s, overriding default %s",
+		snprintf(ERROR_STRING,LLEN,"Inferring filetype %s from filename %s, overriding default %s",
 			FT_NAME(ftp),filename,FT_NAME(curr_ftp));
 		advise(ERROR_STRING);
 		// Should we make this filetype the new current default???
 	}
 
 	if( CANNOT_WRITE(ftp) ){
-		sprintf(ERROR_STRING,"Sorry, can't write files of type %s",
+		snprintf(ERROR_STRING,LLEN,"Sorry, can't write files of type %s",
 			FT_NAME(ftp));
 		warn(ERROR_STRING);
 		return(NULL);
@@ -1184,19 +1184,19 @@ void _read_object_from_file(QSP_ARG_DECL  Data_Obj *dp,Image_File *ifp)
 	if( ifp == NULL ) return;
 
 	if( !IS_READABLE(ifp) ){
-		sprintf(ERROR_STRING,"File %s is not readable",ifp->if_name);
+		snprintf(ERROR_STRING,LLEN,"File %s is not readable",ifp->if_name);
 		WARN(ERROR_STRING);
 		return;
 	}
 
 	if( OBJ_ROWS(ifp->if_dp) != 0 && OBJ_ROWS(dp) != OBJ_ROWS(ifp->if_dp) ){
-		sprintf(ERROR_STRING,"Row count mismatch, object %s (%d) and file %s (%d)",
+		snprintf(ERROR_STRING,LLEN,"Row count mismatch, object %s (%d) and file %s (%d)",
 				OBJ_NAME(dp),OBJ_ROWS(dp),ifp->if_name,OBJ_ROWS(ifp->if_dp));
 		WARN(ERROR_STRING);
 	}
 
 	if( OBJ_COLS(ifp->if_dp) != 0 && OBJ_COLS(dp) != OBJ_COLS(ifp->if_dp) ){
-		sprintf(ERROR_STRING,"Column count mismatch, object %s (%d) and file %s (%d)",
+		snprintf(ERROR_STRING,LLEN,"Column count mismatch, object %s (%d) and file %s (%d)",
 				OBJ_NAME(dp),OBJ_COLS(dp),ifp->if_name,OBJ_COLS(ifp->if_dp));
 		WARN(ERROR_STRING);
 	}
@@ -1228,7 +1228,7 @@ Image_File * _open_image_file(QSP_ARG_DECL  const char *filename,const char *rw)
 {
 	Image_File *ifp;
 
-sprintf(ERROR_STRING,"open_image_file %s",filename);
+snprintf(ERROR_STRING,LLEN,"open_image_file %s",filename);
 advise(ERROR_STRING);
 	if( *rw == 'r' )
 		ifp = read_image_file(filename);
@@ -1259,7 +1259,7 @@ void _write_image_to_file(QSP_ARG_DECL  Image_File *ifp,Data_Obj *dp)
 	if( ifp == NULL ) return;
 
 	if( ! IS_WRITABLE(ifp) ){
-		sprintf(ERROR_STRING,"File %s is not writable",ifp->if_name);
+		snprintf(ERROR_STRING,LLEN,"File %s is not writable",ifp->if_name);
 		WARN(ERROR_STRING);
 		return;
 	}
@@ -1333,19 +1333,19 @@ int _image_file_seek(QSP_ARG_DECL  Image_File *ifp,dimension_t n)
 
 #ifdef QUIP_DEBUG
 if( debug & debug_fileio ){
-sprintf(ERROR_STRING,"image_file_seek %s %d",
+snprintf(ERROR_STRING,LLEN,"image_file_seek %s %d",
 		ifp->if_name,n);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
 	if( ! IS_READABLE(ifp) ){
-		sprintf(ERROR_STRING,"File %s is not readable, can't seek",
+		snprintf(ERROR_STRING,LLEN,"File %s is not readable, can't seek",
 			ifp->if_name);
 		WARN(ERROR_STRING);
 		return(-1);
 	}
 	if( n >= OBJ_FRAMES(ifp->if_dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Frame index %d is out of range for file %s (%d frames)",
 			n,ifp->if_name,OBJ_FRAMES(ifp->if_dp));
 		WARN(ERROR_STRING);
@@ -1365,7 +1365,7 @@ advise(ERROR_STRING);
 	 */
 
 	if( (*FT_SEEK_FUNC(IF_TYPE(ifp)))(QSP_ARG  ifp,n) < 0 ){
-		sprintf(ERROR_STRING,"Error seeking frame %d on file %s",n,ifp->if_name);
+		snprintf(ERROR_STRING,LLEN,"Error seeking frame %d on file %s",n,ifp->if_name);
 		WARN(ERROR_STRING);
 		return(-1);
 	}
@@ -1377,7 +1377,7 @@ void _check_auto_close(QSP_ARG_DECL  Image_File *ifp)
 {
 	if( ifp->if_nfrms >= ifp->if_frms_to_wt ){
 		if( verbose ){
-	sprintf(ERROR_STRING, "closing file \"%s\" after writing %d frames",
+	snprintf(ERROR_STRING,LLEN, "closing file \"%s\" after writing %d frames",
 			ifp->if_name,ifp->if_nfrms);
 			advise(ERROR_STRING);
 		}
@@ -1412,7 +1412,7 @@ static double get_if_seconds(QSP_ARG_DECL  Item *ip,dimension_t frame)
 
 		default:
 			WARN("Timestamp functions are only supported for file types LML and RV");
-			sprintf(ERROR_STRING,"(file %s is type %s)",ifp->if_name,
+			snprintf(ERROR_STRING,LLEN,"(file %s is type %s)",ifp->if_name,
 					FT_NAME(IF_TYPE(ifp)));
 			advise(ERROR_STRING);
 			return(-1);
@@ -1437,7 +1437,7 @@ static double get_if_milliseconds(QSP_ARG_DECL  Item *ip,dimension_t frame)
 
 		default:
 			WARN("Timestamp functions are only supported for file types LML and RV");
-			sprintf(ERROR_STRING,"(file %s is type %s)",ifp->if_name,
+			snprintf(ERROR_STRING,LLEN,"(file %s is type %s)",ifp->if_name,
 					FT_NAME(IF_TYPE(ifp)));
 			advise(ERROR_STRING);
 			return(-1);
@@ -1461,7 +1461,7 @@ static double get_if_microseconds(QSP_ARG_DECL  Item *ip,dimension_t frame)
 
 		default:
 			WARN("Timestamp functions are only supported for file types LML and RV");
-			sprintf(ERROR_STRING,"(file %s is type %s)",ifp->if_name,
+			snprintf(ERROR_STRING,LLEN,"(file %s is type %s)",ifp->if_name,
 					FT_NAME(IF_TYPE(ifp)) );
 			advise(ERROR_STRING);
 			return(-1);

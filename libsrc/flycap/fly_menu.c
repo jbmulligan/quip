@@ -23,13 +23,13 @@ static COMMAND_FUNC( do_fly_cam_menu );
 
 #define UNIMP_MSG(whence)						\
 									\
-	sprintf(ERROR_STRING,						\
+	snprintf(ERROR_STRING,LLEN,						\
 		"%s:  function not implemented yet!?",whence);		\
 	WARN(ERROR_STRING);
 
 #define NO_LIB_MSG(whence)						\
 									\
-	sprintf(ERROR_STRING,						\
+	snprintf(ERROR_STRING,LLEN,						\
 		"%s:  program built without libflycap support!?",whence);	\
 	error1(ERROR_STRING);
 
@@ -69,7 +69,7 @@ static COMMAND_FUNC( do_trigger )
 #define GET_STROBE_SOURCE									\
 	source = how_many("source");								\
 	if( source < MIN_STROBE_SOURCE || source > MAX_STROBE_SOURCE ){				\
-		sprintf(ERROR_STRING,"Strobe source (%d) must be in the range %d-%d",		\
+		snprintf(ERROR_STRING,LLEN,"Strobe source (%d) must be in the range %d-%d",		\
 			source,MIN_STROBE_SOURCE,MAX_STROBE_SOURCE);				\
 		warn(ERROR_STRING);								\
 		return;										\
@@ -225,7 +225,7 @@ static COMMAND_FUNC( do_cam_info )
 	if( fcp == NULL ) return;
 
 	if( fcp == the_cam_p ){
-		sprintf(MSG_STR,"%s is selected as current camera.",fcp->fc_name);
+		snprintf(MSG_STR,LLEN,"%s is selected as current camera.",fcp->fc_name);
 		prt_msg(MSG_STR);
 	}
 #ifdef HAVE_LIBFLYCAP
@@ -283,7 +283,7 @@ static COMMAND_FUNC( do_grab )
 	} else {
 		char num_str[32];
 
-		sprintf(num_str,"%d",the_cam_p->fc_newest);
+		snprintf(num_str,32,"%d",the_cam_p->fc_newest);
 		assign_var("newest",num_str);
 	}
 
@@ -387,7 +387,7 @@ static COMMAND_FUNC( do_set_video_mode )
 					the_cam_p->fc_video_mode_names );
 	if( i < 0 ) return;
 
-sprintf(ERROR_STRING,"mode %s selected...",
+snprintf(ERROR_STRING,LLEN,"mode %s selected...",
 name_of_indexed_video_mode( the_cam_p->fc_video_mode_indices[i] ) );
 advise(ERROR_STRING);
 
@@ -501,7 +501,7 @@ static COMMAND_FUNC( do_get_fly_cam_video_modes )
 	CHECK_CAM
 
 	n = get_fly_cam_video_mode_strings( QSP_ARG  dp, the_cam_p );
-	sprintf(s,"%d",n);
+	snprintf(s,8,"%d",n);
 	// BUG should make this a reserved var...
 	assign_var("n_video_modes",s);
 }
@@ -518,7 +518,7 @@ static COMMAND_FUNC( do_get_framerates )
 	CHECK_CAM
 
 	n = get_fly_cam_framerate_strings( QSP_ARG  dp, the_cam_p );
-	sprintf(s,"%d",n);
+	snprintf(s,8,"%d",n);
 	// BUG should make this a reserved var...
 	assign_var("n_framerates",s);
 }
@@ -534,7 +534,7 @@ static COMMAND_FUNC( do_read_reg )
 	{
 	unsigned int val;
 	val = read_register(QSP_ARG  the_cam_p, addr);
-	sprintf(MSG_STR,"0x%x:  0x%x",addr,val);
+	snprintf(MSG_STR,LLEN,"0x%x:  0x%x",addr,val);
 	prt_msg(MSG_STR);
 	}
 #else // ! HAVE_LIBFLYCAP
@@ -603,9 +603,9 @@ static COMMAND_FUNC( do_set_auto )
 
 	t = pick_pgr_prop("property type");
 	if( t != NULL )
-		sprintf(pmpt,"Enable automatic setting of %s",t->name);
+		snprintf(pmpt,LLEN,"Enable automatic setting of %s",t->name);
 	else
-		sprintf(pmpt,"Dummy boolean");
+		snprintf(pmpt,LLEN,"Dummy boolean");
 
 	yn = ASKIF(pmpt);
 
@@ -647,10 +647,10 @@ static COMMAND_FUNC( do_set_prop )
 				error1("do_set_prop:  prompt string overflow!?");
 			}
 		} else {
-			sprintf(pmpt,"value (integer)");
+			snprintf(pmpt,LLEN,"value (integer)");
 		}
 #else // ! HAVE_LIBFLYCAP
-		sprintf(pmpt,"value (integer)");
+		snprintf(pmpt,LLEN,"value (integer)");
 #endif // ! HAVE_LIBFLYCAP
 		pv.pv_u.u_f = HOW_MUCH(pmpt);
 	} else {
@@ -683,10 +683,10 @@ static COMMAND_FUNC( do_set_n_bufs )
 	CHECK_CAM
 
 	if( n < MIN_N_BUFFERS ){
-		sprintf(ERROR_STRING,"do_set_n_bufs:  n (%d) must be >= %d",n,MIN_N_BUFFERS);
+		snprintf(ERROR_STRING,LLEN,"do_set_n_bufs:  n (%d) must be >= %d",n,MIN_N_BUFFERS);
 		WARN(ERROR_STRING);
 	} else if ( n > MAX_N_BUFFERS ){
-		sprintf(ERROR_STRING,"do_set_n_bufs:  n (%d) must be <= %d",n,MAX_N_BUFFERS);
+		snprintf(ERROR_STRING,LLEN,"do_set_n_bufs:  n (%d) must be <= %d",n,MAX_N_BUFFERS);
 		WARN(ERROR_STRING);
 	} else {
 #ifdef HAVE_LIBFLYCAP
@@ -703,7 +703,7 @@ static COMMAND_FUNC( do_set_eii )
 
 	i=WHICH_ONE("embedded image information property",N_EII_PROPERTIES,eii_prop_names);
 	if( i < 0 ) strcpy(prompt,"Enter yes or no");
-	else sprintf(prompt,"Enable %s",eii_prop_names[i]);
+	else snprintf(prompt,LLEN,"Enable %s",eii_prop_names[i]);
 	yesno = ASKIF(prompt);
 
 	if( i < 0 ) return;
@@ -907,13 +907,13 @@ static COMMAND_FUNC( do_fmt7_setposn )
 	// At least on the flea, the position has to be even...
 
 	if( x & 1 ){
-		sprintf(ERROR_STRING,"Horizontal position (%d) should be even, rounding down to %d.",x,x&(~1));
+		snprintf(ERROR_STRING,LLEN,"Horizontal position (%d) should be even, rounding down to %d.",x,x&(~1));
 		advise(ERROR_STRING);
 		x &= ~1;
 	}
 
 	if( y & 1 ){
-		sprintf(ERROR_STRING,"Vertical position (%d) should be even, rounding down to %d.",y,y&(~1));
+		snprintf(ERROR_STRING,LLEN,"Vertical position (%d) should be even, rounding down to %d.",y,y&(~1));
 		advise(ERROR_STRING);
 		y &= ~1;
 	}
@@ -930,7 +930,7 @@ static COMMAND_FUNC( do_fmt7_select )
 
 #ifdef HAVE_LIBFLYCAP
 	if( i < 0 || i >= the_cam_p->fc_n_fmt7_modes ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s:  format7 index must be in the range 0 - %d",
 			the_cam_p->fc_name,the_cam_p->fc_n_fmt7_modes-1);
 		WARN(ERROR_STRING);

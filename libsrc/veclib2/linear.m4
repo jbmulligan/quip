@@ -7,19 +7,19 @@
 static int HOST_TYPED_CALL_NAME(arg_chk,type_code)(QSP_ARG_DECL  Data_Obj *dpto, Data_Obj *dpfr, Data_Obj *xform, const char *func_name)
 {
 	if( OBJ_MACH_PREC(dpto) != REQUIRED_DST_PREC ){
-		sprintf(ERROR_STRING,"target object %s (%s) must have %s precision for %s",
+		snprintf(ERROR_STRING,LLEN,"target object %s (%s) must have %s precision for %s",
 			OBJ_NAME(dpto),OBJ_PREC_NAME(dpto), NAME_FOR_PREC_CODE(REQUIRED_DST_PREC),func_name);
 		warn(ERROR_STRING);
 		return(-1);
 	}
 	if( OBJ_MACH_PREC(dpfr) != REQUIRED_SRC_PREC ){
-		sprintf(ERROR_STRING,"source object %s (%s) must have %s precision for %s",
+		snprintf(ERROR_STRING,LLEN,"source object %s (%s) must have %s precision for %s",
 			OBJ_NAME(dpfr),OBJ_PREC_NAME(dpfr), NAME_FOR_PREC_CODE(REQUIRED_SRC_PREC),func_name);
 		warn(ERROR_STRING);
 		return(-1);
 	}
 	if( OBJ_MACH_PREC(xform) != REQUIRED_SRC_PREC ){
-		sprintf(ERROR_STRING,"matrix object %s (%s) must have %s precision for %s",
+		snprintf(ERROR_STRING,LLEN,"matrix object %s (%s) must have %s precision for %s",
 			OBJ_NAME(xform),OBJ_PREC_NAME(xform),NAME_FOR_PREC_CODE(REQUIRED_SRC_PREC),func_name);
 		warn(ERROR_STRING);
 		return(-1);
@@ -29,7 +29,7 @@ static int HOST_TYPED_CALL_NAME(arg_chk,type_code)(QSP_ARG_DECL  Data_Obj *dpto,
 		 * an alias of some sort for the source, having a different header structure but pointing
 		 * to the same data!?
 		 */
-		sprintf(ERROR_STRING,"arg_chk:  destination (%s) must be distinct from source (%s)",
+		snprintf(ERROR_STRING,LLEN,"arg_chk:  destination (%s) must be distinct from source (%s)",
 			OBJ_NAME(dpto),OBJ_NAME(dpfr));
 		warn(ERROR_STRING);
 		return(-1);

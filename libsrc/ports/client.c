@@ -95,7 +95,7 @@ fresh_start:
 	mpp=new_port(name);
 	if( mpp==NULL ){
 		if( verbose ){
-			sprintf(ERROR_STRING,"open_client_port %s %s %d failed to create port struct",
+			snprintf(ERROR_STRING,LLEN,"open_client_port %s %s %d failed to create port struct",
 				name,hostname,port_no);
 			warn(ERROR_STRING);
 		}
@@ -147,13 +147,13 @@ fresh_start:
 	if( hp == NULL ){
 		switch( h_errno ){
 			case HOST_NOT_FOUND:
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"open_client_port:  host \"%s\" not found",
 					hostname);
 				warn(ERROR_STRING);
 				break;
 			default:
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"open_client_port:  unknown host:  \"%s\"",
 					hostname);
 				warn(ERROR_STRING);
@@ -191,19 +191,19 @@ fresh_start:
 				tell_sys_error("open_client_port (connect)");
 
 			if( errno == ECONNREFUSED ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 	"Host %s refused or ignored connection request on port %d;",
 					hostname,port_no);
 			} else {
 				tell_sys_error("connect");
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 	"No response from host %s on port %d;",
 					hostname,port_no);
 			}
 			advise(ERROR_STRING);
 
 			if( max_retries > 1 ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"Will retry up to %d times.",max_retries);
 				advise(ERROR_STRING);
 			} else if( max_retries==1 ){
@@ -216,7 +216,7 @@ fresh_start:
 			n_retries=0;
 #ifdef HAVE_SLEEP
 			if( max_retries != 0 ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"Waiting %d seconds between attempts...",
 					wait_seconds);
 				advise(ERROR_STRING);
@@ -249,7 +249,7 @@ retry:
 
 	if( max_retries >= 0 && n_retries >= max_retries ){
 		if( max_retries >= 1 ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"Giving up after %d unsuccessful %s.",
 				n_retries,n_retries>1?"retries":"retry");
 			advise(ERROR_STRING);

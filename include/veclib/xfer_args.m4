@@ -324,7 +324,7 @@ define(`XFER_FAST_ARGS_LUTMAP_S',`XFER_FAST_ARGS_LUTMAP_B XFER_ARGS_MAP_SIZE')
 define(`XFER_EQSP_ARGS_LUTMAP_S',`XFER_EQSP_ARGS_LUTMAP_B XFER_ARGS_MAP_SIZE')
 define(`XFER_SLOW_ARGS_LUTMAP_S',`XFER_SLOW_ARGS_LUTMAP_B XFER_ARGS_MAP_SIZE')
 
-define(`SHOW_ARG_DP',`sprintf(error_string,"%s object:  %s","$1",$1`_dp->dt_name'); advise(error_string);')
+define(`SHOW_ARG_DP',`snprintf(error_string,LLEN,"%s object:  %s","$1",$1`_dp->dt_name'); advise(error_string);')
 
 define(`XFER_DEST_PTR',`
 	SET_VA_DEST_PTR(vap, OBJ_DATA_PTR(dst_dp) );

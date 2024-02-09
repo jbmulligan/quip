@@ -160,7 +160,7 @@ ccdun:		givbuf(cbuf);
 			!= ipixels ){
 
 			WARN("error #3 writing pixel data");
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"%ld bytes actually written",(long)actual);
 			advise(ERROR_STRING);
 			SET_ERROR(ifp);
@@ -169,7 +169,7 @@ ccdun:		givbuf(cbuf);
 	} else {
 		n = ipixels*size;
 		if( (actual=write(ifp->if_fd,((char *)OBJ_DATA_PTR(dp)),n)) != n ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"%d bytes requested, %ld bytes actually written",n,(long)actual);
 			WARN(ERROR_STRING);
 			SET_ERROR(ifp);
@@ -186,7 +186,7 @@ void _wt_raw_data(QSP_ARG_DECL  Data_Obj *dp,Image_File *ifp)		/** output next f
 
 #ifdef QUIP_DEBUG
 if( debug & debug_fileio ){
-sprintf(ERROR_STRING,"wt_raw_data, %s to file %s",
+snprintf(ERROR_STRING,LLEN,"wt_raw_data, %s to file %s",
 OBJ_NAME(dp),ifp->if_name);
 advise(ERROR_STRING);
 }
@@ -197,7 +197,7 @@ advise(ERROR_STRING);
 	totfrms = OBJ_FRAMES(dp) * OBJ_SEQS(dp);
 
 	if( ifp->if_nfrms + totfrms > ifp->if_frms_to_wt ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"Can't append object %s (%d frames) to file %s (too many frames, has %d, wants %d)",
 			OBJ_NAME(dp),totfrms,ifp->if_name,
 			ifp->if_nfrms,ifp->if_frms_to_wt);
@@ -224,7 +224,7 @@ advise(ERROR_STRING);
 	if( HAD_ERROR(ifp) ){
 #ifdef QUIP_DEBUG
 if( debug & debug_fileio ){
-sprintf(ERROR_STRING,"wt_raw_data, returning after error on file %s",
+snprintf(ERROR_STRING,LLEN,"wt_raw_data, returning after error on file %s",
 ifp->if_name);
 advise(ERROR_STRING);
 }
@@ -287,12 +287,12 @@ int _raw_to_dp(QSP_ARG_DECL  Data_Obj *dp, void *vp )
 		warn("size of raw image file not specified!?");
 		
 	if( raw_prec_p == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Pixel precision for raw file %s not specified!?",
 			ifp->if_name);
 		warn(ERROR_STRING);
 		raw_prec_p = PREC_FOR_CODE(PREC_UBY);
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Assuming default value of %s.",PREC_NAME(raw_prec_p));
 		advise(ERROR_STRING);
 	}
@@ -317,7 +317,7 @@ int _raw_to_dp(QSP_ARG_DECL  Data_Obj *dp, void *vp )
 			SET_OBJ_FRAMES(dp, s / frm_size);
 
 			if( (s % frm_size) != 0 ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 		"Number of bytes (%ld) in raw file %s is not an integral multiple of the frame size (%ld)",
 					(long)s,ifp->if_name,(long)frm_size);
 				warn(ERROR_STRING);

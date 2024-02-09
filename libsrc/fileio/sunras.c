@@ -133,7 +133,7 @@ sunras_open(QSP_ARG_DECL  const char *name,int rw)		/**/
 	else if( HDR_P(ifp)->ras_depth == 24 )
 		SET_OBJ_COMPS(ifp->if_dp, 3);
 	else {
-		sprintf(ERROR_STRING,"depth = %d",HDR_P(ifp)->ras_depth);
+		snprintf(ERROR_STRING,LLEN,"depth = %d",HDR_P(ifp)->ras_depth);
 		advise(ERROR_STRING);
 		warn("Sorry, can only read 8 or 24 bit rasterfiles now");
 		goto stoppit;

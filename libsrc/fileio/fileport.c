@@ -94,7 +94,7 @@ long _recv_img_file(QSP_ARG_DECL  Port *mpp, /* char **bufp */ Packet *pkp )
 
 #ifdef QUIP_DEBUG
 if( debug & debug_data ){
-sprintf(ERROR_STRING,
+snprintf(ERROR_STRING,LLEN,
 "recv_file:  want %ld name bytes",len);
 advise(ERROR_STRING);
 }
@@ -121,13 +121,13 @@ advise(ERROR_STRING);
 	if( (long)strlen( namebuf ) != len-1 ){
 		u_int i;
 
-		sprintf(ERROR_STRING,"name length %ld, expected %ld",
+		snprintf(ERROR_STRING,LLEN,"name length %ld, expected %ld",
 			(long)strlen(namebuf), len-1);
 		advise(ERROR_STRING);
-		sprintf(ERROR_STRING,"name:  \"%s\"",namebuf);
+		snprintf(ERROR_STRING,LLEN,"name:  \"%s\"",namebuf);
 		advise(ERROR_STRING);
 		for(i=0;i<strlen(namebuf);i++){
-			sprintf(ERROR_STRING,"name[%d] = '%c' (0%o)",
+			snprintf(ERROR_STRING,LLEN,"name[%d] = '%c' (0%o)",
 				i,namebuf[i],namebuf[i]);
 			advise(ERROR_STRING);
 		}
@@ -144,7 +144,7 @@ advise(ERROR_STRING);
 
 	new_ifp=new_img_file(namebuf);
 	if( new_ifp==NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"recv_file:  couldn't create file struct \"%s\"",
 			namebuf);
 		warn(ERROR_STRING);
@@ -161,7 +161,7 @@ advise(ERROR_STRING);
 	if( code == -1 )
 		error1("error port code received!?");
 	if( code != P_DATA ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"recv_file:  expected data object packet to complete transmission of file %s!?",
 			new_ifp->if_name);
 		error1(ERROR_STRING);

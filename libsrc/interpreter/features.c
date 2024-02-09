@@ -435,24 +435,24 @@ COMMAND_FUNC( do_list_features )
 	get_feature_states(SINGLE_QSP_ARG);
 
 	prt_msg("");
-	sprintf(msg_str,"Features present in this build of %s:",pn);
+	snprintf(msg_str,LLEN,"Features present in this build of %s:",pn);
 	prt_msg(msg_str);
 	prt_msg("");
 	for(i=0;i<N_SW_FEATURES;i++){
 		if( swf_tbl[i].swf_state == PRESENT ){
-			sprintf(msg_str,"\tSupport for %s.",
+			snprintf(msg_str,LLEN,"\tSupport for %s.",
 				swf_tbl[i].swf_desc);
 			prt_msg(msg_str);
 		}
 	}
 
 	prt_msg("");
-	sprintf(msg_str,"Features absent in this build of %s:",pn);
+	snprintf(msg_str,LLEN,"Features absent in this build of %s:",pn);
 	prt_msg(msg_str);
 	prt_msg("");
 	for(i=0;i<N_SW_FEATURES;i++){
 		if( swf_tbl[i].swf_state == ABSENT ){
-			sprintf(msg_str,"\tNO support for %s.",
+			snprintf(msg_str,LLEN,"\tNO support for %s.",
 				swf_tbl[i].swf_desc);
 			prt_msg(msg_str);
 		}

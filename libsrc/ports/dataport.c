@@ -33,7 +33,7 @@ void *cbuf; float *p; int n;
 	if( ierr < 0 )
 		warn("CRAY2IEG parameter error");
 	else if( ierr > 0 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"CRAY2IEG:  %d overflows",ierr);
 		warn(ERROR_STRING);
 	}
@@ -51,7 +51,7 @@ float *p; void *cbuf; int n;
 	if( ierr < 0 )
 		warn("IEG2CRAY parameter error");
 	else if( ierr > 0 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"IEG2CRAY:  %d overflows",ierr);
 		warn(ERROR_STRING);
 	}
@@ -204,7 +204,7 @@ void _xmit_obj( QSP_ARG_DECL  Port *mpp, Data_Obj *dp, int dataflag )
 #endif /* CRAY */
 
 	if( send_to_port(QSP_ARG  mpp,(char *)OBJ_DATA_PTR(dp),data_len) < 0 ){
-		sprintf(ERROR_STRING,"Error sending object %s data to port %s!?",
+		snprintf(ERROR_STRING,LLEN,"Error sending object %s data to port %s!?",
 			OBJ_NAME(dp),mpp->mp_name);
 		warn(ERROR_STRING);
 	}
@@ -237,7 +237,7 @@ long _recv_obj(QSP_ARG_DECL  Port *mpp, Packet *pkp)			/** recieve a new data ob
 
 #ifdef QUIP_DEBUG
 if( debug & debug_data ){
-sprintf(ERROR_STRING,
+snprintf(ERROR_STRING,LLEN,
 "recv_obj:  want %ld name bytes, %ld data bytes",name_len,data_len);
 advise(ERROR_STRING);
 }
@@ -274,13 +274,13 @@ advise(ERROR_STRING);
 		goto error_return;
 	}
 	if( (long)strlen( namebuf ) != name_len-1 ){
-		sprintf(ERROR_STRING,"name length %ld, expected %ld",
+		snprintf(ERROR_STRING,LLEN,"name length %ld, expected %ld",
 			(long)strlen(namebuf), name_len-1);
 		advise(ERROR_STRING);
-		sprintf(ERROR_STRING,"name:  \"%s\"",namebuf);
+		snprintf(ERROR_STRING,LLEN,"name:  \"%s\"",namebuf);
 		advise(ERROR_STRING);
 		for(i=0;i<strlen(namebuf);i++){
-			sprintf(ERROR_STRING,"name[%d] = '%c' (0%o)",
+			snprintf(ERROR_STRING,LLEN,"name[%d] = '%c' (0%o)",
 				i,namebuf[i],namebuf[i]);
 			advise(ERROR_STRING);
 		}
@@ -294,7 +294,7 @@ advise(ERROR_STRING);
 		   		   OBJ_FRAMES(old_obj) != DS_FRAMES(&_type_dims) ||
 		   		   OBJ_COMPS(old_obj)  != DS_COMPS(&_type_dims)  ||
 		   		   OBJ_PREC(old_obj)   != _prec_code      )  ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"mismatched object %s received, discarding old",
 			OBJ_NAME(old_obj));
 		warn(ERROR_STRING);
@@ -314,7 +314,7 @@ advise(ERROR_STRING);
 		}
 
 		if( new_dp==NULL ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"recv_obj:  couldn't create object \"%s\"",
 				namebuf);
 			warn(ERROR_STRING);
@@ -332,7 +332,7 @@ advise(ERROR_STRING);
 #ifdef CAUTIOUS
 	if( data_len !=
 		(long)(OBJ_N_MACH_ELTS(new_dp) * ELEMENT_SIZE(new_dp)) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"recv_obj:  data_len = %ld, size mismatch", data_len);
 		warn(ERROR_STRING);
 		longlist(new_dp);
@@ -350,7 +350,7 @@ advise(ERROR_STRING);
 		}
 #ifdef QUIP_DEBUG
 		if( debug & debug_data ){
-			sprintf(ERROR_STRING,"%ld bytes read, wanted %ld",nb2,
+			snprintf(ERROR_STRING,LLEN,"%ld bytes read, wanted %ld",nb2,
 				data_len);
 			advise(ERROR_STRING);
 		}
@@ -360,7 +360,7 @@ advise(ERROR_STRING);
 	}
 #ifdef QUIP_DEBUG
 if( debug & debug_data ){
-sprintf(ERROR_STRING,"data object \"%s\" received",OBJ_NAME(new_dp));
+snprintf(ERROR_STRING,LLEN,"data object \"%s\" received",OBJ_NAME(new_dp));
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */

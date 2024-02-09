@@ -179,11 +179,11 @@ static void _report_marker(QSP_ARG_DECL  JPEG_MARKER mrkr)
 		case M_EOI:	ms = "M_EOI";	break;
 		case M_COM:	ms = "M_COM";	break;
 		default:
-			sprintf(mrkstr,"(unknown marker 0x%x)",mrkr);
+			snprintf(mrkstr,128,"(unknown marker 0x%x)",mrkr);
 			ms=mrkstr;
 			break;
 	}
-	sprintf(ERROR_STRING,"0x%x:\t%s (0x%x)",file_offset-2,ms,mrkr);
+	snprintf(ERROR_STRING,LLEN,"0x%x:\t%s (0x%x)",file_offset-2,ms,mrkr);
 	advise(ERROR_STRING);
 }
 
@@ -224,7 +224,7 @@ static short getshort(FILE *fp)
 
 static void _report_len(QSP_ARG_DECL  int len)
 {
-	sprintf(ERROR_STRING,"\t\t\t%d (0x%x)",len,len);
+	snprintf(ERROR_STRING,LLEN,"\t\t\t%d (0x%x)",len,len);
 	advise(ERROR_STRING);
 }
 
@@ -250,7 +250,7 @@ static int _good_scan_data(QSP_ARG_DECL  Image_File *ifp)
 			}
 			if( c == M_EOI ){
 				if( verbose ){
-	sprintf(ERROR_STRING,"%d scan data bytes skipped",nskipped);
+	snprintf(ERROR_STRING,LLEN,"%d scan data bytes skipped",nskipped);
 					advise(ERROR_STRING);
 					report_marker((JPEG_MARKER)c);
 				}
@@ -261,7 +261,7 @@ static int _good_scan_data(QSP_ARG_DECL  Image_File *ifp)
 	} while( c>= 0 );
 
 eof_seen:
-	sprintf(ERROR_STRING,
+	snprintf(ERROR_STRING,LLEN,
 		"unexpected EOF in scan section of jpeg file %s",ifp->if_name);
 	warn(ERROR_STRING);
 	return(0);
@@ -307,7 +307,7 @@ static int _scan_markers(QSP_ARG_DECL  Image_File *ifp)
 
 	if( c1!=0xff && c2!=M_SOI ){
 		advise("");
-		sprintf(ERROR_STRING,"0x%x:  expected 0x%x SOI (0x%x), saw 0x%x 0x%x",
+		snprintf(ERROR_STRING,LLEN,"0x%x:  expected 0x%x SOI (0x%x), saw 0x%x 0x%x",
 			file_offset,
 			0xff,M_SOI,c1,c2);
 		warn(ERROR_STRING);
@@ -324,7 +324,7 @@ next_marker:
 		file_offset++;
 	}
 	if( verbose && (file_offset-n_before)>0 ){
-		sprintf(ERROR_STRING, "%d (0x%x) pre-marker bytes skipped",
+		snprintf(ERROR_STRING,LLEN, "%d (0x%x) pre-marker bytes skipped",
 			file_offset-n_before,file_offset-n_before);
 		advise(ERROR_STRING);
 	}
@@ -347,7 +347,7 @@ next_marker:
 		return(0);
 	}
 	if( c1 != 0xff ){
-		sprintf(ERROR_STRING,"c1 = 0x%x, expected 0xff",c1);
+		snprintf(ERROR_STRING,LLEN,"c1 = 0x%x, expected 0xff",c1);
 		warn(ERROR_STRING);
 	}
 process_marker:
@@ -404,7 +404,7 @@ process_marker:
 			len = getBEshort(fp);
 
 			if( len != OLD_APP3_LENGTH && len != NEW_APP3_LENGTH ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 					"strange APP3 len 0x%x, expected 0x%x or 0x%x",
 						len, OLD_APP3_LENGTH, NEW_APP3_LENGTH);
 				warn(ERROR_STRING);
@@ -429,7 +429,7 @@ process_marker:
 					if( (c1=getc(fp)) == EOF ){
 						warn("premature jpeg EOF");
 						// suppress compiler warning...
-						sprintf(ERROR_STRING,
+						snprintf(ERROR_STRING,LLEN,
 					"appId = %d",appId);
 						advise(ERROR_STRING);
 						nc=0;
@@ -491,13 +491,13 @@ process_marker:
 				if( HDR_P(ifp)->jpeg_comps != numComp ||
 				    HDR_P(ifp)->jpeg_width != xSize    ||
 				    HDR_P(ifp)->jpeg_height != ySize ){
-					sprintf(ERROR_STRING,"Frame size mismatch!?  (JPEG file %s)",
+					snprintf(ERROR_STRING,LLEN,"Frame size mismatch!?  (JPEG file %s)",
 						ifp->if_name);
 					warn(ERROR_STRING);
-	sprintf(ERROR_STRING,"old sizes:  %d comps, %d cols, %d rows",
+	snprintf(ERROR_STRING,LLEN,"old sizes:  %d comps, %d cols, %d rows",
 		HDR_P(ifp)->jpeg_comps,HDR_P(ifp)->jpeg_width,HDR_P(ifp)->jpeg_height);
 					advise(ERROR_STRING);
-	sprintf(ERROR_STRING,"new sizes:  %d comps, %d cols, %d rows",
+	snprintf(ERROR_STRING,LLEN,"new sizes:  %d comps, %d cols, %d rows",
 						numComp,xSize,ySize);
 					advise(ERROR_STRING);
 				}
@@ -521,7 +521,7 @@ process_marker:
 
 			nc = getc(fp);		/* # comps in scan */
 			if( len != (2*nc+6) ){
-				sprintf(ERROR_STRING,"SOS:  len = %d, n= %d",len,nc);
+				snprintf(ERROR_STRING,LLEN,"SOS:  len = %d, n= %d",len,nc);
 				warn(ERROR_STRING);
 			}
 			while(nc--){
@@ -585,10 +585,10 @@ print_text_marker (j_decompress_ptr cinfop)
 
   if (traceit) {
     if (cinfop->unread_marker == JPEG_COM){
-      sprintf(DEFAULT_ERROR_STRING, "Comment, length %d:\n", length);
+      snprintf(DEFAULT_ERROR_STRING,LLEN, "Comment, length %d:\n", length);
       _advise(DEFAULT_QSP_ARG  DEFAULT_ERROR_STRING);
     } else {			/* assume it is an APPn otherwise */
-      sprintf(DEFAULT_ERROR_STRING, "APP%d, length %d:\n",
+      snprintf(DEFAULT_ERROR_STRING,LLEN, "APP%d, length %d:\n",
 	      cinfop->unread_marker - JPEG_APP0, length);
       _advise(DEFAULT_QSP_ARG  DEFAULT_ERROR_STRING);
     }
@@ -657,14 +657,14 @@ process_lml_marker(j_decompress_ptr cinfop)
 #define LML_APP_ID	0x4c4d4cL	/* 'L' 'M' 'L' */
 
 	if( app_id != LML_APP_ID ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 			"APP3 id code 0x%x does not match expected LML code 0x%lx",
 			app_id,LML_APP_ID);
 		_warn(DEFAULT_QSP_ARG  DEFAULT_ERROR_STRING);
 	}
 
 	if( length != OLD_APP3_LENGTH && length != NEW_APP3_LENGTH ){
-		sprintf(DEFAULT_ERROR_STRING,"APP3 length is 0x%x, expected 0x%x or 0x%x!?",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"APP3 length is 0x%x, expected 0x%x or 0x%x!?",
 			length,OLD_APP3_LENGTH,NEW_APP3_LENGTH);
 		_warn(DEFAULT_QSP_ARG  DEFAULT_ERROR_STRING);
 	}
@@ -686,7 +686,7 @@ process_lml_marker(j_decompress_ptr cinfop)
 	HDR_P(jpeg_ifp)->lml_fieldNo = 0;		/* APP3 occurs once per frame */
 
 	if( verbose ){
-		sprintf(DEFAULT_MSG_STR,"LML extension: sec=%ld usec=%ld size=%d seq=%d no=%d",
+		snprintf(DEFAULT_MSG_STR,LLEN,"LML extension: sec=%ld usec=%ld size=%d seq=%d no=%d",
 			HDR_P(jpeg_ifp)->lml_sec,
 			HDR_P(jpeg_ifp)->lml_usec,
 			HDR_P(jpeg_ifp)->lml_frameSize,
@@ -792,7 +792,7 @@ static FILE * _remove_info_if_stale(QSP_ARG_DECL  const char *info_name,FILE *in
 	}
 	/* now compare mod times */
 	if( file_statb.st_mtime > info_statb.st_mtime ){
-		sprintf(ERROR_STRING,"Existing jpeg info file %s is older than file %s, will unlink and recompute",
+		snprintf(ERROR_STRING,LLEN,"Existing jpeg info file %s is older than file %s, will unlink and recompute",
 				info_name,src_name);
 		advise(ERROR_STRING);
 		fclose(info_fp);
@@ -810,7 +810,7 @@ static FILE * _remove_info_if_stale(QSP_ARG_DECL  const char *info_name,FILE *in
 #define JPI_ERROR_MSG(msg)					\
 								\
 	{							\
-	sprintf(ERROR_STRING,				\
+	snprintf(ERROR_STRING,LLEN,				\
 	"read_jpeg_info_top (%s):  %s",ifp->if_name,msg);	\
 	warn(ERROR_STRING);				\
 	}
@@ -843,7 +843,7 @@ JPI_ERROR_MSG("info file is old format (32 bit offsets)");
 		}
 
 		JPI_ERROR_MSG("bad magic number data");
-		sprintf(ERROR_STRING,"read_jpeg_info_top:  expected \"%s\" but encountered \"%s\"",
+		snprintf(ERROR_STRING,LLEN,"read_jpeg_info_top:  expected \"%s\" but encountered \"%s\"",
 			magic_string,buf);
 		warn(ERROR_STRING);
 		return(0);
@@ -891,7 +891,7 @@ static int _read_binary_jpeg_info(QSP_ARG_DECL  Image_File *ifp, FILE *info_fp)
 	/* now read the info */
 
 	if( (frms=read_jpeg_info_top(info_fp,JPEG_INFO_MAGIC_STRING,ifp)) == 0 ){
-		sprintf(ERROR_STRING,"read_binary_jpeg_info:  problem with top of info file");
+		snprintf(ERROR_STRING,LLEN,"read_binary_jpeg_info:  problem with top of info file");
 		warn(ERROR_STRING);
 		return(0);
 	}
@@ -899,16 +899,16 @@ static int _read_binary_jpeg_info(QSP_ARG_DECL  Image_File *ifp, FILE *info_fp)
 	/* now allocate the seek table */
 	tbl = (seek_tbl_type *)getbuf( sizeof(seek_tbl_type) * frms );
 	if( (n=fread(tbl,sizeof(seek_tbl_type),frms,info_fp)) != frms ){
-		sprintf(ERROR_STRING,"read_binary_jpeg_info:  error reading seek table data for file %s",ifp->if_name);
+		snprintf(ERROR_STRING,LLEN,"read_binary_jpeg_info:  error reading seek table data for file %s",ifp->if_name);
 		warn(ERROR_STRING);
-		sprintf(ERROR_STRING,"Expected %d addresses, got %d",frms,n);
+		snprintf(ERROR_STRING,LLEN,"Expected %d addresses, got %d",frms,n);
 		advise(ERROR_STRING);
 /*
-sprintf(ERROR_STRING,"sizeof(u_int) = %d",sizeof(u_int));
+snprintf(ERROR_STRING,LLEN,"sizeof(u_int) = %d",sizeof(u_int));
 advise(ERROR_STRING);
-sprintf(ERROR_STRING,"sizeof(u_short) = %d",sizeof(u_short));
+snprintf(ERROR_STRING,LLEN,"sizeof(u_short) = %d",sizeof(u_short));
 advise(ERROR_STRING);
-sprintf(ERROR_STRING,"sizeof(u_int) = %d",sizeof(unsigned int));
+snprintf(ERROR_STRING,LLEN,"sizeof(u_int) = %d",sizeof(unsigned int));
 advise(ERROR_STRING);
 */
 		return(0);
@@ -930,7 +930,7 @@ static int _read_ascii_jpeg_info(QSP_ARG_DECL  Image_File *ifp, FILE *info_fp)
 	// BUG?  this used to be a different string ("JPEGINFO")
 
 	if( (frms=read_jpeg_info_top(info_fp,JPEG_INFO_MAGIC_STRING,ifp)) == 0 ){
-		sprintf(ERROR_STRING,"read_binary_jpeg_info:  problem with top of info file");
+		sLLEN,printf(ERROR_STRING,"read_binary_jpeg_info:  problem with top of info file");
 		warn(ERROR_STRING);
 		return(0);
 	}
@@ -989,7 +989,7 @@ static void _save_jpeg_info_binary(QSP_ARG_DECL  Image_File *ifp)
 	make_jpi_name(jpi_name,ifp,"i");
 	fp = fopen(jpi_name,"w");
 	if( !fp ){
-		sprintf(ERROR_STRING,"save_jpeg_info:  couldn't open jpeg info file %s for writing",jpi_name);
+		snprintf(ERROR_STRING,LLEN,"save_jpeg_info:  couldn't open jpeg info file %s for writing",jpi_name);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -1000,7 +1000,7 @@ static void _save_jpeg_info_binary(QSP_ARG_DECL  Image_File *ifp)
 	fprintf(fp,"%d\n",HDR_P(ifp)->jpeg_frames);
 	if( fwrite(HDR_P(ifp)->jpeg_seek_table,sizeof(seek_tbl_type),HDR_P(ifp)->jpeg_frames,fp) !=
 			(dimension_t)HDR_P(ifp)->jpeg_frames ){
-		sprintf(ERROR_STRING,"error writing seek table data to jpeg info file");
+		snprintf(ERROR_STRING,LLEN,"error writing seek table data to jpeg info file");
 		warn(ERROR_STRING);
 		/* BUG at this point we should unlink the file? */
 	}
@@ -1018,7 +1018,7 @@ static void _save_jpeg_info_ascii(QSP_ARG_DECL  Image_File *ifp)
 	make_jpi_name(jpi_name,ifp,"a");
 	fp = fopen(jpi_name,"w");
 	if( !fp ){
-		sprintf(ERROR_STRING,"save_jpeg_info_ascii:  couldn't open jpeg info file %s for writing",jpi_name);
+		snprintf(ERROR_STRING,LLEN,"save_jpeg_info_ascii:  couldn't open jpeg info file %s for writing",jpi_name);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -1076,7 +1076,7 @@ static int _rd_jpeg_hdr(QSP_ARG_DECL  Image_File *ifp)
 
 	offset = ftell(ifp->if_fp);
 	if( verbose ){
-		sprintf(ERROR_STRING,"scanning file %s from offset %d, to count frames",
+		snprintf(ERROR_STRING,LLEN,"scanning file %s from offset %d, to count frames",
 			ifp->if_name,offset);
 		advise(ERROR_STRING);
 	}
@@ -1112,7 +1112,7 @@ static int _rd_jpeg_hdr(QSP_ARG_DECL  Image_File *ifp)
 	if( verbose ) prt_msg("");
 
 	if( nf > MAX_SEEK_TBL_SIZE ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"rd_jpeg_hdr:  file %s has %d frames, which exceeds MAX_SEEK_TBL_SIZE (%d)",
 			ifp->if_name,nf,MAX_SEEK_TBL_SIZE);
 		warn(ERROR_STRING);
@@ -1121,7 +1121,7 @@ static int _rd_jpeg_hdr(QSP_ARG_DECL  Image_File *ifp)
 		tbl=NULL;
 	}
 	if( nf == 0 ){
-		sprintf(ERROR_STRING,"jpeg file %s has no frames!?",ifp->if_name);
+		snprintf(ERROR_STRING,LLEN,"jpeg file %s has no frames!?",ifp->if_name);
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -1561,7 +1561,7 @@ FIO_RD_FUNC( jpeg )
 
 	if( FILE_FINISHED(ifp) ){
 		if( verbose ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"closing file \"%s\" after reading %d frames",
 				ifp->if_name,ifp->if_nfrms);
 			advise(ERROR_STRING);
@@ -1585,21 +1585,21 @@ FIO_WT_FUNC( lml )
 	/* first check image sizes */
 
 	if( OBJ_COMPS(dp) != 3 ) {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Number of components (%d) of image %s must be 3 for an LML file",
 			OBJ_COMPS(dp),OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return(-1);
 	}
 	if( OBJ_ROWS(dp) != 240 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Number of rows (%d) of image %s must be 240 for an LML file",
 			OBJ_ROWS(dp),OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return(-1);
 	}
 	if( OBJ_COLS(dp) != 720 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Number of columns (%d) of image %s must be 720 for an LML file",
 			OBJ_COLS(dp),OBJ_NAME(dp));
 		warn(ERROR_STRING);
@@ -1610,7 +1610,7 @@ FIO_WT_FUNC( lml )
 	oops=0;
 	for(ci=0;ci<3;ci++){
 		if( cinfop->comp_info[ci].h_samp_factor != hfactor[ci] ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"file %s:  resetting horizontal sampling factor for component %d from %d to %d",
 				ifp->if_name,
 				ci,cinfop->comp_info[ci].h_samp_factor,hfactor[ci]);
@@ -1618,7 +1618,7 @@ FIO_WT_FUNC( lml )
 			oops++;
 		}
 		if( cinfop->comp_info[ci].v_samp_factor != vfactor[ci] ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"file %s:  resetting vertical sampling factor for component %d from %d to %d",
 				ifp->if_name,
 				ci,cinfop->comp_info[ci].v_samp_factor,vfactor[ci]);
@@ -1652,14 +1652,14 @@ FIO_WT_FUNC( jpeg )
 		} else if( OBJ_COMPS(dp) == 3 ){
 			cinfop->in_color_space = JCS_RGB;
 		} else {
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"Object %s has bad number of components (%d) for jpeg",
 				OBJ_NAME(dp),OBJ_COMPS(dp));
 			warn(ERROR_STRING);
 			return(-1);
 		}
 		if( OBJ_PREC(dp) != PREC_BY && OBJ_PREC(dp) != PREC_UBY ){
-			sprintf(ERROR_STRING,"jpeg_wt:  image %s (%s) should have %s or %s precision",
+			snprintf(ERROR_STRING,LLEN,"jpeg_wt:  image %s (%s) should have %s or %s precision",
 				OBJ_NAME(dp),PREC_NAME(OBJ_PREC_PTR(dp)),
 				PREC_NAME(PREC_FOR_CODE(PREC_BY)),
 				PREC_NAME(PREC_FOR_CODE(PREC_UBY)) );
@@ -1678,7 +1678,7 @@ FIO_WT_FUNC( jpeg )
 	}
 
 	if( OBJ_COMPS(dp) == 1 && cinfop->jpeg_color_space != JCS_GRAYSCALE ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Object %s has one component, should use grayscale JPEG colorspace",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
@@ -1686,7 +1686,7 @@ FIO_WT_FUNC( jpeg )
 	}
 	/* BUG?  We might like to support other jpeg colorspaces, e.g. RGB */
 	if( OBJ_COMPS(dp) == 3 && cinfop->jpeg_color_space != JCS_YCbCr ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Object %s has 3 components, should use YCbCr JPEG colorspace",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
@@ -1771,7 +1771,7 @@ FIO_WT_FUNC( jpeg )
 	ifp->if_nfrms ++;
 	if( ifp->if_nfrms == ifp->if_frms_to_wt ){
 		if( verbose ){
-	sprintf(ERROR_STRING, "closing file \"%s\" after writing %d frames",
+	snprintf(ERROR_STRING,LLEN, "closing file \"%s\" after writing %d frames",
 			ifp->if_name,ifp->if_nfrms);
 			advise(ERROR_STRING);
 		}
@@ -1793,52 +1793,52 @@ FIO_INFO_FUNC( lml )
 {
 	int32_t ms;
 
-	sprintf(msg_str,"\tField %d",HDR_P(ifp)->lml_fieldNo);
+	snprintf(msg_str,LLEN,"\tField %d",HDR_P(ifp)->lml_fieldNo);
 	prt_msg(msg_str);
 
-	sprintf(msg_str,"\t%s",ctime(&HDR_P(ifp)->lml_sec));
+	snprintf(msg_str,LLEN,"\t%s",ctime(&HDR_P(ifp)->lml_sec));
 	prt_msg_frag(msg_str);	/* ctime appends a newline */
 
 	/*
-	sprintf(msg_str,"\t%d secs",HDR_P(ifp)->lml_sec);
+	snprintf(msg_str,LLEN,"\t%d secs",HDR_P(ifp)->lml_sec);
 	prt_msg(msg_str);
 	*/
 
 	ms = floor(HDR_P(ifp)->lml_usec/1000.0);
-	sprintf(msg_str,"\t%d ms.",ms);
+	snprintf(msg_str,LLEN,"\t%d ms.",ms);
 	prt_msg(msg_str);
 
-	sprintf(msg_str,"\tsize=%d",HDR_P(ifp)->lml_frameSize);
+	snprintf(msg_str,LLEN,"\tsize=%d",HDR_P(ifp)->lml_frameSize);
 	prt_msg(msg_str);
 
-	sprintf(msg_str,"\tseq=%d, no=%d",HDR_P(ifp)->lml_frameSeqNo,HDR_P(ifp)->lml_frameNo);
+	snprintf(msg_str,LLEN,"\tseq=%d, no=%d",HDR_P(ifp)->lml_frameSeqNo,HDR_P(ifp)->lml_frameNo);
 	prt_msg(msg_str);
 
 	if( HDR_P(ifp)->lml_colorEncoding == 1 ){
-		sprintf(msg_str,"\tcolor encoding:  NTSC");
+		snprintf(msg_str,LLEN,"\tcolor encoding:  NTSC");
 	} else if( HDR_P(ifp)->lml_colorEncoding == 2 ){
-		sprintf(msg_str,"\tcolor encoding:  PAL");
+		snprintf(msg_str,LLEN,"\tcolor encoding:  PAL");
 	} else if( HDR_P(ifp)->lml_colorEncoding == 3 ){
-		sprintf(msg_str,"\tcolor encoding:  SECAM");
+		snprintf(msg_str,LLEN,"\tcolor encoding:  SECAM");
 	} else {
-		sprintf(msg_str,"\tunrecognized color encoding code 0x%x!?",
+		snprintf(msg_str,LLEN,"\tunrecognized color encoding code 0x%x!?",
 			HDR_P(ifp)->lml_colorEncoding);
 	}
 	prt_msg(msg_str);
 
 	if( HDR_P(ifp)->lml_videoStream == 1 ){
-		sprintf(msg_str,"\tvideo stream:  D1");
+		snprintf(msg_str,LLEN,"\tvideo stream:  D1");
 	} else if( HDR_P(ifp)->lml_videoStream == 3 ){
-		sprintf(msg_str,"\tvideo stream:  CIF");
+		snprintf(msg_str,LLEN,"\tvideo stream:  CIF");
 	} else if( HDR_P(ifp)->lml_videoStream == 4 ){
-		sprintf(msg_str,"\tvideo stream:  QCIF");
+		snprintf(msg_str,LLEN,"\tvideo stream:  QCIF");
 	} else {
-		sprintf(msg_str,"\tunrecognized video stream code 0x%x!?",
+		snprintf(msg_str,LLEN,"\tunrecognized video stream code 0x%x!?",
 			HDR_P(ifp)->lml_videoStream);
 	}
 	prt_msg(msg_str);
 
-	sprintf(msg_str,"\ttime decimation:  %d",HDR_P(ifp)->lml_timeDecimation);
+	snprintf(msg_str,LLEN,"\ttime decimation:  %d",HDR_P(ifp)->lml_timeDecimation);
 	prt_msg(msg_str);
 }
 
@@ -1867,7 +1867,7 @@ FIO_SEEK_FUNC( jpeg )
 double get_lml_seconds(QSP_ARG_DECL  Image_File *ifp, dimension_t frame)
 {
 	if( ! IS_LML(ifp) ){
-		sprintf(ERROR_STRING,"get_lml_seconds:  image file %s is not type lml, can't get timestamp",
+		snprintf(ERROR_STRING,LLEN,"get_lml_seconds:  image file %s is not type lml, can't get timestamp",
 				ifp->if_name);
 		WARN(ERROR_STRING);
 		return(-1.0);
@@ -1880,7 +1880,7 @@ if( frame != 0 ) WARN("get_lml_seconds:  Sorry, don't know how to get timestamps
 double get_lml_milliseconds(QSP_ARG_DECL  Image_File *ifp, dimension_t frame)
 {
 	if( ! IS_LML(ifp) ){
-		sprintf(ERROR_STRING,"get_lml_seconds:  image file %s is not type lml, can't get timestamp",
+		snprintf(ERROR_STRING,LLEN,"get_lml_seconds:  image file %s is not type lml, can't get timestamp",
 				ifp->if_name);
 		WARN(ERROR_STRING);
 		return(-1.0);
@@ -1893,7 +1893,7 @@ if( frame != 0 ) WARN("get_lml_milliseconds:  Sorry, don't know how to get times
 double get_lml_microseconds(QSP_ARG_DECL  Image_File *ifp, dimension_t frame)
 {
 	if( ! IS_LML(ifp) ){
-		sprintf(ERROR_STRING,"get_lml_seconds:  image file %s is not type lml, can't get timestamp",
+		snprintf(ERROR_STRING,LLEN,"get_lml_seconds:  image file %s is not type lml, can't get timestamp",
 				ifp->if_name);
 		WARN(ERROR_STRING);
 		return(-1.0);

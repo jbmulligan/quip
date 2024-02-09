@@ -20,7 +20,7 @@
 
 static void _wav_error(QSP_ARG_DECL  const char *msg, Image_File *ifp)
 {
-	sprintf(ERROR_STRING,"File %s:  %s!?",msg,ifp->if_name);
+	snprintf(ERROR_STRING,LLEN,"File %s:  %s!?",msg,ifp->if_name);
 	warn(ERROR_STRING);
 }
 
@@ -57,7 +57,7 @@ FIO_FT_TO_DP_FUNC(wav,Wav_Header)
 		case 8:  prec_p=PREC_FOR_CODE(PREC_UBY); break;
 		case 16: prec_p=PREC_FOR_CODE(PREC_IN); break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"wav_to_dp:  unexpected # of bits per sample %d",
 				hd_p->wh_bits_per_sample);
 			warn(ERROR_STRING);
@@ -159,13 +159,13 @@ static void _display_fmt_chunk(QSP_ARG_DECL  Wav_Header *wh_p)
 
 	wfd_p = (&wh_p->wh_fhc.fhc_wfd);
 
-	sprintf(MSG_STR,"%d channels",wfd_p->wfd_n_channels);
+	snprintf(MSG_STR,LLEN,"%d channels",wfd_p->wfd_n_channels);
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"%d samples per sec",wfd_p->wfd_samp_rate);
+	snprintf(MSG_STR,LLEN,"%d samples per sec",wfd_p->wfd_samp_rate);
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"%d bytes per sec",wfd_p->wfd_bytes_per_sec);
+	snprintf(MSG_STR,LLEN,"%d bytes per sec",wfd_p->wfd_bytes_per_sec);
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"%d bits per sample",wfd_p->wfd_bits_per_sample);
+	snprintf(MSG_STR,LLEN,"%d bits per sample",wfd_p->wfd_bits_per_sample);
 	prt_msg(MSG_STR);
 }
 
@@ -269,7 +269,7 @@ fprintf(stderr,"list chunk seen!\n");
 		s[4]=0;
 
 		if( is_printable(s) ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"read_next_chunk_header (%s):  unrecognized chunk label \"%s\"!?\n",
 				ifp->if_name,s);
 			warn(ERROR_STRING);
@@ -357,7 +357,7 @@ FIO_DP_TO_FT_FUNC(wav,Wav_Header)
 			hd_p->wh_bits_per_sample = 16;
 			break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"dp_to_wav:  vector %s has unsupported source precision %s",
 				OBJ_NAME(dp),PREC_NAME(OBJ_MACH_PREC_PTR(dp)));
 			warn(ERROR_STRING);
@@ -389,7 +389,7 @@ FIO_SETHDR_FUNC( wav )
 	 * to be independent of endian-ness
 	 */
 	if( fwrite(ifp->if_hdr_p,sizeof(Wav_Header),1,ifp->if_fp) != 1 ){
-		sprintf(ERROR_STRING,"error writing wav header file %s",ifp->if_name);
+		snprintf(ERROR_STRING,LLEN,"error writing wav header file %s",ifp->if_name);
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -441,13 +441,13 @@ FIO_CONV_FUNC(wav)
 
 FIO_INFO_FUNC(wav)
 {
-	sprintf(msg_str,"\tsample rate %d",HDR_P(ifp)->wh_samp_rate);
+	snprintf(msg_str,LLEN,"\tsample rate %d",HDR_P(ifp)->wh_samp_rate);
 	prt_msg(msg_str);
 }
 
 FIO_SEEK_FUNC( wav )
 {
-	sprintf(ERROR_STRING,"wav_seek_frame not implemented!?");
+	snprintf(ERROR_STRING,LLEN,"wav_seek_frame not implemented!?");
 	warn(ERROR_STRING);
 
 	return -1;

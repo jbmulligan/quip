@@ -196,7 +196,7 @@ dnl define(`MORE_DEBUG',`')		dnl this line will enable the debugging version...
 
 ifdef(`MORE_DEBUG',`
 
-define(`REPORT_SWITCH',`sprintf(DEFAULT_ERROR_STRING,"Calling %s version of %s","$2","$1"); NADVISE(DEFAULT_ERROR_STRING);')
+define(`REPORT_SWITCH',`snprintf(DEFAULT_ERROR_STRING,LLEN,"Calling %s version of %s","$2","$1"); NADVISE(DEFAULT_ERROR_STRING);')
 ',`
 define(`REPORT_SWITCH',`')
 ')
@@ -222,7 +222,7 @@ REPORT_SWITCH($1,eqsp)
 		dnl `XFER_EQSP_ARGS_'$2$3$4$5
 		XFER_EQSP_ARGS($2,$3,$4,$5)
 /*
-sprintf(DEFAULT_ERROR_STRING,"showing vec args for eqsp %s","$1");
+snprintf(DEFAULT_ERROR_STRING,LLEN,"showing vec args for eqsp %s","$1");
 NADVISE(DEFAULT_ERROR_STRING);
 show_vec_args(vap);
 */

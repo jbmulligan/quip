@@ -109,7 +109,7 @@ u_long total_from_malloc = 0;
 static void no_del_method(QSP_ARG_DECL  Item *ip)
 {
 	warn("Undefined item deletion method");
-	sprintf(ERROR_STRING,"Can't delete item '%s'",ITEM_NAME(ip));
+	snprintf(ERROR_STRING,LLEN,"Can't delete item '%s'",ITEM_NAME(ip));
 	advise(ERROR_STRING);
 }
 
@@ -236,7 +236,7 @@ static Item_Type * init_item_type(QSP_ARG_DECL  const char *name, int container_
 	Item_Type *itp;
 	Item_Context *icp;
 
-//sprintf(ERROR_STRING,"init_item_type %s, is_first = %d",name,is_first);
+//snprintf(ERROR_STRING,LLEN,"init_item_type %s, is_first = %d",name,is_first);
 //NADVISE(ERROR_STRING);
 	if( is_first ){		// is this the first item type?  (the item type items...)
 		static Item_Context first_item_context;
@@ -251,7 +251,7 @@ static Item_Type * init_item_type(QSP_ARG_DECL  const char *name, int container_
 		// Item_Type is initialized below to prevent recursion. 
 		static Item_Type first_item_type;
 
-//sprintf(ERROR_STRING,"init_item_type:  first_item_type is %s",name);
+//snprintf(ERROR_STRING,LLEN,"init_item_type:  first_item_type is %s",name);
 //advise(ERROR_STRING);
 
 		/* Item_Type's are themselves items...
@@ -319,7 +319,7 @@ Item_Type * _new_item_type(QSP_ARG_DECL  const char *atypename, int container_ty
 		Item *ip;
 		ip = item_of(ittyp_itp,atypename);
 		if( ip != NULL ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 			"Item type name \"%s\" is already in use\n",atypename);
 			warn(ERROR_STRING);
 			return(NULL);
@@ -347,7 +347,7 @@ Item_Type * _new_item_type(QSP_ARG_DECL  const char *atypename, int container_ty
 static void _store_item( QSP_ARG_DECL  Item_Context *icp, Item *ip )
 {
 	if( add_to_container(CTX_CONTAINER(icp),ip) < 0){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Error storing name %s",ITEM_NAME(ip));
 		NERROR1(ERROR_STRING);
 	}
@@ -383,7 +383,7 @@ static int insure_item_name_available(QSP_ARG_DECL  Item_Type *itp, const char *
 	ip = container_find_match(CTX_CONTAINER(current_context(itp)), name );
 
 	if( ip != NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"%s name \"%s\" is already in use in context %s",
 			IT_NAME(itp),name,CTX_NAME(current_context(itp)));
 		warn(ERROR_STRING);
@@ -420,7 +420,7 @@ static void _alloc_more_items(QSP_ARG_DECL  Item_Type *itp, size_t size)
 	n_per_page = get_n_per_page(size);	// make a field of itp?
 #ifdef QUIP_DEBUG
 if( debug & item_debug ){
-sprintf(DEFAULT_ERROR_STRING,"malloc'ing %d more %s items",n_per_page,IT_NAME(itp));
+snprintf(DEFAULT_ERROR_STRING,LLEN,"malloc'ing %d more %s items",n_per_page,IT_NAME(itp));
 NADVISE(DEFAULT_ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -429,7 +429,7 @@ NADVISE(DEFAULT_ERROR_STRING);
 	total_from_malloc += n_per_page*size;
 
 	if( nip == NULL ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 	"alloc_more_items:  out of memory while getting a new page of %s's",
 			IT_NAME(itp));
 		NERROR1(DEFAULT_ERROR_STRING);
@@ -524,7 +524,7 @@ Item_Context * _create_item_context( QSP_ARG_DECL  Item_Type *itp, const char* n
 
 	/* maybe we should have contexts for contexts!? */
 
-	sprintf(cname,"%s.%s",IT_NAME(itp),name);
+	snprintf(cname,LLEN,"%s.%s",IT_NAME(itp),name);
 
 	// special case for the default context of the context item type
 	// 
@@ -563,7 +563,7 @@ Item_Context * _create_item_context( QSP_ARG_DECL  Item_Type *itp, const char* n
 
 #ifdef QUIP_DEBUG
 if( debug & qldebug ){
-sprintf(ERROR_STRING,"%s - %s:  creating context %s",
+snprintf(ERROR_STRING,LLEN,"%s - %s:  creating context %s",
 WHENCE(create_item_context),cname);
 advise(ERROR_STRING);
 }
@@ -615,7 +615,7 @@ void _push_item_context( QSP_ARG_DECL   Item_Type *itp, Item_Context *icp )
 
 #ifdef QUIP_DEBUG
 if( debug & debug_contexts ){
-sprintf(ERROR_STRING,"push_item_context:  pushing %s context %s",IT_NAME(itp),CTX_NAME(icp));
+snprintf(ERROR_STRING,LLEN,"push_item_context:  pushing %s context %s",IT_NAME(itp),CTX_NAME(icp));
 NADVISE(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -647,7 +647,7 @@ Item_Context * _pop_item_context( QSP_ARG_DECL  Item_Type *itp )
 	 */
 	np=remHead(LIST_OF_CONTEXTS(itp));
 	if( np==NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Item type %s has no context to pop",IT_NAME(itp));
 		warn(ERROR_STRING);
 		return(NULL);
@@ -669,7 +669,7 @@ Item_Context * _pop_item_context( QSP_ARG_DECL  Item_Type *itp )
 
 #ifdef QUIP_DEBUG
 if( debug & debug_contexts ){
-sprintf(ERROR_STRING,"pop_item_context:  %s context %s popped",IT_NAME(itp),CTX_NAME(popped_icp));
+snprintf(ERROR_STRING,LLEN,"pop_item_context:  %s context %s popped",IT_NAME(itp),CTX_NAME(popped_icp));
 NADVISE(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -716,7 +716,7 @@ void _delete_item_context_with_callback( QSP_ARG_DECL  Item_Context *icp, void (
 	push_item_context(itp,icp);
 
 	if( IT_DEL_METHOD(itp) == no_del_method ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"No object deletion method provided for item type %s",IT_NAME(itp));
 		warn(ERROR_STRING);
 	} else {
@@ -868,7 +868,7 @@ Item *_get_item( QSP_ARG_DECL  Item_Type *itp, const char* name )
 	if( ip==NULL ){
 		assert( itp != NULL );
 
-		sprintf(ERROR_STRING,"no %s \"%s\"",
+		snprintf(ERROR_STRING,LLEN,"no %s \"%s\"",
 			IT_NAME(itp),name);
 		warn(ERROR_STRING);
 	}
@@ -996,10 +996,10 @@ List *_alpha_sort(QSP_ARG_DECL  List *lp)
 
 void _report_invalid_pick(QSP_ARG_DECL  Item_Type *itp, const char *s)
 {
-	sprintf(ERROR_STRING,"No %s \"%s\"",ITEM_TYPE_NAME(itp),s);
+	snprintf(ERROR_STRING,LLEN,"No %s \"%s\"",ITEM_TYPE_NAME(itp),s);
 	warn(ERROR_STRING);
 
-	sprintf(ERROR_STRING,"Possible %s choices:",ITEM_TYPE_NAME(itp));
+	snprintf(ERROR_STRING,LLEN,"Possible %s choices:",ITEM_TYPE_NAME(itp));
 	advise(ERROR_STRING);
 
 	list_items(itp, tell_errfile());
@@ -1146,14 +1146,14 @@ void _print_list_of_items(QSP_ARG_DECL  List *lp, FILE *fp)
 		}
 		n_per_line = CHARS_PER_LINE / (maxlen+3);
 		if( n_per_line < 1 ) n_per_line=1;
-		sprintf(fmtstr,"%%-%ds",maxlen+3);
+		snprintf(fmtstr,16,"%%-%ds",maxlen+3);
 		n_lines = 1+(n_total-1)/n_per_line;
 	} else {
 		/* one item per line, nothing fancy */
 		/* we still have to count the items */
 		n_lines = eltcount(lp);
 		n_per_line = 1;
-		sprintf(fmtstr,"%%s");
+		snprintf(fmtstr,16,"%%s");
 	}
 
 #else /* ! HAVE_ISATTY */
@@ -1163,7 +1163,7 @@ void _print_list_of_items(QSP_ARG_DECL  List *lp, FILE *fp)
 	/* we still have to count the items */
 	n_lines = eltcount(lp);
 	n_per_line = 1;
-	sprintf(fmtstr,"%%s");
+	snprintf(fmtstr,16,"%%s");
 
 #endif /* ! HAVE_ISATTY */
 
@@ -1186,7 +1186,7 @@ void _print_list_of_items(QSP_ARG_DECL  List *lp, FILE *fp)
 
 				assert( strlen( ITEM_NAME(((Item *)NODE_DATA(np)) )) < LLEN );
 
-				sprintf(tmp_str,fmtstr,
+				snprintf(tmp_str,LLEN,fmtstr,
 					ITEM_NAME(((Item *)NODE_DATA(np))));
 				strcat(MSG_STR,tmp_str);
 			}
@@ -1217,7 +1217,7 @@ void item_stats(QSP_ARG_DECL  Item_Type * itp)
 	while(np!=NULL){
 		Item_Context *icp;
 		icp=(Item_Context *) NODE_DATA(np);
-		sprintf(MSG_STR,"Context %s:",CTX_NAME(icp));
+		snprintf(MSG_STR,LLEN,"Context %s:",CTX_NAME(icp));
 		prt_msg(MSG_STR);
 //		tell_name_stats(CTX_DICT(icp));
 		tell_container_stats(QSP_ARG  CTX_CONTAINER(icp));
@@ -1273,7 +1273,7 @@ static int remove_item_from_context(QSP_ARG_DECL  Item_Context *icp, Item *ip)
 	if( tmp_ip == ip ){	/* found it */
 		if( remove_name_from_container(QSP_ARG  CTX_CONTAINER(icp),
 					ITEM_NAME((Item *)ip) ) < 0 ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"zombie_item:  unable to remove item %s from context %s",
 				ITEM_NAME(ip),CTX_NAME(icp));
 			warn(ERROR_STRING);
@@ -1350,7 +1350,7 @@ void _rename_item(QSP_ARG_DECL  Item_Type *itp,void *ip,char* newname)
 
 static void _dump_item_context(QSP_ARG_DECL  Item_Context *icp)
 {
-	sprintf(MSG_STR,"\tContext \"%s\"",CTX_NAME(icp));
+	snprintf(MSG_STR,LLEN,"\tContext \"%s\"",CTX_NAME(icp));
 	prt_msg(MSG_STR);
 
 	//dump_container_info(QSP_ARG  CTX_CONTAINER(icp));
@@ -1375,7 +1375,7 @@ static void _dump_item_type(QSP_ARG_DECL  Item_Type *itp)
 {
 	Node *np;
 
-	sprintf(MSG_STR,
+	snprintf(MSG_STR,LLEN,
 		"%s items",IT_NAME(itp));
 	prt_msg(MSG_STR);
 
@@ -1422,7 +1422,7 @@ void report_mutex_error(QSP_ARG_DECL  int status,const char *whence)
 {
 	const char *msg;
 
-	sprintf(ERROR_STRING,"%s:  report_mutex_error:  status = %d",
+	snprintf(ERROR_STRING,LLEN,"%s:  report_mutex_error:  status = %d",
 		whence,status);
 	advise(ERROR_STRING);
 
@@ -1451,7 +1451,7 @@ static Item_Context *setup_frag_context(QSP_ARG_DECL  Item_Context *icp)
 	Item_Context *frag_icp;
 
 	if( frag_itp == NULL ) _init_frags(SINGLE_QSP_ARG);
-	sprintf(cname,"fragments.%s",CTX_NAME(icp));
+	snprintf(cname,LLEN,"fragments.%s",CTX_NAME(icp));
 	frag_icp = new_ctx(cname);
 	assert(frag_icp!=NULL);
 
@@ -1539,7 +1539,7 @@ static Match_Cycle * _find_match_cycle(QSP_ARG_DECL  Item_Type *itp, const char 
 	if( IT_MC_CONTEXT(itp) == NULL ){
 		// Make a context
 		char cname[LLEN];
-		sprintf(cname,"Matches.%s.%d",ITEM_TYPE_NAME(itp),QS_SERIAL);	// BUG possible buffer overrun
+		snprintf(cname,LLEN,"Matches.%s.%d",ITEM_TYPE_NAME(itp),QS_SERIAL);	// BUG possible buffer overrun
 		if( match_cycle_itp == NULL ){
 			//match_cycle_itp = new_item_type("Match_Cycle", 0 );
 			init_match_cycles();

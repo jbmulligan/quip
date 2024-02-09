@@ -61,7 +61,7 @@ static void _setup_ht(QSP_ARG_DECL  Hash_Tbl *htp, u_long size)
 			i=N_PRIMES+2;
 		}
 	if( i == N_PRIMES ){
-		sprintf(ERROR_STRING,"setup_ht( tbl = %s, size = %ld (0x%lx) )",htp->ht_name,size,size);
+		snprintf(ERROR_STRING,LLEN,"setup_ht( tbl = %s, size = %ld (0x%lx) )",htp->ht_name,size,size);
 		advise(ERROR_STRING);
 
 		error1("need to enlarge prime number table in hash.c");
@@ -99,7 +99,7 @@ Hash_Tbl * _enlarge_ht(QSP_ARG_DECL  Hash_Tbl *htp)
 	u_long oldsize;
 
 if( verbose ){
-sprintf(ERROR_STRING,"doubling size of hash table \"%s\" (old size = %ld)",
+snprintf(ERROR_STRING,LLEN,"doubling size of hash table \"%s\" (old size = %ld)",
 htp->ht_name,htp->ht_size);
 advise(ERROR_STRING);
 }
@@ -199,7 +199,7 @@ int _insert_hash(QSP_ARG_DECL  void *ptr,Hash_Tbl *htp)
 	if( ((float)htp->ht_n_entries/(float)htp->ht_size) > 0.7 ){
 
 if( verbose ){
-sprintf(ERROR_STRING,
+snprintf(ERROR_STRING,LLEN,
 "enlarging hash table %s: %ld of %ld entries filled",
 htp->ht_name,htp->ht_n_entries,
 htp->ht_size);
@@ -218,7 +218,7 @@ advise(ERROR_STRING);
 
 #ifdef QUIP_DEBUG
 if( debug & hash_debug ){
-sprintf(ERROR_STRING,"insert_hash: table %s at 0x%lx, item %s",
+snprintf(ERROR_STRING,LLEN,"insert_hash: table %s at 0x%lx, item %s",
 htp->ht_name,(long)htp,name);
 advise(ERROR_STRING);
 }
@@ -260,7 +260,7 @@ void _show_ht(QSP_ARG_DECL  Hash_Tbl *htp)	/* print out the contents of the give
 			name = * ( char ** ) entry[i];
 			s=name;
 			compute_key(key,s,htp);	/* a macro for setting key */
-			sprintf(ERROR_STRING,"%ld\t%s, key = %ld",i,name,key);
+			snprintf(ERROR_STRING,LLEN,"%ld\t%s, key = %ld",i,name,key);
 			advise(ERROR_STRING);
 		}
 }
@@ -281,7 +281,7 @@ void *_fetch_hash(QSP_ARG_DECL  const char *name,Hash_Tbl* htp)
 
 	if( HASH_TBL_WARNED(htp) ){
 		if( verbose ){
-sprintf(ERROR_STRING,
+snprintf(ERROR_STRING,LLEN,
 "Enlarging hash table %s due to collisions, load factor is %g",
 htp->ht_name,
 ((float)htp->ht_n_entries/(float)htp->ht_size) );
@@ -317,7 +317,7 @@ advise(ERROR_STRING);
 			MAX_SILENT_COLL_RATE * htp->ht_searches
 			&& !HASH_TBL_WARNED(htp) ){
 			if( verbose ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 "High collision rate (%f collisions/search), hash table \"%s\"",
 					(float) htp->ht_collisions /
 					(float) htp->ht_searches, htp->ht_name);
@@ -374,7 +374,7 @@ int _remove_name_from_hash(QSP_ARG_DECL  const char * name, Hash_Tbl *htp )
 
 #ifdef QUIP_DEBUG
 if( debug & hash_debug ){
-sprintf(ERROR_STRING,"key:  %ld",key);
+snprintf(ERROR_STRING,LLEN,"key:  %ld",key);
 advise(ERROR_STRING);
 }
 #endif
@@ -389,7 +389,7 @@ advise(ERROR_STRING);
 		if( !strcmp(s,name) ){
 #ifdef QUIP_DEBUG
 if( debug & hash_debug ){
-sprintf(ERROR_STRING,"removing item at location %ld",key);
+snprintf(ERROR_STRING,LLEN,"removing item at location %ld",key);
 advise(ERROR_STRING);
 }
 #endif
@@ -415,7 +415,7 @@ advise(ERROR_STRING);
 				s=(*sp);
 #ifdef QUIP_DEBUG
 if( debug & hash_debug ){
-sprintf(ERROR_STRING,"considering shifting item %s",s);
+snprintf(ERROR_STRING,LLEN,"considering shifting item %s",s);
 advise(ERROR_STRING);
 }
 #endif
@@ -427,7 +427,7 @@ advise(ERROR_STRING);
 				|| ( k2 > key &&  key > start ) ){
 #ifdef QUIP_DEBUG
 if( debug & hash_debug ){
-sprintf(ERROR_STRING,"shifting at %ld",key);
+snprintf(ERROR_STRING,LLEN,"shifting at %ld",key);
 advise(ERROR_STRING);
 }
 #endif
@@ -450,7 +450,7 @@ advise(ERROR_STRING);
 		if( key==start ) goto not_found;
 	}
 not_found:
-	sprintf(ERROR_STRING,"word \"%s\" not found in hash table \"%s\"",
+	snprintf(ERROR_STRING,LLEN,"word \"%s\" not found in hash table \"%s\"",
 		name,htp->ht_name);
 	advise(ERROR_STRING);
 	return(-1);
@@ -463,38 +463,38 @@ not_found:
 void tell_hash_stats(QSP_ARG_DECL  Hash_Tbl *htp)
 		/* hash table */
 {
-	sprintf(DEFAULT_MSG_STR,"\tStatistics for hash table \"%s\":",
+	snprintf(DEFAULT_MSG_STR,LLEN,"\tStatistics for hash table \"%s\":",
 		htp->ht_name);
 	prt_msg(MSG_STR);
-	sprintf(DEFAULT_MSG_STR,"\tsize %ld, %ld entries",
+	snprintf(DEFAULT_MSG_STR,LLEN,"\tsize %ld, %ld entries",
 		htp->ht_size,htp->ht_n_entries);
 	prt_msg(DEFAULT_MSG_STR);
 
 #ifdef MONITOR_COLLISIONS
 	/*
 	 * This was the old version when the var was u_long
-	sprintf(DEFAULT_MSG_STR,"\t%ld searches",htp->ht_searches);
+	snprintf(DEFAULT_MSG_STR,LLEN,"\t%ld searches",htp->ht_searches);
 	*/
-	sprintf(DEFAULT_MSG_STR,"\t%g searches",htp->ht_searches);
+	snprintf(DEFAULT_MSG_STR,LLEN,"\t%g searches",htp->ht_searches);
 	prt_msg(DEFAULT_MSG_STR);
 
 	if( htp->ht_searches > 0 ){
 		double d;
 
-		sprintf(DEFAULT_MSG_STR,"\t%g collisions",htp->ht_collisions);
+		snprintf(DEFAULT_MSG_STR,LLEN,"\t%g collisions",htp->ht_collisions);
 		prt_msg(DEFAULT_MSG_STR);
 		d=(double)htp->ht_collisions;
 		d /= (double) htp->ht_searches;
-		sprintf(DEFAULT_MSG_STR,"\t%f collisions/search",d);
+		snprintf(DEFAULT_MSG_STR,LLEN,"\t%f collisions/search",d);
 		prt_msg(DEFAULT_MSG_STR);
 	}
 #endif
 	if( htp->ht_n_removals > 0 ){
-		sprintf(DEFAULT_MSG_STR,"\t%ld removals",htp->ht_n_removals);
+		snprintf(DEFAULT_MSG_STR,LLEN,"\t%ld removals",htp->ht_n_removals);
 		prt_msg(DEFAULT_MSG_STR);
-		sprintf(DEFAULT_MSG_STR,"\t%ld items checked",htp->ht_n_checked);
+		snprintf(DEFAULT_MSG_STR,LLEN,"\t%ld items checked",htp->ht_n_checked);
 		prt_msg(DEFAULT_MSG_STR);
-		sprintf(DEFAULT_MSG_STR,"\t%ld items moved",htp->ht_n_moved);
+		snprintf(DEFAULT_MSG_STR,LLEN,"\t%ld items moved",htp->ht_n_moved);
 		prt_msg(DEFAULT_MSG_STR);
 	}
 	if( verbose ) show_ht(htp);

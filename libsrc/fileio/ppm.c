@@ -25,7 +25,7 @@ FIO_FT_TO_DP_FUNC(ppm,Ppm_Header)
 		case 5: type_dim=1; break;
 		case 6: type_dim=3; break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"ppm_to_dp:  unsupported pixel format code %d",
 				hd_p->format);
 			warn(ERROR_STRING);
@@ -37,7 +37,7 @@ FIO_FT_TO_DP_FUNC(ppm,Ppm_Header)
 	SET_OBJ_COLS(dp, hd_p->cols);
 	SET_OBJ_ROWS(dp, hd_p->rows);
 /*
-//sprintf(ERROR_STRING,"ppm_to_dp:  c = %d, r = %d",hd_p->cols,hd_p->rows);
+//snprintf(ERROR_STRING,LLEN,"ppm_to_dp:  c = %d, r = %d",hd_p->cols,hd_p->rows);
 //advise(ERROR_STRING);
 */
 	SET_OBJ_FRAMES(dp, 1);
@@ -90,7 +90,7 @@ int _rd_ppm_hdr(QSP_ARG_DECL  FILE *fp,Ppm_Header *hdp,const char *filename)
 	}
 
 	if( sscanf(s,"P%d",&f) != 1 ){
-		sprintf(ERROR_STRING,"error reading ppm format code, file %s",filename);
+		snprintf(ERROR_STRING,LLEN,"error reading ppm format code, file %s",filename);
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -108,7 +108,7 @@ int _rd_ppm_hdr(QSP_ARG_DECL  FILE *fp,Ppm_Header *hdp,const char *filename)
 	 */
 #ifdef FOOBAR
 	if( sscanf(s,"%d %d",&c,&r) != 2 ){
-		sprintf(ERROR_STRING,"error reading ppm image size, file %s",filename);
+		snprintf(ERROR_STRING,LLEN,"error reading ppm image size, file %s",filename);
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -120,7 +120,7 @@ int _rd_ppm_hdr(QSP_ARG_DECL  FILE *fp,Ppm_Header *hdp,const char *filename)
 	}
 #else
 	if( sscanf(s,"%d %d %d",&c,&r,&n) != 3 ){
-		sprintf(ERROR_STRING,"error reading ppm image size + extra number, file %s",filename);
+		snprintf(ERROR_STRING,LLEN,"error reading ppm image size + extra number, file %s",filename);
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -128,7 +128,7 @@ int _rd_ppm_hdr(QSP_ARG_DECL  FILE *fp,Ppm_Header *hdp,const char *filename)
 #endif /* FOOBAR */
 
 	if( sscanf(s,"%d",&n) != 1 ){
-		sprintf(ERROR_STRING,"error reading ppm extra number, file %s",filename);
+		snprintf(ERROR_STRING,LLEN,"error reading ppm extra number, file %s",filename);
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -172,14 +172,14 @@ FIO_CLOSE_FUNC( ppm )
 FIO_DP_TO_FT_FUNC(ppm,Ppm_Header)
 {
 	if( OBJ_PREC(dp) != PREC_UBY ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"Sorry, can only write unsigned byte images to PPM, object %s has prec %s",
 			OBJ_NAME(dp),PREC_NAME(OBJ_PREC_PTR(dp)));
 		warn(ERROR_STRING);
 		return(-1);
 	}
 	if( OBJ_FRAMES(dp)>1 || OBJ_SEQS(dp)>1 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"Sorry, object %s has more than 1 frame/seq, can only write 1 to PPM",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
@@ -295,7 +295,7 @@ int _dis_to_dp(QSP_ARG_DECL  Data_Obj *dp,Dis_Header *hd_p)
 		case 5: type_dim=1; break;
 		case 6: type_dim=3; break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"ppm_to_dp:  unsupported pixel format code %d",
 				hd_p->format);
 			warn(ERROR_STRING);
@@ -337,17 +337,17 @@ int _rd_dis_hdr(QSP_ARG_DECL  FILE *fp,Dis_Header *hdp,const char *filename)
 	int ch;
 
 	if( fscanf(fp,"P%d",&f) != 1 ){
-		sprintf(ERROR_STRING,"error reading dis format code, file %s",filename);
+		snprintf(ERROR_STRING,LLEN,"error reading dis format code, file %s",filename);
 		warn(ERROR_STRING);
 		return(-1);
 	}
 	if( fscanf(fp,"%d %d %d",&c,&r,&nf) != 3 ){
-		sprintf(ERROR_STRING,"error reading dis sizes, file %s",filename);
+		snprintf(ERROR_STRING,LLEN,"error reading dis sizes, file %s",filename);
 		warn(ERROR_STRING);
 		return(-1);
 	}
 	if( fscanf(fp,"%d",&n) != 1 ){
-		sprintf(ERROR_STRING,"error reading dis extra number, file %s",filename);
+		snprintf(ERROR_STRING,LLEN,"error reading dis extra number, file %s",filename);
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -398,14 +398,14 @@ FIO_CLOSE_FUNC( dis )
 FIO_DP_TO_FT_FUNC(dis,Dis_Header)
 {
 	if( OBJ_PREC(dp) != PREC_UBY ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"Sorry, can only write unsigned byte images to PPM, object %s has prec %s",
 			OBJ_NAME(dp),PREC_NAME(OBJ_PREC_PTR(dp)));
 		warn(ERROR_STRING);
 		return(-1);
 	}
 	if( OBJ_SEQS(dp)>1 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"Sorry, object %s has more than 1 seq, can only write 1 to .dis",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);

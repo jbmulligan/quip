@@ -143,11 +143,11 @@ static int heap_ready=0;
 void mem_err(const char *whence) __attribute__((__noreturn__))
 {
 	if( heap_ready ){
-		sprintf(DEFAULT_ERROR_STRING,"big_heapsize = 0x%lx",big_heapsize);
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"big_heapsize = 0x%lx",big_heapsize);
 		NADVISE(DEFAULT_ERROR_STRING);
 		NADVISE("Consider changing BIG_HEAPSIZE");
 	}
-	sprintf(DEFAULT_ERROR_STRING,"%s:  out of memory",whence);
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"%s:  out of memory",whence);
 	NERROR1(DEFAULT_ERROR_STRING);
 }
 
@@ -170,7 +170,7 @@ static void setup_heap(Heap *hp, u_long total, u_long chunksize)
 	/* we don't really want to typecase total to short! */
 	hp->heap_base = (char*)  malloc((int)total);
 	if( hp->heap_base == (char *)NULL ){
-		sprintf(DEFAULT_ERROR_STRING,"tried to allocate 0x%lx bytes",total);
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"tried to allocate 0x%lx bytes",total);
 		NADVISE(DEFAULT_ERROR_STRING);
 		NERROR1("couldn't malloc heap storage");
 	}
@@ -245,7 +245,7 @@ static void heap_init()
 	if( get_env_var("SMALL_HEAPSIZE",&small_heapsize) == NULL )
 		small_heapsize=SMALL_HEAPSIZE;
 	else {
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 		"using evironment value 0x%lx for SMALL_HEAPSIZE",
 		small_heapsize);
 		NADVISE(DEFAULT_ERROR_STRING);
@@ -255,7 +255,7 @@ static void heap_init()
 	if( get_env_var("BIG_HEAPSIZE",&big_heapsize) == NULL ) {
 		big_heapsize=BIG_HEAPSIZE;
 	} else {
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 		"using evironment value 0x%lx for BIG_HEAPSIZE",
 		big_heapsize);
 		NADVISE(DEFAULT_ERROR_STRING);
@@ -329,7 +329,7 @@ void * bigbuf(u_long size)
 
 		cp = get_from_heap(&big_heap,s);
 		if( cp == NULL ){
-			sprintf(DEFAULT_ERROR_STRING,
+			snprintf(DEFAULT_ERROR_STRING,LLEN,
 				"error getting %ld (0x%lx) bytes from big heap",s,s);
 			warn(DEFAULT_ERROR_STRING);
 			showmap(&big_heap.heap_fl);
@@ -339,7 +339,7 @@ void * bigbuf(u_long size)
 #ifdef QUIP_DEBUG
 if( debug & gbdebug ){
     /*
-sprintf(DEFAULT_ERROR_STRING,"GetBuf:  %10ld at 0x%8lx",
+snprintf(DEFAULT_ERROR_STRING,LLEN,"GetBuf:  %10ld at 0x%8lx",
 	*((u_long *) ((u_long)cp-SIZE_OFFSET)),
 	(u_long)((((char *)cp)-SIZE_OFFSET)-big_heap.heap_base) );
 NADVISE(DEFAULT_ERROR_STRING);
@@ -355,12 +355,12 @@ NADVISE(DEFAULT_ERROR_STRING);
 	} else {
 		cp = get_from_heap(&small_heap,s);
 		if( cp == NULL ){
-			sprintf(DEFAULT_ERROR_STRING,
+			snprintf(DEFAULT_ERROR_STRING,LLEN,
 				"error getting %ld (0x%lx) bytes from small heap",s,s);
 			warn(DEFAULT_ERROR_STRING);
 			showmap(&small_heap.heap_fl);
 			NADVISE("Consider changing SMALL_HEAPSIZE");
-			sprintf(DEFAULT_ERROR_STRING,
+			snprintf(DEFAULT_ERROR_STRING,LLEN,
 			"Current value is %ld (0x%lx)",SMALL_HEAPSIZE,
 				SMALL_HEAPSIZE);
 			NADVISE(DEFAULT_ERROR_STRING);
@@ -369,7 +369,7 @@ NADVISE(DEFAULT_ERROR_STRING);
 #ifdef QUIP_DEBUG
 if( debug & gbdebug ){
     /*
-sprintf(DEFAULT_ERROR_STRING,"getbuf:  %10ld at 0x%8lx (addr = 0x%lx)",
+snprintf(DEFAULT_ERROR_STRING,LLEN,"getbuf:  %10ld at 0x%8lx (addr = 0x%lx)",
 	*((u_long *) ((u_long)cp-SIZE_OFFSET)),
 	(u_long)((((char *)cp)-SIZE_OFFSET)-small_heap.heap_base),(u_long)cp );
 NADVISE(DEFAULT_ERROR_STRING);
@@ -385,7 +385,7 @@ NADVISE(DEFAULT_ERROR_STRING);
 	}
 
 	if( cp == NULL ){
-		sprintf(DEFAULT_ERROR_STRING,"0x%lx bytes requested",s);
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"0x%lx bytes requested",s);
 		NADVISE(DEFAULT_ERROR_STRING);
 		mem_err("getbuf");
 	}
@@ -406,11 +406,11 @@ void givbuf(const void* addr)
 	/* figure out which heap this is in */
 #ifdef QUIP_DEBUG
 //if( debug & gbdebug ){
-//sprintf(DEFAULT_ERROR_STRING,"givbuf:\t\t\t  freeing addr 0x%8lx",(u_long)addr);
+//snprintf(DEFAULT_ERROR_STRING,LLEN,"givbuf:\t\t\t  freeing addr 0x%8lx",(u_long)addr);
 //NADVISE(DEFAULT_ERROR_STRING);
 //}
 if( debug & gbdebug ){
-sprintf(DEFAULT_ERROR_STRING,"givbuf:\t\t\t  freeing addr 0x%8lx",(u_long)addr);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"givbuf:\t\t\t  freeing addr 0x%8lx",(u_long)addr);
 NADVISE(DEFAULT_ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -428,7 +428,7 @@ NADVISE(DEFAULT_ERROR_STRING);
 
 #ifdef QUIP_DEBUG
 if( debug & gbdebug ){
-sprintf(DEFAULT_ERROR_STRING,"GivBuf:\t\t\t  %10ld at 0x%8lx",this_size,index);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"GivBuf:\t\t\t  %10ld at 0x%8lx",this_size,index);
 NADVISE(DEFAULT_ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -436,7 +436,7 @@ NADVISE(DEFAULT_ERROR_STRING);
 		assert( index < big_heap.heap_total );
 
 		if( givspace(&big_heap.heap_fl,this_size,index) < 0 ){
-			sprintf(DEFAULT_ERROR_STRING,
+			snprintf(DEFAULT_ERROR_STRING,LLEN,
 	"givbuf:  error in givspace returning %ld bytes at address 0x%lx to big heap",
 				this_size,(u_long)caddr);
 			warn(DEFAULT_ERROR_STRING);
@@ -451,13 +451,13 @@ NADVISE(DEFAULT_ERROR_STRING);
 
 #ifdef QUIP_DEBUG
 if( debug & gbdebug ){
-sprintf(DEFAULT_ERROR_STRING,"givbuf:\t\t\t  %10ld at 0x%8lx (addr = 0x%lx)",this_size,index,(long)/*caddr*/ addr);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"givbuf:\t\t\t  %10ld at 0x%8lx (addr = 0x%lx)",this_size,index,(long)/*caddr*/ addr);
 NADVISE(DEFAULT_ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
 
 		if( givspace(&small_heap.heap_fl,this_size,index) < 0 ){
-			sprintf(DEFAULT_ERROR_STRING,
+			snprintf(DEFAULT_ERROR_STRING,LLEN,
 	"givbuf:  error in givspace returning %ld bytes at address 0x%lx to small heap",
 				this_size,(u_long)caddr);
 			warn(DEFAULT_ERROR_STRING);
@@ -474,10 +474,10 @@ NADVISE(DEFAULT_ERROR_STRING);
 
 COMMAND_FUNC( heap_report )
 {
-	sprintf(ERROR_STRING,"big_heap, %ld (0x%lx) bytes free, %d fragments",
+	snprintf(ERROR_STRING,LLEN,"big_heap, %ld (0x%lx) bytes free, %d fragments",
 		big_heap.heap_free,big_heap.heap_free,n_map_frags(&big_heap.heap_fl));
 	advise(ERROR_STRING);
-	sprintf(ERROR_STRING,"small_heap, %ld (0x%lx) bytes free, %d fragments",
+	snprintf(ERROR_STRING,LLEN,"small_heap, %ld (0x%lx) bytes free, %d fragments",
 		small_heap.heap_free,small_heap.heap_free,n_map_frags(&small_heap.heap_fl));
 	advise(ERROR_STRING);
 }
@@ -544,7 +544,7 @@ void givbuf( const void * a )
 
 #ifdef QUIP_DEBUG
 if( debug & gbdebug ){
-sprintf(DEFAULT_ERROR_STRING,"givbuf:\t\t\t  freeing addr 0x%lx",(long)a);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"givbuf:\t\t\t  freeing addr 0x%lx",(long)a);
 NADVISE(DEFAULT_ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -555,7 +555,7 @@ NADVISE(DEFAULT_ERROR_STRING);
 
 void mem_err(const char *whence)
 {
-	sprintf(DEFAULT_ERROR_STRING,"%s:  out of memory.",whence);
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"%s:  out of memory.",whence);
 	NERROR1(DEFAULT_ERROR_STRING);
     //while(1) ;  // to silence compiler with noreturn attribute
 }

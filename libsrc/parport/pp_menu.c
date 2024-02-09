@@ -96,7 +96,7 @@ static inline int _rd_byte(SINGLE_QSP_ARG_DECL)
 		warn("error reading data");
 		return(-1);
 	}
-	//sprintf(msg_str,"%d (0x%x)",b,b);
+	//snprintf(msg_str,LLEN,"%d (0x%x)",b,b);
 	//prt_msg(msg_str);
 
 	return( b );
@@ -110,7 +110,7 @@ static COMMAND_FUNC( do_rd_byte )
 
 	s=nameof("variable name");
 	val = rd_byte();
-	sprintf(val_string,"0x%x",val);
+	snprintf(val_string,16,"0x%x",val);
 	assign_var(s,val_string);
 }
 

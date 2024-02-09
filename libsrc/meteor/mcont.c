@@ -43,7 +43,7 @@ static void meteor_get_setting(QSP_ARG_DECL  Meteor_Setting *msp)
 	}
 	c &=0xff;
 
-	sprintf(msg_str,"%s is %d, (0x%x)",msp->ms_name,c,c);
+	snprintf(msg_str,LLEN,"%s is %d, (0x%x)",msp->ms_name,c,c);
 	prt_msg(msg_str);
 }
 

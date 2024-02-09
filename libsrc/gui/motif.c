@@ -147,7 +147,7 @@ static void push_widget_context(QSP_ARG_DECL  Screen_Obj *sop)
 	assert( icp != NULL );
 	n = 2 + strlen( CTX_NAME(icp) ) + strlen( SOB_NAME(sop) );
 	ctx_name = getbuf(n);
-	sprintf(ctx_name,"%s.%s",CTX_NAME(icp),SOB_NAME(sop) );
+	snprintf(ctx_name,n,"%s.%s",CTX_NAME(icp),SOB_NAME(sop) );
 	icp = create_scrnobj_context(ctx_name );
 	givbuf(ctx_name);
 	push_scrnobj_context(icp);
@@ -590,11 +590,11 @@ static void toggle_func(Widget toggleID, XtPointer app_data,
 		XtGetValues(toggleID, al, 1);
 
 		if( value > 1 ){
-			sprintf(ERROR_STRING,"toggle has a value of %d, expected 0 or 1!?",value);
+			snprintf(ERROR_STRING,LLEN,"toggle has a value of %d, expected 0 or 1!?",value);
 			warn(ERROR_STRING);
 			value &= 1;
 		}
-		sprintf(val_str,"%d",value);
+		snprintf(val_str,4,"%d",value);
 		assign_reserved_var("toggle_state",val_str);
 		_chew_text(DEFAULT_QSP_ARG sop->so_action_text,"(toggle event)");
 	}
@@ -950,7 +950,7 @@ static void slider_func(Widget sliderID, XtPointer app_data,
 
 		/* get the value from the slider */
 		XmScaleGetValue(sliderID, &value);
-		sprintf(str,"%d",value);			// BUG overrun?
+		snprintf(str,MAX_NUMBER_STRING_LEN,"%d",value);			// BUG overrun?
 		assign_reserved_var("slider_val",str);
 		_chew_text(DEFAULT_QSP_ARG sop->so_action_text,"(slider event)");
 	} else error1("can't locate slider");
@@ -1289,7 +1289,7 @@ void _show_panel(QSP_ARG_DECL  Panel_Obj *po)
 {
 #ifdef HAVE_MOTIF
 	if( PANEL_MAPPED(po) ){
-		sprintf(ERROR_STRING,"show_panel:  panel %s is already mapped!?",PO_NAME(po));
+		snprintf(ERROR_STRING,LLEN,"show_panel:  panel %s is already mapped!?",PO_NAME(po));
 		//warn(ERROR_STRING);
 		advise(ERROR_STRING);
 		return;
@@ -1341,7 +1341,7 @@ void _unshow_panel(QSP_ARG_DECL  Panel_Obj *po)
 {
 #ifdef HAVE_MOTIF
 	if( PANEL_UNMAPPED(po) ){
-		sprintf(ERROR_STRING,"unshow_panel:  panel %s is not currently mapped!?",PO_NAME(po));
+		snprintf(ERROR_STRING,LLEN,"unshow_panel:  panel %s is not currently mapped!?",PO_NAME(po));
 		warn(ERROR_STRING);
 		return;
 	}
@@ -1481,7 +1481,7 @@ void _make_chooser(QSP_ARG_DECL  Screen_Obj *sop, int n, const char **stringlist
 
 #ifdef CAUTIOUS
 	if( sop->so_children != NULL ){
-		sprintf(ERROR_STRING,"CAUTIOUS:  Chooser %s already has a child list!?",SOB_NAME(sop));
+		snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  Chooser %s already has a child list!?",SOB_NAME(sop));
 		error1(ERROR_STRING);
 	}
 #endif /* CAUTIOUS */
@@ -1539,7 +1539,7 @@ void _make_picker(QSP_ARG_DECL  Screen_Obj *sop)
 	const char **stringlist;
 
 	if( SOB_N_CYLINDERS(sop) != 1 ){
-		sprintf(ERROR_STRING,"picker %s needs %d components, but we're only implementing 1!?",
+		snprintf(ERROR_STRING,LLEN,"picker %s needs %d components, but we're only implementing 1!?",
 			SOB_NAME(sop),SOB_N_CYLINDERS(sop));
 		warn(ERROR_STRING);
 	}
@@ -1557,7 +1557,7 @@ void _make_picker(QSP_ARG_DECL  Screen_Obj *sop)
 
 #ifdef CAUTIOUS
 	if( sop->so_children != NULL ){
-		sprintf(ERROR_STRING,"CAUTIOUS:  Picker %s already has a child list!?",SOB_NAME(sop));
+		snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  Picker %s already has a child list!?",SOB_NAME(sop));
 		error1(ERROR_STRING);
 	}
 #endif /* CAUTIOUS */
@@ -1829,7 +1829,7 @@ Nav_Panel *_create_nav_panel(QSP_ARG_DECL  const char *name)
 
 	np_p = new_nav_panel(name);
 	if( np_p == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "create_nav_panel:  error creating nav_panel \"%s\"!?",name);
 		warn(ERROR_STRING);
 		return NULL;
@@ -1917,7 +1917,7 @@ Nav_Group *_create_nav_group(QSP_ARG_DECL  Nav_Panel *np_p, const char *name)
 
 	ng_p = new_nav_group(name);
 	if( ng_p == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "create_nav_group:  error creating nav_group \"%s\"!?",name);
 		warn(ERROR_STRING);
 		return NULL;
@@ -1934,7 +1934,7 @@ Nav_Group *_create_nav_group(QSP_ARG_DECL  Nav_Panel *np_p, const char *name)
 	// so that group names can be repeated on different panels
 	n = strlen(NAVP_NAME(np_p))+strlen(name)+2;
 	s = getbuf(n);
-	sprintf(s,"%s.%s",NAVP_NAME(np_p),name);
+	snprintf(s,n,"%s.%s",NAVP_NAME(np_p),name);
 
 	icp = create_navitm_context(s);
 

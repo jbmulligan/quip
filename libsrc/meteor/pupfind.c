@@ -91,7 +91,7 @@ static void setup_frame_ptrs(SINGLE_QSP_ARG_DECL)
 	Data_Obj *dp;
 
 	for(i=0;i<NF;i++){
-		sprintf(name,"f%d",i);
+		snprintf(name,64,"f%d",i);
 		dp = get_obj(name);
 		if( dp == NULL ) error1("missing frame object");
 		frame_base[i] = OBJ_DATA_PTR(dp);
@@ -107,12 +107,12 @@ COMMAND_FUNC( setup_diff_computation )
 	if( dp == NULL ) error1("missing destination object 'pdiff'");
 
 	if( OBJ_COLS(dp) != 320 ){
-		sprintf(ERROR_STRING,"Object pdiff (%d) should have 320 columns",OBJ_COLS(dp));
+		snprintf(ERROR_STRING,LLEN,"Object pdiff (%d) should have 320 columns",OBJ_COLS(dp));
 		error1(ERROR_STRING);
 	}
 
 	if( OBJ_ROWS(dp) != 240 ){
-		sprintf(ERROR_STRING,"Object pdiff (%d) should have 240 rows",OBJ_ROWS(dp));
+		snprintf(ERROR_STRING,LLEN,"Object pdiff (%d) should have 240 rows",OBJ_ROWS(dp));
 		error1(ERROR_STRING);
 	}
 
@@ -133,7 +133,7 @@ void _setup_blur(QSP_ARG_DECL  Data_Obj *dp)
 	w10 = *f;
 	f+=3;
 	w00 = *f;
-sprintf(DEFAULT_ERROR_STRING,"w11 = %g, w10 = %g, w00 = %g",w11,w10,w00);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"w11 = %g, w10 = %g, w00 = %g",w11,w10,w00);
 advise(DEFAULT_ERROR_STRING);
 }
 
@@ -262,12 +262,12 @@ COMMAND_FUNC( setup_curv_computation )
 			*dst++ = gc>0.0 ? gc : 0.0 ;
 
 #define DEBUG_DUMP2									\
-sprintf(ERROR_STRING,"k=%d\t dst = 0x%lx\tframe_base[%d] = 0x%lx\tp_2 = 0x%lx",				\
+snprintf(ERROR_STRING,LLEN,"k=%d\t dst = 0x%lx\tframe_base[%d] = 0x%lx\tp_2 = 0x%lx",				\
 		k,dst,frame_index,frame_base[frame_index],p_2);				\
 advise(ERROR_STRING);
 
 #define DEBUG_DUMP									\
-sprintf(ERROR_STRING,"frame_base[%d] = 0x%lx\tp_2 = 0x%lx\te = %g\tdst = 0x%x",		\
+snprintf(ERROR_STRING,LLEN,"frame_base[%d] = 0x%lx\tp_2 = 0x%lx\te = %g\tdst = 0x%x",		\
 		frame_index,frame_base[frame_index],p_2,e,dst);				\
 advise(ERROR_STRING);
 

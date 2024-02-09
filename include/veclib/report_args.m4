@@ -7,18 +7,18 @@ ifdef(`MORE_DEBUG',`
 
 dnl  These can be defined to print for debugging...
 define(`REPORT_DIM3_VAR',`						\
-	sprintf(DEFAULT_ERROR_STRING,"%s:  %d %d %d\n",#$1,$1.x,$1.y,$1.z);	\
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"%s:  %d %d %d\n",#$1,$1.x,$1.y,$1.z);	\
 	NADVISE(DEFAULT_ERROR_STRING);\
 ')
 
 define(`REPORT_DIM5_VAR',`						\
-	sprintf(DEFAULT_ERROR_STRING,"%s:  %d %d %d %d %d\n",#$1,$1.d5_dim[0],$1.d5_dim[1],$1.d5_dim[2],$1.d5_dim[3],$1.d5_dim[4]);	\
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"%s:  %d %d %d %d %d\n",#$1,$1.d5_dim[0],$1.d5_dim[1],$1.d5_dim[2],$1.d5_dim[3],$1.d5_dim[4]);	\
 	NADVISE(DEFAULT_ERROR_STRING);	\
 ')
 
 define(`REPORT_DST_PTR',`								\
 										\
-sprintf(DEFAULT_ERROR_STRING,"dst = 0x%lx",					\
+snprintf(DEFAULT_ERROR_STRING,LLEN,"dst = 0x%lx",					\
 (int_for_addr)VA_DEST_PTR(vap));						\
 NADVISE(DEFAULT_ERROR_STRING);							\
 ')
@@ -27,7 +27,7 @@ dnl  BUG VA_ARGSET_PREC appears to be invalid - not copied from oap?
 
 define(`REPORT_SVAL1',`
 
-sprintf(DEFAULT_ERROR_STRING,"sval1 = %s",
+snprintf(DEFAULT_ERROR_STRING,LLEN,"sval1 = %s",
 string_for_scalar(DEFAULT_QSP_ARG  &VA_SCALAR_VAL_STD(vap,0),
 src_prec_for_argset_prec(VA_ARGSET_PREC(vap),VA_ARGSET_TYPE(vap)) ) );
 NADVISE(DEFAULT_ERROR_STRING);

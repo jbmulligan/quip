@@ -69,58 +69,58 @@ void mapCudaFunctionPointers()
 
 void print_cudev_properties(QSP_ARG_DECL  int dev, cudaDeviceProp *propp)
 {
-	sprintf(msg_str,"\nDevice %d: \"%s\"", dev, propp->name);
+	snprintf(msg_str,LLEN,"\nDevice %d: \"%s\"", dev, propp->name);
 	prt_msg(msg_str);
-	sprintf(msg_str,"  CUDA Capability Major revision number:		%d", propp->major);
+	snprintf(msg_str,LLEN,"  CUDA Capability Major revision number:		%d", propp->major);
 	prt_msg(msg_str);
-	sprintf(msg_str,"  CUDA Capability Minor revision number:		%d", propp->minor);
+	snprintf(msg_str,LLEN,"  CUDA Capability Minor revision number:		%d", propp->minor);
 	prt_msg(msg_str);
-	sprintf(msg_str,"  Total amount of global memory:\t\t\t%lu bytes", propp->totalGlobalMem);
+	snprintf(msg_str,LLEN,"  Total amount of global memory:\t\t\t%lu bytes", propp->totalGlobalMem);
 	prt_msg(msg_str);
 #if CUDART_VERSION >= 2000
-	sprintf(msg_str,"  Number of multiprocessors:\t\t\t\t%d", propp->multiProcessorCount);
+	snprintf(msg_str,LLEN,"  Number of multiprocessors:\t\t\t\t%d", propp->multiProcessorCount);
 	prt_msg(msg_str);
-	sprintf(msg_str,"  Number of cores:\t\t\t\t\t%d", 8 * propp->multiProcessorCount);
+	snprintf(msg_str,LLEN,"  Number of cores:\t\t\t\t\t%d", 8 * propp->multiProcessorCount);
 	prt_msg(msg_str);
 #endif
-	sprintf(msg_str,"  Total amount of constant memory:\t\t\t%lu bytes", propp->totalConstMem); 
+	snprintf(msg_str,LLEN,"  Total amount of constant memory:\t\t\t%lu bytes", propp->totalConstMem); 
 	prt_msg(msg_str);
-	sprintf(msg_str,"  Total amount of shared memory per block:\t\t%lu bytes", propp->sharedMemPerBlock);
+	snprintf(msg_str,LLEN,"  Total amount of shared memory per block:\t\t%lu bytes", propp->sharedMemPerBlock);
 	prt_msg(msg_str);
-	sprintf(msg_str,"  Total number of registers available per block:\t%d", propp->regsPerBlock);
+	snprintf(msg_str,LLEN,"  Total number of registers available per block:\t%d", propp->regsPerBlock);
 	prt_msg(msg_str);
-	sprintf(msg_str,"  Warp size:\t\t\t\t\t\t%d", propp->warpSize);
+	snprintf(msg_str,LLEN,"  Warp size:\t\t\t\t\t\t%d", propp->warpSize);
 	prt_msg(msg_str);
-	sprintf(msg_str,"  Maximum number of threads per block:\t\t\t%d", propp->maxThreadsPerBlock);
+	snprintf(msg_str,LLEN,"  Maximum number of threads per block:\t\t\t%d", propp->maxThreadsPerBlock);
 	prt_msg(msg_str);
-	sprintf(msg_str,"  Maximum sizes of each dimension of a block:\t\t%d x %d x %d",
+	snprintf(msg_str,LLEN,"  Maximum sizes of each dimension of a block:\t\t%d x %d x %d",
 		propp->maxThreadsDim[0],
 		propp->maxThreadsDim[1],
 		propp->maxThreadsDim[2]);
 	prt_msg(msg_str);
-	sprintf(msg_str,"  Maximum sizes of each dimension of a grid:\t\t%d x %d x %d",
+	snprintf(msg_str,LLEN,"  Maximum sizes of each dimension of a grid:\t\t%d x %d x %d",
 		propp->maxGridSize[0],
 		propp->maxGridSize[1],
 		propp->maxGridSize[2]);
 	prt_msg(msg_str);
-	sprintf(msg_str,"  Maximum memory pitch:\t\t\t\t\t%lu bytes", propp->memPitch);
+	snprintf(msg_str,LLEN,"  Maximum memory pitch:\t\t\t\t\t%lu bytes", propp->memPitch);
 	prt_msg(msg_str);
-	sprintf(msg_str,"  Texture alignment:\t\t\t\t\t%lu bytes", propp->textureAlignment);
+	snprintf(msg_str,LLEN,"  Texture alignment:\t\t\t\t\t%lu bytes", propp->textureAlignment);
 	prt_msg(msg_str);
-	sprintf(msg_str,"  Clock rate:\t\t\t\t\t\t%.2f GHz", propp->clockRate * 1e-6f);
+	snprintf(msg_str,LLEN,"  Clock rate:\t\t\t\t\t\t%.2f GHz", propp->clockRate * 1e-6f);
 	prt_msg(msg_str);
 #if CUDART_VERSION >= 2000
-	sprintf(msg_str,"  Concurrent copy and execution:\t\t\t%s", propp->deviceOverlap ? "Yes" : "No");
+	snprintf(msg_str,LLEN,"  Concurrent copy and execution:\t\t\t%s", propp->deviceOverlap ? "Yes" : "No");
 	prt_msg(msg_str);
 #endif
 
-	sprintf(msg_str,"  Run time limit on kernels:\t\t\t\t%s", propp->kernelExecTimeoutEnabled ? "Yes" : "No");
+	snprintf(msg_str,LLEN,"  Run time limit on kernels:\t\t\t\t%s", propp->kernelExecTimeoutEnabled ? "Yes" : "No");
 	prt_msg(msg_str);
-	sprintf(msg_str,"  Integrated:\t\t\t\t\t\t%s", propp->integrated ? "Yes" : "No");
+	snprintf(msg_str,LLEN,"  Integrated:\t\t\t\t\t\t%s", propp->integrated ? "Yes" : "No");
 	prt_msg(msg_str);
-	sprintf(msg_str,"  Support host page-locked memory mapping:\t\t%s", propp->canMapHostMemory ? "Yes" : "No");
+	snprintf(msg_str,LLEN,"  Support host page-locked memory mapping:\t\t%s", propp->canMapHostMemory ? "Yes" : "No");
 	prt_msg(msg_str);
-	sprintf(msg_str,"  Compute mode:\t\t\t\t\t\t%s",
+	snprintf(msg_str,LLEN,"  Compute mode:\t\t\t\t\t\t%s",
 		propp->computeMode == cudaComputeModeDefault ?
 	"Default (multiple host threads can use this device simultaneously)" :
 		propp->computeMode == cudaComputeModeExclusive ?

@@ -65,7 +65,7 @@ static char *get_hist_ctx_name(const char* prompt)
 	static char str[LLEN];
 	/* int n; */
 
-	sprintf(str,"%s.%s",HIST_CHOICE_STRING,prompt);
+	snprintf(str,LLEN,"%s.%s",HIST_CHOICE_STRING,prompt);
 	return(str);
 }
 
@@ -171,7 +171,7 @@ void _preload_history_list(QSP_ARG_DECL  const char* prompt,unsigned int n,const
 
 #ifdef QUIP_DEBUG
 if( debug & hist_debug ){
-sprintf(ERROR_STRING,"preload_history_list for prompt \"%s\"",prompt);
+snprintf(ERROR_STRING,LLEN,"preload_history_list for prompt \"%s\"",prompt);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -220,7 +220,7 @@ static inline void boost_choice(QSP_ARG_DECL  Hist_Choice *hcp, List *lp)
 
 #ifdef QUIP_DEBUG
 if( debug & hist_debug ){
-sprintf(ERROR_STRING,"boost_choice:  increasing priority for choice \"%s\"",ITEM_NAME((Item *)hcp));
+snprintf(ERROR_STRING,LLEN,"boost_choice:  increasing priority for choice \"%s\"",ITEM_NAME((Item *)hcp));
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -276,7 +276,7 @@ void _add_def( QSP_ARG_DECL  const char *prompt, const char *string )
 
 #ifdef QUIP_DEBUG
 if( debug & hist_debug ){
-sprintf(ERROR_STRING,"add_def \"%s\" for prompt \"%s\"",string,prompt);
+snprintf(ERROR_STRING,LLEN,"add_def \"%s\" for prompt \"%s\"",string,prompt);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -293,7 +293,7 @@ void _rem_phist(QSP_ARG_DECL  const char *prompt,const char* word)
 	formatted_prompt = format_prompt(prompt);
 	char s[LLEN];
 
-	sprintf(s,PROMPT_FORMAT,prompt);
+	snprintf(s,LLEN,PROMPT_FORMAT,prompt);
 	rem_def(QSP_ARG  s,word);
 }
 #endif // NOT_USED
@@ -302,7 +302,7 @@ void _add_phist(QSP_ARG_DECL  const char *prompt,const char* word)
 {
 	char s[LLEN];
 
-	sprintf(s,PROMPT_FORMAT,prompt);
+	snprintf(s,LLEN,PROMPT_FORMAT,prompt);
 	add_def(s,word);
 }
 
@@ -452,7 +452,7 @@ static const char * cyc_item_match(QSP_ARG_DECL  const char *so_far, int directi
 
 	fmi_p = NODE_DATA(np);
 
-//sprintf(ERROR_STRING,"cyc_item_match \"%s\", will call advance_frag_match...",so_far);
+//snprintf(ERROR_STRING,LLEN,"cyc_item_match \"%s\", will call advance_frag_match...",so_far);
 //advise(ERROR_STRING);
 	s = advance_frag_match(fmi_p,direction);
 	if( s != NULL ){
@@ -505,7 +505,7 @@ void _init_hist_from_list(QSP_ARG_DECL  const char *prompt,List* lp)
 
 #ifdef QUIP_DEBUG
 if( debug & hist_debug ){
-sprintf(ERROR_STRING,"init_hist_from_list for prompt \"%s\"",prompt);
+snprintf(ERROR_STRING,LLEN,"init_hist_from_list for prompt \"%s\"",prompt);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -528,7 +528,7 @@ void _init_hist_from_item_list(QSP_ARG_DECL  const char *prompt,List *lp)
 	char s[LLEN];
 
 	assert( lp != NULL );
-	sprintf(s,PROMPT_FORMAT,prompt);
+	snprintf(s,LLEN,PROMPT_FORMAT,prompt);
 	init_hist_from_list(s,lp);
 }
 
@@ -540,7 +540,7 @@ void _init_hist_from_class(QSP_ARG_DECL  const char* prompt,Item_Class *iclp)
 	Item_Context *icp;
 	char s[LLEN];
 
-	sprintf(s,PROMPT_FORMAT,prompt);
+	snprintf(s,LLEN,PROMPT_FORMAT,prompt);
 
 	icp = find_hist(s);
 

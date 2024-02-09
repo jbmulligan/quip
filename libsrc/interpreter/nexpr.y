@@ -51,7 +51,7 @@ static void _llerror(QSP_ARG_DECL  const char *msg)
 {
 	char tmp_str[LLEN];	/* don't use error_string! */
 
-	sprintf(tmp_str,"pexpr lexical scan error:  %s",msg);
+	snprintf(tmp_str,LLEN,"pexpr lexical scan error:  %s",msg);
 	warn(tmp_str);
 }
 
@@ -669,7 +669,7 @@ static Item* _eval_tsbl_expr( QSP_ARG_DECL  Scalar_Expr_Node *enp )
 			s = eval_scalexp_string(enp->sen_child[0]);
 			ip = find_tsable( s );
 			if( ip == NULL ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 					"No time-stampable object \"%s\"!?",s);
 				warn(ERROR_STRING);
 				return NULL;
@@ -695,236 +695,236 @@ N_CONDITIONAL
 	switch(enp->sen_code){
 		case N_QUOT_STR:
 			s = eval_scalexp_string(enp);
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tstring\t%s",
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tstring\t%s",
 				(uintptr_t)enp, s);
 			advise(ERROR_STRING);
 			break;
 
 		case N_TSABLE:
 			s = eval_scalexp_string(enp->sen_child[0]);
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\ttsable\t%s",
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\ttsable\t%s",
 				(uintptr_t)enp, s);
 			advise(ERROR_STRING);
 			break;
 
 		case N_STRVFUNC:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tstrvfunc\t%s",
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tstrvfunc\t%s",
 				(uintptr_t)enp, FUNC_NAME( enp->sen_func_p ) );
 			break;
 
 		case N_STRV2FUNC:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tstrv2func\t%s",
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tstrv2func\t%s",
 				(uintptr_t)enp, FUNC_NAME( enp->sen_func_p ) );
 			break;
 
 		case N_SIZFUNC:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tsizefunc\t%s",
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tsizefunc\t%s",
 				(uintptr_t)enp, FUNC_NAME( enp->sen_func_p ) );
 			advise(ERROR_STRING);
 			break;
 
 		case N_TSFUNC:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tts_func\t%s",
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tts_func\t%s",
 				(uintptr_t)enp, FUNC_NAME( enp->sen_func_p ) );
 			advise(ERROR_STRING);
 			break;
 
 		case N_ILACEFUNC:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tinterlace_func\t%s",
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tinterlace_func\t%s",
 				(uintptr_t)enp, FUNC_NAME( enp->sen_func_p ) );
 			advise(ERROR_STRING);
 			break;
 
 		case N_POSNFUNC:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tposn_func\t%s",
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tposn_func\t%s",
 				(uintptr_t)enp, FUNC_NAME( enp->sen_func_p ) );
 			advise(ERROR_STRING);
 			break;
 
 		case N_MATH0FUNC:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tmath0_func\t%s",
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tmath0_func\t%s",
 				(uintptr_t)enp, FUNC_NAME( enp->sen_func_p ) );
 			advise(ERROR_STRING);
 			break;
 
 		case N_MATH2FUNC:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tmath2_func\t%s",
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tmath2_func\t%s",
 				(uintptr_t)enp, FUNC_NAME( enp->sen_func_p ) );
 			advise(ERROR_STRING);
 			break;
 
 		case N_MISCFUNC:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tmisc_func\t%s",
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tmisc_func\t%s",
 				(uintptr_t)enp, FUNC_NAME( enp->sen_func_p ) );
 			advise(ERROR_STRING);
 			break;
 
 		case N_STR2FUNC:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tstr2_func\t%s",
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tstr2_func\t%s",
 				(uintptr_t)enp, FUNC_NAME( enp->sen_func_p ) );
 			advise(ERROR_STRING);
 			break;
 
 		case N_STR3FUNC:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tstr3_func\t%s",
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tstr3_func\t%s",
 				(uintptr_t)enp, FUNC_NAME( enp->sen_func_p ) );
 			advise(ERROR_STRING);
 			break;
 
 		case N_DATAFUNC:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tdatafunc\t%s",
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tdatafunc\t%s",
 				(uintptr_t)enp, FUNC_NAME( enp->sen_func_p ) );
 			advise(ERROR_STRING);
 			break;
 
 		case N_OBJNAME:
 			s = eval_scalexp_string(enp->sen_child[0]);
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tobjname\t%s",
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tobjname\t%s",
 				(uintptr_t)enp, s);
 			advise(ERROR_STRING);
 			break;
 
 		case N_SCALAR_OBJ:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tscalar_obj\t0x%"PRIxPTR,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tscalar_obj\t0x%"PRIxPTR,
 				(uintptr_t)enp, (uintptr_t)enp->sen_child[0]);
 			advise(ERROR_STRING);
 			break;
 
 		case N_SUBSCRIPT:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tsubscript\t0x%"PRIxPTR"\t0x%"PRIxPTR,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tsubscript\t0x%"PRIxPTR"\t0x%"PRIxPTR,
 				(uintptr_t)enp, (uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 		case N_CSUBSCRIPT:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tcsubscript\t0x%"PRIxPTR"\t0x%"PRIxPTR,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tcsubscript\t0x%"PRIxPTR"\t0x%"PRIxPTR,
 				(uintptr_t)enp, (uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 
 		case N_MATH1FUNC:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tmath1func\t%s",
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tmath1func\t%s",
 				(uintptr_t)enp, FUNC_NAME(enp->sen_func_p) );
 			advise(ERROR_STRING);
 			break;
 
 		case N_PLUS:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tplus\t0x%"PRIxPTR"\t0x%"PRIxPTR,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tplus\t0x%"PRIxPTR"\t0x%"PRIxPTR,
 				(uintptr_t)enp,(uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 
 		case N_MINUS:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tminus\t0x%"PRIxPTR"\t0x%"PRIxPTR,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tminus\t0x%"PRIxPTR"\t0x%"PRIxPTR,
 				(uintptr_t)enp,(uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 
 		case N_TIMES:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\ttimes\t0x%"PRIxPTR"\t0x%"PRIxPTR,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\ttimes\t0x%"PRIxPTR"\t0x%"PRIxPTR,
 				(uintptr_t)enp,(uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 
 		case N_DIVIDE:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tdivide\t0x%"PRIxPTR"\t0x%"PRIxPTR,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tdivide\t0x%"PRIxPTR"\t0x%"PRIxPTR,
 				(uintptr_t)enp,(uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 
 		case N_MODULO:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tmodulo\t0x%"PRIxPTR"\t0x%"PRIxPTR,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tmodulo\t0x%"PRIxPTR"\t0x%"PRIxPTR,
 				(uintptr_t)enp,(uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 
 		case N_BITAND:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tbitand\t0x%"PRIxPTR"\t0x%"PRIxPTR,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tbitand\t0x%"PRIxPTR"\t0x%"PRIxPTR,
 				(uintptr_t)enp,(uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 
 		case N_BITOR:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tbitor\t0x%"PRIxPTR"\t0x%"PRIxPTR,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tbitor\t0x%"PRIxPTR"\t0x%"PRIxPTR,
 				(uintptr_t)enp,(uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 
 		case N_BITXOR:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tbitxor\t0x%"PRIxPTR"\t0x%"PRIxPTR,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tbitxor\t0x%"PRIxPTR"\t0x%"PRIxPTR,
 				(uintptr_t)enp,(uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 
 		case N_SHL:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tshl\t0x%"PRIxPTR"\t0x%"PRIxPTR,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tshl\t0x%"PRIxPTR"\t0x%"PRIxPTR,
 				(uintptr_t)enp,(uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 
 		case N_SHR:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tshr\t0x%"PRIxPTR"\t0x%"PRIxPTR,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tshr\t0x%"PRIxPTR"\t0x%"PRIxPTR,
 				(uintptr_t)enp,(uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 
 		case N_LOGOR:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tlog_or\t0x%"PRIxPTR"\t0x%"PRIxPTR,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tlog_or\t0x%"PRIxPTR"\t0x%"PRIxPTR,
 				(uintptr_t)enp,(uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 
 		case N_LOGAND:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tlog_and\t0x%"PRIxPTR"\t0x%"PRIxPTR,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tlog_and\t0x%"PRIxPTR"\t0x%"PRIxPTR,
 				(uintptr_t)enp,(uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 
 		case N_LOGXOR:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tlog_xor\t0x%"PRIxPTR"\t0x%"PRIxPTR,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tlog_xor\t0x%"PRIxPTR"\t0x%"PRIxPTR,
 				(uintptr_t)enp,(uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 
 		case N_LITNUM:
 			string_for_typed_scalar(MSG_STR,LLEN,enp->sen_tsp);
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tlit_num\t%s",
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tlit_num\t%s",
 				(uintptr_t)enp,MSG_STR);
 			advise(ERROR_STRING);
 			break;
 		case N_LE:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\t<= (LE)\t0x%"PRIxPTR", 0x%"PRIxPTR,(uintptr_t)enp,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\t<= (LE)\t0x%"PRIxPTR", 0x%"PRIxPTR,(uintptr_t)enp,
 				(uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 		case N_GE:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\t>= (GE)\t0x%"PRIxPTR", 0x%"PRIxPTR,(uintptr_t)enp,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\t>= (GE)\t0x%"PRIxPTR", 0x%"PRIxPTR,(uintptr_t)enp,
 				(uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 		case N_NE:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\t!= (NE)\t0x%"PRIxPTR", 0x%"PRIxPTR,(uintptr_t)enp,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\t!= (NE)\t0x%"PRIxPTR", 0x%"PRIxPTR,(uintptr_t)enp,
 				(uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 		case N_LT:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\t< (LT)\t0x%"PRIxPTR", 0x%"PRIxPTR,(uintptr_t)enp,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\t< (LT)\t0x%"PRIxPTR", 0x%"PRIxPTR,(uintptr_t)enp,
 				(uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 		case N_GT:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\t> (GT)\t0x%"PRIxPTR", 0x%"PRIxPTR,(uintptr_t)enp,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\t> (GT)\t0x%"PRIxPTR", 0x%"PRIxPTR,(uintptr_t)enp,
 				(uintptr_t)enp->sen_child[0],(uintptr_t)enp->sen_child[1]);
 			advise(ERROR_STRING);
 			break;
 		case N_NOT:
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\t! (NOT)\t0x%"PRIxPTR,
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\t! (NOT)\t0x%"PRIxPTR,
 				(uintptr_t)enp,
 				(uintptr_t)enp->sen_child[0]);
 			advise(ERROR_STRING);
 			break;
 		case N_STRFUNC:
 			s = eval_scalexp_string(enp->sen_child[0]);
-			sprintf(ERROR_STRING,"0x%"PRIxPTR"\tSTRFUNC %s\t\"%s\"",
+			snprintf(ERROR_STRING,LLEN,"0x%"PRIxPTR"\tSTRFUNC %s\t\"%s\"",
 				(uintptr_t)enp,
 				FUNC_NAME(enp->sen_func_p),
 				s);
@@ -933,7 +933,7 @@ N_CONDITIONAL
 
 // comment out the default case for the compiler to show unhandled cases...
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"%s - %s:  unhandled node code %d",
 				WHENCE2(dump_enode),enp->sen_code);
 			advise(ERROR_STRING);
@@ -1001,7 +1001,7 @@ static Data_Obj *eval_dobj_expr( QSP_ARG_DECL  Scalar_Expr_Node *enp )
 				Identifier *idp;
 				idp = id_of(s);
 				if( idp == NULL ){
-					sprintf(ERROR_STRING,
+					snprintf(ERROR_STRING,LLEN,
 	"No object or identifier %s!?",s);
 					warn(ERROR_STRING);
 					return NULL;
@@ -1012,7 +1012,7 @@ static Data_Obj *eval_dobj_expr( QSP_ARG_DECL  Scalar_Expr_Node *enp )
 
 					// BUG when to release this object???
 				} else {
-					sprintf(ERROR_STRING,
+					snprintf(ERROR_STRING,LLEN,
 	"Identifier %s is not a scalar!?",s);
 					warn(ERROR_STRING);
 					return NULL;
@@ -1064,7 +1064,7 @@ static Item * eval_szbl_expr( QSP_ARG_DECL  Scalar_Expr_Node *enp )
 			s = eval_scalexp_string(enp);
 			szp = find_sizable( QSP_ARG  s );
 			if( szp == NULL ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 					"No sizable object \"%s\"!?",s);
 				warn(ERROR_STRING);
 				return NULL;
@@ -1109,7 +1109,7 @@ static Item * _eval_positionable_expr( QSP_ARG_DECL  Scalar_Expr_Node *enp )
 			break;
 #ifdef CAUTIOUS
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"unexpected case in eval_szbl_expr %d",enp->sen_code);
 			warn(ERROR_STRING);
 			s = "(not a string)";
@@ -1118,7 +1118,7 @@ static Item * _eval_positionable_expr( QSP_ARG_DECL  Scalar_Expr_Node *enp )
 #endif /* CAUTIOUS */
 	}
 	if( szp == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"No positionable object \"%s\"!?",s);
 		warn(ERROR_STRING);
 		return NULL;
@@ -1139,7 +1139,7 @@ static Item * _eval_interlaceable_expr( QSP_ARG_DECL  Scalar_Expr_Node *enp )
 			s = eval_scalexp_string(enp);
 			szp = find_interlaceable( s );
 			if( szp == NULL ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 					"No interlaceable object \"%s\"!?",s);
 				warn(ERROR_STRING);
 				return NULL;
@@ -1174,7 +1174,7 @@ static Item * _eval_interlaceable_expr( QSP_ARG_DECL  Scalar_Expr_Node *enp )
 
 static void divzer_error(SINGLE_QSP_ARG_DECL)
 {
-	sprintf(ERROR_STRING,"Error parsing \"%s\"",YY_ORIGINAL);
+	snprintf(ERROR_STRING,LLEN,"Error parsing \"%s\"",YY_ORIGINAL);
 	advise(ERROR_STRING);
 	warn("eval_expr:  divide by 0!?");
 }
@@ -1313,7 +1313,7 @@ Typed_Scalar * _eval_expr( QSP_ARG_DECL  Scalar_Expr_Node *enp )
 
 #ifdef QUIP_DEBUG
 if( debug & expr_debug ){
-sprintf(ERROR_STRING,"eval_expr:  code = %d",enp->sen_code);
+snprintf(ERROR_STRING,LLEN,"eval_expr:  code = %d",enp->sen_code);
 advise(ERROR_STRING);
 dump_enode(QSP_ARG  enp);
 }
@@ -1490,7 +1490,7 @@ dump_enode(QSP_ARG  enp);
 	case N_OBJNAME:			// eval_expr
 	case N_SUBSCRIPT:		// eval_expr
 	case N_CSUBSCRIPT:		// eval_expr
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"unexpected case (%d) in eval_expr",
 			enp->sen_code);
 		warn(ERROR_STRING);
@@ -1827,7 +1827,7 @@ Typed_Scalar *_parse_number(QSP_ARG_DECL  const char **strptr)
 	status = extract_number_string(buf,128,&ptr);
 	*strptr = ptr;
 	if( status < 0 ){
-		sprintf(ERROR_STRING,"parse_number:  bad number string \"%s\"",
+		snprintf(ERROR_STRING,LLEN,"parse_number:  bad number string \"%s\"",
 			ptr);
 		warn(ERROR_STRING);
 		//return(-1);
@@ -1855,34 +1855,34 @@ Typed_Scalar *_parse_number(QSP_ARG_DECL  const char **strptr)
 				errno=0;
 				ll1=strtoull(buf,&endptr,0);
 				if( errno == ERANGE ){
-					sprintf(ERROR_STRING,"parse_number %s:  long long conversion error!?  (errno=%d)",buf,errno);
+					snprintf(ERROR_STRING,LLEN,"parse_number %s:  long long conversion error!?  (errno=%d)",buf,errno);
 					warn(ERROR_STRING);
 					tell_sys_error("strtoull");
-					sprintf(ERROR_STRING,"value returned:  0x%llx",ll1);
+					snprintf(ERROR_STRING,LLEN,"value returned:  0x%llx",ll1);
 					advise(ERROR_STRING);
-					sprintf(ERROR_STRING,"unsigned long long max:  0x%llx",ULLONG_MAX);
+					snprintf(ERROR_STRING,LLEN,"unsigned long long max:  0x%llx",ULLONG_MAX);
 					advise(ERROR_STRING);
 				}
 			}
 			if( errno != 0 ){
-				sprintf(ERROR_STRING,"parse_number %s:  long long conversion error!?  (errno=%d)",buf,errno);
+				snprintf(ERROR_STRING,LLEN,"parse_number %s:  long long conversion error!?  (errno=%d)",buf,errno);
 				warn(ERROR_STRING);
 				tell_sys_error("strtoll");
-				sprintf(ERROR_STRING,"value returned:  0x%llx",ll1);
+				snprintf(ERROR_STRING,LLEN,"value returned:  0x%llx",ll1);
 				advise(ERROR_STRING);
-				sprintf(ERROR_STRING,"long long range:  0x%llx - 0x%llx",LLONG_MIN,LLONG_MAX);
+				snprintf(ERROR_STRING,LLEN,"long long range:  0x%llx - 0x%llx",LLONG_MIN,LLONG_MAX);
 				advise(ERROR_STRING);
 			}
 			return( SCALAR_FOR_INT_TYPE(ll1) );
 			//return ll1;
 #else // ! HAVE_STRTOLL
-			sprintf(ERROR_STRING,"long conversion error!?  (errno=%d)",errno);
+			snprintf(ERROR_STRING,LLEN,"long conversion error!?  (errno=%d)",errno);
 			warn(ERROR_STRING);
 			tell_sys_error("strtol");
 #endif // ! HAVE_STRTOLL
 
 		} else if( errno != 0 ){
-			sprintf(ERROR_STRING,"long conversion error!?  (errno=%d)",errno);
+			snprintf(ERROR_STRING,LLEN,"long conversion error!?  (errno=%d)",errno);
 			warn(ERROR_STRING);
 			tell_sys_error("strtol");
 		}
@@ -1891,7 +1891,7 @@ Typed_Scalar *_parse_number(QSP_ARG_DECL  const char **strptr)
 	/*   else if( status & 2 ){ */	/* decimal pt seen */
 
 		errno = 0;
-//sprintf(ERROR_STRING,"converting string \"%s\"",buf);
+//snprintf(ERROR_STRING,LLEN,"converting string \"%s\"",buf);
 //advise(ERROR_STRING);
 		d = strtod(buf,&endptr);
 		if( errno == ERANGE ){
@@ -1899,24 +1899,24 @@ Typed_Scalar *_parse_number(QSP_ARG_DECL  const char **strptr)
 			// value is not +-HUGE_VAL, in contradiction to
 			// the documentation.
 			if( d == 0.0 ){
-sprintf(ERROR_STRING,"strtod:  possible underflow buf=\"%s\", d = %g",buf,d);
+snprintf(ERROR_STRING,LLEN,"strtod:  possible underflow buf=\"%s\", d = %g",buf,d);
 advise(ERROR_STRING);
 			} else if( d == HUGE_VAL || d == -HUGE_VAL ){
-sprintf(ERROR_STRING,"strtod:  possible overflow buf=\"%s\", d = %g  HUGE_VAL = %g",buf,d,HUGE_VAL);
+snprintf(ERROR_STRING,LLEN,"strtod:  possible overflow buf=\"%s\", d = %g  HUGE_VAL = %g",buf,d,HUGE_VAL);
 advise(ERROR_STRING);
 			} else {
 				if( verbose ){
-sprintf(ERROR_STRING,"strtod:  possible overflow (inconsistent) buf=\"%s\", d = %g  HUGE_VAL = %g",buf,d,HUGE_VAL);
+snprintf(ERROR_STRING,LLEN,"strtod:  possible overflow (inconsistent) buf=\"%s\", d = %g  HUGE_VAL = %g",buf,d,HUGE_VAL);
 advise(ERROR_STRING);
 				}
 			}
 		} else if( errno != 0 ){
-			sprintf(ERROR_STRING,"double conversion error!?  (errno=%d)",errno);
+			snprintf(ERROR_STRING,LLEN,"double conversion error!?  (errno=%d)",errno);
 			warn(ERROR_STRING);
 			tell_sys_error("strtod");
 		}
 
-//sprintf(ERROR_STRING,"flt conversion returning %lg",d);
+//snprintf(ERROR_STRING,LLEN,"flt conversion returning %lg",d);
 //advise(ERROR_STRING);
 //		return( scalar_for_double(d) );
 
@@ -2284,7 +2284,7 @@ _pexpr(QSP_ARG_DECL  const char *buf)	/** parse expression */
 	if( stat != 0 ){
 		/* Need to somehow free allocated nodes... */
 		if( verbose ){
-			sprintf(ERROR_STRING,"yyparse returned status %d",stat);
+			snprintf(ERROR_STRING,LLEN,"yyparse returned status %d",stat);
 			advise(ERROR_STRING);
 		}
 		//return(0.0);
@@ -2305,7 +2305,7 @@ dump_etree(QSP_ARG  FINAL_EXPR_NODE_P);
 #ifdef QUIP_DEBUG
 if( debug & expr_debug ){
 if( tsp->ts_prec_code == PREC_DP ){
-sprintf(ERROR_STRING,"pexpr:  s=\"%s\", dval = %g",buf,tsp->ts_value.u_d);
+snprintf(ERROR_STRING,LLEN,"pexpr:  s=\"%s\", dval = %g",buf,tsp->ts_value.u_d);
 advise(ERROR_STRING);
 }
 }
@@ -2351,11 +2351,11 @@ int yyerror(Query_Stack *qsp, char *s)
 	if( IS_HALTING(THIS_QSP) )
 		goto cleanup;
 	
-	sprintf(ERROR_STRING,"parsing \"%s\"",YY_ORIGINAL);
+	snprintf(ERROR_STRING,LLEN,"parsing \"%s\"",YY_ORIGINAL);
 	advise(ERROR_STRING);
 
 	if( has_parser_input() ){
-		sprintf(ERROR_STRING,"\"%s\" left to parse",YYSTRSTK[0]);
+		snprintf(ERROR_STRING,LLEN,"\"%s\" left to parse",YYSTRSTK[0]);
 		advise(ERROR_STRING);
 	} else {
 		advise("No buffered text left to parse");
@@ -2363,7 +2363,7 @@ int yyerror(Query_Stack *qsp, char *s)
 
 	// Print the warning after the informational messages, in case
 	// this warning causes the program to exit.
-	sprintf(ERROR_STRING,"YYERROR:  %s",s);
+	snprintf(ERROR_STRING,LLEN,"YYERROR:  %s",s);
 	warn(ERROR_STRING);
 
 	/* final=(-1); */
@@ -2388,7 +2388,7 @@ cleanup:
 
 static Data_Obj * _def_obj(QSP_ARG_DECL  const char *name)
 {
-	sprintf(ERROR_STRING,"can't search for object \"%s\"; ",name);
+	snprintf(ERROR_STRING,LLEN,"can't search for object \"%s\"; ",name);
 	warn(ERROR_STRING);
 
 	warn("data module not linked");

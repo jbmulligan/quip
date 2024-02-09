@@ -7,7 +7,7 @@
 define(`INSIST_CONTIG',`
 
 	if( ! is_contiguous($1) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Sorry, object %s must be contiguous for %s (gpu only?).",
 			OBJ_NAME($1),$2);
 		warn(ERROR_STRING);
@@ -20,7 +20,7 @@ define(`INSIST_CONTIG',`
 define(`INSIST_LENGTH',`
 
 	if( ($1) == 1 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Oops, kind of silly to do %s of 1-len vector %s!?",$2,$3);
 		warn(ERROR_STRING);
 		return;

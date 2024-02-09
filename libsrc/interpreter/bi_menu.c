@@ -92,7 +92,7 @@ static void _rb_item_print(QSP_ARG_DECL  qrb_node *np, qrb_tree *tree_p )
 	const Item *ip;
 
 	ip = np->data;
-	sprintf(MSG_STR,"\t%s\n",ip->item_name);
+	snprintf(MSG_STR,LLEN,"\t%s\n",ip->item_name);
 	prt_msg(MSG_STR);
 }
 
@@ -217,7 +217,7 @@ static COMMAND_FUNC( do_search_macs )
 	lp=search_macros(s);
 	if( lp == NULL ) return;
 
-	sprintf(msg_str,"Fragment \"%s\" occurs in the following macros:",s);
+	snprintf(msg_str,LLEN,"Fragment \"%s\" occurs in the following macros:",s);
 	prt_msg(msg_str);
 
 	print_list_of_items(lp, tell_msgfile());
@@ -304,7 +304,7 @@ static COMMAND_FUNC( do_def_mac )
 	n=(int)how_many("number of arguments");
 
 	if( check_adequate_return_strings(n+2) < 0 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "define:  %d arguments requested for macro %s exceeds system limit!?\nRebuild application with increased value of N_QRY_RETSTRS.",
 			n-2,name);
 		error1(ERROR_STRING);
@@ -318,10 +318,10 @@ static COMMAND_FUNC( do_def_mac )
 	// Now make sure this macro doesn't already exist
 	mp = macro_of(name);
 	if( mp != NULL ){
-		sprintf(ERROR_STRING,"Macro \"%s\" already exists!?",name);
+		snprintf(ERROR_STRING,LLEN,"Macro \"%s\" already exists!?",name);
 		warn(ERROR_STRING);
 		// Report where the macro was declared...
-		sprintf(ERROR_STRING,"Macro \"%s\" defined in file %s, line %d",
+		snprintf(ERROR_STRING,LLEN,"Macro \"%s\" defined in file %s, line %d",
 			name,macro_filename(mp),macro_lineno(mp) );
 		advise(ERROR_STRING);
 	} else {
@@ -411,7 +411,7 @@ static COMMAND_FUNC( do_redir )
 	// what does that comment mean?  For mac version?
 	fp=fopen(s,"r");
 	if( fp == NULL ){
-		sprintf(ERROR_STRING,"Error opening file %s!?",s );
+		snprintf(ERROR_STRING,LLEN,"Error opening file %s!?",s );
 		warn(ERROR_STRING);
 	} else {
 		redir(fp, s );
@@ -456,7 +456,7 @@ static COMMAND_FUNC( do_set_var )
 
 	vp = var_of(name);
 	if( vp != NULL && IS_RESERVED_VAR(vp) ){
-		sprintf(ERROR_STRING,"Sorry, variable \"%s\" is reserved.",name);
+		snprintf(ERROR_STRING,LLEN,"Sorry, variable \"%s\" is reserved.",name);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -518,6 +518,7 @@ static inline void _assign_var_stringbuf_from_string(QSP_ARG_DECL  Typed_Scalar 
 }
 
 #define DEST	sb_buffer(QS_AV_STRINGBUF(THIS_QSP))
+#define DESTLEN	sb_size(QS_AV_STRINGBUF(THIS_QSP))
 
 #define assign_var_from_double(tsp) _assign_var_from_double(QSP_ARG  tsp)
 
@@ -563,21 +564,21 @@ static inline void _assign_var_from_double(QSP_ARG_DECL  Typed_Scalar *tsp)
 			(*(iof_p->iof_fmt_long_func))(QSP_ARG  DEST, (Scalar_Value *) &l, NO_PADDING);
 		}
 	} else {
-		sprintf(DEST,QS_FLT_VAR_FMT(THIS_QSP),d);
+		snprintf(DEST,DESTLEN,QS_FLT_VAR_FMT(THIS_QSP),d);
 	}
 
 #else /* ! HAVE_ROUND */
 
 #ifdef HAVE_FLOOR
 	if( d != floor(d) )
-		sprintf(DEST,QS_GFORMAT(THIS_QSP),d);
+		snprintf(DEST,DESTLEN,QS_GFORMAT(THIS_QSP),d);
 	else {
-		//sprintf(DEST,QS_NUMBER_FMT(THIS_QSP),(unsigned long)d);
-		sprintf(DEST,QS_NUMBER_FMT(THIS_QSP),(long)d);
+		//snprintf(DEST,DESTLEN,QS_NUMBER_FMT(THIS_QSP),(unsigned long)d);
+		snprintf(DEST,DESTLEN,QS_NUMBER_FMT(THIS_QSP),(long)d);
 	}
 #else /* ! HAVE_FLOOR */
-	//sprintf(DEST,QS_NUMBER_FMT(THIS_QSP),(unsigned long)d);
-	sprintf(DEST,QS_NUMBER_FMT(THIS_QSP),(long)d);
+	//snprintf(DEST,DESTLEN,QS_NUMBER_FMT(THIS_QSP),(unsigned long)d);
+	snprintf(DEST,DESTLEN,QS_NUMBER_FMT(THIS_QSP),(long)d);
 #endif /* ! HAVE_FLOOR */
 #endif /* ! HAVE_ROUND */
 }
@@ -684,14 +685,15 @@ static COMMAND_FUNC( do_set_nsig )
 
 	n = (int) how_many("number of digits to print in numeric variables");
 	if( n<MIN_SIG_DIGITS || n>MAX_SIG_DIGITS ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Requested number of digits (%d) should be between %d and %d, using %d",
 			n,MIN_SIG_DIGITS,MAX_SIG_DIGITS,MAX_SIG_DIGITS);
 		warn(ERROR_STRING);
 		n=MAX_SIG_DIGITS;
 	}
 
-	sprintf(QS_FLT_VAR_FMT(THIS_QSP),"%%.%dg",n);
+	// BUG - use symconst for string len
+	snprintf(QS_FLT_VAR_FMT(THIS_QSP),16,"%%.%dg",n);
 }
 
 static COMMAND_FUNC( do_set_fmt )
@@ -821,7 +823,7 @@ static COMMAND_FUNC( do_repeat )
 	int n;
 	n=(int)how_many("number of iterations");
 	if( n <= 0 ){
-		sprintf(ERROR_STRING,"do_repeat:  number of repetitions (%d) must be positive!?",n);
+		snprintf(ERROR_STRING,LLEN,"do_repeat:  number of repetitions (%d) must be positive!?",n);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -867,7 +869,7 @@ static COMMAND_FUNC( do_foreach_loop )
 	else
 		strcpy(delim,s);
 
-	sprintf(pmpt,"next value, or closing delimiter \"%s\"",delim);
+	snprintf(pmpt,LLEN,"next value, or closing delimiter \"%s\"",delim);
 
 	/* New style doesn't have a limit on the number of items */
 
@@ -877,7 +879,7 @@ static COMMAND_FUNC( do_foreach_loop )
 		s=nameof(pmpt);
 		if( !strcmp(s,delim) ){		/* end of list? */
 			if( eltcount(FL_LIST(frp)) == 0 ) {		/* no items */
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"foreach:  no values specified for variable %s",
 					FL_VARNAME(frp));
 				warn(ERROR_STRING);
@@ -917,7 +919,7 @@ static COMMAND_FUNC( do_abort_prog )
 
 COMMAND_FUNC( do_show_prompt )
 {
-	sprintf(MSG_STR,"Current prompt is:  %s", QS_CMD_PROMPT_STR(THIS_QSP));
+	snprintf(MSG_STR,LLEN,"Current prompt is:  %s", QS_CMD_PROMPT_STR(THIS_QSP));
 	prt_msg(MSG_STR);
 }
 
@@ -1008,7 +1010,7 @@ static COMMAND_FUNC( do_cd )
 
 	if( chdir(s) < 0 ){
 		tell_sys_error("chdir");
-		sprintf(ERROR_STRING,"Failed to chdir to %s",s);
+		snprintf(ERROR_STRING,LLEN,"Failed to chdir to %s",s);
 		warn(ERROR_STRING);
 	}
 	// should we cache in a variable such as $cwd?
@@ -1055,7 +1057,7 @@ static COMMAND_FUNC( do_get_filenames )
 
 	dp = dobj_of(objname);
 	if( dp != NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"get_filenames:  object %s already exists!?",OBJ_NAME(dp));
 		advise(ERROR_STRING);
 
@@ -1067,7 +1069,7 @@ static COMMAND_FUNC( do_get_filenames )
 
 	dir_p = opendir(dir);
 	if( dir_p == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"get_filenames:  failed to open directory '%s'",dir);
 		warn(ERROR_STRING);
 		return;
@@ -1161,7 +1163,7 @@ static COMMAND_FUNC( do_rmdir )
 
 	if( rmdir(s) < 0 ){
 		tell_sys_error("rmdir");
-		sprintf(ERROR_STRING,"Error removing directory %s!?",s);
+		snprintf(ERROR_STRING,LLEN,"Error removing directory %s!?",s);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -1177,7 +1179,7 @@ static COMMAND_FUNC( do_rm )
 
 	if( unlink(s) < 0 ){
 		tell_sys_error("unlink");
-		sprintf(ERROR_STRING,"Error removing file %s!?",s);
+		snprintf(ERROR_STRING,LLEN,"Error removing file %s!?",s);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -1204,12 +1206,12 @@ static COMMAND_FUNC( do_rm_all )
 		fn=di_p->d_name;
 		if( strcmp(fn,".") && strcmp(fn,"..") ){
 			if( verbose ){
-				sprintf(ERROR_STRING,"Removing %s",fn);
+				snprintf(ERROR_STRING,LLEN,"Removing %s",fn);
 				advise(ERROR_STRING);
 			}
 			if( unlink(fn) < 0 ){
 				tell_sys_error("unlink");
-				sprintf(ERROR_STRING,"Error removing file %s!?",fn);
+				snprintf(ERROR_STRING,LLEN,"Error removing file %s!?",fn);
 				warn(ERROR_STRING);
 				return;
 			}
@@ -1243,7 +1245,7 @@ static COMMAND_FUNC( do_count_lines )
 	fclose(fp);
 
 	// we co-opt error_string as an available buffer...
-	sprintf(ERROR_STRING,"%d",n);
+	snprintf(ERROR_STRING,LLEN,"%d",n);
 	assign_var(vn,ERROR_STRING);
 }
 
@@ -1375,7 +1377,7 @@ static const char *timer_script = NULL;
 
 static void my_alarm(int x)
 {
-	sprintf(DEFAULT_ERROR_STRING,"my_alarm:  arg is %d",x);
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"my_alarm:  arg is %d",x);
 	advise(DEFAULT_ERROR_STRING);
 }
 
@@ -1432,7 +1434,7 @@ static COMMAND_FUNC( do_copy_cmd )
 
 static COMMAND_FUNC( do_report_version )
 {
-	sprintf(MSG_STR,"%s version:  %s (%s)",tell_progname(),tell_version(),
+	snprintf(MSG_STR,LLEN,"%s version:  %s (%s)",tell_progname(),tell_version(),
 		QUIP_UTC_BUILD_DATE);
 	prt_msg(MSG_STR);
 }
@@ -1492,13 +1494,13 @@ static COMMAND_FUNC( do_dump_items ){ dump_items(); }
 
 static COMMAND_FUNC( do_qtell )
 {
-	sprintf(ERROR_STRING,"qlevel=%d",QLEVEL);
+	snprintf(ERROR_STRING,LLEN,"qlevel=%d",QLEVEL);
 	advise(ERROR_STRING);
 }
 
 static COMMAND_FUNC( do_cd_tell )
 {
-	sprintf(msg_str,"cmd_depth = %d",STACK_DEPTH(QS_MENU_STACK(THIS_QSP)) );
+	snprintf(msg_str,LLEN,"cmd_depth = %d",STACK_DEPTH(QS_MENU_STACK(THIS_QSP)) );
 	prt_msg(msg_str);
 }
 
@@ -1510,7 +1512,7 @@ static COMMAND_FUNC( do_seed )
 
 	n=(u_long)how_many("value for random number seed");
 
-	sprintf(msg_str,"Using user-supplied seed of %ld (0x%lx)",n,n);
+	snprintf(msg_str,LLEN,"Using user-supplied seed of %ld (0x%lx)",n,n);
 	advise(msg_str);
 
 	set_seed(n);

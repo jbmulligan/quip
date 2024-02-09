@@ -54,7 +54,7 @@ static void _rewrite_hips1_nf(QSP_ARG_DECL  int fd,dimension_t n)
 
 	/* print the new nframes string */
 
-	sprintf(str,"%6d",n);
+	snprintf(str,16,"%6d",n);
 	if( write(fd,str,6) != 6 ){
 		warn("error overwriting header nframes");
 		return;
@@ -68,7 +68,7 @@ FIO_CLOSE_FUNC( hips1 )
 		&& ifp->if_dp != NULL	/* may be closing 'cause of error */
 		&& ifp->if_nfrms != ifp->if_frms_to_wt ){
 		if( ifp->if_nfrms <= 0 ){
-			sprintf(ERROR_STRING, "file %s nframes=%d!?",
+			snprintf(ERROR_STRING,LLEN, "file %s nframes=%d!?",
 				ifp->if_name,ifp->if_nfrms);
 			WARN(ERROR_STRING);
 		}
@@ -108,7 +108,7 @@ int _hips1_to_dp(QSP_ARG_DECL  Data_Obj *dp,Hips1_Header *hd_p)
 		case PFDBL:   prec=PREC_DP; break;
 		case PFCOMPLEX: prec=PREC_SP; type_dim=2; break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"hips1_to_dp:  unsupported pixel format code %d",
 				hd_p->pixel_format);
 			warn(ERROR_STRING);
@@ -240,7 +240,7 @@ static void _fpts(QSP_ARG_DECL  const char *s,int fd)
 	if( (n2=write(fd,s,n)) != n ){
 		if( n2 < 0 ) tell_sys_error("write");
 
-		sprintf(ERROR_STRING,"error writing %ld header bytes (%s)",(long)n,s);
+		snprintf(ERROR_STRING,LLEN,"error writing %ld header bytes (%s)",(long)n,s);
 		warn(ERROR_STRING);
 	}
 }
@@ -257,20 +257,20 @@ static void pt_header(QSP_ARG_DECL  int fd,Hips1_Header *hd)
 	/* make sure to print extra spaces with the number of
 	 * frames, so we can possibly go in later and edit it
 	 */
-	sprintf(str,"%6d\n",hd->num_frame);
+	snprintf(str,256,"%6d\n",hd->num_frame);
 	fpts(str,fd);
 
 	if( *(hd->orig_date) == 0 ) fpts("\n",fd);
 	else fpts(hd->orig_date,fd);
-	sprintf(str,"%d\n",hd->rows);
+	snprintf(str,256,"%d\n",hd->rows);
 	fpts(str,fd);
-	sprintf(str,"%d\n",hd->cols);
+	snprintf(str,256,"%d\n",hd->cols);
 	fpts(str,fd);
-	sprintf(str,"%d\n",hd->bits_per_pixel);
+	snprintf(str,256,"%d\n",hd->bits_per_pixel);
 	fpts(str,fd);
-	sprintf(str,"%d\n",hd->bit_packing);
+	snprintf(str,256,"%d\n",hd->bit_packing);
 	fpts(str,fd);
-	sprintf(str,"%d\n",hd->pixel_format);
+	snprintf(str,256,"%d\n",hd->pixel_format);
 	fpts(str,fd);
 	if( *(hd->seq_history) == 0 ) fpts("\n",fd);
 	else fpts(hd->seq_history,fd);

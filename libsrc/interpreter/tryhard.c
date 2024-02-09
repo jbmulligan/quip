@@ -47,7 +47,7 @@ static struct passwd **get_pw_tbl()
 		i++;
 	}
 	if( i != MAX_PW_ENTS+1 ){
-		sprintf(DEFAULT_ERROR_STRING,"Oops, need to increase MAX_PW_ENTS in tryhard.c");
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"Oops, need to increase MAX_PW_ENTS in tryhard.c");
 		warn(NULL_QSP_ARG  DEFAULT_ERROR_STRING);
 		pw_tab[MAX_PW_ENTS-1] = NULL;
 	}
@@ -98,7 +98,7 @@ FILE *_try_open(QSP_ARG_DECL  const char *filename, const char *mode)
 	if( stat(filename,&statb) < 0 ){
 		/* We expect ENOENT if file doesn't exist */
 		if( errno != ENOENT ){
-			sprintf(ERROR_STRING,"stat %s (try_open)",filename);
+			snprintf(ERROR_STRING,LLEN,"stat %s (try_open)",filename);
 			perror(ERROR_STRING);
 		}
 		goto proceed;
@@ -117,7 +117,7 @@ FILE *_try_open(QSP_ARG_DECL  const char *filename, const char *mode)
 	if( strlen(filename) >= MAXPATHLEN ){
 		// what is the type of strlen?  on debian seems to be size_t...
 		// is size_t always long???
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "try_open:  filename length (%ld) is greater than MAXPATHLEN (%d) !?",
 			(long)strlen(filename),MAXPATHLEN);
 		warn(ERROR_STRING);
@@ -135,7 +135,7 @@ FILE *_try_open(QSP_ARG_DECL  const char *filename, const char *mode)
 
 	/* now stat the directory and see if we have write permission... */
 	if( stat(dirname,&statb) < 0 ){
-		sprintf(ERROR_STRING,"stat %s (try_open)",dirname);
+		snprintf(ERROR_STRING,LLEN,"stat %s (try_open)",dirname);
 		perror(ERROR_STRING);
 	}
 
@@ -144,7 +144,7 @@ FILE *_try_open(QSP_ARG_DECL  const char *filename, const char *mode)
 		 * So we try to remove the file.
 		 */
 		if( unlink(filename) < 0 ){
-			sprintf(ERROR_STRING,"unlink %s (try_open)",filename);
+			snprintf(ERROR_STRING,LLEN,"unlink %s (try_open)",filename);
 			perror(ERROR_STRING);
 		}
 		goto proceed;
@@ -173,11 +173,11 @@ FILE *_try_open(QSP_ARG_DECL  const char *filename, const char *mode)
 	}
 
 	if( owner_name != NULL && my_name != NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"File %s is owned by %s, not writable by %s,",
 			filename,owner_name,my_name);
 		advise(ERROR_STRING);
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"and directory %s does not have other-write permission.",dirname);
 		advise(ERROR_STRING);
 	}
@@ -192,12 +192,12 @@ proceed:
         if( !fp ){
 		if( strlen(filename) > (LLEN-32) ){
 			// what is type of strlen?  size_t?  long?
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"Can't open file (filename too long - %ld chars), mode %s",
 				(long)strlen(filename),mode);
 			warn(ERROR_STRING);
 		} else {
-			sprintf(ERROR_STRING,"can't open file %s, mode %s",
+			snprintf(ERROR_STRING,LLEN,"can't open file %s, mode %s",
 				filename, mode);
 			warn(ERROR_STRING);
 		}
@@ -242,7 +242,7 @@ FILE *_try_nice(QSP_ARG_DECL  const char *fnam, const char *mode)
 #endif /* HAVE_STAT */
     
 	if( fnam[0]==0 ){
-		sprintf(ERROR_STRING,"null file name");
+		snprintf(ERROR_STRING,LLEN,"null file name");
 		warn(ERROR_STRING);
 		return(NULL);
 	}
@@ -251,9 +251,9 @@ FILE *_try_nice(QSP_ARG_DECL  const char *fnam, const char *mode)
 		if( cautious && stat(fnam,&statb) != (-1) ){	/* file found */
 			if( (strlen(fnam)+23+1) > LLEN ){
 				// The filename is too long to print the prompt
-                       		sprintf(pstr, "Overwrite existing file");
+                       		snprintf(pstr,LLEN, "Overwrite existing file");
 			} else {
-                       		sprintf(pstr, "file %s exists, overwrite",fnam);
+                       		snprintf(pstr,LLEN, "file %s exists, overwrite",fnam);
 			}
                        	if( !confirm(pstr) ) return(NULL);
                 }

@@ -130,7 +130,7 @@ void _read_object(QSP_ARG_DECL  Data_Obj *dp,Image_File *ifp)
 			n = CONV_LEN<npixels ? CONV_LEN : npixels ;
 			if( USES_STDIO(ifp) ){
 				if( (n2=fread(cbuf,4,n,ifp->if_fp)) != n ){
-					sprintf(ERROR_STRING,
+					snprintf(ERROR_STRING,LLEN,
 				"read_object %s from file %s:  %d pixels requested, %d pixels read",
 						OBJ_NAME(dp),ifp->if_name,n,n2);
 					WARN(ERROR_STRING);
@@ -140,7 +140,7 @@ void _read_object(QSP_ARG_DECL  Data_Obj *dp,Image_File *ifp)
 			} else {
 				// hips1 etc
 				if( (n2=read(ifp->if_fd,cbuf,4*n)) != 4*n ){
-					sprintf(ERROR_STRING,
+					snprintf(ERROR_STRING,LLEN,
 				"read_object %s from file %s:  %d bytes requested, %d bytes read",
 						OBJ_NAME(dp),ifp->if_name,4*n,n2);
 					WARN(ERROR_STRING);
@@ -168,7 +168,7 @@ dun2:		return;
 		if( (n2=fread(OBJ_DATA_PTR(dp),(size_t)size,(size_t)npixels,ifp->if_fp))
 			!= (size_t)npixels ){
 
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"read_object %s from file %s:  %d pixels requested, but %ld pixels read",
 				OBJ_NAME(dp),ifp->if_name,npixels,(long)n2);
 			WARN(ERROR_STRING);
@@ -189,15 +189,15 @@ dun2:		return;
 			 * should check for data loss!?
 			 */
 
-sprintf(ERROR_STRING,"%d pixels remaining, requesting %d bytes at offset %d (size=%d)",npixels,n,os,size);
+snprintf(ERROR_STRING,LLEN,"%d pixels remaining, requesting %d bytes at offset %d (size=%d)",npixels,n,os,size);
 advise(ERROR_STRING);
 			if( (n_actual=read(ifp->if_fd,((char *)OBJ_DATA_PTR(dp))+os,(u_int)n))
 				!= (int)n ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 					"error read()'ing pixel data, %d requested, %d actually read",n,n_actual);
 				WARN(ERROR_STRING);
 			} else {
-				sprintf(ERROR_STRING,"%d pixels read successfully",n);
+				snprintf(ERROR_STRING,LLEN,"%d pixels read successfully",n);
 				advise(ERROR_STRING);
 			}
 			os += n;
@@ -209,7 +209,7 @@ advise(ERROR_STRING);
 
 		n=npixels*size;
 		if( (n_actual=read(ifp->if_fd,((char *)OBJ_DATA_PTR(dp)),(u_int)n)) != (int) n ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"error reading pixel data, %d requested, %ld actually read",n,(long)n_actual);
 			WARN(ERROR_STRING);
 		}
@@ -249,11 +249,11 @@ static int _frag_read(QSP_ARG_DECL  Data_Obj *dp,Image_File *ifp,index_t x_offse
 		x_dump=dx-x_fill;
 		//x_skip=0;
 if( ! THICK_TOLD ){
-sprintf(ERROR_STRING,"image in file %s too wide (%d) for object %s (%d)",
+snprintf(ERROR_STRING,LLEN,"image in file %s too wide (%d) for object %s (%d)",
 ifp->if_name,dx,OBJ_NAME(dp),x_fill);
 warn(ERROR_STRING);
 /*
-//sprintf(ERROR_STRING,"xskip = %d    x_fill = %d    dx = %d    x_dump = %d\n",x_skip,x_fill,dx,x_dump);
+//snprintf(ERROR_STRING,LLEN,"xskip = %d    x_fill = %d    dx = %d    x_dump = %d\n",x_skip,x_fill,dx,x_dump);
 //advise(ERROR_STRING);
 */
 TELL_THICK;
@@ -261,7 +261,7 @@ TELL_THICK;
 	} else {		/* image thinner that data area? */
 
 if( dx < x_fill && (! THIN_TOLD) ){
-sprintf(ERROR_STRING,"image in file %s too thin (%d) for object %s (%d)",
+snprintf(ERROR_STRING,LLEN,"image in file %s too thin (%d) for object %s (%d)",
 ifp->if_name,dx,OBJ_NAME(dp),x_fill);
 warn(ERROR_STRING);
 TELL_THIN;
@@ -273,7 +273,7 @@ TELL_THIN;
 	if( dy > y_fill ){	/* image taller than data area */
 
 if( ! TALL_TOLD ){
-sprintf(ERROR_STRING,"image in file %s too tall (%d) for object %s (%d)",
+snprintf(ERROR_STRING,LLEN,"image in file %s too tall (%d) for object %s (%d)",
 ifp->if_name,dy,OBJ_NAME(dp),y_fill);
 warn(ERROR_STRING);
 TELL_TALL;
@@ -283,7 +283,7 @@ TELL_TALL;
 	} else {		/* image shorter than data area */
 
 if( dy < y_fill && (! SHORT_TOLD) ){
-sprintf(ERROR_STRING,"image in file %s too short (%d) for object %s (%d)",
+snprintf(ERROR_STRING,LLEN,"image in file %s too short (%d) for object %s (%d)",
 ifp->if_name,dy,OBJ_NAME(dp),y_fill);
 warn(ERROR_STRING);
 TELL_SHORT;
@@ -361,7 +361,7 @@ FIO_RD_FUNC( raw )
 	if( !same_type(dp,ifp) ) return;
 
 	if( t_offset >= OBJ_FRAMES(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"raw_rd:  ridiculous frame offset %d (max %d)",
 			t_offset,OBJ_FRAMES(dp)-1);
 		WARN(ERROR_STRING);
@@ -396,7 +396,7 @@ FIO_RD_FUNC( raw )
 	if( FILE_FINISHED(ifp) ){
 
 		if( verbose ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"closing file \"%s\" after reading %d frames",
 				ifp->if_name,ifp->if_nfrms);
 			advise(ERROR_STRING);
@@ -405,7 +405,7 @@ FIO_RD_FUNC( raw )
 	}
 	return;
 readerr:
-	sprintf(ERROR_STRING, "error reading pixel data from file \"%s\"",
+	snprintf(ERROR_STRING,LLEN, "error reading pixel data from file \"%s\"",
 		ifp->if_name);
 	WARN(ERROR_STRING);
 	SET_ERROR(ifp);
