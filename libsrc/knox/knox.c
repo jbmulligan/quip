@@ -373,9 +373,9 @@ static int _process_knox_reply(QSP_ARG_DECL  Knox_Cmd_Code code)
 
 #endif // HAVE_KNOX
 
-#define get_knox_args(arg_buf) _get_knox_args(QSP_ARG   arg_buf)
+#define get_knox_args(arg_buf,buflen) _get_knox_args(QSP_ARG   arg_buf,buflen)
 
-static int _get_knox_args(QSP_ARG_DECL   char* arg_buf, arg_buf_len)
+static int _get_knox_args(QSP_ARG_DECL   char* arg_buf, int arg_buf_len)
 {
 	int input, first_output;
 	int ret_stat=0;
@@ -429,7 +429,7 @@ static COMMAND_FUNC( do_route_both )
 {
 	char knox_args[MAX_ARGS_LEN];
 
-	if( get_knox_args(knox_args) < 0 ) return;
+	if( get_knox_args(knox_args,MAX_ARGS_LEN) < 0 ) return;
 
 	DO_KNOX_CMD(KNOX_SET_BOTH,knox_args,"Unable to route audio and video!")
 }
@@ -455,7 +455,7 @@ static COMMAND_FUNC( do_route_video )
 {
 	char knox_args[MAX_ARGS_LEN];
 
-	if( get_knox_args(knox_args) < 0 ) return;
+	if( get_knox_args(knox_args,MAX_ARGS_LEN) < 0 ) return;
 
 	DO_KNOX_CMD(KNOX_SET_VIDEO,knox_args,"Unable to route video alone!")
 }
@@ -464,7 +464,7 @@ static COMMAND_FUNC( do_route_audio )
 {
 	char knox_args[MAX_ARGS_LEN];
 
-	if( get_knox_args(knox_args) < 0 ) return;
+	if( get_knox_args(knox_args,MAX_ARGS_LEN) < 0 ) return;
 
 	DO_KNOX_CMD( KNOX_SET_AUDIO, knox_args,"Unable to route audio!?")
 }
@@ -733,7 +733,7 @@ static COMMAND_FUNC( do_knox_status_cmds )
 static COMMAND_FUNC( do_lamp_test )
 {
 	/* Lamp test command has no args! */
-	/*if( get_knox_args(args) < 0 ) return; */
+	/*if( get_knox_args(args,MAX_ARGS_LEN) < 0 ) return; */
 
 	DO_KNOX_CMD(  KNOX_LAMP_TEST, NULL, "Unable to do lamp test!")
 }
