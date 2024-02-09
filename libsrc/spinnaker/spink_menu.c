@@ -32,7 +32,7 @@ static Spink_Cam *the_cam_p=NULL;	// should this be per-thread?
 #define CHECK_CAM(whence)						\
 									\
 	if( the_cam_p == NULL ){					\
-		snprintf(ERROR_STRING,LLEN				\
+		snprintf(ERROR_STRING,LLEN,				\
 				"%s:  No spink_cam selected.",#whence);	\
 		warn(ERROR_STRING); 					\
 		return;							\
