@@ -147,7 +147,7 @@ COMMAND_FUNC( fitsine )
 	dp=PICK_OBJ( "signal vector" );
 	if( dp==NULL ) return;
 
-	sprintf(msg_str, "Attempting to fit %s by varying",OBJ_NAME(dp));
+	snprintf(msg_str,LLEN, "Attempting to fit %s by varying",OBJ_NAME(dp));
 	prt_msg_frag(msg_str);
 
 	delete_opt_params(SINGLE_QSP_ARG);
@@ -183,11 +183,11 @@ COMMAND_FUNC( fitsine )
 	while( the_phase > 360 ) the_phase -= 360;
 	while( the_phase < 0 )   the_phase += 360;
 
-	sprintf(str,"%g",the_freq);
+	snprintf(str,128,"%g",the_freq);
 	ASSIGN_VAR("sine_freq",str);
-	sprintf(str,"%g",the_phase);
+	snprintf(str,128,"%g",the_phase);
 	ASSIGN_VAR("sine_phase",str);
-	sprintf(str,"%g",the_amp);
+	snprintf(str,128,"%g",the_amp);
 	ASSIGN_VAR("sine_amp",str);
 }
 

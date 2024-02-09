@@ -53,7 +53,7 @@ static COMMAND_FUNC( set_levels )
 
 	nlevels=(int)HOW_MANY("number of quantization levels");
 	for(i=0;i<nlevels;i++){
-		sprintf(ERROR_STRING,"value for level %d",i+1);
+		snprintf(ERROR_STRING,LLEN,"value for level %d",i+1);
 		quant_level[i] = HOW_MANY(ERROR_STRING);
 	}
 }

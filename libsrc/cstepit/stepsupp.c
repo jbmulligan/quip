@@ -16,17 +16,17 @@ Opt_Pkg *curr_opt_pkg=NULL;
 
 void _opt_param_info(QSP_ARG_DECL  Opt_Param *opp)
 {
-	sprintf(msg_str,"Parameter %s:",opp->op_name);
+	snprintf(msg_str,LLEN,"Parameter %s:",opp->op_name);
 	prt_msg(msg_str);
-	sprintf(msg_str,"\tvalue:\t%f",opp->ans);
+	snprintf(msg_str,LLEN,"\tvalue:\t%f",opp->ans);
 	prt_msg(msg_str);
-	sprintf(msg_str,"\tmin:\t%f",opp->minv);
+	snprintf(msg_str,LLEN,"\tmin:\t%f",opp->minv);
 	prt_msg(msg_str);
-	sprintf(msg_str,"\tmax:\t%f",opp->maxv);
+	snprintf(msg_str,LLEN,"\tmax:\t%f",opp->maxv);
 	prt_msg(msg_str);
-	sprintf(msg_str,"\tdelta:\t%f",opp->delta);
+	snprintf(msg_str,LLEN,"\tdelta:\t%f",opp->delta);
 	prt_msg(msg_str);
-	sprintf(msg_str,"\tmindel:\t%f",opp->mindel);
+	snprintf(msg_str,LLEN,"\tmindel:\t%f",opp->mindel);
 	prt_msg(msg_str);
 }
 
@@ -78,7 +78,7 @@ float _get_opt_param_value(QSP_ARG_DECL  const char *name)
 
 	opp=get_opt_param(name);
 	if( opp==NULL ){
-		sprintf(ERROR_STRING,"No optimization parameter \"%s\"",name);
+		snprintf(ERROR_STRING,LLEN,"No optimization parameter \"%s\"",name);
 		warn(ERROR_STRING);
 		return(-1.0);
 	}

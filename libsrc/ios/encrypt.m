@@ -19,13 +19,13 @@
 
 #define PRINT_ERR1(fmt,arg)				\
 	{						\
-		sprintf(DEFAULT_ERROR_STRING,fmt,arg);	\
+		snprintf(DEFAULT_ERROR_STRING,LLEN,fmt,arg);	\
 		NWARN(DEFAULT_ERROR_STRING);		\
 	}
 
 #define PRINT_ERR2(fmt,arg1,arg2)				\
 	{						\
-		sprintf(DEFAULT_ERROR_STRING,fmt,arg1,arg2);	\
+		snprintf(DEFAULT_ERROR_STRING,LLEN,fmt,arg1,arg2);	\
 		NWARN(DEFAULT_ERROR_STRING);		\
 	}
 

@@ -24,10 +24,10 @@ void test_reachability(QSP_ARG_DECL  const char *s)
 	}
 
 	if( flags & kSCNetworkReachabilityFlagsReachable ){
-		sprintf(MSG_STR,"%s is reachable.",s);
+		snprintf(MSG_STR,LLEN,"%s is reachable.",s);
 		simple_alert(QSP_ARG  "Success!", MSG_STR );
 	} else {
-		sprintf(MSG_STR, "%s is NOT reachable;\nCheck wireless?",s);
+		snprintf(MSG_STR,LLEN, "%s is NOT reachable;\nCheck wireless?",s);
 		simple_alert(QSP_ARG  "Network test failed", MSG_STR );
 	}
 }

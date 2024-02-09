@@ -54,27 +54,27 @@ void _describe_shape(QSP_ARG_DECL  Shape_Info *shpp)
 	assert( SHP_MACH_DIMS(shpp) != NULL );
 
 	if( HYPER_SEQ_SHAPE(shpp) )
-		sprintf(MSG_STR,"hyperseq, %3u sequences          ",
+		snprintf(MSG_STR,LLEN,"hyperseq, %3u sequences          ",
 			SHP_SEQS(shpp));
 	else if( SEQUENCE_SHAPE(shpp) )
-		sprintf(MSG_STR,"sequence, %3u %dx%d frames             ",
+		snprintf(MSG_STR,LLEN,"sequence, %3u %dx%d frames             ",
 			SHP_FRAMES(shpp),SHP_ROWS(shpp),SHP_COLS(shpp));
 	else if( IMAGE_SHAPE(shpp) ){
 		/* used to have a special case for bitmaps here, but
 		 * apparently no longer needed...
 		 */
-		sprintf(MSG_STR,"image, %4u rows   %4u columns  ",
+		snprintf(MSG_STR,LLEN,"image, %4u rows   %4u columns  ",
 			SHP_ROWS(shpp),SHP_COLS(shpp));
 	} else if( ROWVEC_SHAPE(shpp) )
-		sprintf(MSG_STR,"row vector, %4u elements        ",SHP_COLS(shpp));
+		snprintf(MSG_STR,LLEN,"row vector, %4u elements        ",SHP_COLS(shpp));
 	else if( COLVEC_SHAPE(shpp) )
-		sprintf(MSG_STR,"column vector, %4u elements     ",SHP_ROWS(shpp));
+		snprintf(MSG_STR,LLEN,"column vector, %4u elements     ",SHP_ROWS(shpp));
 	else if( PIXEL_SHAPE(shpp) )
-		sprintf(MSG_STR,"scalar                           ");
+		snprintf(MSG_STR,LLEN,"scalar                           ");
 	else if( UNKNOWN_SHAPE(shpp) )
-		sprintf(MSG_STR,"shape unknown at this time       ");
+		snprintf(MSG_STR,LLEN,"shape unknown at this time       ");
 	else if( VOID_SHAPE(shpp) )
-		sprintf(MSG_STR,"void shape                            ");
+		snprintf(MSG_STR,LLEN,"void shape                            ");
 	else {
 fprintf(stderr,"no categorization of shape at 0x%lx!?\n",(long)shpp);
 		assert( AERROR("describe_shape:  bad object type flag!?") );
@@ -94,37 +94,37 @@ fprintf(stderr,"no categorization of shape at 0x%lx!?\n",(long)shpp);
 			prt_msg("       char");
 		return;
 	} else {
-		sprintf(MSG_STR,"     %s",PREC_NAME( SHP_MACH_PREC_PTR(shpp) ) );
+		snprintf(MSG_STR,LLEN,"     %s",PREC_NAME( SHP_MACH_PREC_PTR(shpp) ) );
 		prt_msg_frag(MSG_STR);
 		if( COMPLEX_PRECISION(SHP_PREC(shpp)) ){
 			if( (SHP_PREC(shpp) & MACH_PREC_MASK) == PREC_SP )
-				sprintf(MSG_STR,", complex");
+				snprintf(MSG_STR,LLEN,", complex");
 			else if( (SHP_PREC(shpp) & MACH_PREC_MASK) == PREC_DP )
-				sprintf(MSG_STR,", dblcpx");
+				snprintf(MSG_STR,LLEN,", dblcpx");
 			else {
 				assert( AERROR("Unexpected complex machine precision!?") );
 			}
 		} else if( QUAT_PRECISION(SHP_PREC(shpp)) ){
 			if( (SHP_PREC(shpp) & MACH_PREC_MASK) == PREC_SP )
-				sprintf(MSG_STR,", quaternion");
+				snprintf(MSG_STR,LLEN,", quaternion");
 			else if( (SHP_PREC(shpp) & MACH_PREC_MASK) == PREC_DP )
-				sprintf(MSG_STR,", dblquat");
+				snprintf(MSG_STR,LLEN,", dblquat");
 			else {
 				assert( AERROR("unexpected quaternion machine precision!?") );
 			}
 		} else {
-			sprintf(MSG_STR,", real");
+			snprintf(MSG_STR,LLEN,", real");
 		}
 		prt_msg_frag(MSG_STR);
 	}
 
 	if( SHP_COMPS(shpp) > 1 ){
-		sprintf(MSG_STR,", %d components",SHP_COMPS(shpp));
+		snprintf(MSG_STR,LLEN,", %d components",SHP_COMPS(shpp));
 		prt_msg_frag(MSG_STR);
 	}
 
 	if( INTERLACED_SHAPE(shpp) ){
-		sprintf(MSG_STR,", interlaced");
+		snprintf(MSG_STR,LLEN,", interlaced");
 		prt_msg_frag(MSG_STR);
 	}
 
@@ -135,31 +135,31 @@ void _dump_shape(QSP_ARG_DECL  Shape_Info *shpp)
 {
 	int i;
 
-	sprintf(MSG_STR,"shpp = 0x%"PRIxPTR,(uintptr_t)shpp);
+	snprintf(MSG_STR,LLEN,"shpp = 0x%"PRIxPTR,(uintptr_t)shpp);
 	prt_msg(MSG_STR);
 
 	describe_shape(shpp);
-	sprintf(MSG_STR,"prec = 0x%"PREC_FMT_X,SHP_PREC(shpp));
+	snprintf(MSG_STR,LLEN,"prec = 0x%"PREC_FMT_X,SHP_PREC(shpp));
 	prt_msg(MSG_STR);
 	for(i=0;i<N_DIMENSIONS;i++){
-		sprintf(MSG_STR,"dim[%d] = %d (%d), ",i,SHP_TYPE_DIM(shpp,i),SHP_MACH_DIM(shpp,i));
+		snprintf(MSG_STR,LLEN,"dim[%d] = %d (%d), ",i,SHP_TYPE_DIM(shpp,i),SHP_MACH_DIM(shpp,i));
 		if( i == N_DIMENSIONS-1 )
 			prt_msg(MSG_STR);
 		else
 			prt_msg_frag(MSG_STR);
 	}
 
-	sprintf(MSG_STR,"n_elts = 0x%x (0x%x)",SHP_N_TYPE_ELTS(shpp),SHP_N_MACH_ELTS(shpp));
+	snprintf(MSG_STR,LLEN,"n_elts = 0x%x (0x%x)",SHP_N_TYPE_ELTS(shpp),SHP_N_MACH_ELTS(shpp));
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"mindim = 0x%x",SHP_MINDIM(shpp));
+	snprintf(MSG_STR,LLEN,"mindim = 0x%x",SHP_MINDIM(shpp));
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"maxdim = 0x%x",SHP_MAXDIM(shpp));
+	snprintf(MSG_STR,LLEN,"maxdim = 0x%x",SHP_MAXDIM(shpp));
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"flags = 0x%llx",
+	snprintf(MSG_STR,LLEN,"flags = 0x%llx",
 			(long long unsigned int)SHP_FLAGS(shpp));
 	prt_msg(MSG_STR);
 	/*
-	sprintf(MSG_STR,"last_subi = 0x%x",SHP_LAST_SUBI(shpp));
+	snprintf(MSG_STR,LLEN,"last_subi = 0x%x",SHP_LAST_SUBI(shpp));
 	prt_msg(MSG_STR);
 	*/
 }
@@ -169,16 +169,16 @@ void _list_dobj(QSP_ARG_DECL  Data_Obj *dp)
 	char string[128];
 
 	if( OBJ_AREA(dp) == NULL )
-		sprintf(string,"(no data area):%s", OBJ_NAME(dp) );
+		snprintf(string,128,"(no data area):%s", OBJ_NAME(dp) );
 	else
-		sprintf(string,"%s:%s", AREA_NAME( OBJ_AREA(dp) ), OBJ_NAME(dp) );
-	sprintf(MSG_STR,"%-40s",string);
+		snprintf(string,128,"%s:%s", AREA_NAME( OBJ_AREA(dp) ), OBJ_NAME(dp) );
+	snprintf(MSG_STR,LLEN,"%-40s",string);
 	prt_msg_frag(MSG_STR);
 	describe_shape(OBJ_SHAPE(dp) );
 
 	/*
 	if( dp->dt_extra != NULL ){
-		sprintf(MSG_STR,"Decl node has addr 0x%"PRIxPTR"\n",
+		snprintf(MSG_STR,LLEN,"Decl node has addr 0x%"PRIxPTR"\n",
 			(uintptr_t)dp->dt_extra);
 		prt_msg(MSG_STR);
 	}
@@ -242,7 +242,7 @@ static void _list_dp_flags(QSP_ARG_DECL  Data_Obj *dp)
 	int i;
 	shape_flag_t flags;
 
-	sprintf(MSG_STR,"\tflags (0x%x):",(unsigned) OBJ_FLAGS(dp));
+	snprintf(MSG_STR,LLEN,"\tflags (0x%x):",(unsigned) OBJ_FLAGS(dp));
 	prt_msg(MSG_STR);
 
 	/* We keep a copy of flags, and clear each bit as we display its
@@ -254,7 +254,7 @@ static void _list_dp_flags(QSP_ARG_DECL  Data_Obj *dp)
 	for(i=0;i<N_DP_FLAGS;i++){
 		assert( flagtbl[i].flagmask != 0 );
 		if( flags & flagtbl[i].flagmask ){
-			sprintf(MSG_STR,"\t\t%s (0x%llx)",flagtbl[i].flagname,
+			snprintf(MSG_STR,LLEN,"\t\t%s (0x%llx)",flagtbl[i].flagname,
 				(long long unsigned int)flagtbl[i].flagmask);
 			prt_msg(MSG_STR);
 
@@ -279,7 +279,7 @@ if( debug & debug_data ){
 	for(i=N_DIMENSIONS-1;i>OBJ_MAXDIM(dp);i--){
 		strcpy(dn,dimension_name[i]);
 		if( DIMENSION(dsp,i) > 1 ) strcat(dn,"s");
-		sprintf(MSG_STR,"\t%4u %12s   inc=%d", DIMENSION(dsp,i),
+		snprintf(MSG_STR,LLEN,"\t%4u %12s   inc=%d", DIMENSION(dsp,i),
 			dn, INCREMENT(isp,i));
 		prt_msg(MSG_STR);
 	}
@@ -291,7 +291,7 @@ if( debug & debug_data ){
 	for(i=OBJ_MAXDIM(dp);i>=OBJ_MINDIM(dp);i--){
 		strcpy(dn,dimension_name[i]);
 		if( DIMENSION(dsp,i) > 1 ) strcat(dn,"s");
-		sprintf(MSG_STR,"\t%4u %12s   inc=%d", DIMENSION(dsp,i),
+		snprintf(MSG_STR,LLEN,"\t%4u %12s   inc=%d", DIMENSION(dsp,i),
 			dn, INCREMENT(isp,i));
 		prt_msg(MSG_STR);
 	}
@@ -301,7 +301,7 @@ if( debug & debug_data ){
 	for(i=OBJ_MINDIM(dp)-1;i>=0;i--){
 		strcpy(dn,dimension_name[i]);
 		if( DIMENSION(dsp,i) > 1 ) strcat(dn,"s");
-		sprintf(MSG_STR,"\t%4u %12s   inc=%d", DIMENSION(dsp,i),
+		snprintf(MSG_STR,LLEN,"\t%4u %12s   inc=%d", DIMENSION(dsp,i),
 			dn, INCREMENT(isp,i));
 		prt_msg(MSG_STR);
 	}
@@ -314,11 +314,11 @@ if( debug & debug_data ){
 
 static void _list_sizes(QSP_ARG_DECL  Data_Obj *dp)
 {
-	sprintf(MSG_STR,"\tmindim = %d, maxdim = %d",
+	snprintf(MSG_STR,LLEN,"\tmindim = %d, maxdim = %d",
 		OBJ_MINDIM(dp),OBJ_MAXDIM(dp));
 	prt_msg(MSG_STR);
 
-	sprintf(MSG_STR,"\trange_mindim = %d, range_maxdim = %d",
+	snprintf(MSG_STR,LLEN,"\trange_mindim = %d, range_maxdim = %d",
 		OBJ_RANGE_MINDIM(dp),OBJ_RANGE_MAXDIM(dp));
 	prt_msg(MSG_STR);
 
@@ -336,11 +336,11 @@ static void _list_sizes(QSP_ARG_DECL  Data_Obj *dp)
 static void _list_relatives(QSP_ARG_DECL  Data_Obj *dp)
 {
 	if( OBJ_PARENT(dp) != NULL ){
-		sprintf(MSG_STR,"\tparent data object:  %s",
+		snprintf(MSG_STR,LLEN,"\tparent data object:  %s",
 			OBJ_NAME(OBJ_PARENT( dp) ));
 		prt_msg(MSG_STR);
 
-		sprintf(MSG_STR,"\tdata offset:  0x%x", OBJ_OFFSET(dp));
+		snprintf(MSG_STR,LLEN,"\tdata offset:  0x%x", OBJ_OFFSET(dp));
 		prt_msg(MSG_STR);
 	}
 	if( OBJ_CHILDREN(dp) != NULL &&
@@ -349,12 +349,12 @@ static void _list_relatives(QSP_ARG_DECL  Data_Obj *dp)
 		Node *np;
 		Data_Obj *dp2;
 
-		sprintf(MSG_STR,"\tsubobjects:");
+		snprintf(MSG_STR,LLEN,"\tsubobjects:");
 		prt_msg(MSG_STR);
 		np = QLIST_HEAD( OBJ_CHILDREN(dp) );
 		while( np != NULL ){
 			dp2=(Data_Obj *) NODE_DATA(np);
-			sprintf(MSG_STR,"\t\t%s",OBJ_NAME(dp2));
+			snprintf(MSG_STR,LLEN,"\t\t%s",OBJ_NAME(dp2));
 			prt_msg(MSG_STR);
 			np=NODE_NEXT(np);
 		}
@@ -365,7 +365,7 @@ static void _list_relatives(QSP_ARG_DECL  Data_Obj *dp)
 
 static void _list_device(QSP_ARG_DECL  Data_Obj *dp)
 {
-	sprintf(MSG_STR,"\tdevice:  %s",PFDEV_NAME(OBJ_PFDEV(dp)));
+	snprintf(MSG_STR,LLEN,"\tdevice:  %s",PFDEV_NAME(OBJ_PFDEV(dp)));
 	prt_msg(MSG_STR);
 }
 
@@ -419,7 +419,7 @@ static void _show_dobj_context(QSP_ARG_DECL  Data_Obj *dp)
 		icp=(Item_Context *)NODE_DATA(np);
 		/* can we search this context only? */
 /*
-sprintf(ERROR_STRING,
+snprintf(ERROR_STRING,LLEN,
 "Searching context %s for object %s",CTX_NAME(icp),OBJ_NAME(dp));
 advise(ERROR_STRING);
 */
@@ -435,7 +435,7 @@ advise(ERROR_STRING);
 	// Why isn't it an error not to find an object's context?
 	// Is it possible for an object to persist when its context is popped?
 show_context:
-	sprintf(MSG_STR,"\titem context:  %s",cname);
+	snprintf(MSG_STR,LLEN,"\titem context:  %s",cname);
 	prt_msg(MSG_STR);
 	return;
 
@@ -453,19 +453,19 @@ static void _list_data(QSP_ARG_DECL  Data_Obj *dp)
 		n = OBJ_N_MACH_ELTS(dp);
 // BUG fix format strings!!!
 #ifdef BITNUM_64
-	sprintf(MSG_STR,"\t%llu %s element%s",n,OBJ_MACH_PREC_NAME(dp),n==1?"":"s");
+	snprintf(MSG_STR,LLEN,"\t%llu %s element%s",n,OBJ_MACH_PREC_NAME(dp),n==1?"":"s");
 #else // ! BITNUM_64
-    sprintf(MSG_STR,"\t%u %s element%s",n,OBJ_MACH_PREC_NAME(dp),n==1?"":"s");
+    snprintf(MSG_STR,LLEN,"\t%u %s element%s",n,OBJ_MACH_PREC_NAME(dp),n==1?"":"s");
 #endif // ! BITNUM_64
 	prt_msg(MSG_STR);
 
-	sprintf(MSG_STR,"\tdata at   0x%"PRIxPTR,(uintptr_t)OBJ_DATA_PTR(dp));
+	snprintf(MSG_STR,LLEN,"\tdata at   0x%"PRIxPTR,(uintptr_t)OBJ_DATA_PTR(dp));
 	prt_msg(MSG_STR);
 	if( IS_BITMAP(dp) ){
 #ifdef BITNUM_64
-		sprintf(MSG_STR,"\t\tbit0 = %llu",OBJ_BIT0(dp));
+		snprintf(MSG_STR,LLEN,"\t\tbit0 = %llu",OBJ_BIT0(dp));
 #else
-		sprintf(MSG_STR,"\t\tbit0 = %u",OBJ_BIT0(dp));
+		snprintf(MSG_STR,LLEN,"\t\tbit0 = %u",OBJ_BIT0(dp));
 #endif
 		prt_msg(MSG_STR);
 	}
@@ -480,7 +480,7 @@ static void _list_increments(QSP_ARG_DECL  Data_Obj *dp)
 	int i;
 
 	for(i=0;i<N_DIMENSIONS;i++){
-		sprintf(MSG_STR,"\tincr[%d] = %d (%d)",i,OBJ_TYPE_INC(dp,i),OBJ_MACH_INC(dp,i));
+		snprintf(MSG_STR,LLEN,"\tincr[%d] = %d (%d)",i,OBJ_TYPE_INC(dp,i),OBJ_MACH_INC(dp,i));
 		prt_msg(MSG_STR);
 	}
 }
@@ -536,7 +536,7 @@ void info_all_dps(SINGLE_QSP_ARG_DECL)
 
 void _show_space_used(QSP_ARG_DECL  Data_Obj *dp)
 {
-	sprintf(MSG_STR,"%s:\t\t0x%"PRIxPTR,OBJ_NAME(dp),(uintptr_t)OBJ_DATA_PTR(dp));
+	snprintf(MSG_STR,LLEN,"%s:\t\t0x%"PRIxPTR,OBJ_NAME(dp),(uintptr_t)OBJ_DATA_PTR(dp));
 	prt_msg(MSG_STR);
 }
 

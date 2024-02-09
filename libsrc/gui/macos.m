@@ -156,7 +156,7 @@ void make_panel(QSP_ARG_DECL  Panel_Obj *po,int w,int h)
 #ifdef FOOBAR
 static NSView *find_first_responder(NSView *uivp)
 {
-sprintf(DEFAULT_ERROR_STRING,"find_first_responder:  testing 0x%lx",(long)uivp);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"find_first_responder:  testing 0x%lx",(long)uivp);
 NADVISE(DEFAULT_ERROR_STRING);
 	if( [uivp isFirstResponder] ) return(uivp);
 	for (NSView *subView in uivp.subviews) {
@@ -217,7 +217,7 @@ void check_first(Panel_Obj *po)
 	NSView *uiv;
 
 	uiv = find_first_responder( PO_QV(po).superview.superview );
-	sprintf(DEFAULT_ERROR_STRING,"check_first:  found 0x%lx",(long)uiv);
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"check_first:  found 0x%lx",(long)uiv);
 	NADVISE(DEFAULT_ERROR_STRING);
 }
 #endif // FOOBAR
@@ -430,7 +430,7 @@ void make_message(QSP_ARG_DECL  Screen_Obj *sop)
 	int w;
 	char s[LLEN];
 
-	sprintf(s,"%s:  %s",SOB_NAME(sop),SOB_CONTENT(sop));
+	snprintf(s,LLEN,"%s:  %s",SOB_NAME(sop),SOB_CONTENT(sop));
 	//w=PIXELS_PER_CHAR*strlen(s)+EXTRA_WIDTH;
 	w=globalAppDelegate.dev_size.width,
 	f=CGRectMake(PO_CURR_X(curr_panel),PO_CURR_Y(curr_panel),w,BUTTON_HEIGHT);
@@ -460,7 +460,7 @@ void reload_chooser(Screen_Obj *sop)
 void set_choice(Screen_Obj *sop, int which)
 {
 	if( ! IS_CHOOSER(sop) ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 			"set_choice:  screen object %s is not a chooser!?",
 			SOB_NAME(sop));
 		NWARN(DEFAULT_ERROR_STRING);
@@ -491,7 +491,7 @@ void set_choice(Screen_Obj *sop, int which)
 		p=(NSPickerView *)SOB_CONTROL(sop);
 		[p selectRow:which inComponent:0 animated:NO];
 	} else {
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 "set_choice:  object %s is neither a picker nor a chooser!?",SOB_NAME(sop));
 		NWARN(DEFAULT_ERROR_STRING);
 	}
@@ -506,7 +506,7 @@ void set_pick(Screen_Obj *sop, int cyl, int which)
 		p=(NSPickerView *)SOB_CONTROL(sop);
 
 		if( cyl < 0 || cyl >= SOB_N_CYLINDERS(sop) ){
-			sprintf(DEFAULT_ERROR_STRING,
+			snprintf(DEFAULT_ERROR_STRING,LLEN,
 	"set_pick:  cylinder %d is out of range for picker %s (0-%d)",
 				cyl,SOB_NAME(sop),SOB_N_CYLINDERS(sop));
 			NWARN(DEFAULT_ERROR_STRING);
@@ -515,7 +515,7 @@ void set_pick(Screen_Obj *sop, int cyl, int which)
 
 		[p selectRow:which inComponent:cyl animated:NO];
 	} else {
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 "set_pick:  object %s is not a picker!?",SOB_NAME(sop));
 		NWARN(DEFAULT_ERROR_STRING);
 	}
@@ -831,7 +831,7 @@ void update_gauge_label(Screen_Obj *gp )
 	// but this should be done before calling?
 
 	l=(NSTextView *) SOB_LABEL(gp);
-	sprintf(valstr,":  %d",SOB_VAL(gp));
+	snprintf(valstr,64,":  %d",SOB_VAL(gp));
 	l.string = [STRINGOBJ( SOB_NAME(gp) )
 			stringByAppendingString: STRINGOBJ(valstr) ];
 }
@@ -896,14 +896,14 @@ fprintf(stderr,"clearing continuous flag for slider\n");
 	char min_str[16];
 	char max_str[16];
 
-	sprintf(max_str,"%d",SOB_MAX(sop));
-	sprintf(min_str,"%d",SOB_MIN(sop));
+	snprintf(max_str,16,"%d",SOB_MAX(sop));
+	snprintf(min_str,16,"%d",SOB_MIN(sop));
 
 	char *legend_str;
 	unsigned long nneed=strlen(SOB_NAME(sop)) + 4 +
 		(strlen(max_str)>strlen(min_str)?strlen(max_str):strlen(min_str));
 	legend_str = getbuf(nneed);
-	sprintf(legend_str,"%s:  %s",SOB_NAME(sop),
+	snprintf(legend_str,nneed,"%s:  %s",SOB_NAME(sop),
 		(strlen(max_str)>strlen(min_str)?max_str:min_str) );
 
 	l=new_label(legend_str,PO_CURR_X(curr_panel)+slider_width/2+SLIDER_SIDE_GAP,
@@ -996,7 +996,7 @@ void update_message(Screen_Obj *sop)
 	NSLabel *l;
 	char s[LLEN];
 
-	sprintf(s,"%s:  %s",SOB_NAME(sop),SOB_CONTENT(sop));
+	snprintf(s,LLEN,"%s:  %s",SOB_NAME(sop),SOB_CONTENT(sop));
 	// BUG check widget type
 	l = (NSLabel *) SOB_CONTROL(sop);
 	l.text = STRINGOBJ( s );
@@ -1060,7 +1060,7 @@ void update_text_field(Screen_Obj *sop, const char *string)
 			break;
 
 		default:
-			sprintf(DEFAULT_ERROR_STRING,
+			snprintf(DEFAULT_ERROR_STRING,LLEN,
 	"update_text_field:  unhandled object type, screen object %s",SOB_NAME(sop));
 			NWARN(DEFAULT_ERROR_STRING);
 			break;
@@ -1203,7 +1203,7 @@ void push_nav(QSP_ARG_DECL  Gen_Win *gwp)
 		NSViewController *vc;
 		vc = [a objectAtIndex:i];
 		if( vc == GW_VC(gwp) ){
-			sprintf(DEFAULT_ERROR_STRING,
+			snprintf(DEFAULT_ERROR_STRING,LLEN,
 	"push_nav %s:  panel already pushed!?",GW_NAME(gwp));
 			advise(DEFAULT_ERROR_STRING);
 			return;
@@ -1661,7 +1661,7 @@ void dismiss_quip_alert(NSAlert *alert, NSInteger buttonIndex)
 	} 
 #ifdef CAUTIOUS
 	  else {
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 "CAUTIOUS:  dismiss_quip_alert:  Unrecognized alert type %d!?",aip.type);
 		NWARN(DEFAULT_ERROR_STRING);
 		return;

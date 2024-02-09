@@ -57,7 +57,7 @@ static COMMAND_FUNC( set_params )
 		unlock_all_tmp_objs();
 	}
 /*
-sprintf(error_string,"%d parameters read",n);
+snprintf(error_string,LLEN,"%d parameters read",n);
 advise(error_string);
 */
 }

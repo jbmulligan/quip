@@ -27,7 +27,7 @@ static void nullobjf(HOST_CALL_ARG_DECLS)
 	/* no more global this_vfp... */
 	/*
 	advise("nullobjf:");
-	sprintf(DEFAULT_ERROR_STRING,
+	snprintf(DEFAULT_ERROR_STRING,LLEN,
 		"Oops, function %s has not been implemented for %s %s precision (functype = %d)",
 		VF_NAME(this_vfp), type_strings[OA_FUNCTYPE(oap)%N_ARGSET_PRECISIONS],
 		argset_type_name[(OA_FUNCTYPE(oap)/N_ARGSET_PRECISIONS)+1],OA_FUNCTYPE(oap));
@@ -52,7 +52,7 @@ include(`../../include/veclib/gen_func_array.m4')
 void check_cu2_vfa_tbl(SINGLE_QSP_ARG_DECL)
 {
 //	if( N_OCL_ARRAYED_VEC_FUNCS != N_VEC_FUNCS ){
-//		sprintf(ERROR_STRING,
+//		snprintf(ERROR_STRING,LLEN,
 //	"cu2_vfa_tbl has %ld entries, expected %d!?\n",
 //			N_OCL_ARRAYED_VEC_FUNCS, N_VEC_FUNCS );
 //		WARN(ERROR_STRING);

@@ -109,7 +109,7 @@ void g_vuni( QSP_ARG_DECL  Vec_Obj_Args *oap )
 		case PREC_UDI:
 		case PREC_ULI:
 		case PREC_DP:
-			sprintf(DEFAULT_ERROR_STRING,
+			snprintf(DEFAULT_ERROR_STRING,LLEN,
 	"g_vuni:  Object %s (%s) should have float precision",
 				OBJ_NAME(dp),PREC_NAME(OBJ_PREC_PTR(dp)));
 			NWARN(DEFAULT_ERROR_STRING);

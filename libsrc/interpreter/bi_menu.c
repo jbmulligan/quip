@@ -557,11 +557,13 @@ static inline void _assign_var_from_double(QSP_ARG_DECL  Typed_Scalar *tsp)
 		if( d > 0 ){
 			uint64_t l;
 			l=d;
-			(*(iof_p->iof_fmt_u_long_func))(QSP_ARG  DEST, (Scalar_Value *) &l, NO_PADDING);
+			(*(iof_p->iof_fmt_u_long_func))(QSP_ARG  DEST,DESTLEN,
+					(Scalar_Value *) &l, NO_PADDING);
 		} else {
 			int64_t l;
 			l=d;
-			(*(iof_p->iof_fmt_long_func))(QSP_ARG  DEST, (Scalar_Value *) &l, NO_PADDING);
+			(*(iof_p->iof_fmt_long_func))(QSP_ARG  DEST,DESTLEN,
+					(Scalar_Value *) &l, NO_PADDING);
 		}
 	} else {
 		snprintf(DEST,DESTLEN,QS_FLT_VAR_FMT(THIS_QSP),d);
@@ -603,7 +605,8 @@ static inline void _assign_var_stringbuf_from_number(QSP_ARG_DECL  Typed_Scalar 
 		assert( SCALAR_MACH_PREC_CODE(tsp) == PREC_LI );
 		iof_p = QS_INT_VAR_FMT_P(THIS_QSP);
 		assert(iof_p!=NULL);
-		(*(iof_p->iof_fmt_long_func))(QSP_ARG  DEST, (Scalar_Value *) &(tsp->ts_value.u_ll), NO_PADDING);
+		(*(iof_p->iof_fmt_long_func))(QSP_ARG  DEST, DESTLEN,
+			(Scalar_Value *) &(tsp->ts_value.u_ll), NO_PADDING);
 	}
 }
 

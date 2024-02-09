@@ -192,7 +192,7 @@ static void _rgb2rb(QSP_ARG_DECL  float *vec)			/** returns luminance in vec[2] 
 
 showvec(vec);
 	totlum=rgb_norm(vec);
-sprintf(ERROR_STRING,"rgb2rb:  totlum = %g",totlum);
+snprintf(ERROR_STRING,LLEN,"rgb2rb:  totlum = %g",totlum);
 advise(ERROR_STRING);
 	/* vec is now fractional luminances (sum to 1) */
 showvec(vec);
@@ -246,7 +246,7 @@ static void _wnorm(QSP_ARG_DECL  float *vec)
 	int j;
 	float fact, maxswing, factor[3];
 
-sprintf(ERROR_STRING,"%g %g %g",vec[0],vec[1],vec[2]);
+snprintf(ERROR_STRING,LLEN,"%g %g %g",vec[0],vec[1],vec[2]);
 advise(ERROR_STRING);
 	for(j=0;j<3;j++){
 		maxswing=_white[j];	/* maximum allowable decrement */

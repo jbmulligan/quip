@@ -67,7 +67,7 @@ static void _check_posn(QSP_ARG_DECL  incr_t *posn, Data_Obj *dp)
 
 	for(i=0;i<N_DIMENSIONS;i++){
 		if( posn[i] < 0 || posn[i] >= OBJ_TYPE_DIM(dp,i) ){
-			sprintf(ERROR_STRING,"CAUTIOUS:  posn[%d] = %d",
+			snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  posn[%d] = %d",
 				i,posn[i]);
 			error1(ERROR_STRING);
 		}
@@ -93,7 +93,7 @@ int _setup_requantize3d(SINGLE_QSP_ARG_DECL)
 		OBJ_COMPS(_hdp) != OBJ_COMPS(_gdp)	||
 		OBJ_COLS(_hdp) != OBJ_COLS(_gdp) ){
 
-		sprintf(ERROR_STRING,"setup_requantize3d:  input/output size mismatch, objects %s and %s",
+		snprintf(ERROR_STRING,LLEN,"setup_requantize3d:  input/output size mismatch, objects %s and %s",
 			OBJ_NAME(_hdp),OBJ_NAME(_gdp));
 		warn(ERROR_STRING);
 		return(-1);
@@ -282,7 +282,7 @@ void _normalize_filter3d(QSP_ARG_DECL  Data_Obj *fdp)
 	}
 	length = sqrt(isos[4]);
 	if( verbose ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Normalizing filter by factor %g",length);
 		advise(ERROR_STRING);
 	}
@@ -421,7 +421,7 @@ int _redo_pixel3d(QSP_ARG_DECL  incr_t *posn)
 	if( verbose ){
 		if( the_sos == NO_VALUE ){
 			the_sos = get_sos3d(_edp,_fdp);
-			sprintf(DEFAULT_MSG_STR,"Initial SOS:  %g",the_sos);
+			snprintf(DEFAULT_MSG_STR,LLEN,"Initial SOS:  %g",the_sos);
 			_prt_msg(DEFAULT_QSP_ARG  DEFAULT_MSG_STR);
 		}
 		oldsos = the_sos;
@@ -438,13 +438,13 @@ int _redo_pixel3d(QSP_ARG_DECL  incr_t *posn)
 
 	if( delta_E >= 0 ){
 		if( verbose ){
-			sprintf(ERROR_STRING,"clearing pixel at %d, %d, %d",posn[1],posn[2],posn[3]);
+			snprintf(ERROR_STRING,LLEN,"clearing pixel at %d, %d, %d",posn[1],posn[2],posn[3]);
 			advise(ERROR_STRING);
 		}
 		*(_hptr+hoffset) = -1;
 	} else {
 		if( verbose ){
-			sprintf(ERROR_STRING,"setting pixel at %d, %d, %d",posn[1],posn[2],posn[3]);
+			snprintf(ERROR_STRING,LLEN,"setting pixel at %d, %d, %d",posn[1],posn[2],posn[3]);
 			advise(ERROR_STRING);
 		}
 		*(_hptr+hoffset) =  1;
@@ -463,13 +463,13 @@ int _redo_pixel3d(QSP_ARG_DECL  incr_t *posn)
 	add_impulse3d(errval-olderr,_fedp,_ffdp,posn);
 
 	if( verbose ){
-		sprintf(DEFAULT_MSG_STR,
+		snprintf(DEFAULT_MSG_STR,LLEN,
 			"Pixel at %d,%d,%d\t SOS:  %g\t\tdelta = %g",
 			posn[1],posn[2],posn[3],the_sos,the_sos-oldsos);
 		_prt_msg(DEFAULT_QSP_ARG  DEFAULT_MSG_STR);
 #ifdef QUIP_DEBUG
 if( debug & spread_debug ){
-sprintf(ERROR_STRING,"total sse: %g",get_sos3d(_edp,_fdp));
+snprintf(ERROR_STRING,LLEN,"total sse: %g",get_sos3d(_edp,_fdp));
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -550,7 +550,7 @@ void _redo_two_pixels3d(QSP_ARG_DECL  incr_t *posn)
 
 #ifdef QUIP_DEBUG
 if( debug & spread_debug ){
-sprintf(ERROR_STRING,"optimizing at %d, %d, %d",posn[1],posn[2],posn[3]);
+snprintf(ERROR_STRING,LLEN,"optimizing at %d, %d, %d",posn[1],posn[2],posn[3]);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -591,7 +591,7 @@ advise(ERROR_STRING);
 	dtbl[ HERE ] = delta_E  * oldbit ;
 #ifdef QUIP_DEBUG
 if( debug & spread_debug ){
-sprintf(ERROR_STRING,"energy gain from flip:  %g",dtbl[HERE]);
+snprintf(ERROR_STRING,LLEN,"energy gain from flip:  %g",dtbl[HERE]);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -652,7 +652,7 @@ advise(ERROR_STRING);
 	if( bestloc == NO_LOC ){	/* restore to original state */
 #ifdef QUIP_DEBUG
 if( debug & spread_debug ){
-sprintf(ERROR_STRING,"no improvement from pair flip");
+snprintf(ERROR_STRING,LLEN,"no improvement from pair flip");
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -664,7 +664,7 @@ advise(ERROR_STRING);
 	} else if( bestloc != HERE ){
 #ifdef QUIP_DEBUG
 if( debug & spread_debug ){
-sprintf(ERROR_STRING,"improvement from pair flip at %d %d",dx_tbl[bestloc],dy_tbl[bestloc]);
+snprintf(ERROR_STRING,LLEN,"improvement from pair flip at %d %d",dx_tbl[bestloc],dy_tbl[bestloc]);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -701,7 +701,7 @@ static void _anneal_pixel3d(QSP_ARG_DECL  incr_t *posn)
 	if( verbose ){
 		if( the_sos == NO_VALUE ){
 			the_sos = get_sos3d(_edp,_fdp);
-			sprintf(DEFAULT_MSG_STR,"Initial SOS:  %g",the_sos);
+			snprintf(DEFAULT_MSG_STR,LLEN,"Initial SOS:  %g",the_sos);
 			_prt_msg(DEFAULT_QSP_ARG  DEFAULT_MSG_STR);
 		}
 		oldsos = the_sos;
@@ -764,7 +764,7 @@ static void _anneal_pixel3d(QSP_ARG_DECL  incr_t *posn)
 
 	if( verbose ){
 		if( verbose ){
-			sprintf(DEFAULT_MSG_STR,
+			snprintf(DEFAULT_MSG_STR,LLEN,
 			"Pixel at %d,%d,%d\t SOS:  %g\t\tdelta = %g",
 				posn[1],posn[2],posn[3],the_sos,the_sos-oldsos);
 			advise(DEFAULT_MSG_STR);
@@ -853,13 +853,13 @@ void _get_3d_scattered_point(QSP_ARG_DECL  dimension_t n,Dimension_Set *dsp,posn
 
 	tot_siz = DIMENSION(dsp,0) * DIMENSION(dsp,1) * DIMENSION(dsp,2) * DIMENSION(dsp,3) * DIMENSION(dsp,4);
 	if( ! power_of_two(tot_siz) ){
-		sprintf(ERROR_STRING,"get_3d_scattered_point:  total size %d is not a power of two",
+		snprintf(ERROR_STRING,LLEN,"get_3d_scattered_point:  total size %d is not a power of two",
 			tot_siz);
 		error1(ERROR_STRING);
 		return;
 	}
     if( tot_siz <= 1 ){
-        sprintf(ERROR_STRING,"get_3d_scattered_point:  total size %d is <= 1!?",tot_siz);
+        snprintf(ERROR_STRING,LLEN,"get_3d_scattered_point:  total size %d is <= 1!?",tot_siz);
         error1(ERROR_STRING);
 	    return;
     }
@@ -1077,7 +1077,7 @@ double _add_to_sos3d(QSP_ARG_DECL  posn_t *posn,Data_Obj *edp,Data_Obj *fdp,int 
 		adj /= - (OBJ_COLS(edp) * OBJ_ROWS(edp) * OBJ_FRAMES(edp) * OBJ_COMPS(edp));
 #ifdef CAUTIOUS
 	else {
-		sprintf(ERROR_STRING,"CAUTIOUS:  add_to_sos:  factor (%d) is not 1 or -1 !?",factor);
+		snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  add_to_sos:  factor (%d) is not 1 or -1 !?",factor);
 		warn(ERROR_STRING);
 		return(0.0);
 	}

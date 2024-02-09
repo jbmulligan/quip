@@ -41,7 +41,7 @@ extern "C" {
 
 #ifndef HAVE_LIBNPP
 #define NO_NPP_MSG(whence)			\
-	sprintf(DEFAULT_ERROR_STRING,			\
+	snprintf(DEFAULT_ERROR_STRING,LLEN,			\
 "%s:  Program was not configured with libnpp support!?",whence);	\
 	NWARN(DEFAULT_ERROR_STRING);
 #endif /* ! HAVE_LIBNPP */
@@ -179,7 +179,7 @@ static void report_npp_error(const char *whence, const char *funcname, NppStatus
 		// no default case so compiler will report missing cases.
 	}
 	if( m == NULL ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 	"%s:  %s:  Unrecognized error (%d) in report_npp_error!?",
 			whence,funcname,s);
 		NWARN(DEFAULT_ERROR_STRING);
@@ -187,11 +187,11 @@ static void report_npp_error(const char *whence, const char *funcname, NppStatus
 	}
 		
 	if( s < 0 ){
-		sprintf(DEFAULT_ERROR_STRING,"%s:  %s:  NPP error:  %s",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"%s:  %s:  NPP error:  %s",
 			whence,funcname,m);
 		NWARN(DEFAULT_ERROR_STRING);
 	} else {
-		sprintf(DEFAULT_ERROR_STRING,"%s:  %s:  NPP warning:  %s",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"%s:  %s:  NPP warning:  %s",
 			whence,funcname,m);
 		NWARN(DEFAULT_ERROR_STRING);
 	}
@@ -256,7 +256,7 @@ static void report_npp_error(const char *whence, const char *funcname, NppStatus
 static int good_img_for_morph(QSP_ARG_DECL  Data_Obj *dp, const char *whence )
 {
 	if( OBJ_PREC(dp) != PREC_UBY ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s:  object %s (%s) must have %s precision",
 			whence,OBJ_NAME(dp),PREC_NAME(OBJ_PREC_PTR(dp)),
 			PREC_NAME(PREC_FOR_CODE(PREC_UBY)));
@@ -264,14 +264,14 @@ static int good_img_for_morph(QSP_ARG_DECL  Data_Obj *dp, const char *whence )
 		return(0);
 	}
 	if( OBJ_COMPS(dp) != 1 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s:  object %s (%d) must have 1 component",
 			whence,OBJ_NAME(dp),OBJ_COMPS(dp) );
 		WARN(ERROR_STRING);
 		return(0);
 	}
 	if( OBJ_FRAMES(dp) != 1 || OBJ_SEQS(dp) != 1 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"%s:  object %s (%d sequence%s of %d frame%s) must be a single image",
 			whence,OBJ_NAME(dp),OBJ_SEQS(dp),
 			OBJ_SEQS(dp)==1?"":"s",OBJ_FRAMES(dp),
@@ -285,7 +285,7 @@ static int good_img_for_morph(QSP_ARG_DECL  Data_Obj *dp, const char *whence )
 static int good_kernel_for_filter(Data_Obj *dp, const char *whence )
 {
 	if( OBJ_PREC(dp) != PREC_DI ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 			"%s:  object %s (%s) must have %s precision",
 			whence,OBJ_NAME(dp),PREC_NAME(OBJ_PREC_PTR(dp)),
 			PREC_NAME(PREC_FOR_CODE(PREC_DI)));
@@ -293,14 +293,14 @@ static int good_kernel_for_filter(Data_Obj *dp, const char *whence )
 		return(0);
 	}
 	if( OBJ_COMPS(dp) != 1 ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 			"%s:  object %s (%d) must have 1 component",
 			whence,OBJ_NAME(dp),OBJ_COMPS(dp) );
 		NWARN(DEFAULT_ERROR_STRING);
 		return(0);
 	}
 	if( OBJ_FRAMES(dp) != 1 || OBJ_SEQS(dp) != 1 ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 	"%s:  object %s (%d sequence%s of %d frame%s) must be a single image",
 			whence,OBJ_NAME(dp),OBJ_SEQS(dp),
 			OBJ_SEQS(dp)==1?"":"s",OBJ_FRAMES(dp),
@@ -324,7 +324,7 @@ static int good_for_morph( QSP_ARG_DECL   Data_Obj *dst_dp, Data_Obj *src_dp,
 		return(0);
 	if( OBJ_ROWS(dst_dp) < OBJ_ROWS(mask_dp) ||
 			OBJ_COLS(dst_dp) < OBJ_COLS(mask_dp) ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 	"%s:  destination %s (%d x %d) must be larger than mask %s (%d x %d)",
 			whence,OBJ_NAME(dst_dp),OBJ_COLS(dst_dp),OBJ_ROWS(dst_dp),
 			OBJ_NAME(mask_dp),OBJ_COLS(mask_dp),OBJ_ROWS(mask_dp));
@@ -342,7 +342,7 @@ static int good_for_filter( QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src_dp,
 	if( ! dp_same_prec(dst_dp,src_dp,whence) )
 		return(0);
 	if( OBJ_PREC(mask_dp) != PREC_DI ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"%s:  kernel image %s (%s) should have %s precision",
 			whence,OBJ_NAME(mask_dp),PREC_NAME(OBJ_PREC_PTR(mask_dp)),
 			PREC_NAME(PREC_FOR_CODE(PREC_DI)));
@@ -357,7 +357,7 @@ static int good_for_filter( QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src_dp,
 		return(0);
 	if( OBJ_ROWS(dst_dp) < OBJ_ROWS(mask_dp) ||
 			OBJ_COLS(dst_dp) < OBJ_COLS(mask_dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"%s:  destination %s (%d x %d) must be larger than kernel %s (%d x %d)",
 			whence,OBJ_NAME(dst_dp),OBJ_COLS(dst_dp),OBJ_ROWS(dst_dp),
 			OBJ_NAME(mask_dp),OBJ_COLS(mask_dp),OBJ_ROWS(mask_dp));
@@ -495,7 +495,7 @@ static Precision * validate_npp_prec( Precision * prec_p )
 
 #define M_DEFAULT						\
 	default:						\
-	sprintf(DEFAULT_ERROR_STRING,				\
+	snprintf(DEFAULT_ERROR_STRING,LLEN,				\
 "Sorry, no NPP allocator for %s precision with %d channels",	\
 		PREC_NAME(prec_p),ds.ds_dimension[0]);		\
 	NWARN(DEFAULT_ERROR_STRING);				\
@@ -519,7 +519,7 @@ COMMAND_FUNC( do_npp_malloc )
 	p = validate_npp_prec(prec_p);
 
 	if( PREC_CODE(p) == PREC_NONE ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Sorry, precision (%s) requested for image %s is not supported by NPP",
 			PREC_NAME(prec_p),s);
 		WARN(ERROR_STRING);
@@ -527,7 +527,7 @@ COMMAND_FUNC( do_npp_malloc )
 	}
 
 	if( ds.ds_dimension[0] > 4 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "Sorry, n_channels (%d) requested for image %s cannot be greater than 4.",
 			ds.ds_dimension[0],s);
 		WARN(ERROR_STRING);
@@ -576,7 +576,7 @@ COMMAND_FUNC( do_npp_malloc )
 			M_DEFAULT
 		}
 	} else {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"do_npp_malloc:  number of channels (%d) must be between 1 and 4.",
 			ds.ds_dimension[0]);
 		WARN(ERROR_STRING);
@@ -598,7 +598,7 @@ COMMAND_FUNC( do_npp_malloc )
 	break;
 
 #define A_DEFAULT						\
-	default:	sprintf(DEFAULT_ERROR_STRING,			\
+	default:	snprintf(DEFAULT_ERROR_STRING,LLEN,			\
 "No NPP addition function for %d channels of type %s",	\
 OBJ_COMPS(dst_dp),PREC_NAME(OBJ_PREC_PTR(dst_dp)));		\
 		NWARN(DEFAULT_ERROR_STRING);				\
@@ -644,7 +644,7 @@ COMMAND_FUNC( do_npp_vadd )
 			A_DEFAULT
 		}
 	} else {
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 			"npp_vadd:  component dimension %d not supported.",
 			OBJ_COMPS(dst_dp));
 		NWARN(DEFAULT_ERROR_STRING);
@@ -669,7 +669,7 @@ COMMAND_FUNC( do_npp_vadd )
 COMMAND_FUNC( do_report_npp_version )
 {
 #ifdef HAVE_CUDA
-	sprintf(ERROR_STRING,"Cuda NPP version:  %d.%d.%d",
+	snprintf(ERROR_STRING,LLEN,"Cuda NPP version:  %d.%d.%d",
 		NPP_VERSION_MAJOR,NPP_VERSION_MINOR,NPP_VERSION_BUILD);
 	prt_msg(ERROR_STRING);
 #else // ! HAVE_CUDA
@@ -689,7 +689,7 @@ static void get_scratch_for(Data_Obj *dp)
 	NppStatus s;
 
 	if( ! N_IS_CONTIGUOUS(dp) ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 	"sum_scratch:  Object %s must be contiguous",OBJ_NAME(dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
@@ -711,7 +711,7 @@ static void get_scratch_for(Data_Obj *dp)
 	REPORT_NPP_STATUS("do_npp_vadd","nppsReductionGetBufferSize_32f")
 
 	// now allocate the memory...
-sprintf(DEFAULT_ERROR_STRING,"Requesting %d scratch bytes",buf_size);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"Requesting %d scratch bytes",buf_size);
 NADVISE(DEFAULT_ERROR_STRING);
 	scratch_buf = nppsMalloc_8u(buf_size);
 	// BUG error check?

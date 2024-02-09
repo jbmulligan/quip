@@ -66,13 +66,13 @@ static void init_cu2_device(QSP_ARG_DECL  int index, Compute_Platform *cpp)
 	float comp_cap;
 
 	if( index >= MAX_CUDA_DEVICES ){
-		sprintf(ERROR_STRING,"Program is compiled for a maximum of %d CUDA devices, can't inititialize device %d.",
+		snprintf(ERROR_STRING,LLEN,"Program is compiled for a maximum of %d CUDA devices, can't inititialize device %d.",
 			MAX_CUDA_DEVICES,index);
 		error1(ERROR_STRING);
 	}
 
 	if( verbose ){
-		sprintf(ERROR_STRING,"init_cu2_device %d BEGIN",index);
+		snprintf(ERROR_STRING,LLEN,"init_cu2_device %d BEGIN",index);
 		advise(ERROR_STRING);
 	}
 
@@ -82,7 +82,7 @@ static void init_cu2_device(QSP_ARG_DECL  int index, Compute_Platform *cpp)
 	}
 
 	if (deviceProp.major == 9999 && deviceProp.minor == 9999){
-		sprintf(ERROR_STRING,"There is no CUDA device with dev = %d!?.\n",index);
+		snprintf(ERROR_STRING,LLEN,"There is no CUDA device with dev = %d!?.\n",index);
 		WARN(ERROR_STRING);
 
 		/* What should we do here??? */
@@ -92,7 +92,7 @@ static void init_cu2_device(QSP_ARG_DECL  int index, Compute_Platform *cpp)
 	/* Put the compute capability into a script variable so that we can use it */
 	comp_cap = deviceProp.major * 10 + deviceProp.minor;
 	if( comp_cap > CUDA_COMP_CAP ){
-		sprintf(ERROR_STRING,"init_cu2_device:  CUDA device %s has compute capability %d.%d, but program was configured for %d.%d!?",
+		snprintf(ERROR_STRING,LLEN,"init_cu2_device:  CUDA device %s has compute capability %d.%d, but program was configured for %d.%d!?",
 			deviceProp.name,deviceProp.major,deviceProp.minor,
 			CUDA_COMP_CAP/10,CUDA_COMP_CAP%10);
 		WARN(ERROR_STRING);
@@ -101,7 +101,7 @@ static void init_cu2_device(QSP_ARG_DECL  int index, Compute_Platform *cpp)
 	/* BUG if there are multiple devices, we need to make sure that this is set
 	 * correctly for the current context!?
 	 */
-	sprintf(ERROR_STRING,"%d.%d",deviceProp.major,deviceProp.minor);
+	snprintf(ERROR_STRING,LLEN,"%d.%d",deviceProp.major,deviceProp.minor);
 	assign_var("cuda_comp_cap",ERROR_STRING);
 
 
@@ -163,11 +163,11 @@ static void init_cu2_device(QSP_ARG_DECL  int index, Compute_Platform *cpp)
 	// address set to NULL says use custom allocator - see dobj/makedobj.c
 
 	// BUG??  with pdp we may not need the DA_ flag???
-	sprintf(area_name,"%s.%s",PLATFORM_NAME(cpp),name_p);
+	snprintf(area_name,LLEN,"%s.%s",PLATFORM_NAME(cpp),name_p);
 	ap = pf_area_init(area_name,NULL,0,
 			MAX_CUDA_GLOBAL_OBJECTS,DA_CUDA_GLOBAL,pdp);
 	if( ap == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"init_cu2_device:  error creating global data area %s",area_name);
 		WARN(ERROR_STRING);
 	}
@@ -195,11 +195,11 @@ static void init_cu2_device(QSP_ARG_DECL  int index, Compute_Platform *cpp)
 
 	//strcpy(area_name,name_p);
 	//strcat(area_name,"_host");
-	sprintf(area_name,"%s.%s_host",PLATFORM_NAME(cpp),name_p);
+	snprintf(area_name,LLEN,"%s.%s_host",PLATFORM_NAME(cpp),name_p);
 	ap = pf_area_init(area_name,(u_char *)NULL,0,MAX_CUDA_MAPPED_OBJECTS,
 								DA_CUDA_HOST,pdp);
 	if( ap == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"init_cu2_device:  error creating host data area %s",area_name);
 		error1(ERROR_STRING);
 	}
@@ -219,11 +219,11 @@ static void init_cu2_device(QSP_ARG_DECL  int index, Compute_Platform *cpp)
 
 	//strcpy(area_name,name_p);
 	//strcat(area_name,"_host_mapped");
-	sprintf(area_name,"%s.%s_host_mapped",PLATFORM_NAME(cpp),name_p);
+	snprintf(area_name,LLEN,"%s.%s_host_mapped",PLATFORM_NAME(cpp),name_p);
 	ap = pf_area_init(area_name,(u_char *)NULL,0,MAX_CUDA_MAPPED_OBJECTS,
 							DA_CUDA_HOST_MAPPED,pdp);
 	if( ap == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"init_cu2_device:  error creating host-mapped data area %s",area_name);
 		error1(ERROR_STRING);
 	}
@@ -236,7 +236,7 @@ static void init_cu2_device(QSP_ARG_DECL  int index, Compute_Platform *cpp)
 	//set_data_area(PFDEV_AREA(pdp,PFDEV_GLOBAL_AREA_INDEX));
 
 	if( verbose ){
-		sprintf(ERROR_STRING,"init_cu2_device %d DONE",index);
+		snprintf(ERROR_STRING,LLEN,"init_cu2_device %d DONE",index);
 		advise(ERROR_STRING);
 	}
 }
@@ -249,7 +249,7 @@ int cu2_dispatch( QSP_ARG_DECL  Vector_Function *vfp, Vec_Obj_Args *oap )
 
 	i = vfp->vf_code;
 	if( cu2_func_tbl[i].cu2_func == NULL){
-		sprintf(ERROR_STRING,"Sorry, function %s has not yet been implemented for the cuda2 platform.",VF_NAME(vfp));
+		snprintf(ERROR_STRING,LLEN,"Sorry, function %s has not yet been implemented for the cuda2 platform.",VF_NAME(vfp));
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -280,7 +280,7 @@ static void *_cu2_mem_alloc(QSP_ARG_DECL  Platform_Device *pdp, dimension_t size
 		if( e == cudaErrorDevicesUnavailable )
 			error1("Cuda devices unavailable!?");
 		describe_cuda_driver_error2("cu2_mem_alloc","cudaMalloc",e);
-		sprintf(ERROR_STRING,"Attempting to allocate %d bytes.",size);
+		snprintf(ERROR_STRING,LLEN,"Attempting to allocate %d bytes.",size);
 		advise(ERROR_STRING);
 		return NULL;
 	}
@@ -336,7 +336,7 @@ static void cu2_mem_dnload(QSP_ARG_DECL  void *dst, void *src, size_t siz, index
 	if( error != cudaSuccess ){
 		// BUG report cuda error
 		WARN("Error in cudaMemcpy, device to host!?");
-		sprintf(ERROR_STRING,"dst = 0x%lx, src = 0x%lx, size = %ld",
+		snprintf(ERROR_STRING,LLEN,"dst = 0x%lx, src = 0x%lx, size = %ld",
 			(u_long) dst, (u_long) src, siz );
 		advise(ERROR_STRING);
 		describe_cuda_driver_error2("cu2_mem_dnload",
@@ -435,7 +435,7 @@ static int cu2_unmap_buf(QSP_ARG_DECL  Data_Obj *dp)
 
 static void cu2_dev_info(QSP_ARG_DECL  Platform_Device *pdp)
 {
-	sprintf(MSG_STR,"%s:",PFDEV_NAME(pdp));
+	snprintf(MSG_STR,LLEN,"%s:",PFDEV_NAME(pdp));
 	prt_msg(MSG_STR);
 
 	// should print info from device query...
@@ -446,7 +446,7 @@ static void cu2_dev_info(QSP_ARG_DECL  Platform_Device *pdp)
 
 static void cu2_info(QSP_ARG_DECL  Compute_Platform *cdp)
 {
-	sprintf(MSG_STR,"%s:",PLATFORM_NAME(cdp));
+	snprintf(MSG_STR,LLEN,"%s:",PLATFORM_NAME(cdp));
 	prt_msg(MSG_STR);
 
 	// Should print the names of the available devices...
@@ -586,7 +586,7 @@ static int init_cu2_devices(QSP_ARG_DECL  Compute_Platform *cpp)
 	}
 
 	if( verbose ){
-		sprintf(ERROR_STRING,"%d cuda devices found...",n_devs);
+		snprintf(ERROR_STRING,LLEN,"%d cuda devices found...",n_devs);
 		advise(ERROR_STRING);
 	}
 
@@ -597,7 +597,7 @@ static int init_cu2_devices(QSP_ARG_DECL  Compute_Platform *cpp)
 #ifdef GENERATES_ERROR_ON_MAC
 		char s[32];
 
-		sprintf(s,"/dev/nvidia%d",i);
+		snprintf(s,32,"/dev/nvidia%d",i);
 		if( check_file_access(QSP_ARG  s) < 0 ){
 			// BUG do we need to unwind some things
 			// at this point?
@@ -619,7 +619,7 @@ static int init_cu2_devices(QSP_ARG_DECL  Compute_Platform *cpp)
 		default_cuda_dev_found=1;	// not really necessary?
 	} else if( ! default_cuda_dev_found ){
 		/* specified incorrectly */
-		sprintf(ERROR_STRING, "%s %s not found.\nUsing device %s.",
+		snprintf(ERROR_STRING,LLEN, "%s %s not found.\nUsing device %s.",
 			DEFAULT_CUDA_DEV_VAR,default_cuda_dev_name,
 			first_cuda_dev_name);
 		WARN(ERROR_STRING);
@@ -720,7 +720,7 @@ void g_fwdfft(QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src1_dp)
 	//Create plan for FFT
 	status = cufftPlan1d(&plan, NX, CUFFT_C2C, BATCH);
 	if (status != CUFFT_SUCCESS) {
-		sprintf(ERROR_STRING, "Error in cufftPlan1d: %s\n", getCUFFTError(status));
+		snprintf(ERROR_STRING,LLEN, "Error in cufftPlan1d: %s\n", getCUFFTError(status));
 		warn(ERROR_STRING);
 	}
 
@@ -728,7 +728,7 @@ void g_fwdfft(QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src1_dp)
 	status = cufftExecC2C(plan, (cufftComplex *)data,
 			(cufftComplex *)result, CUFFT_FORWARD);
 	if (status != CUFFT_SUCCESS) {
-		sprintf(ERROR_STRING, "Error in cufftExecC2C: %s\n", getCUFFTError(status));
+		snprintf(ERROR_STRING,LLEN, "Error in cufftExecC2C: %s\n", getCUFFTError(status));
 		warn(ERROR_STRING);
 	}
 
@@ -736,7 +736,7 @@ void g_fwdfft(QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src1_dp)
 	/*status = cufftExecC2C(plan, data, result, CUFFT_INVERSE);
 	if (status != CUFFT_SUCCESS)
 	{
-		sprintf(ERROR_STRING, "Error in cufftExecC2C: %s\n", getCUFFTError(status));
+		snprintf(ERROR_STRING,LLEN, "Error in cufftExecC2C: %s\n", getCUFFTError(status));
 		warn(ERROR_STRING);
 	}*/
 

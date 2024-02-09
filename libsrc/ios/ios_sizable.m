@@ -25,23 +25,23 @@ DECLARE_CLASS_INIT_FUNC(interlaceable)
 #define DECLARE_CLASS_GET_FUNC(type_stem,func_str_type)				\
 										\
 static func_str_type *get_ios_##type_stem##_functions(QSP_ARG_DECL  IOS_Item *ip)\
-{										\
-	IOS_Member_Info *mip;							\
-										\
+{									\
+	IOS_Member_Info *mip;						\
+									\
 	if( type_stem##_ios_icp == NULL )				\
-		init_ios_##type_stem##_class(SINGLE_QSP_ARG);			\
-										\
-	mip = get_ios_member_info(QSP_ARG  type_stem##_ios_icp,			\
-							IOS_ITEM_NAME(ip));	\
-										\
-	if( mip == NULL ){					\
-		sprintf(ERROR_STRING,						\
-	"CAUTIOUS:  class get function %s, missing member info #2",		\
-			IOS_ITEM_NAME(ip));					\
-		NERROR1(ERROR_STRING);						\
-		return NULL;							\
-	}									\
-										\
+		init_ios_##type_stem##_class(SINGLE_QSP_ARG);		\
+									\
+	mip = get_ios_member_info(QSP_ARG  type_stem##_ios_icp,		\
+						IOS_ITEM_NAME(ip));	\
+									\
+	if( mip == NULL ){						\
+		snprintf(ERROR_STRING,LLEN,				\
+	"CAUTIOUS:  class get function %s, missing member info #2",	\
+			IOS_ITEM_NAME(ip));				\
+		NERROR1(ERROR_STRING);					\
+		return NULL;						\
+	}								\
+									\
 	return( (func_str_type *) IOS_MBR_DATA(mip) );			\
 }
 
@@ -158,25 +158,25 @@ DECLARE_CLASS_CHECK_FUNC(interlaceable)
 
 #define DECLARE_CLASS_EVAL_FUNC(type_stem)					\
 										\
-static IOS_Item *eval_ios_##type_stem(Scalar_Expr_Node *enp)			\
-{										\
-	const char *s;								\
-										\
-	switch(enp->sen_code){							\
-		case N_OBJNAME:							\
-		case N_QUOT_STR:						\
-			s = eval_scalexp_string(enp->sen_child[0]);		\
-			return check_ios_##type_stem( DEFAULT_QSP_ARG  s );	\
-			break;							\
-		/* BUG?  for objects, allow subscripting? */			\
-		/* But maybe for now data_obj's are not IOS objects? */		\
-		default:							\
-			sprintf(DEFAULT_ERROR_STRING,				\
-	"Unhandled case in ios eval func!?  (code = %d)",enp->sen_code);	\
-			NWARN(DEFAULT_ERROR_STRING);				\
-			dump_etree(DEFAULT_QSP_ARG  enp);			\
-			break;							\
-	}									\
+static IOS_Item *eval_ios_##type_stem(Scalar_Expr_Node *enp)		\
+{									\
+	const char *s;							\
+									\
+	switch(enp->sen_code){						\
+		case N_OBJNAME:						\
+		case N_QUOT_STR:					\
+			s = eval_scalexp_string(enp->sen_child[0]);	\
+			return check_ios_##type_stem( DEFAULT_QSP_ARG  s );\
+			break;						\
+		/* BUG?  for objects, allow subscripting? */		\
+		/* But maybe for now data_obj's are not IOS objects? */	\
+		default:						\
+			snprintf(DEFAULT_ERROR_STRING,LLEN,		\
+	"Unhandled case in ios eval func!?  (code = %d)",enp->sen_code);\
+			NWARN(DEFAULT_ERROR_STRING);			\
+			dump_etree(DEFAULT_QSP_ARG  enp);		\
+			break;						\
+	}								\
 	return NULL;							\
 }
 
@@ -187,38 +187,38 @@ DECLARE_CLASS_EVAL_FUNC(interlaceable)
 
 /* These comments came after the first return:
 
-	// Now we know we have a valid item - but we don't know what type...	\
-	// We should know this because we found it already!?			\
-	// We do have the global class pointer...				\
-	// But the class just has a list of item types...			\
-	// Where are the functions stored???					\
-	// How do we figure out which member function we need???		\
+// Now we know we have a valid item - but we don't know what type...	\
+// We should know this because we found it already!?			\
+// We do have the global class pointer...				\
+// But the class just has a list of item types...			\
+// Where are the functions stored???					\
+// How do we figure out which member function we need???		\
 
 */
 
-#define DECLARE_CLASS_FCHECK_FUNC(type_stem,func_str_type,member)		\
-										\
-int check_ios_##type_stem##_func( double *retval, Quip_Function *funcp,		\
-						Scalar_Expr_Node *argp )	\
-{										\
-	IOS_Item *ip;								\
-										\
-	ip = eval_ios_##type_stem(argp);					\
+#define DECLARE_CLASS_FCHECK_FUNC(type_stem,func_str_type,member)	\
+									\
+int check_ios_##type_stem##_func( double *retval, Quip_Function *funcp,	\
+					Scalar_Expr_Node *argp )	\
+{									\
+	IOS_Item *ip;							\
+									\
+	ip = eval_ios_##type_stem(argp);				\
 	if( ip == NULL ){						\
 		/* *retval = -1; */	/* don't really need to set anything */	\
-		return 0;							\
-	}									\
-										\
-	func_str_type *isfp =							\
-			get_ios_##type_stem##_functions(DEFAULT_QSP_ARG  ip);	\
-										\
-	if( isfp == NULL ){							\
-		NERROR1("Error getting ios functions!?");			\
-		return 0;							\
-	}									\
-	*retval = (*(funcp->fn_u.member) )					\
-				(DEFAULT_QSP_ARG  (__bridge Item *) ip );	\
-	return 1;								\
+		return 0;						\
+	}								\
+									\
+	func_str_type *isfp =						\
+		get_ios_##type_stem##_functions(DEFAULT_QSP_ARG  ip);	\
+									\
+	if( isfp == NULL ){						\
+		NERROR1("Error getting ios functions!?");		\
+		return 0;						\
+	}								\
+	*retval = (*(funcp->fn_u.member) )				\
+			(DEFAULT_QSP_ARG  (__bridge Item *) ip );	\
+	return 1;							\
 }
 
 DECLARE_CLASS_FCHECK_FUNC(sizable,IOS_Size_Functions,sz_func)

@@ -15,7 +15,7 @@ static My_FANN *get_new_net(SINGLE_QSP_ARG_DECL)
 	// make sure not in use
 	mfp = fann_of(s);
 	if( mfp != NULL ){
-		sprintf(ERROR_STRING,"get_new_net:  network name %s is already in use!?",s);
+		snprintf(ERROR_STRING,LLEN,"get_new_net:  network name %s is already in use!?",s);
 		WARN(ERROR_STRING);
 		return NULL;
 	}
@@ -35,7 +35,7 @@ static int get_network_params(QSP_ARG_DECL  struct net_params *np_p )
 
 	if( n_hidden_layers > MAX_LAYERS-2 ){
 		int junk;
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"do_create_std:  Sorry, max. number of hidden layers is hard-coded to %d.",
 			MAX_LAYERS-2);
 		WARN(ERROR_STRING);
@@ -45,7 +45,7 @@ static int get_network_params(QSP_ARG_DECL  struct net_params *np_p )
 		return -1;
 	}
 	if( n_hidden_layers < 0 ){
-		sprintf(ERROR_STRING,"number of hidden layers (%d) must be non-negative!?",
+		snprintf(ERROR_STRING,LLEN,"number of hidden layers (%d) must be non-negative!?",
 			n_hidden_layers);
 		WARN(ERROR_STRING);
 		return -1;
@@ -55,7 +55,7 @@ static int get_network_params(QSP_ARG_DECL  struct net_params *np_p )
 	np_p->layer_size[0] = n_input;
 	for(i=0;i<n_hidden_layers;i++){
 		char pmpt[128];
-		sprintf(pmpt,"number of nodes in hidden layer %d",i+1);
+		snprintf(pmpt,128,"number of nodes in hidden layer %d",i+1);
 		np_p->layer_size[1+i] = HOW_MANY(pmpt);
 		if( np_p->layer_size[1+i] <= 0 ){
 			WARN("layer size must be positive");
@@ -137,13 +137,13 @@ static int check_network(QSP_ARG_DECL  My_FANN *mfp, Data_Obj *input_dp, Data_Ob
 #ifdef HAVE_FANN
 	// depth of objects should match the networks #'s of inputs and outputs!
 	if( OBJ_COMPS(input_dp) != fann_get_num_input(mfp->mf_fann_p) ){
-		sprintf(ERROR_STRING,"Network %s has %d inputs, but input data object %s has %d components!?",
+		snprintf(ERROR_STRING,LLEN,"Network %s has %d inputs, but input data object %s has %d components!?",
 			FANN_NAME(mfp),fann_get_num_input(mfp->mf_fann_p),OBJ_NAME(input_dp),OBJ_COMPS(input_dp));
 		WARN(ERROR_STRING);
 		return -1;
 	}
 	if( OBJ_COMPS(output_dp) != fann_get_num_output(mfp->mf_fann_p) ){
-		sprintf(ERROR_STRING,"Network %s has %d outputs, but output data object %s has %d components!?",
+		snprintf(ERROR_STRING,LLEN,"Network %s has %d outputs, but output data object %s has %d components!?",
 			FANN_NAME(mfp),fann_get_num_output(mfp->mf_fann_p),OBJ_NAME(output_dp),OBJ_COMPS(output_dp));
 		WARN(ERROR_STRING);
 		return -1;
@@ -154,14 +154,14 @@ static int check_network(QSP_ARG_DECL  My_FANN *mfp, Data_Obj *input_dp, Data_Ob
 
 	// Do input and output have to have the same type?
 	if( OBJ_MACH_PREC(input_dp) != FANN_PREC ){
-		sprintf(ERROR_STRING,"Input data object %s (%s) must have %s precision!?",
+		snprintf(ERROR_STRING,LLEN,"Input data object %s (%s) must have %s precision!?",
 			OBJ_NAME(input_dp),PREC_NAME(OBJ_PREC_PTR(input_dp)),NAME_FOR_PREC_CODE(FANN_PREC));
 		WARN(ERROR_STRING);
 		return -1;
 	}
 
 	if( OBJ_MACH_PREC(output_dp) != FANN_PREC ){
-		sprintf(ERROR_STRING,"Output data object %s (%s) must have %s precision!?",
+		snprintf(ERROR_STRING,LLEN,"Output data object %s (%s) must have %s precision!?",
 			OBJ_NAME(output_dp),PREC_NAME(OBJ_PREC_PTR(output_dp)),NAME_FOR_PREC_CODE(FANN_PREC));
 		WARN(ERROR_STRING);
 		return -1;
@@ -170,19 +170,19 @@ static int check_network(QSP_ARG_DECL  My_FANN *mfp, Data_Obj *input_dp, Data_Ob
 	// Objects must not only have the same number of "pixels" - we insist that they must have the same shape...
 	if( OBJ_COLS(output_dp) != OBJ_COLS(input_dp) || OBJ_ROWS(output_dp) != OBJ_ROWS(input_dp) ||
 			OBJ_FRAMES(output_dp) != OBJ_FRAMES(input_dp) || OBJ_SEQS(output_dp) != OBJ_SEQS(input_dp) ){
-		sprintf(ERROR_STRING,"Training objests %s and %s must have the same shape!?", OBJ_NAME(output_dp),OBJ_NAME(input_dp));
+		snprintf(ERROR_STRING,LLEN,"Training objests %s and %s must have the same shape!?", OBJ_NAME(output_dp),OBJ_NAME(input_dp));
 		WARN(ERROR_STRING);
 		return -1;
 	}
 
 	if( ! IS_CONTIGUOUS(input_dp) ){
-		sprintf(ERROR_STRING,"Input training data object %s must be contiguous!?",OBJ_NAME(input_dp));
+		snprintf(ERROR_STRING,LLEN,"Input training data object %s must be contiguous!?",OBJ_NAME(input_dp));
 		WARN(ERROR_STRING);
 		return -1;
 	}
 
 	if( ! IS_CONTIGUOUS(output_dp) ){
-		sprintf(ERROR_STRING,"Output training data object %s must be contiguous!?",OBJ_NAME(output_dp));
+		snprintf(ERROR_STRING,LLEN,"Output training data object %s must be contiguous!?",OBJ_NAME(output_dp));
 		WARN(ERROR_STRING);
 		return -1;
 	}

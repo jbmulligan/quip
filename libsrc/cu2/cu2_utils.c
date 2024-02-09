@@ -132,7 +132,7 @@ void cu2_init_dev_memory(QSP_ARG_DECL  Platform_Device *pdp)
 
 	ap = area_init(QSP_ARG  dname,NULL,0, MAX_CUDA_GLOBAL_OBJECTS,DA_CUDA_GLOBAL);
 	if( ap == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"init_dev_memory:  error creating global data area %s",dname);
 		warn(ERROR_STRING);
 	}
@@ -167,7 +167,7 @@ void cu2_init_dev_memory(QSP_ARG_DECL  Platform_Device *pdp)
 	ap = area_init(QSP_ARG  cname,(u_char *)NULL,0,MAX_CUDA_MAPPED_OBJECTS,
 								DA_CUDA_HOST);
 	if( ap == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"init_dev_memory:  error creating host data area %s",cname);
 		ERROR1(ERROR_STRING);
 	}
@@ -189,7 +189,7 @@ void cu2_init_dev_memory(QSP_ARG_DECL  Platform_Device *pdp)
 	ap = area_init(QSP_ARG  cname,(u_char *)NULL,0,MAX_CUDA_MAPPED_OBJECTS,
 							DA_CUDA_HOST_MAPPED);
 	if( ap == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"init_dev_memory:  error creating host-mapped data area %s",cname);
 		ERROR1(ERROR_STRING);
 	}
@@ -197,7 +197,7 @@ void cu2_init_dev_memory(QSP_ARG_DECL  Platform_Device *pdp)
 	SET_PFDEV_AREA(pdp,PF_HOST_MAPPED_AREA_INDEX,ap);
 
 	if( verbose ){
-		sprintf(ERROR_STRING,"init_dev_memory DONE");
+		snprintf(ERROR_STRING,LLEN,"init_dev_memory DONE");
 		advise(ERROR_STRING);
 	}
 } // init_dev_memory
@@ -234,13 +234,13 @@ void cu2_set_device( QSP_ARG_DECL  Platform_Device *pdp )
 #endif // HAVE_CUDA
 
 	if( curr_pdp == pdp ){
-		sprintf(ERROR_STRING,"%s:  current device is already %s!?",
+		snprintf(ERROR_STRING,LLEN,"%s:  current device is already %s!?",
 			STRINGIFY(h_cu2_set_device),PFDEV_NAME(pdp));
 		warn(ERROR_STRING);
 		return;
 	}
 	if( PFDEV_PLATFORM_TYPE(pdp) != PLATFORM_CUDA ){
-		sprintf(ERROR_STRING,"%s:  device %s is not a CUDA device!?",
+		snprintf(ERROR_STRING,LLEN,"%s:  device %s is not a CUDA device!?",
 			STRINGIFY(h_cu2_set_device),PFDEV_NAME(pdp));
 		warn(ERROR_STRING);
 		return;
@@ -267,7 +267,7 @@ void insure_cu2_device( QSP_ARG_DECL  Data_Obj *dp )
 	Platform_Device *pdp;
 
 	if( AREA_FLAGS(OBJ_AREA(dp)) & DA_RAM ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"insure_cu2_device:  Object %s is a host RAM object!?",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
@@ -277,11 +277,11 @@ void insure_cu2_device( QSP_ARG_DECL  Data_Obj *dp )
 	assert( pdp != NULL );
 
 	if( curr_pdp != pdp ){
-sprintf(ERROR_STRING,"insure_cu2_device:  curr_pdp = 0x%"PRIxPTR"  pdp = 0x%"PRIxPTR,
+snprintf(ERROR_STRING,LLEN,"insure_cu2_device:  curr_pdp = 0x%"PRIxPTR"  pdp = 0x%"PRIxPTR,
 (uintptr_t)curr_pdp,(uintptr_t)pdp);
 advise(ERROR_STRING);
 
-sprintf(ERROR_STRING,"insure_cu2_device:  current device is %s, want %s",
+snprintf(ERROR_STRING,LLEN,"insure_cu2_device:  current device is %s, want %s",
 PFDEV_NAME(curr_pdp),PFDEV_NAME(pdp));
 advise(ERROR_STRING);
 		cu2_set_device(QSP_ARG  pdp);
@@ -298,15 +298,15 @@ void *_cu2_tmp_vec (QSP_ARG_DECL  Platform_Device *pdp, size_t size,size_t len,c
 
 	drv_err = cudaMalloc(&cuda_mem, size * len );
 	if( drv_err != cudaSuccess ){
-		sprintf(DEFAULT_MSG_STR,"tmpvec (%s)",whence);
+		snprintf(DEFAULT_MSG_STR,LLEN,"tmpvec (%s)",whence);
 		describe_cuda_driver_error2(DEFAULT_MSG_STR,"cudaMalloc",drv_err);
 		error1("CUDA memory allocation error");
 	}
 
-//sprintf(ERROR_STRING,"tmpvec:  %d bytes allocated at 0x%"PRIxPTR,len,(uintptr_t)cuda_mem);
+//snprintf(ERROR_STRING,LLEN,"tmpvec:  %d bytes allocated at 0x%"PRIxPTR,len,(uintptr_t)cuda_mem);
 //advise(ERROR_STRING);
 
-//sprintf(ERROR_STRING,"tmpvec %s:  0x%"PRIxPTR,whence,(uintptr_t)cuda_mem);
+//snprintf(ERROR_STRING,LLEN,"tmpvec %s:  0x%"PRIxPTR,whence,(uintptr_t)cuda_mem);
 //advise(ERROR_STRING);
 	return(cuda_mem);
 	*/
@@ -318,11 +318,11 @@ void _cu2_free_tmp (QSP_ARG_DECL  void *ptr,const char *whence)
 	/*
 	cudaError_t drv_err;
 
-//sprintf(ERROR_STRING,"freetmp %s:  0x%"PRIxPTR,whence,(uintptr_t)ptr);
+//snprintf(ERROR_STRING,LLEN,"freetmp %s:  0x%"PRIxPTR,whence,(uintptr_t)ptr);
 //advise(ERROR_STRING);
 	drv_err=cudaFree(ptr);
 	if( drv_err != cudaSuccess ){
-		sprintf(DEFAULT_MSG_STR,"freetmp (%s)",whence);
+		snprintf(DEFAULT_MSG_STR,LLEN,"freetmp (%s)",whence);
 		describe_cuda_driver_error2(DEFAULT_MSG_STR,"cudaFree",drv_err);
 	}
 	*/
@@ -347,7 +347,7 @@ static void init_cu2_ckpts(int n)
 	int i;
 
 	if( max_cu2_ckpts > 0 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "init_cu2_ckpts (%d):  already initialized with %d checpoints",
 			n,max_cu2_ckpts);
 		warn(ERROR_STRING);
@@ -395,7 +395,7 @@ COMMAND_FUNC( do_cu2_set_ckpt  )
 	}
 
 	if( n_cu2_ckpts >= max_cu2_ckpts ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"do_place_ckpt:  Sorry, all %d checkpoints have already been placed",
 			max_cu2_ckpts);
 		warn(ERROR_STRING);
@@ -429,11 +429,11 @@ COMMAND_FUNC( do_cu2_show_ckpts  )
 
 	drv_err = cudaEventElapsedTime( &msec, ckpt_tbl[0].ckpt_event, ckpt_tbl[n_cu2_ckpts-1].ckpt_event);
 	CUDA_DRIVER_ERROR_RETURN("do_show_cu2_ckpts", "cudaEventElapsedTime")
-	sprintf(msg_str,"Total GPU time:\t%g msec",msec);
+	snprintf(msg_str,LLEN,"Total GPU time:\t%g msec",msec);
 	prt_msg(msg_str);
 
 	// show the start tag
-	sprintf(msg_str,"GPU  %3d  %12.3f  %12.3f  %s",1,0.0,0.0,
+	snprintf(msg_str,LLEN,"GPU  %3d  %12.3f  %12.3f  %s",1,0.0,0.0,
 		ckpt_tbl[0].ckpt_tag);
 	prt_msg(msg_str);
 	cum_msec =0.0;
@@ -443,7 +443,7 @@ COMMAND_FUNC( do_cu2_show_ckpts  )
 		CUDA_DRIVER_ERROR_RETURN("do_show_cu2_ckpts", "cudaEventElapsedTime")
 
 		cum_msec += msec;
-		sprintf(msg_str,"GPU  %3d  %12.3f  %12.3f  %s",i+1,msec,
+		snprintf(msg_str,LLEN,"GPU  %3d  %12.3f  %12.3f  %s",i+1,msec,
 			cum_msec, ckpt_tbl[i].ckpt_tag);
 		prt_msg(msg_str);
 	}

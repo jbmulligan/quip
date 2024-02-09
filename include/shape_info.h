@@ -95,7 +95,7 @@ struct precision {
 					(Scalar_Value *,Scalar_Value *);
 	// format for printing
 	/* pass buffer len? */
-	void			(*format_func)(QSP_ARG_DECL  char *buf, Scalar_Value *data, int pad_flag);
+	void			(*format_func)(QSP_ARG_DECL  char *buf, int buflen, Scalar_Value *data, int pad_flag);
 
 	int			(*value_comp_func)(const void *p1, const void *p2);
 

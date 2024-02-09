@@ -22,7 +22,7 @@ Data_Obj * _hunt_obj(QSP_ARG_DECL  const char *name)
 #ifdef QUIP_DEBUG
 /*
 if( debug & debug_data ){
-sprintf(ERROR_STRING,"hunt_obj:  passed name \"%s\"",name);
+snprintf(ERROR_STRING,LLEN,"hunt_obj:  passed name \"%s\"",name);
 advise(ERROR_STRING);
 list_dobjs(SINGLE_QSP_ARG);
 }
@@ -57,7 +57,7 @@ Data_Obj *_get_obj(QSP_ARG_DECL  const char *name)
 
 	dp = hunt_obj(name);
 	if( dp == NULL ){
-		sprintf(ERROR_STRING,"No data object \"%s\"",name);
+		snprintf(ERROR_STRING,LLEN,"No data object \"%s\"",name);
 		warn(ERROR_STRING);
 	}
 	return(dp);
@@ -70,7 +70,7 @@ Data_Obj *get_vec(QSP_ARG_DECL  const char *s)
 	dp=get_obj(s);
 	if( dp==NULL ) return(dp);
 	if( !(OBJ_FLAGS(dp) & DT_VECTOR) ){
-		sprintf(ERROR_STRING,"object \"%s\" is not a vector",s);
+		snprintf(ERROR_STRING,LLEN,"object \"%s\" is not a vector",s);
 		warn(ERROR_STRING);
 		return(NULL);
 	}
@@ -85,7 +85,7 @@ img_of(QSP_ARG_DECL  const char *s)				/**/
 	dp=get_obj(s);
 	if( dp==NULL ) return(dp);
 	if( !(OBJ_FLAGS(dp) & DT_IMAGE) ){
-		sprintf(ERROR_STRING,"object \"%s\" is not an image",s);
+		snprintf(ERROR_STRING,LLEN,"object \"%s\" is not an image",s);
 		warn(ERROR_STRING);
 		return(NULL);
 	}
@@ -99,7 +99,7 @@ Data_Obj *get_seq(QSP_ARG_DECL  const char *s)
 	dp=get_obj(s);
 	if( dp==NULL ) return(dp);
 	if( !(OBJ_FLAGS(dp) & DT_SEQUENCE) ){
-		sprintf(ERROR_STRING,"object \"%s\" is not an sequence",s);
+		snprintf(ERROR_STRING,LLEN,"object \"%s\" is not an sequence",s);
 		warn(ERROR_STRING);
 		return(NULL);
 	}
@@ -113,7 +113,7 @@ Data_Obj * get_img( QSP_ARG_DECL  const char *s )
 	dp=get_obj(s);
 	if( dp==NULL ) return(dp);
 	if( !IS_IMAGE(dp) ){
-		sprintf(ERROR_STRING,"data object %s is not an image",s);
+		snprintf(ERROR_STRING,LLEN,"data object %s is not an image",s);
 		warn(ERROR_STRING);
 		return(NULL);
 	}

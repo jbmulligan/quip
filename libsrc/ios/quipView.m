@@ -55,18 +55,18 @@
 	self.autoresizesSubviews = NO;
 
 	self.images = NULL;	// init with something?
-	
+
 #endif // BUILD_FOR_IOS
 	SET_QV_SIZE(self,frame.size);
 	// Should we disable scrolling by default?
 #ifdef BUILD_FOR_IOS
-    
+
 #ifdef SCROLLABLE_QUIP_VIEW
 	[self setContentSize: frame.size];
 #else // ! SCROLLABLE_QUIP_VIEW
     NADVISE("quipView:initWithFrame:  NOT setting content size, not scrollable in this build.");
 #endif // ! SCROLLABLE_QUIP_VIEW
-    
+
 #endif // BUILD_FOR_IOS
 	return self;
 }
@@ -85,7 +85,8 @@
 	if( QVC_GW(qvc) != NULL ){
 		if( QVC_GW(qvc).event_tbl == NULL ) {
 			if( verbose ){
-				sprintf(DEFAULT_ERROR_STRING,"viewer %s has null event table",
+				snprintf(DEFAULT_ERROR_STRING,LLEN,
+					"viewer %s has null event table",
 					VW_NAME(QVC_VW(qvc)) );
 				NADVISE(DEFAULT_ERROR_STRING);
 			}
@@ -103,24 +104,24 @@
 
 #ifdef BUILD_FOR_IOS
 		if( IS_TOUCH_EVENT(code) ){
-            char buf[32];
+			char buf[32];
 			int n_touches=0;
-            
+
 			for( UITouch *t in touches ){
 				char var_name[32];
 
 				n_touches++;
 				CGPoint p = [t locationInView:self];
 
-				sprintf(var_name,"touch%d_x",n_touches);
-				sprintf(buf,"%d",(int)p.x);
+				snprintf(var_name,32,"touch%d_x",n_touches);
+				snprintf(buf,32,"%d",(int)p.x);
 				assign_var(DEFAULT_QSP_ARG  var_name,buf);
 
-				sprintf(var_name,"touch%d_y",n_touches);
-				sprintf(buf,"%d",(int)p.y);
+				snprintf(var_name,32,"touch%d_y",n_touches);
+				snprintf(buf,32,"%d",(int)p.y);
 				assign_var(DEFAULT_QSP_ARG  var_name,buf);
 			}
-			sprintf(buf,"%d",n_touches);
+			snprintf(buf,32,"%d",n_touches);
 			assign_var(DEFAULT_QSP_ARG  "n_touches",buf);
 
 			chew_text( DEFAULT_QSP_ARG  s.UTF8String, "(touch event)" );
@@ -128,11 +129,11 @@
 			NWARN("process_action:  unhandled event code!?");
 		}
 #else // ! BUILD_FOR_IOS
-		
+
 		NWARN("process_action:  unhandled event code!?");
-		
+
 #endif // ! BUILD_FOR_IOS
-		
+
 	} else {
 		// We get here for panels, and the console...
 		// We should probably ignore these events!?
@@ -161,13 +162,13 @@
 	if( baseTime_2==0 )
 		baseTime_2 = mach_absolute_time();
 
-	sprintf(time_buf,"%g",event.timestamp-baseTime);
+	snprintf(time_buf,64,"%g",event.timestamp-baseTime);
 	assign_var(DEFAULT_QSP_ARG  "event_time",time_buf);
 
 	now_time -= baseTime_2;
 	//uint64_t ns = AbsoluteToNanoseconds( *(AbsoluteTime *) &now_time );
 	uint64_t ns = my_absolute_to_nanoseconds( &now_time );
-	sprintf(time_buf,"%g",round(ns/100000)/10.0);
+	snprintf(time_buf,64,"%g",round(ns/100000)/10.0);
 	assign_var(DEFAULT_QSP_ARG  "event_time_2",time_buf);
 }
 
@@ -267,8 +268,8 @@ static QUIP_IMAGE_TYPE * CreateDefaultBG(int pixelsWide, int pixelsHigh)
 			f_r-=dr;
 			b=(u_char)(255*(1-(r_frac>g_frac?r_frac:g_frac)));
 //			float tmp_g = 255-(2*b);
-  //          if( tmp_g < 0 ) tmp_g = 0;
-    //        g=tmp_g;
+  //	  if( tmp_g < 0 ) tmp_g = 0;
+    //	g=tmp_g;
 
 #define COLOR_FRACTION 0.2
 #define BLEND(c)	(u_char)(COLOR_FRACTION*((float)c)+(1-COLOR_FRACTION)*255.0)
@@ -301,7 +302,7 @@ static QUIP_IMAGE_TYPE * CreateDefaultBG(int pixelsWide, int pixelsHigh)
 #ifdef BUILD_FOR_IOS
 	ip = [QUIP_IMAGE_TYPE imageWithCGImage:myimg];
 #endif // BUILD_FOR_IOS
-	
+
 	np = mk_ios_node(ip);
 	if( lp == NULL ) lp = new_ios_list();
 	ios_addTail(lp,np);
@@ -324,7 +325,7 @@ QUIP_IMAGE_VIEW_TYPE *make_bg_image(CGSize siz)
 	QUIP_IMAGE_VIEW_TYPE *iv;
 
 	QUIP_IMAGE_TYPE *uip=CreateDefaultBG((int)siz.width,(int)siz.height);
-    
+
 
 	iv=[[QUIP_IMAGE_VIEW_TYPE alloc] initWithImage:uip];
 	iv.alpha = 1.0;

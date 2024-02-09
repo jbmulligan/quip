@@ -225,7 +225,7 @@ Nav_Group *create_nav_group(QSP_ARG_DECL  Nav_Panel *nav_p, const char *name)
 	if( nav_item_itp == NULL )
 		[Nav_Item initClass];
 	
-	sprintf(tmp_name,"%s.%s",nav_p.name.UTF8String,name);
+	snprintf(tmp_name,LLEN,"%s.%s",nav_p.name.UTF8String,name);
 	nav_g.itm_icp = create_navitm_context(QSP_ARG  tmp_name);
 	nav_g.ng_panel = nav_p;
 

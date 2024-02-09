@@ -19,7 +19,7 @@ void insure_opt_pkg(SINGLE_QSP_ARG_DECL)
 		curr_opt_pkg=get_opt_pkg("cstepit" );
 		assert( curr_opt_pkg != NULL );
 		if( verbose ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"Using default optimization package \"%s\"",
 				curr_opt_pkg->pkg_name);
 			advise(ERROR_STRING);

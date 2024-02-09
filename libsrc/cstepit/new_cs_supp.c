@@ -64,7 +64,7 @@ static void new_cstepit_scr_funk()
 		Opt_Param *opp;
 
 		opp = (Opt_Param *)( np->n_data);
-		sprintf(str,"%g",ans[i]);	/* why add 1?  fortan? */
+		snprintf(str,128,"%g",ans[i]);	/* why add 1?  fortan? */
 		ASSIGN_VAR(opp->op_name,str);
 		i++;
 		np=np->n_next;
@@ -75,7 +75,7 @@ static void new_cstepit_scr_funk()
 	vp=var__of("error");
 	if( vp == NULL ) {
 		warn(error_string);
-		sprintf(error_string,
+		snprintf(error_string,LLEN,
 	"variable \"error\" not set by script fragment \"%s\"!?",
 			opt_func_string);
 		err=0.0;

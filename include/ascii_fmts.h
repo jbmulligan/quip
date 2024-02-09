@@ -59,16 +59,16 @@ struct integer_output_fmt {
 	Integer_Output_Fmt_Code	iof_code;
 	const char *		iof_padded_fmt_str;	/* printf format */
 	const char *		iof_plain_fmt_str;	/* printf format */
-	void			(*iof_fmt_string_func)(QSP_ARG_DECL  char *,Scalar_Value *, int);
-	void			(*iof_fmt_char_func)(QSP_ARG_DECL  char *,Scalar_Value *, int);
-	void			(*iof_fmt_byte_func)(QSP_ARG_DECL  char *,Scalar_Value *, int);
-	void			(*iof_fmt_u_byte_func)(QSP_ARG_DECL  char *,Scalar_Value *, int);
-	void			(*iof_fmt_short_func)(QSP_ARG_DECL  char *,Scalar_Value *, int);
-	void			(*iof_fmt_u_short_func)(QSP_ARG_DECL  char *,Scalar_Value *, int);
-	void			(*iof_fmt_int_func)(QSP_ARG_DECL  char *,Scalar_Value *, int);
-	void			(*iof_fmt_u_int_func)(QSP_ARG_DECL  char *,Scalar_Value *, int);
-	void			(*iof_fmt_long_func)(QSP_ARG_DECL  char *,Scalar_Value *, int);
-	void			(*iof_fmt_u_long_func)(QSP_ARG_DECL  char *,Scalar_Value *, int);
+	void			(*iof_fmt_string_func)(QSP_ARG_DECL  char *,int,Scalar_Value *, int);
+	void			(*iof_fmt_char_func)(QSP_ARG_DECL  char *,int,Scalar_Value *, int);
+	void			(*iof_fmt_byte_func)(QSP_ARG_DECL  char *,int,Scalar_Value *, int);
+	void			(*iof_fmt_u_byte_func)(QSP_ARG_DECL  char *,int,Scalar_Value *, int);
+	void			(*iof_fmt_short_func)(QSP_ARG_DECL  char *,int,Scalar_Value *, int);
+	void			(*iof_fmt_u_short_func)(QSP_ARG_DECL  char *,int,Scalar_Value *, int);
+	void			(*iof_fmt_int_func)(QSP_ARG_DECL  char *,int,Scalar_Value *, int);
+	void			(*iof_fmt_u_int_func)(QSP_ARG_DECL  char *,int,Scalar_Value *, int);
+	void			(*iof_fmt_long_func)(QSP_ARG_DECL  char *,int,Scalar_Value *, int);
+	void			(*iof_fmt_u_long_func)(QSP_ARG_DECL  char *,int,Scalar_Value *, int);
 };
 
 extern void set_format_string(Integer_Output_Fmt *, const char *);

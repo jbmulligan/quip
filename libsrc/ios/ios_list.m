@@ -248,7 +248,8 @@ IOS_Node *ios_nth_elt(IOS_List *lp, int index)
 		np=IOS_NODE_NEXT(np);
 
 	if( index != (-1) ){
-		sprintf(DEFAULT_ERROR_STRING,"ios_nth_elt 0x%lx (%d elts)  %d",(long)lp,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
+			"ios_nth_elt 0x%lx (%d elts)  %d",(long)lp,
 			ios_eltcount(lp),index);
 		NADVISE(DEFAULT_ERROR_STRING);
 		NWARN("ios_nth_elt:  index out of range!?");
