@@ -229,7 +229,7 @@ COMMAND_FUNC( do_lut_menu )
 
 	if( gwp == NULL ){
 		/* find_genwin() has already printed an error msg? */
-		sprintf(ERROR_STRING,"No viewer or panel named \"%s\"!?",s);
+		snprintf(ERROR_STRING,LLEN,"No viewer or panel named \"%s\"!?",s);
 		warn(ERROR_STRING);
 	} else {
 #ifdef HAVE_X11

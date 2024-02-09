@@ -27,7 +27,7 @@ static COMMAND_FUNC( pixel_inq)
 	if ( pb_width < 0 )
 		return;
 
-	sprintf(msg_str,"pixel boxcar width: %d", pb_width);
+	snprintf(msg_str,LLEN,"pixel boxcar width: %d", pb_width);
 	advise(msg_str);
 }
 
@@ -40,7 +40,7 @@ static COMMAND_FUNC( scan_inq )
 	if ( n_scans < 0 )
 		return;
 
-	sprintf(msg_str, "number of discrete spectra being summed together: %d",n_scans);
+	snprintf(msg_str,LLEN, "number of discrete spectra being summed together: %d",n_scans);
 	advise(msg_str);
 }
 
@@ -53,7 +53,7 @@ static COMMAND_FUNC( it_inq )
 	if ( integ_time < 0)
 		return;
 
-	sprintf(msg_str, "integration time: %d",integ_time);
+	snprintf(msg_str,LLEN, "integration time: %d",integ_time);
 	advise(msg_str);
 }
 
@@ -76,7 +76,7 @@ static COMMAND_FUNC( baud_inq )
 		case 5: advise("baud rate: 57600"); break;
 #ifdef CAUTIOUS
 		default:
-			sprintf(ERROR_STRING, "CAUTIOUS: unknown baud rate: %d", baud_rate);
+			snprintf(ERROR_STRING,LLEN, "CAUTIOUS: unknown baud rate: %d", baud_rate);
 			warn(ERROR_STRING);
 #endif /* CAUTIOUS */
 	}
@@ -130,7 +130,7 @@ static COMMAND_FUNC( calib_const_inq )
 	calib_index = HOW_MANY("calib constant index");
 
 	if( calib_index<MIN_CALIB_INDEX || calib_index>MAX_CALIB_INDEX ) {
-	       sprintf(ERROR_STRING, " (%d) should be in range %d - %d",
+	       snprintf(ERROR_STRING,LLEN, " (%d) should be in range %d - %d",
 			calib_index, MIN_CALIB_INDEX, MAX_CALIB_INDEX);
 
 	       warn(ERROR_STRING);
@@ -145,17 +145,17 @@ static COMMAND_FUNC( calib_const_inq )
 		char filter_wav_len[4];
 		char slit_size[4];
 
-		sprintf( grating,"%c%c", calib_const[0], calib_const[1] );
-		sprintf( filter_wav_len,"%c%c%c", calib_const[3], calib_const[4], calib_const[5] );
-		sprintf( slit_size,"%c%c%c", calib_const[7], calib_const[8], calib_const[9] );
+		snprintf( grating,3,"%c%c", calib_const[0], calib_const[1] );
+		snprintf( filter_wav_len,4,"%c%c%c", calib_const[3], calib_const[4], calib_const[5] );
+		snprintf( slit_size,4,"%c%c%c", calib_const[7], calib_const[8], calib_const[9] );
 
-		sprintf(prompt, "Grating: %s\nFilter Wavelength: %s\nSlit Size: %s", grating, filter_wav_len, slit_size );
+		snprintf(prompt,LLEN, "Grating: %s\nFilter Wavelength: %s\nSlit Size: %s", grating, filter_wav_len, slit_size );
 
 	} else if( calib_index == 16 ) {
-		sprintf(prompt, "USB2000 Configuration: %s", calib_const);
+		snprintf(prompt,LLEN, "USB2000 Configuration: %s", calib_const);
 
 	} else {
-		sprintf(prompt, "Calibration Constant: %s", calib_const);
+		snprintf(prompt,LLEN, "Calibration Constant: %s", calib_const);
 	}
 
 	advise(prompt);
@@ -194,7 +194,7 @@ static COMMAND_FUNC( do_n_of_scans )
 	if ( n_of_scans < 0 )
 		return;
 
-	sprintf(prompt,"Number of scans in spectral data memory: %d", n_of_scans);
+	snprintf(prompt,LLEN,"Number of scans in spectral data memory: %d", n_of_scans);
 	advise(prompt);
 }
 
@@ -226,7 +226,7 @@ static short mk_spec_vector(QSP_ARG_DECL  short size, Spectral_Data *sdp)
 	dp = dobj_of(name);
 
 	if( dp != NULL ){
-		sprintf(ERROR_STRING,"Can't create new data vector %s, name is in use already",
+		snprintf(ERROR_STRING,LLEN,"Can't create new data vector %s, name is in use already",
 			name);
 		warn(ERROR_STRING);
 		/* We could delete the existing object here, or recycle it if the dimension is correct... */
@@ -241,7 +241,7 @@ static short mk_spec_vector(QSP_ARG_DECL  short size, Spectral_Data *sdp)
 	}
 
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING, "mk_spec_vector: object %s must be contiguous",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN, "mk_spec_vector: object %s must be contiguous",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return -1;
 	}
@@ -288,11 +288,11 @@ static COMMAND_FUNC( do_add_scans )
 #define MIN_N_SCANS		1
 #define MAX_N_SCANS		15
 
-	sprintf(prompt, "number of discrete spectra to be summed together (%d - %d)", MIN_N_SCANS, MAX_N_SCANS);
+	snprintf(prompt,LLEN, "number of discrete spectra to be summed together (%d - %d)", MIN_N_SCANS, MAX_N_SCANS);
 	data_word= HOW_MANY(prompt);
 
 	if( data_word<MIN_N_SCANS || data_word>MAX_N_SCANS ) {
-		sprintf(ERROR_STRING, "number (%d) should be in range %d - %d",
+		snprintf(ERROR_STRING,LLEN, "number (%d) should be in range %d - %d",
 			data_word, MIN_N_SCANS, MAX_N_SCANS);
 
 		warn(ERROR_STRING);
@@ -346,7 +346,7 @@ static COMMAND_FUNC( do_sampling_mode )
 			n = how_many("number of wavelengths to skip");
 
 			if( n<(1/BIN_WIDTH) || n>=WAVELENGTH_RANGE ) {
-				sprintf(ERROR_STRING, "number of wavelengths(%f) has to be in range(%f-%f)",
+				snprintf(ERROR_STRING,LLEN, "number of wavelengths(%f) has to be in range(%f-%f)",
 						n, (1/BIN_WIDTH), WAVELENGTH_RANGE );
 				warn(ERROR_STRING);
 
@@ -361,7 +361,7 @@ static COMMAND_FUNC( do_sampling_mode )
 			x = how_much("starting wavelength");
 
 			if( x<MIN_WAVELENGTH || x>MAX_WAVELENGTH ) {
-				sprintf(ERROR_STRING, "wavelength(%f) has to be in range(%f-%f)",
+				snprintf(ERROR_STRING,LLEN, "wavelength(%f) has to be in range(%f-%f)",
 						x, MIN_WAVELENGTH, MAX_WAVELENGTH);
 				warn(ERROR_STRING);
 
@@ -371,7 +371,7 @@ static COMMAND_FUNC( do_sampling_mode )
 			y = how_much("ending wavelength");
 
 			if( y<MIN_WAVELENGTH || y>MAX_WAVELENGTH ) {
-				sprintf(ERROR_STRING, "wavelength(%f) has to be in range(%f-%f)",
+				snprintf(ERROR_STRING,LLEN, "wavelength(%f) has to be in range(%f-%f)",
 						y, MIN_WAVELENGTH, MAX_WAVELENGTH);
 				warn(ERROR_STRING);
 
@@ -381,7 +381,7 @@ static COMMAND_FUNC( do_sampling_mode )
 			n = how_many("number of wavelengths to skip");
 
 			if( n<(1/BIN_WIDTH) || n>=WAVELENGTH_RANGE ) {
-				sprintf(ERROR_STRING, "number of wavelength(%f) has to be in range(%f-%f)",
+				snprintf(ERROR_STRING,LLEN, "number of wavelength(%f) has to be in range(%f-%f)",
 						n, (1/BIN_WIDTH), WAVELENGTH_RANGE);
 				warn(ERROR_STRING);
 
@@ -398,7 +398,7 @@ static COMMAND_FUNC( do_sampling_mode )
 
 			/* see manual pg.11 for these limits */
 			if( n<0 || n>10 ) {
-				sprintf(ERROR_STRING, "n (%f) has to be in range(0-10)",n);
+				snprintf(ERROR_STRING,LLEN, "n (%f) has to be in range(0-10)",n);
 				warn(ERROR_STRING);
 				return;
 			}
@@ -406,11 +406,11 @@ static COMMAND_FUNC( do_sampling_mode )
 			for(i=0; i<n; i++) {
 				char prompt[LLEN];
 
-				sprintf(prompt, "wavelength (%d)", i+1);
+				snprintf(prompt,LLEN, "wavelength (%d)", i+1);
 				wavelengths[i] = how_much(prompt);
 
 				if( wavelengths[i]<MIN_WAVELENGTH || wavelengths[i]>MAX_WAVELENGTH ) {
-					sprintf(ERROR_STRING, "wavelength(%f) has to be in range(%f-%f)",
+					snprintf(ERROR_STRING,LLEN, "wavelength(%f) has to be in range(%f-%f)",
 						wavelengths[i], MIN_WAVELENGTH, MAX_WAVELENGTH);
 					warn(ERROR_STRING);
 
@@ -472,7 +472,7 @@ static COMMAND_FUNC( do_save_spec )
 
 	dp = dobj_of(name);
 	if( dp == NULL ){
-		sprintf(ERROR_STRING,"%s does not exist", name);
+		snprintf(ERROR_STRING,LLEN,"%s does not exist", name);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -563,11 +563,11 @@ static COMMAND_FUNC( do_pb_width )
 	 * BUG: Should this feature should be asking for pb width in terms of wavelengths?
 	 */
 
-	sprintf(prompt, "number of pixels to be averaged together (%d - %d)", MIN_PB_WIDTH, MAX_PB_WIDTH);
+	snprintf(prompt,LLEN, "number of pixels to be averaged together (%d - %d)", MIN_PB_WIDTH, MAX_PB_WIDTH);
 	data_word = HOW_MANY(prompt);
 
 	if( data_word<MIN_PB_WIDTH || data_word>MAX_PB_WIDTH ) {
-		sprintf(ERROR_STRING, "number (%d) should be in range %d - %d",
+		snprintf(ERROR_STRING,LLEN, "number (%d) should be in range %d - %d",
 			data_word, MIN_PB_WIDTH, MAX_PB_WIDTH);
 
 		warn(ERROR_STRING);
@@ -587,11 +587,11 @@ static COMMAND_FUNC( do_integ_time )
 #define MIN_INTEG_TIME		3		/* the windows version (OOBase32) goes down to 3 */
 #define MAX_INTEG_TIME		65535
 
-	sprintf(prompt, "integration time (milli secs) (%d - %d)", MIN_INTEG_TIME, MAX_INTEG_TIME);
+	snprintf(prompt,LLEN, "integration time (milli secs) (%d - %d)", MIN_INTEG_TIME, MAX_INTEG_TIME);
 	data_word= HOW_MANY(prompt);
 
 	if( data_word<MIN_INTEG_TIME || data_word>MAX_INTEG_TIME ) {
-		sprintf(ERROR_STRING, "integration time(%d) should be in range %d - %d",
+		snprintf(ERROR_STRING,LLEN, "integration time(%d) should be in range %d - %d",
 			data_word, MIN_INTEG_TIME, MAX_INTEG_TIME);
 
 		warn(ERROR_STRING);
@@ -661,11 +661,11 @@ static COMMAND_FUNC( do_calib_const )
 		return;
 	}
 
-	sprintf(prompt, "calib constant index (%d - %d)", MIN_CALIB_INDEX, MAX_CALIB_INDEX);
+	snprintf(prompt,LLEN, "calib constant index (%d - %d)", MIN_CALIB_INDEX, MAX_CALIB_INDEX);
 	calib_index = HOW_MANY(prompt);
 
 	if( calib_index<MIN_CALIB_INDEX || calib_index>MAX_CALIB_INDEX ) {
-		sprintf(ERROR_STRING, " (%d) should be in range %d - %d",
+		snprintf(ERROR_STRING,LLEN, " (%d) should be in range %d - %d",
 			calib_index, MIN_CALIB_INDEX, MAX_CALIB_INDEX);
 
 		warn(ERROR_STRING);
@@ -728,7 +728,7 @@ static COMMAND_FUNC( analog_op_inq )
 	if ( analog_op < 0 )
 		return;
 
-	sprintf(prompt,"analog output: %d", analog_op);
+	snprintf(prompt,LLEN,"analog output: %d", analog_op);
 	advise(prompt);
 
 }
@@ -761,7 +761,7 @@ static COMMAND_FUNC( do_ls450_const_inq )
 	calib_index = HOW_MANY("calib constant index");
 
 	if( calib_index<MIN_LS450_CALIB_INDEX || calib_index>MAX_LS450_CALIB_INDEX ) {
-	       sprintf(ERROR_STRING, " (%d) should be in range %d - %d",
+	       snprintf(ERROR_STRING,LLEN, " (%d) should be in range %d - %d",
 			calib_index, MIN_LS450_CALIB_INDEX, MAX_LS450_CALIB_INDEX);
 
 	       warn(ERROR_STRING);
@@ -771,7 +771,7 @@ static COMMAND_FUNC( do_ls450_const_inq )
 	if ( do_calib_inq(QSP_ARG  LS_450_CALIB_CONST, calib_index, calib_const) < 0 )
 		return;
 
-	sprintf(prompt, "Calibration Constant: %s", calib_const);
+	snprintf(prompt,LLEN, "Calibration Constant: %s", calib_const);
 	advise(prompt);
 }
 
@@ -793,11 +793,11 @@ static COMMAND_FUNC( do_analog_op )
 #define MIN_ANALOG_OP		0
 #define MAX_ANALOG_OP		65535
 
-	sprintf(prompt, "analog output %d(0) - %d(20mA)", MIN_ANALOG_OP, MAX_ANALOG_OP);
+	snprintf(prompt,LLEN, "analog output %d(0) - %d(20mA)", MIN_ANALOG_OP, MAX_ANALOG_OP);
 	analog_op= HOW_MANY(prompt);
 
 	if( analog_op<MIN_ANALOG_OP|| analog_op>MAX_ANALOG_OP) {
-		sprintf(ERROR_STRING, "analog output (%d) should be in range %d - %d",
+		snprintf(ERROR_STRING,LLEN, "analog output (%d) should be in range %d - %d",
 			analog_op, MIN_ANALOG_OP, MAX_ANALOG_OP);
 
 		warn(ERROR_STRING);
@@ -839,10 +839,10 @@ static COMMAND_FUNC( do_temp )
 
 	temp = (char *)malloc(SIZEOF_TEMP_STRING);
 
-	if( get_temp(QSP_ARG  temp) < 0 )
+	if( get_temp(QSP_ARG  temp,SIZEOF_TEMP_STRING) < 0 )
 		return;
 
-	sprintf(prompt, "Temperature: %s (Centigrade)", temp);
+	snprintf(prompt,LLEN, "Temperature: %s (Centigrade)", temp);
 	advise(prompt);
 }
 
@@ -859,11 +859,11 @@ static COMMAND_FUNC( do_ls450_calib_const )
 		return;
 	}
 
-	sprintf(prompt, "calib constant index (%d - %d)", MIN_LS450_CALIB_INDEX, MAX_LS450_CALIB_INDEX);
+	snprintf(prompt,LLEN, "calib constant index (%d - %d)", MIN_LS450_CALIB_INDEX, MAX_LS450_CALIB_INDEX);
 	calib_index = HOW_MANY(prompt);
 
 	if(calib_index<MIN_LS450_CALIB_INDEX || calib_index>MAX_LS450_CALIB_INDEX ) {
-		sprintf(ERROR_STRING, " (%d) should be in range %d - %d",
+		snprintf(ERROR_STRING,LLEN, " (%d) should be in range %d - %d",
 			calib_index, MIN_LS450_CALIB_INDEX, MAX_LS450_CALIB_INDEX);
 
 		warn(ERROR_STRING);
@@ -922,10 +922,10 @@ static COMMAND_FUNC( do_ver )
 #define SIZEOF_VER_STRING	7
 	ver = (char *)malloc(SIZEOF_VER_STRING);
 
-	if( get_ver(QSP_ARG  ver) < 0 )
+	if( get_ver(QSP_ARG  ver,SIZEOF_VER_STRING) < 0 )
 		return;
 
-	sprintf(prompt, "Version: %s", ver);
+	snprintf(prompt,LLEN, "Version: %s", ver);
 	advise(prompt);
 
 }

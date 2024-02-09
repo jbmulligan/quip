@@ -52,7 +52,7 @@ static float get_start_val(Data_Obj *source,Data_Obj *control,dimension_t index)
 	}
 #ifdef DEBUG
 if( debug ){
-sprintf(DEFAULT_ERROR_STRING,"get_start_val:  index = %d  n = %d  sum = %f",index,i,sum);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"get_start_val:  index = %d  n = %d  sum = %f",index,i,sum);
 NADVISE(DEFAULT_ERROR_STRING);
 }
 #endif
@@ -134,7 +134,7 @@ void _vinterp(QSP_ARG_DECL  Data_Obj *target,Data_Obj *source,Data_Obj *control)
 
 #ifdef DEBUG
 if( debug ){
-sprintf(ERROR_STRING,
+snprintf(ERROR_STRING,LLEN,
 "vinterp:  %d values at index %d (start_i = %d), start = %f end = %f",
 n_to_interpolate,i,start_index,start_val,end_val);
 advise(ERROR_STRING);

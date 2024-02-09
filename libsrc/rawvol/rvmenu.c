@@ -39,7 +39,7 @@ static COMMAND_FUNC( do_mkfs )
 
 	ndisks = HOW_MANY("number of disks");
 	if( ndisks < 1 || ndisks > MAX_DISKS ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Number of disks (%d) must be between 1 and %d",
 			ndisks,MAX_DISKS);
 		warn(ERROR_STRING);
@@ -48,7 +48,7 @@ static COMMAND_FUNC( do_mkfs )
 	for(i=0;i<ndisks;i++){
 		s=NAMEOF("disk name");
 		if( strlen(s) >= MAX_DISKNAME_LEN ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"Need to increase MAX_DISKNAME_LEN (%d) to accomodate diskname \"%s\"",
 				MAX_DISKNAME_LEN,s);
 			error1(ERROR_STRING);
@@ -61,12 +61,12 @@ static COMMAND_FUNC( do_mkfs )
 	nsb=HOW_MANY("number of string blocks");
 
 	if( nib <= 0  ){
-		sprintf(ERROR_STRING,"number of inode blocks (%ld) must be positive",nib);
+		snprintf(ERROR_STRING,LLEN,"number of inode blocks (%ld) must be positive",nib);
 		warn(ERROR_STRING);
 		return;
 	}
 	if( nsb <= 0  ){
-		sprintf(ERROR_STRING,"number of string blocks (%ld) must be positive",nsb);
+		snprintf(ERROR_STRING,LLEN,"number of string blocks (%ld) must be positive",nsb);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -174,7 +174,7 @@ static COMMAND_FUNC( do_set_root )
 	}
 
 	if( grant_root_access(QSP_ARG  s) < 0 ){
-		sprintf(ERROR_STRING,"Error granting root access to user %s",s);
+		snprintf(ERROR_STRING,LLEN,"Error granting root access to user %s",s);
 		warn(ERROR_STRING);
 	}
 }
@@ -264,7 +264,7 @@ static COMMAND_FUNC( do_err_frms )
 	fi_p = &(RV_MOVIE_FRAME_INFO(inp,i));
 	if( FRAME_INFO_N_SAVED(fi_p) <= 0 ){
 		/*if( verbose ){ */
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"rv file %s has no %s errors",RV_NAME(inp),error_type_list[i]);
 			advise(ERROR_STRING);
 		/*} */
@@ -275,7 +275,7 @@ static COMMAND_FUNC( do_err_frms )
 	if( dp != NULL ){
 		/* object already exists */
 		if( verbose ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"deleting previously created object %s",s);
 			advise(ERROR_STRING);
 		}
@@ -284,7 +284,7 @@ static COMMAND_FUNC( do_err_frms )
 
 	dp = mk_vec(s,FRAME_INFO_N_SAVED(fi_p),1,PREC_FOR_CODE(PREC_DI));
 	if( dp == NULL ){
-		sprintf(ERROR_STRING,"do_err_frms:  unable to create data vector %s",s);
+		snprintf(ERROR_STRING,LLEN,"do_err_frms:  unable to create data vector %s",s);
 		warn(ERROR_STRING);
 		return;
 	}

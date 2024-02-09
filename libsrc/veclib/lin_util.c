@@ -30,7 +30,7 @@ static int _same_pixel_type(QSP_ARG_DECL  Data_Obj *dp1,Data_Obj *dp2)		/* BUG? 
 	if( !dp_same_prec(dp1,dp2,"same_pixel_type") ) return(0);
 
 	if( OBJ_MACH_DIM(dp1,0) != OBJ_MACH_DIM(dp2,0) ){
-		sprintf(ERROR_STRING,"component count mismatch:  %s (%d),  %s (%d)",
+		snprintf(ERROR_STRING,LLEN,"component count mismatch:  %s (%d),  %s (%d)",
 			OBJ_NAME(dp1),OBJ_MACH_DIM(dp2,0),
 			OBJ_NAME(dp2),OBJ_MACH_DIM(dp2,0));
 		warn(ERROR_STRING);
@@ -48,14 +48,14 @@ int _prodimg(QSP_ARG_DECL  Data_Obj *dpto,Data_Obj *rowobj,Data_Obj *colobj)	/**
 	Vec_Obj_Args oa1, *oap=&oa1;
 
 	if( OBJ_COLS(rowobj) != OBJ_COLS(dpto) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"prodimg:  row size mismatch, target %s (%d) and row %s (%d)",
 			OBJ_NAME(dpto),OBJ_COLS(dpto),OBJ_NAME(rowobj),
 			OBJ_COLS(rowobj));
 		warn(ERROR_STRING);
 		return(-1);
 	} else if( OBJ_ROWS(colobj) != OBJ_ROWS(dpto) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"prodimg:  column size mismatch, target %s (%d) and column %s (%d)",
 			OBJ_NAME(dpto),OBJ_ROWS(dpto),OBJ_NAME(colobj),
 			OBJ_ROWS(colobj));
@@ -89,13 +89,13 @@ static int _is_good_for_inner(QSP_ARG_DECL  Data_Obj *dp,const char *func_name)
 	assert( dp != NULL );
 
 	if( OBJ_COMPS(dp) > 1 ){
-		sprintf(ERROR_STRING,"%s:  object %s has %d components (should be 1)",
+		snprintf(ERROR_STRING,LLEN,"%s:  object %s has %d components (should be 1)",
 			func_name,OBJ_NAME(dp),OBJ_COMPS(dp));
 		warn(ERROR_STRING);
 		retval=0;
 	}
 	if( OBJ_MACH_PREC(dp) != PREC_SP && OBJ_MACH_PREC(dp) != PREC_DP ){
-		sprintf(ERROR_STRING,"%s:  object %s has machine prec %s (should be float or double)",
+		snprintf(ERROR_STRING,LLEN,"%s:  object %s has machine prec %s (should be float or double)",
 			func_name,OBJ_NAME(dp),OBJ_MACH_PREC_NAME(dp) );
 		warn(ERROR_STRING);
 		retval=0;
@@ -108,7 +108,7 @@ static int _is_good_for_inner(QSP_ARG_DECL  Data_Obj *dp,const char *func_name)
 static int _prec_and_type_match(QSP_ARG_DECL  Data_Obj *dp1,Data_Obj *dp2,const char *func_name)
 {
 	if( OBJ_PREC(dp1) != OBJ_PREC(dp2) ){
-		sprintf(ERROR_STRING,"Function %s:  precisions of objects %s (%s) and %s (%s) do not match!?",
+		snprintf(ERROR_STRING,LLEN,"Function %s:  precisions of objects %s (%s) and %s (%s) do not match!?",
 			func_name,OBJ_NAME(dp1),OBJ_PREC_NAME(dp1),OBJ_NAME(dp2),OBJ_PREC_NAME(dp2));
 		warn(ERROR_STRING);
 		return(0);
@@ -151,21 +151,21 @@ void _inner(QSP_ARG_DECL  Data_Obj *dpto,Data_Obj *dpfr1,Data_Obj *dpfr2)
 	if( ! prec_and_type_match(dpto,dpfr2,"inner") ) return;
 
 	if( OBJ_ROWS(dpto) != OBJ_ROWS(dpfr1) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"inner:  dpto %s (%d) and first operand %s (%d) must have same # rows",
 			OBJ_NAME(dpto),OBJ_ROWS(dpto),OBJ_NAME(dpfr1),OBJ_ROWS(dpfr1));
 		warn(ERROR_STRING);
 		return;
 	}
 	if( OBJ_COLS(dpto) != OBJ_COLS(dpfr2) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"inner:  target %s (%d) and second operand %s (%d) must have same # columns",
 			OBJ_NAME(dpto),OBJ_COLS(dpto),OBJ_NAME(dpfr2),OBJ_COLS(dpfr2));
 		warn(ERROR_STRING);
 		return;
 	}
 	if( OBJ_COLS(dpfr1) != OBJ_ROWS(dpfr2) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"inner:  # cols of operand %s (%d) must match # rows of operand %s (%d)",
 			OBJ_NAME(dpfr1),OBJ_COLS(dpfr1),OBJ_NAME(dpfr2),OBJ_ROWS(dpfr2));
 		warn(ERROR_STRING);
@@ -231,34 +231,34 @@ int _xform_chk(QSP_ARG_DECL  Data_Obj *dpto,Data_Obj *dpfr,Data_Obj *xform)
 		return(-1);
 
 	if( !IS_IMAGE(xform) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"xform_chk:  transformation %s must be a matrix (image)",
 			OBJ_NAME(xform));
 		warn(ERROR_STRING);
 		return(-1);
 	}
 	if( OBJ_COMPS(xform) != 1 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"xform_chk:  transform matrix %s must have single-component elements",OBJ_NAME(xform));
 		warn(ERROR_STRING);
 		return(-1);
 	}
 	if( OBJ_COMPS(dpto) != OBJ_ROWS(xform) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"xform_chk:  target %s component dimension (%d) must match # rows of xform %s (%d)",
 			OBJ_NAME(dpto),OBJ_COMPS(dpto),OBJ_NAME(xform),OBJ_ROWS(xform));
 		warn(ERROR_STRING);
 		return(-1);
 	}
 	if( OBJ_COMPS(dpfr) != OBJ_COLS(xform) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"xform_chk:  source %s component dimension (%d) must match # columns of xform %s (%d)",
 			OBJ_NAME(dpto),OBJ_COMPS(dpto),OBJ_NAME(xform),OBJ_ROWS(xform));
 		warn(ERROR_STRING);
 		return(-1);
 	}
 	if( OBJ_N_TYPE_ELTS(dpto)/OBJ_COMPS(dpto) != OBJ_N_TYPE_ELTS(dpfr)/OBJ_COMPS(dpfr) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"xform_chk:  target %s (%d/%d) and source %s (%d/%d) must have same # of elements",
 			OBJ_NAME(dpto),OBJ_N_TYPE_ELTS(dpto),OBJ_COMPS(dpto),
 			OBJ_NAME(dpfr),OBJ_N_TYPE_ELTS(dpfr),OBJ_COMPS(dpfr));
@@ -269,19 +269,19 @@ int _xform_chk(QSP_ARG_DECL  Data_Obj *dpto,Data_Obj *dpfr,Data_Obj *xform)
 	/* BUG these contiguity requirements may no longer be necessary... */
 
 	if( !is_contiguous(dpto) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"xform_chk:  xform target %s must be contiguous",OBJ_NAME(dpto));
 		warn(ERROR_STRING);
 		return(-1);
 	}
 	if( !is_contiguous(dpfr) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"xform_chk:  xform source %s must be contiguous",OBJ_NAME(dpfr));
 		warn(ERROR_STRING);
 		return(-1);
 	}
 	if( !is_contiguous(xform) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"xform_chk:  xform %s must be contiguous",OBJ_NAME(xform));
 		warn(ERROR_STRING);
 		return(-1);
@@ -308,7 +308,7 @@ void xform_list(QSP_ARG_DECL  Data_Obj *dpto,Data_Obj *dpfr,Data_Obj *xform)
 		case PREC_SP:	sp_obj_xform_list(QSP_ARG  dpto,dpfr,xform); break;
 		case PREC_DP:	dp_obj_xform_list(QSP_ARG  dpto,dpfr,xform); break;
 		default:
-			sprintf(ERROR_STRING,"xform_list:  destination object %s (%s) should have float or double precision",
+			snprintf(ERROR_STRING,LLEN,"xform_list:  destination object %s (%s) should have float or double precision",
 				OBJ_NAME(dpto),OBJ_PREC_NAME(dpto));
 			warn(ERROR_STRING);
 	}
@@ -352,7 +352,7 @@ void _vec_xform(QSP_ARG_DECL  Data_Obj *dpto,Data_Obj *dpfr,Data_Obj *xform)
 		case PREC_SP:	sp_obj_vec_xform(QSP_ARG  dpto,dpfr,xform); break;
 		case PREC_DP:	dp_obj_vec_xform(QSP_ARG  dpto,dpfr,xform); break;
 		default:
-			sprintf(ERROR_STRING,"vec_xform:  destination object %s (%s) should have float or double precision",
+			snprintf(ERROR_STRING,LLEN,"vec_xform:  destination object %s (%s) should have float or double precision",
 				OBJ_NAME(dpto),OBJ_PREC_NAME(dpto));
 			warn(ERROR_STRING);
 	}
@@ -370,7 +370,7 @@ void _homog_xform(QSP_ARG_DECL  Data_Obj *dpto,Data_Obj *dpfr,Data_Obj *xform_dp
 	switch(OBJ_MACH_PREC(dpto)){
 		case PREC_SP:	sp_obj_homog_xform(QSP_ARG  dpto,dpfr,xform_dp); break;
 		case PREC_DP:	dp_obj_homog_xform(QSP_ARG  dpto,dpfr,xform_dp); break;
-		default: sprintf(ERROR_STRING,"homog_xform:  unsupported precision");
+		default: snprintf(ERROR_STRING,LLEN,"homog_xform:  unsupported precision");
 			warn(ERROR_STRING);
 			break;
 	}
@@ -457,14 +457,14 @@ void corr_matrix(Data_Obj *dpto,Data_Obj *dpfr)
 	if( ! is_real(dpfr,"corr_matrix") ) return;
 
 	if( OBJ_COLS(dpto) != OBJ_ROWS(dpto) ){
-		sprintf(ERROR_STRING,"target matrix %s (%dx%d) must be square",OBJ_NAME(dpto),
+		snprintf(ERROR_STRING,LLEN,"target matrix %s (%dx%d) must be square",OBJ_NAME(dpto),
 			OBJ_ROWS(dpto),OBJ_COLS(dpto));
 		warn(ERROR_STRING);
 		had_err++;
 	}
 
 	if( OBJ_COLS(dpto) != OBJ_ROWS(dpfr) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"target matrix %s size %d not equal to source matrix %s rows (%d)",
 			OBJ_NAME(dpto),OBJ_COLS(dpto),OBJ_NAME(dpfr),OBJ_ROWS(dpfr));
 		warn(ERROR_STRING);
@@ -520,7 +520,7 @@ double _determinant(QSP_ARG_DECL  Data_Obj *dp)
 		case PREC_SP:  return sp_obj_determinant(dp);
 		case PREC_DP:  return dp_obj_determinant(dp);
 		default:
-			sprintf(ERROR_STRING,"determinant:  object %s has unsupported precision %s",
+			snprintf(ERROR_STRING,LLEN,"determinant:  object %s has unsupported precision %s",
 				OBJ_NAME(dp),OBJ_MACH_PREC_NAME(dp));
 			warn(ERROR_STRING);
 			return(0.0);

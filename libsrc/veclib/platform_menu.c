@@ -41,7 +41,7 @@ static COMMAND_FUNC( do_list_all_pfdevs )
 	np = QLIST_HEAD(lp);
 	while( np != NULL ){
 		cpp = (Compute_Platform *) NODE_DATA(np);
-		sprintf(msg_str,"%s platform:",PLATFORM_NAME(cpp));
+		snprintf(msg_str,LLEN,"%s platform:",PLATFORM_NAME(cpp));
 		prt_msg(msg_str);
 		list_item_context(PF_CONTEXT(cpp));
 		prt_msg("");
@@ -106,7 +106,7 @@ static Platform_Device *_pick_platform_device(SINGLE_QSP_ARG_DECL)
 		const char *s;
 		s=NAMEOF("dummy word");
 		// Now use it just to suppress a compiler warning...
-		sprintf(ERROR_STRING,"Ignoring \"%s\"",s);
+		snprintf(ERROR_STRING,LLEN,"Ignoring \"%s\"",s);
 		advise(ERROR_STRING);
 		return NULL;
 	}
@@ -155,7 +155,7 @@ static COMMAND_FUNC(do_show_pfdev)
 	if( curr_pdp == NULL ){
 		advise("No platform device selected.");
 	} else {
-		sprintf(ERROR_STRING,"Current platform device is:  %s (%s)",
+		snprintf(ERROR_STRING,LLEN,"Current platform device is:  %s (%s)",
 			PFDEV_NAME(curr_pdp),
 			PLATFORM_NAME(PFDEV_PLATFORM(curr_pdp))
 			);
@@ -223,12 +223,12 @@ static COMMAND_FUNC(do_set_dev_type)
 		pdp = find_pfdev(PLATFORM_OPENCL);
 
 	if( pdp == NULL ){
-		sprintf(ERROR_STRING,"No %s device found!?",dev_type_names[i]);
+		snprintf(ERROR_STRING,LLEN,"No %s device found!?",dev_type_names[i]);
 		warn(ERROR_STRING);
 		return;
 	}
 
-	sprintf(ERROR_STRING,"Using %s device %s.",dev_type_names[i],PFDEV_NAME(pdp));
+	snprintf(ERROR_STRING,LLEN,"Using %s device %s.",dev_type_names[i],PFDEV_NAME(pdp));
 	advise(ERROR_STRING);
 
 	select_pfdev(pdp);
@@ -247,12 +247,12 @@ static void check_platform_defaults(SINGLE_QSP_ARG_DECL)
 	if( vp1 != NULL ){
 		if( vp2 != NULL ) return;	// both already set by user
 		else {
-			sprintf(ERROR_STRING,"DEFAULT_PLATFORM is set to %s, but DEFAULT_GPU is not set!?",
+			snprintf(ERROR_STRING,LLEN,"DEFAULT_PLATFORM is set to %s, but DEFAULT_GPU is not set!?",
 				VAR_VALUE(vp1));
 			warn(ERROR_STRING);
 		}
 	} else if( vp2 != NULL ){
-		sprintf(ERROR_STRING,"DEFAULT_GPU is set to %s, but DEFAULT_PLATFORM is not set!?",
+		snprintf(ERROR_STRING,LLEN,"DEFAULT_GPU is set to %s, but DEFAULT_PLATFORM is not set!?",
 			VAR_VALUE(vp2));
 		warn(ERROR_STRING);
 	}
@@ -284,7 +284,7 @@ static COMMAND_FUNC( do_pf_info )
 	cdp = pick_platform("");
 	if( cdp == NULL ) return;
 
-	sprintf(MSG_STR,"Platform name:  %s",PLATFORM_NAME(cdp));
+	snprintf(MSG_STR,LLEN,"Platform name:  %s",PLATFORM_NAME(cdp));
 	prt_msg(MSG_STR);
 
 	(* PF_INFO_FN(cdp))(QSP_ARG  cdp);

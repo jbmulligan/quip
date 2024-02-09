@@ -124,7 +124,7 @@ static COMMAND_FUNC( getDimSum )
 	if ((dp_src = pick_obj( "source object" )) == NULL) return;
 
 	if (OBJ_PREC(dp_dst) != PREC_SP || OBJ_PREC(dp_src) != PREC_SP) {
-		sprintf(ERROR_STRING,"Object types must be float");
+		snprintf(ERROR_STRING,LLEN,"Object types must be float");
 		advise(ERROR_STRING);
 		return;
 	}
@@ -132,7 +132,7 @@ static COMMAND_FUNC( getDimSum )
 	dim = (int) HOW_MANY("summing dimension");
 
 	if (dim > 2 || dim < 1) {
-		sprintf(ERROR_STRING,"Dimension can only be 1 (rows) or 2 (cols)");
+		snprintf(ERROR_STRING,LLEN,"Dimension can only be 1 (rows) or 2 (cols)");
 		advise(ERROR_STRING);
 		return;
 	}
@@ -155,7 +155,7 @@ static COMMAND_FUNC( getDimSum )
 			}
 
 		} else {
-			sprintf(ERROR_STRING,"Check destination object %s dims.", OBJ_NAME(dp_dst));
+			snprintf(ERROR_STRING,LLEN,"Check destination object %s dims.", OBJ_NAME(dp_dst));
 			warn(ERROR_STRING);
 			return;
 		}
@@ -167,7 +167,7 @@ static COMMAND_FUNC( getDimSum )
 					dst_data[i] += src_data[i + j * sw];
 			}
 		} else {
-			sprintf(ERROR_STRING,"Check destination object %s dims.", OBJ_NAME(dp_dst));
+			snprintf(ERROR_STRING,LLEN,"Check destination object %s dims.", OBJ_NAME(dp_dst));
 			warn(ERROR_STRING);
 			return;
 		}
@@ -188,13 +188,13 @@ static COMMAND_FUNC( dofind )
 	if ((dp_src = pick_obj( "source object" )) == NULL) return;
 
 	if (OBJ_PREC(dp_dst) != PREC_SP || OBJ_PREC(dp_src) != PREC_SP) {
-		sprintf(ERROR_STRING,"Object types must be float");
+		snprintf(ERROR_STRING,LLEN,"Object types must be float");
 		advise(ERROR_STRING);
 		return;
 	}
 
 	if ((dw = OBJ_COLS(dp_dst)) != 2) {
-		sprintf(ERROR_STRING,"Destination object must have exactly 2 columns");
+		snprintf(ERROR_STRING,LLEN,"Destination object must have exactly 2 columns");
 		advise(ERROR_STRING);
 		return;
 	}
@@ -219,7 +219,7 @@ static COMMAND_FUNC( dofind )
 	}
 
 	if (k != dh) {
-		sprintf(ERROR_STRING,"Destination object rows were too long");
+		snprintf(ERROR_STRING,LLEN,"Destination object rows were too long");
 		advise(ERROR_STRING);
 	}
 
@@ -1152,7 +1152,7 @@ static COMMAND_FUNC( do_local_max )
 	else
 		n = 0;
 
-	sprintf(msg_str,"%ld",n);
+	snprintf(msg_str,LLEN,"%ld",n);
 	assign_var("n_maxima",msg_str);
 }
 
@@ -1240,7 +1240,7 @@ static COMMAND_FUNC( do_vstitch )
 	if( to==NULL || fr==NULL || co==NULL ) return;
 	n=vstitch(to,fr,co);
 	if( verbose ){
-		sprintf(ERROR_STRING,"%d elements copied",n);
+		snprintf(ERROR_STRING,LLEN,"%d elements copied",n);
 		advise(ERROR_STRING);
 	}
 }
@@ -1846,7 +1846,7 @@ static COMMAND_FUNC( do_ginvert )
 	else if( OBJ_PREC(dp) == PREC_DP )
 		dp_gauss_jordan( (double *)OBJ_DATA_PTR(dp), OBJ_COLS(dp) );
 	else {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Matrix %s should have float or double precision for Gauss-Jordan inversion",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
@@ -1880,7 +1880,7 @@ static COMMAND_FUNC( do_invert )
 	det=dt_invert(dp);
 	if( det == 0.0 ) warn("ZERO DETERMINANT!!!");
 	else if( verbose ) {
-		sprintf(msg_str,"determinant:  %g",det);
+		snprintf(msg_str,LLEN,"determinant:  %g",det);
 		prt_msg(msg_str);
 	}
 }
@@ -1916,7 +1916,7 @@ static COMMAND_FUNC( do_determinant )
 	if( OBJ_PREC(dp) == PREC_SP ){
 		*((float *)OBJ_DATA_PTR(scal_dp)) = (float)d;
 	} else {
-		sprintf(ERROR_STRING,"determinant:  bad scalar precision (%s) for object %s!?",
+		snprintf(ERROR_STRING,LLEN,"determinant:  bad scalar precision (%s) for object %s!?",
 			PREC_NAME(OBJ_PREC_PTR(dp)),OBJ_NAME(dp));
 		warn(ERROR_STRING);
 	}
@@ -2078,7 +2078,7 @@ static COMMAND_FUNC( do_report_status )
 	else
 		prt_msg("Parsing but not executing all vector computations");
 
-	sprintf(msg_str,"Using %d processor%s (%d max on this machine)",
+	snprintf(msg_str,LLEN,"Using %d processor%s (%d max on this machine)",
 			n_processors,n_processors==1?"":"s",N_PROCESSORS);
 	prt_msg(msg_str);
 }

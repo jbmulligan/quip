@@ -154,7 +154,7 @@ static int m_status=0;
 static char mstatstr[]="IwcrbdA";
 static char statstr[]="itwWDbx";
 
-static char estring[MAX_DISKS][128];
+static char estring[MAX_DISKS][LLEN];
 
 static const char *master_codes=
 	"Master Codes:\n"
@@ -187,7 +187,7 @@ static const char *column_doc=
 #define MSTATUS(code)						\
 m_status = code;						\
 if( verbose ){							\
-sprintf(ERROR_STRING,						\
+snprintf(ERROR_STRING,LLEN,					\
 "M %c\t%d\t%d\t%c %d/%d\t%c %d/%d\t%c %d/%d",			\
 mstatstr[m_status],newest,n_frames_read,			\
 statstr[ppi[0].ppi_status],					\
@@ -206,7 +206,7 @@ advise(ERROR_STRING);						\
 #define STATUS(code)						\
 pip->ppi_status = code;						\
 if( verbose ){							\
-sprintf(estring[pip->ppi_index],				\
+snprintf(estring[pip->ppi_index],LLEN,				\
 "%c %c\t%d\t%d\t%c %d/%d\t%c %d/%d\t%c %d/%d",			\
 '0'+pip->ppi_index,mstatstr[m_status],newest,n_frames_read,	\
 statstr[ppi[0].ppi_status],					\
@@ -227,7 +227,7 @@ NADVISE(estring[pip->ppi_index]);				\
 #define RSTATUS(code)						\
 pip->ppi_status = code;						\
 if( verbose ){							\
-sprintf(estring[pip->ppi_index],				\
+snprintf(estring[pip->ppi_index],LLEN,				\
 "%c %c\t%d\t%c %d\t%c %d\t%c %d\t%c %d",			\
 '0'+pip->ppi_index,rmstatstr[m_status],				\
 read_frame_want,						\
@@ -245,7 +245,7 @@ NADVISE(estring[pip->ppi_index]);				\
 #define RMSTATUS(code)						\
 m_status = code;						\
 if( verbose ){							\
-sprintf(ERROR_STRING,						\
+snprintf(ERROR_STRING,LLEN,						\
 "M %c\t%d\t%c %d\t%c %d\t%c %d\t%c %d",				\
 rmstatstr[m_status],						\
 read_frame_want,						\
@@ -384,12 +384,12 @@ static void thread_write_enable(QSP_ARG_DECL  int index, int flag)
 
 static void show_tmr(QSP_ARG_DECL  struct itimerval *tmrp)
 {
-	sprintf(ERROR_STRING,"interval:  %d   %d",
+	snprintf(ERROR_STRING,LLEN,"interval:  %d   %d",
 			tmrp->it_interval.tv_sec,
 			tmrp->it_interval.tv_usec);
 	advise(ERROR_STRING);
 
-	sprintf(ERROR_STRING,"value:  %d   %d",
+	snprintf(ERROR_STRING,LLEN,"value:  %d   %d",
 			tmrp->it_value.tv_sec,
 			tmrp->it_value.tv_usec);
 	advise(ERROR_STRING);
@@ -487,15 +487,15 @@ static void dw_wait_for_first_frame(Proc_Info *pip)
 
 #define PRINT_WRITE_ERROR_WARNING							\
 											\
-sprintf(DEFAULT_ERROR_STRING,								\
+snprintf(DEFAULT_ERROR_STRING,LLEN,								\
 	"write (frm %d, fd=%d, i_frag = %d, buf = 0x%lx, n = %d )",			\
 	buf_idx,fd,i_frag,(long)buf,pip->ppi_vra_p->vr_n_bytes_per_write);					\
 perror(DEFAULT_ERROR_STRING);								\
 											\
-sprintf(DEFAULT_ERROR_STRING, "addr = 0x%lx", (long)(buf+i_frag*pip->ppi_vra_p->vr_n_bytes_per_write));		\
+snprintf(DEFAULT_ERROR_STRING,LLEN, "addr = 0x%lx", (long)(buf+i_frag*pip->ppi_vra_p->vr_n_bytes_per_write));		\
 NADVISE(DEFAULT_ERROR_STRING);								\
 											\
-sprintf(DEFAULT_ERROR_STRING, "%d requested, %d written", pip->ppi_vra_p->vr_n_bytes_per_write,n_written);	\
+snprintf(DEFAULT_ERROR_STRING,LLEN, "%d requested, %d written", pip->ppi_vra_p->vr_n_bytes_per_write,n_written);	\
 NWARN(DEFAULT_ERROR_STRING);
 /* disk_writer needs to have its own ERROR_STRING, but we fork these threads
  * from a single command, so passing the qsp won't help...
@@ -622,7 +622,7 @@ static void start_dw_threads(QSP_ARG_DECL  Video_Reader_Args *vra_p, Spink_Cam *
 	 */
 
 if( (vra_p->vr_n_disks % n_disk_writer_threads) != 0 ){
-	sprintf(ERROR_STRING,"n_disk_writer_threads (%d) must evenly divide n_disks (%d)",
+	snprintf(ERROR_STRING,LLEN,"n_disk_writer_threads (%d) must evenly divide n_disks (%d)",
 			n_disk_writer_threads,vra_p->vr_n_disks);
 	error1(ERROR_STRING);
 }
@@ -663,7 +663,7 @@ static void stream_wakeup(int unused)
 {
 	NWARN("stream_wakeup:  record failed!? (alarm went off before recording finished)");
 	verbose=1;
-	sprintf(DEFAULT_ERROR_STRING,"%d of %d frames captured",n_enqueued,vra1.vr_n_frames);
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"%d of %d frames captured",n_enqueued,vra1.vr_n_frames);
 	NADVISE(DEFAULT_ERROR_STRING);
 
 #ifdef DEBUG_TIMERS
@@ -687,7 +687,7 @@ show_tmrs(SGL_DEFAULT_QSP_ARG);
 
 	if( is_rv_directory(inp) || is_rv_link(inp) ){
 		if( verbose ){
-			sprintf(ERROR_STRING,"make_movie_from_inode:  rv inode %s is not a movie",rv_name(inp));
+			snprintf(ERROR_STRING,LLEN,"make_movie_from_inode:  rv inode %s is not a movie",rv_name(inp));
 			advise(ERROR_STRING);
 		}
 		return;
@@ -695,13 +695,13 @@ show_tmrs(SGL_DEFAULT_QSP_ARG);
 
 	mvip = create_movie(rv_name(inp));
 	if( mvip == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"error creating movie %s",rv_name(inp));
 		warn(ERROR_STRING);
 	} else {
 		ifp = img_file_of(rv_name(inp));
 		if( ifp == NULL ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"image file struct for rv file %s does not exist!?",rv_name(inp));
 			warn(ERROR_STRING);
 		} else {
@@ -727,7 +727,7 @@ show_tmrs(SGL_DEFAULT_QSP_ARG);
 {
 	if( is_rv_directory(inp) || is_rv_link(inp) ){
 		if( verbose ){
-			sprintf(ERROR_STRING,"update_movie_database:  rv inode %s is not a movie",rv_name(inp));
+			snprintf(ERROR_STRING,LLEN,"update_movie_database:  rv inode %s is not a movie",rv_name(inp));
 			advise(ERROR_STRING);
 		}
 		return;
@@ -787,7 +787,7 @@ static void setup_alarm(int n_frames_wanted)
 
 #ifdef DEBUG_TIMERS
 do_date();
-sprintf(ERROR_STRING,"calling alarm(%d)",seconds_before_alarm);
+snprintf(ERROR_STRING,LLEN,"calling alarm(%d)",seconds_before_alarm);
 advise(ERROR_STRING);
 #endif /* DEBUG_TIMERS */
 
@@ -795,7 +795,7 @@ advise(ERROR_STRING);
 
 #ifdef DEBUG_TIMERS
 if( old_alarm > 0 ){
-sprintf(ERROR_STRING,"old alarm would have occurred in %d seconds",
+snprintf(ERROR_STRING,LLEN,"old alarm would have occurred in %d seconds",
 old_alarm);
 advise(ERROR_STRING);
 } else advise("no old alarm was pending");
@@ -1050,7 +1050,7 @@ MSTATUS(MS_DONE)
 
 #ifdef DEBUG_TIMER
 if( old_alarm > 0 ){
-sprintf(ERROR_STRING,"old alarm would have occurred in %d seconds",
+snprintf(ERROR_STRING,LLEN,"old alarm would have occurred in %d seconds",
 old_alarm);
 advise(ERROR_STRING);
 } else advise("no old alarm was pending");
@@ -1073,7 +1073,7 @@ fprintf(stderr,"TRACE stopping capture");
 #endif /* FOOBAR */
 
 		if( pthread_join(dw_thr[i],NULL) != 0 ){
-			sprintf(ERROR_STRING,"Error joining disk writer thread %d",i);
+			snprintf(ERROR_STRING,LLEN,"Error joining disk writer thread %d",i);
 			warn(ERROR_STRING);
 		}
 	}
@@ -1085,7 +1085,7 @@ fprintf(stderr,"TRACE stopping capture");
 
 	/*
 	if( (ending_count-starting_count) != n_frames_wanted ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Wanted %d frames, captured %d (%d-%d-1)",n_frames_wanted,
 			(ending_count-starting_count)-1,ending_count,starting_count);
 		warn(ERROR_STRING);
@@ -1115,7 +1115,7 @@ fprintf(stderr,"TRACE stopping capture");
 
 	/*
 	if( real_time_ok ){
-		sprintf(ERROR_STRING,"video_reader:  Movie %s recorded successfully in real time.",stream_ifp->if_name);
+		snprintf(ERROR_STRING,LLEN,"video_reader:  Movie %s recorded successfully in real time.",stream_ifp->if_name);
 		advise(ERROR_STRING);
 	}
 	*/
@@ -1183,7 +1183,7 @@ static void *video_reader_thread(void *argp)
 #ifdef FOOBAR
 	grabber_pid=getpid();
 
-sprintf(ERROR_STRING,"video_reader_thread:  grabber_pid = %d",grabber_pid);
+snprintf(ERROR_STRING,LLEN,"video_reader_thread:  grabber_pid = %d",grabber_pid);
 advise(ERROR_STRING);
 
 	if( assoc_pids(master_pid,grabber_pid) < 0 )
@@ -1219,7 +1219,7 @@ static void clear_buffers(SINGLE_QSP_ARG_DECL)
 
 	/*
 	if( meteor_bytes_per_pixel != DEFAULT_BYTES_PER_PIXEL ) {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"clear_buffers:  meteor_bytes_per_pixel = %d (expected %d)",
 			meteor_bytes_per_pixel,DEFAULT_BYTES_PER_PIXEL);
 		warn(ERROR_STRING);
@@ -1271,7 +1271,7 @@ static int check_buffer_alignment(QSP_ARG_DECL  Spink_Cam *skc_p)
 		dp =  cam_frame_with_index(skc_p,i);
 		ptr = OBJ_DATA_PTR( dp );
 		if( ((long)ptr) % RV_ALIGNMENT_REQ != 0 ){
-			sprintf(ERROR_STRING,"Buffer %d is not aligned - %d byte alignment required for raw volume I/O!?",
+			snprintf(ERROR_STRING,LLEN,"Buffer %d is not aligned - %d byte alignment required for raw volume I/O!?",
 				i,RV_ALIGNMENT_REQ);
 			warn(ERROR_STRING);
 			return -1;
@@ -1285,7 +1285,7 @@ static int check_buffer_alignment(QSP_ARG_DECL  Spink_Cam *skc_p)
 static int _insist_rv_filetype(QSP_ARG_DECL  Image_File *ifp)
 {
 	if( FT_CODE(IF_TYPE(ifp)) != IFT_RV ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"stream record:  image file %s (type %s) should be type %s",
 			ifp->if_name,
 			FT_NAME(IF_TYPE(ifp)),
@@ -1301,7 +1301,7 @@ static int _insist_rv_filetype(QSP_ARG_DECL  Image_File *ifp)
 static int _check_buffer_count(QSP_ARG_DECL  Spink_Cam *skc_p, int n_disks)
 {
 	if( skc_p->skc_n_buffers < (2*n_disks) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"buffer frames (%d) must be >= 2 x number of disks (%d)",
 			skc_p->skc_n_buffers,n_disks);
 		warn(ERROR_STRING);
@@ -1356,7 +1356,7 @@ fprintf(stderr,"init_rv_file_for_recording:  n_disks = %d\n",vra_p->vr_n_disks);
 static int _ok_for_recording(QSP_ARG_DECL  Image_File *ifp, int n_cameras)
 {
 	if( record_state != NOT_RECORDING ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"spink_stream_record:  can't record file %s until previous record completes",
 			ifp->if_name);
 		warn(ERROR_STRING);
@@ -1547,7 +1547,7 @@ COMMAND_FUNC( spink_halt_record )
 		 * that we are in fact in async mode...
 		 */
 		if( record_state & (RECORD_HALTING|RECORD_FINISHING) ){
-			sprintf(ERROR_STRING,"spink_halt_record:  halt already in progress!?");
+			snprintf(ERROR_STRING,LLEN,"spink_halt_record:  halt already in progress!?");
 			warn(ERROR_STRING);
 		} else {
 			record_state |= RECORD_HALTING;
@@ -1556,7 +1556,7 @@ COMMAND_FUNC( spink_halt_record )
 		/* We make this an advisory instead of a warning because
 		 * the record might just have finished...
 		 */
-		sprintf(ERROR_STRING,"spink_halt_record:  not currently recording!?");
+		snprintf(ERROR_STRING,LLEN,"spink_halt_record:  not currently recording!?");
 		advise(ERROR_STRING);
 		return;
 	}
@@ -1620,7 +1620,7 @@ void print_grab_times()
 		s=ctime(&ts_array[i].grab_time.tv_sec);
 		/* remove trailing newline */
 		if( s[ strlen(s) - 1 ] == '\n' ) s[ strlen(s) - 1 ] = 0;
-		sprintf(msg_str,"%s\t%ld\t%3ld.%03ld",s,
+		snprintf(msg_str,LLEN,"%s\t%ld\t%3ld.%03ld",s,
 				ts_array[i].grab_time.tv_sec,
 				ts_array[i].grab_time.tv_usec/1000,
 				ts_array[i].grab_time.tv_usec%1000
@@ -1638,7 +1638,7 @@ void print_store_times()
 		s=ctime(&ts_array[i].stor_time.tv_sec);
 		/* remove trailing newline */
 		if( s[ strlen(s) - 1 ] == '\n' ) s[ strlen(s) - 1 ] = 0;
-		sprintf(msg_str,"%s\t%ld\t%3ld.%03ld",s,
+		snprintf(msg_str,LLEN,"%s\t%ld\t%3ld.%03ld",s,
 				ts_array[i].stor_time.tv_sec,
 				ts_array[i].stor_time.tv_usec/1000,
 				ts_array[i].stor_time.tv_usec%1000
@@ -1662,7 +1662,7 @@ Image_File * _get_file_for_recording(QSP_ARG_DECL  const char *name, uint32_t n_
 		RV_Inode *inp;
 		// is the existing file an RV file?
 		if( IF_TYPE_CODE(ifp) != IFT_RV ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"Existing file %s is not a raw volume file, not clobbering.",
 				IF_NAME(ifp));
 			warn(ERROR_STRING);
@@ -1672,7 +1672,7 @@ Image_File * _get_file_for_recording(QSP_ARG_DECL  const char *name, uint32_t n_
 		inp = (RV_Inode *) ifp->if_hdr_p;
 
 		if( ! rv_access_allowed(QSP_ARG  inp) ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"No permission to clobber existing raw volume file %s.",
 				IF_NAME(ifp));
 			warn(ERROR_STRING);
@@ -1680,7 +1680,7 @@ Image_File * _get_file_for_recording(QSP_ARG_DECL  const char *name, uint32_t n_
 		}
 
 		if( verbose ){
-			sprintf(ERROR_STRING,"Clobbering existing image file %s",name);
+			snprintf(ERROR_STRING,LLEN,"Clobbering existing image file %s",name);
 			advise(ERROR_STRING);
 		}
 
@@ -1700,7 +1700,7 @@ Image_File * _get_file_for_recording(QSP_ARG_DECL  const char *name, uint32_t n_
 	 */
 
 	if( ifp == NULL ){
-		sprintf(ERROR_STRING,"Error creating movie file %s",name);
+		snprintf(ERROR_STRING,LLEN,"Error creating movie file %s",name);
 		warn(ERROR_STRING);
 		return NULL;	// BUG clean up
 	}
@@ -1710,7 +1710,7 @@ Image_File * _get_file_for_recording(QSP_ARG_DECL  const char *name, uint32_t n_
 	/* n_blocks is the total number of blocks, not the number per disk(?) */
 
 	if( rv_realloc(name,n_blocks) < 0 ){
-		sprintf(ERROR_STRING,"error reallocating %ld blocks for rv file %s",
+		snprintf(ERROR_STRING,LLEN,"error reallocating %ld blocks for rv file %s",
 			n_blocks,name);
 		warn(ERROR_STRING);
 		return NULL;	// BUG clean up

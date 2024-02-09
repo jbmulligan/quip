@@ -305,28 +305,28 @@ static COMMAND_FUNC( do_import_xvals )
 	if( dp == NULL ) return;
 
 	if( OBJ_PREC(dp) != PREC_SP ){
-		sprintf(ERROR_STRING,"import_xvals:  object %s (%s) should have %s precision!?",
+		snprintf(ERROR_STRING,LLEN,"import_xvals:  object %s (%s) should have %s precision!?",
 			OBJ_NAME(dp),PREC_NAME(OBJ_PREC_PTR(dp)),NAME_FOR_PREC_CODE(PREC_SP));
 		warn(ERROR_STRING);
 		return;
 	}
 	if( OBJ_COMPS(dp) != 1 ){
-		sprintf(ERROR_STRING,"import_xvals:  object %s should have 1 component!?", OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"import_xvals:  object %s should have 1 component!?", OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}
 	if( OBJ_ROWS(dp) != 1 ){
-		sprintf(ERROR_STRING,"import_xvals:  object %s should have 1 row!?", OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"import_xvals:  object %s should have 1 row!?", OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}
 	if( OBJ_FRAMES(dp) != 1 ){
-		sprintf(ERROR_STRING,"import_xvals:  object %s should have 1 frame!?", OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"import_xvals:  object %s should have 1 frame!?", OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}
 	if( OBJ_COLS(dp) < 2 || OBJ_COLS(dp) > MAX_X_VALUES ){
-		sprintf(ERROR_STRING,"import_xvals:  object %s has %d columns, should be in range 2-%d!?",
+		snprintf(ERROR_STRING,LLEN,"import_xvals:  object %s has %d columns, should be in range 2-%d!?",
 			OBJ_NAME(dp),OBJ_COLS(dp),MAX_X_VALUES);
 		warn(ERROR_STRING);
 		return;

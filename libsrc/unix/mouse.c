@@ -129,7 +129,7 @@ static int read_mouse_input(SINGLE_QSP_ARG_DECL)
 #endif /* CAUTIOUS */
 
 	if( n > n_buffer_locs ){
-		sprintf(ERROR_STRING,"%d mouse chars available, but only %d free buffer locs",
+		snprintf(ERROR_STRING,LLEN,"%d mouse chars available, but only %d free buffer locs",
 			n,n_buffer_locs);
 		warn(ERROR_STRING);
 		n = n_buffer_locs;
@@ -138,7 +138,7 @@ static int read_mouse_input(SINGLE_QSP_ARG_DECL)
 	if( (n2=read(mouse_fd,next_buffer_loc,n)) != n ){
 		if( n2 < 0 )
 			perror("read");
-		sprintf(ERROR_STRING,"expected %d chars from mouse, read %zd!?",n,n2);
+		snprintf(ERROR_STRING,LLEN,"expected %d chars from mouse, read %zd!?",n,n2);
 		warn(ERROR_STRING);
 		if( n2 >= 0 ) n=(int)n2;
 		else return(-1);
@@ -339,7 +339,7 @@ next_packet:
 	packet[0] = (unsigned char) next_mouse_char(SINGLE_QSP_ARG);
 //SHOW_PACKET_CHAR(0);
 	if( ! IS_HEADER_BYTE(packet[0]) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"next_mouse_packet:  synchronization error (char = 0x%x)",packet[0]);
 		warn(ERROR_STRING);
 		advise("expected bit 0100 to be set");
@@ -418,19 +418,19 @@ next_packet:
 	if( packet[0] & 020 ) button_state |= RIGHT_BUTTON_DOWN;
 	if( packet[3] & 040 ) button_state |= MIDDLE_BUTTON_DOWN;
 
-	sprintf(MSG_STR,"%d",button_state);
+	snprintf(MSG_STR,LLEN,"%d",button_state);
 	assign_reserved_var("mouse_buttons", MSG_STR);
 
 	decode_motion_packet(&dx,&dy,packet);
 
 	// This code prints the mouse state
 	//display_button_state(QSP_ARG  button_state);
-	//sprintf(MSG_STR,"\t%d %d",dx,dy);
+	//snprintf(MSG_STR,LLEN,"\t%d %d",dx,dy);
 	//prt_msg(MSG_STR);
 
-	sprintf(MSG_STR,"%d",dx);
+	snprintf(MSG_STR,LLEN,"%d",dx);
 	assign_reserved_var("mouse_dx", MSG_STR);
-	sprintf(MSG_STR,"%d",dy);
+	snprintf(MSG_STR,LLEN,"%d",dy);
 	assign_reserved_var("mouse_dy", MSG_STR);
 
 }
@@ -453,7 +453,7 @@ static Mouse_Event interpret_packet(SINGLE_QSP_ARG_DECL)
 
 #define PKT(i)	(0xff&packet[i])
 	if( verbose ){
-		sprintf(msg_str,"mouse packet:  0%o  0%o  0%o  0%o",
+		snprintf(msg_str,LLEN,"mouse packet:  0%o  0%o  0%o  0%o",
 			PKT(0), PKT(1), PKT(2), PKT(3) );
 		prt_msg(msg_str);
 	}
@@ -498,7 +498,7 @@ static Mouse_Event interpret_packet(SINGLE_QSP_ARG_DECL)
 	if( verbose ) {
 		prt_msg_frag(mouse_event_name[event]);
 		if( event==MOTION ){
-			sprintf(msg_str,"  dx = %d   dy = %d",dx,dy);
+			snprintf(msg_str,LLEN,"  dx = %d   dy = %d",dx,dy);
 			prt_msg(msg_str);
 		} else prt_msg("");
 	}
@@ -532,7 +532,7 @@ static void flush_mouse(SINGLE_QSP_ARG_DECL)
 
 	if( n_buffered_chars ){
 		while( n_buffered_chars ){
-			sprintf(msg_str,"flush_mouse:  flushing %d extra characters from mouse buffer",n_buffered_chars);
+			snprintf(msg_str,LLEN,"flush_mouse:  flushing %d extra characters from mouse buffer",n_buffered_chars);
 			prt_msg(msg_str);
 
 			n_buffered_chars=0;
@@ -565,7 +565,7 @@ static void check_mouse(SINGLE_QSP_ARG_DECL)
 		/* here we might figure out what kind of event this is */
 		if( mouse_action[event] != NULL ){
 			if( verbose ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 		"Mouse event %s producing input \"%s\"",mouse_event_name[event],
 					mouse_action[event]);
 				advise(ERROR_STRING);

@@ -94,7 +94,7 @@ static COMMAND_FUNC( do_list_threads )
 
 static COMMAND_FUNC( do_tell_thread )
 {
-	sprintf(MSG_STR,"Current thread is %s",QS_NAME(THIS_QSP));
+	snprintf(MSG_STR,LLEN,"Current thread is %s",QS_NAME(THIS_QSP));
 	prt_msg(MSG_STR);
 }
 

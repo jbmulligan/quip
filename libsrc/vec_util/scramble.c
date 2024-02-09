@@ -39,12 +39,12 @@ void _dp_scramble(QSP_ARG_DECL  Data_Obj *dp)
 	INSIST_RAM_OBJ(dp,scramble)
 
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,"dp_scramble:  object %s must be contiguous",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"dp_scramble:  object %s must be contiguous",OBJ_NAME(dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( ! IS_REAL(dp) ){
-		sprintf(ERROR_STRING,"dp_scrable:  Sorry, scrambling non-real data is not yet supported");
+		snprintf(ERROR_STRING,LLEN,"dp_scrable:  Sorry, scrambling non-real data is not yet supported");
 		WARN(ERROR_STRING);
 		return;
 	}
@@ -64,7 +64,7 @@ void _dp_scramble(QSP_ARG_DECL  Data_Obj *dp)
 		case PREC_UDI: SCRAMBLE_DATA(uint32_t) break;
 		case PREC_ULI: SCRAMBLE_DATA(uint64_t) break;
 		default:
-			sprintf(ERROR_STRING,"dp_permute:  object %s has unsupported precision (%s)!?",
+			snprintf(ERROR_STRING,LLEN,"dp_permute:  object %s has unsupported precision (%s)!?",
 				OBJ_NAME(dp),PREC_NAME(OBJ_PREC_PTR(dp)));
 			WARN(ERROR_STRING);
 			break;

@@ -24,55 +24,55 @@ void _cum_sum( QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src_dp )
 	INSIST_RAM_OBJ(src_dp,cum_sum)
 
 	if( OBJ_PREC(dst_dp) != PREC_DI ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"cum_sum:  destination image %s (%s) must have %s precision",
 			OBJ_NAME(dst_dp),OBJ_MACH_PREC_NAME(dst_dp),PREC_DI_NAME);
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_PREC(src_dp) != PREC_UBY ){
-		sprintf(ERROR_STRING,"cum_sum:  source image %s (%s) must have %s precision",
+		snprintf(ERROR_STRING,LLEN,"cum_sum:  source image %s (%s) must have %s precision",
 			OBJ_NAME(src_dp),OBJ_MACH_PREC_NAME(src_dp), PREC_UBY_NAME);
 		WARN(ERROR_STRING);
 		return;
 	}
 
 	if( ! IS_CONTIGUOUS(dst_dp) ){
-		sprintf(ERROR_STRING,"cum_sum:  image %s must be contiguous",OBJ_NAME(dst_dp));
+		snprintf(ERROR_STRING,LLEN,"cum_sum:  image %s must be contiguous",OBJ_NAME(dst_dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( ! IS_CONTIGUOUS(src_dp) ){
-		sprintf(ERROR_STRING,"cum_sum:  image %s must be contiguous",OBJ_NAME(src_dp));
+		snprintf(ERROR_STRING,LLEN,"cum_sum:  image %s must be contiguous",OBJ_NAME(src_dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_ROWS(dst_dp) != OBJ_ROWS(src_dp)+1 ){
-		sprintf(ERROR_STRING,"cum_sum:  height of destination image %s (%d) should be 1 greater than height of source image %s (%d)",
+		snprintf(ERROR_STRING,LLEN,"cum_sum:  height of destination image %s (%d) should be 1 greater than height of source image %s (%d)",
 			OBJ_NAME(dst_dp),OBJ_ROWS(dst_dp),OBJ_NAME(src_dp),OBJ_ROWS(src_dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_COLS(dst_dp) != OBJ_COLS(src_dp)+1 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"cum_sum:  width of destination image %s (%d) should %d",
 			OBJ_NAME(dst_dp),OBJ_COLS(dst_dp),1+OBJ_COLS(src_dp));
 		WARN(ERROR_STRING);
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Should be 1 greater than width of source image %s (%d)",
 			OBJ_NAME(src_dp),OBJ_COLS(src_dp));
 		advise(ERROR_STRING);
 		return;
 	}
 	if( OBJ_COMPS(dst_dp) != 1 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"cum_sum:  destination image %s (%d) should have a depth of 1",
 			OBJ_NAME(dst_dp),OBJ_COMPS(dst_dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_COMPS(src_dp) != 1 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"cum_sum:  destination image %s (%d) should have a depth of 1",
 			OBJ_NAME(src_dp),OBJ_COMPS(src_dp));
 		WARN(ERROR_STRING);
@@ -90,16 +90,16 @@ void _cum_sum( QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src_dp )
 		*lp++=0;	/* init top row */
 	}
 	r = OBJ_ROWS(src_dp);
-//sprintf(ERROR_STRING,"d = %d,   e = %d",d,e);
+//snprintf(ERROR_STRING,LLEN,"d = %d,   e = %d",d,e);
 //advise(ERROR_STRING);
-//sprintf(ERROR_STRING,"OBJ_DATA_PTR(dst_dp) = 0x%lx",(u_long)OBJ_DATA_PTR(dst_dp));
+//snprintf(ERROR_STRING,LLEN,"OBJ_DATA_PTR(dst_dp) = 0x%lx",(u_long)OBJ_DATA_PTR(dst_dp));
 //advise(ERROR_STRING);
 	while( r -- ){
 		*lp++ = 0;	/* init leftmost column */
 		c = OBJ_COLS(src_dp);
 		while(c--){
 			*lp = *cp++ + *(lp-1) + *(lp-d) - *(lp-e);
-//sprintf(ERROR_STRING,"sat[%ld][%ld] = %d = %d + %d +%d - %d      lp = 0x%lx, 0x%lx 0x%lx",
+//snprintf(ERROR_STRING,LLEN,"sat[%ld][%ld] = %d = %d + %d +%d - %d      lp = 0x%lx, 0x%lx 0x%lx",
 //OBJ_ROWS(src_dp)-r,OBJ_COLS(src_dp)-c,
 //*lp,*(cp-1),*(lp-1),*(lp-d),*(lp-e), (u_long)lp,(u_long)(lp-d),(u_long)(lp-e));
 //advise(ERROR_STRING);

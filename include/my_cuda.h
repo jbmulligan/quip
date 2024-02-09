@@ -50,9 +50,10 @@ extern "C" {
 
 #else // ! HAVE_CUDA
 
-#define NO_CUDA_MSG(whence)					\
-							\
-	sprintf(ERROR_STRING,"%s:  Sorry, no CUDA support in this build.",#whence); \
+#define NO_CUDA_MSG(whence)						\
+									\
+	snprintf(ERROR_STRING,LLEN,					\
+		"%s:  Sorry, no CUDA support in this build.",#whence);	\
 	advise(ERROR_STRING);
 
 

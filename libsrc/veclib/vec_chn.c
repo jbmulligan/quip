@@ -66,7 +66,7 @@ void _exec_chain(QSP_ARG_DECL  Chain *cp)
 
 void _chain_info(QSP_ARG_DECL  Chain *cp)
 {
-	sprintf(msg_str,"Chain %s:  %d blocks",CHAIN_NAME(cp),eltcount(CHAIN_LIST(cp) ));
+	snprintf(msg_str,LLEN,"Chain %s:  %d blocks",CHAIN_NAME(cp),eltcount(CHAIN_LIST(cp) ));
 	prt_msg(msg_str);
 }
 
@@ -128,7 +128,7 @@ void _end_chain(SINGLE_QSP_ARG_DECL)
 int _chain_breaks(QSP_ARG_DECL  const char *routine_name)
 {
 	if( is_chaining ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 	"Routine \"%s\" is not chainable!?",routine_name);
 		warn(DEFAULT_ERROR_STRING);
 		return(1);
@@ -146,7 +146,7 @@ int _chain_breaks(QSP_ARG_DECL  const char *routine_name)
 							\
 	if( dp != NULL ){				\
 		if( ! IS_STATIC(dp) ){			\
-			sprintf(DEFAULT_ERROR_STRING,	\
+			snprintf(DEFAULT_ERROR_STRING,LLEN,	\
 "Object %s must be static for use in chain %s.",\
 		OBJ_NAME(dp),CHAIN_NAME(curr_cp) );	\
 			warn(DEFAULT_ERROR_STRING);	\

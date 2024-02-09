@@ -128,7 +128,7 @@ static void read_stamp(SINGLE_QSP_ARG_DECL)
 
 	scp->sc_buf = &ts_char_buf[active_buf][ts_char_offset[active_buf]];
 	if( read(input_fd,scp->sc_buf,n) != n ){
-		sprintf(ERROR_STRING,"Error reading %d chars",n);
+		snprintf(ERROR_STRING,LLEN,"Error reading %d chars",n);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -193,11 +193,11 @@ static void show_one(QSP_ARG_DECL  Stamped_Char *scp, int max_per_line)
 		s[ strlen(s)-1 ] = 0;
 		prt_msg_frag(s);
 
-		sprintf(msg_str,"\t%ld\t%ld",sec,msec);
+		snprintf(msg_str,LLEN,"\t%ld\t%ld",sec,msec);
 		prt_msg_frag(msg_str);
 
 		n_to_print = scp->sc_n - i > max_per_line ? max_per_line : scp->sc_n - i;
-		sprintf(msg_str,"\t%s",hex_string(scp,i,n_to_print));
+		snprintf(msg_str,LLEN,"\t%s",hex_string(scp,i,n_to_print));
 		prt_msg(msg_str);
 		i += n_to_print;
 	} while( i < scp->sc_n );
@@ -302,7 +302,7 @@ static void *disk_writer(void *argp)
 		}
 		count = ts_char_offset[writing_buf];
 if( verbose ){
-sprintf(ERROR_STRING,"writing buffer %d, %d chars",writing_buf,count);
+snprintf(ERROR_STRING,LLEN,"writing buffer %d, %d chars",writing_buf,count);
 advise(ERROR_STRING);
 }
 		if( write(output_fd,&ts_char_buf[writing_buf],count) != count ){
@@ -335,7 +335,7 @@ int ntot=0;
 		if( (actual=read(fd,(char *)&stmp_tbl[0],count)) < 0 ){
 			tell_sys_error("read");
 			warn("error reading timestamp data");
-sprintf(ERROR_STRING,"Read error after reading %d total characters",ntot);
+snprintf(ERROR_STRING,LLEN,"Read error after reading %d total characters",ntot);
 advise(ERROR_STRING);
 			return;
 		} else if( actual == 0 ){
@@ -345,10 +345,10 @@ advise(ERROR_STRING);
 			 */
 			return;
 		} else if( actual != count ){
-			sprintf(ERROR_STRING,"Requested %d timestamp chars, %zd actually read",
+			snprintf(ERROR_STRING,LLEN,"Requested %d timestamp chars, %zd actually read",
 				count,actual);
 			warn(ERROR_STRING);
-sprintf(ERROR_STRING,"Read error after reading %d total characters",ntot);
+snprintf(ERROR_STRING,LLEN,"Read error after reading %d total characters",ntot);
 advise(ERROR_STRING);
 			return;
 		}
@@ -358,14 +358,14 @@ ntot+=count;
 		if( (actual=read(fd,(char *)&char_offset,count)) < 0 ){
 			tell_sys_error("read");
 			warn("error reading char count");
-sprintf(ERROR_STRING,"Read error after reading %d total characters",ntot);
+snprintf(ERROR_STRING,LLEN,"Read error after reading %d total characters",ntot);
 advise(ERROR_STRING);
 			return;
 		} else if( actual != count ){
-			sprintf(ERROR_STRING,"Requested %d charcount chars, %zd actually read",
+			snprintf(ERROR_STRING,LLEN,"Requested %d charcount chars, %zd actually read",
 				count,actual);
 			warn(ERROR_STRING);
-sprintf(ERROR_STRING,"Read error after reading %d total characters",ntot);
+snprintf(ERROR_STRING,LLEN,"Read error after reading %d total characters",ntot);
 advise(ERROR_STRING);
 			return;
 		}
@@ -376,14 +376,14 @@ ntot+=count;
 		if( (actual=read(fd,&char_buf,count)) < 0 ){
 			tell_sys_error("read");
 			warn("error reading char buffer");
-sprintf(ERROR_STRING,"Read error after reading %d total characters",ntot);
+snprintf(ERROR_STRING,LLEN,"Read error after reading %d total characters",ntot);
 advise(ERROR_STRING);
 			return;
 		} else if( actual != count ){
-			sprintf(ERROR_STRING,"Requested %d data chars, %zd actually read",
+			snprintf(ERROR_STRING,LLEN,"Requested %d data chars, %zd actually read",
 				count,actual);
 			warn(ERROR_STRING);
-sprintf(ERROR_STRING,"Read error after reading %d total characters",ntot);
+snprintf(ERROR_STRING,LLEN,"Read error after reading %d total characters",ntot);
 advise(ERROR_STRING);
 			return;
 		}
@@ -397,7 +397,7 @@ ntot+=count;
 			stmp_tbl[i].sc_buf = &char_buf[j];
 
 			///* print # chars */
-			//sprintf(msg_str,"\t%d\t",stmp_tbl[i].sc_n);
+			//snprintf(msg_str,LLEN,"\t%d\t",stmp_tbl[i].sc_n);
 			//prt_msg_frag(msg_str);
 
 			//s=hex_string(&stmp_tbl[i],n);
@@ -418,14 +418,14 @@ static COMMAND_FUNC( rd_stamps )
 	s=NAMEOF("input filename");
 	input_fd = open( s , O_RDONLY );
 	if( input_fd < 0 ){
-		sprintf(ERROR_STRING,"open(%s)",s);
+		snprintf(ERROR_STRING,LLEN,"open(%s)",s);
 		tell_sys_error(ERROR_STRING);
 	}
 
 	s=NAMEOF("output filename");
 	output_fd = open( s , O_WRONLY | O_CREAT | O_TRUNC, 0644 );
 	if( output_fd < 0 ){
-		sprintf(ERROR_STRING,"open(%s)",s);
+		snprintf(ERROR_STRING,LLEN,"open(%s)",s);
 		tell_sys_error(ERROR_STRING);
 	}
 
@@ -467,7 +467,7 @@ static COMMAND_FUNC( do_status )
 {
 	if( ! running ) advise("No async char acquisition in progress");
 	else {
-		sprintf(ERROR_STRING,"Async char acquisition in progress, %ld chars logged",n_logged);
+		snprintf(ERROR_STRING,LLEN,"Async char acquisition in progress, %ld chars logged",n_logged);
 		advise(ERROR_STRING);
 	}
 }
@@ -483,7 +483,7 @@ static COMMAND_FUNC( do_decode )
 
 	fd = open( s , O_RDONLY );
 	if( fd < 0 ){
-		sprintf(ERROR_STRING,"open(%s)",s);
+		snprintf(ERROR_STRING,LLEN,"open(%s)",s);
 		tell_sys_error(ERROR_STRING);
 		return;
 	}

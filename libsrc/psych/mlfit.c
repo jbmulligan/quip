@@ -58,7 +58,7 @@ static Fit_Data *the_fdp=NULL;
 static void _set_float_var(QSP_ARG_DECL  const char *name, double v)
 {
 	char val_str[LLEN];
-	sprintf(val_str,"%g",v);
+	snprintf(val_str,LLEN,"%g",v);
 	assign_reserved_var(name,val_str);
 }
 

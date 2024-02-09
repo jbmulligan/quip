@@ -94,7 +94,7 @@ enum data_area_type {
 
 #define INSIST_OBJ_PREC(dp,code,whence)			\
 	if( OBJ_PREC(dp) != code ){			\
-		sprintf(ERROR_STRING,			\
+		snprintf(ERROR_STRING,LLEN,		\
 "%s:  object %s (%s) should have %s precision.",	\
 			#whence,OBJ_NAME(dp),		\
 			PREC_NAME(OBJ_PREC_PTR(dp)),	\
@@ -106,7 +106,7 @@ enum data_area_type {
 #ifdef HAVE_ANY_GPU
 
 #define RAM_OBJ_ERROR_MSG(dp,whence)			\
-		sprintf(ERROR_STRING,			\
+		snprintf(ERROR_STRING,LLEN,		\
 "%s:  object %s must be a host ram object or cuda host object.", \
 			#whence,OBJ_NAME(dp));		\
 		WARN(ERROR_STRING);
@@ -411,8 +411,8 @@ struct data_obj {
 
 #define CHECK_CONTIG_DATA(whence,which_obj,dp)				\
 									\
-	if( ! HAS_CONTIGUOUS_DATA(dp) ){			\
-		sprintf(ERROR_STRING,					\
+	if( ! HAS_CONTIGUOUS_DATA(dp) ){				\
+		snprintf(ERROR_STRING,LLEN,				\
 	"%s:  %s object %s must have contiguous data.",			\
 			whence,which_obj,OBJ_NAME(dp));			\
 		WARN(ERROR_STRING);					\
@@ -423,7 +423,7 @@ struct data_obj {
 #define CHECK_NOT_RAM(whence,which_obj,dp)				\
 									\
 	if( OBJ_IS_RAM(dp) ){						\
-		sprintf(ERROR_STRING,					\
+		snprintf(ERROR_STRING,LLEN,				\
 	"%s:  %s object %s lives in %s data area, expected a GPU.",	\
 			whence,which_obj,OBJ_NAME(dpto),		\
 			AREA_NAME(OBJ_AREA(dpto)));			\
@@ -434,7 +434,7 @@ struct data_obj {
 #define CHECK_RAM(whence,which_obj,dp)					\
 									\
 	if( ! OBJ_IS_RAM(dp) ){						\
-		sprintf(ERROR_STRING,					\
+		snprintf(ERROR_STRING,LLEN,				\
 	"%s:  %s object %s lives in %s data area, expected ram.",	\
 			whence,which_obj,OBJ_NAME(dpto),		\
 			AREA_NAME(OBJ_AREA(dpto)));			\

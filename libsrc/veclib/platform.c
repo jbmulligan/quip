@@ -127,10 +127,10 @@ const char * _available_pfdev_name(QSP_ARG_DECL  const char *name,char *scratch_
 
 		// This name is in use
 		n++;
-		sprintf(scratch_string,"%s_%d",name,n);
+		snprintf(scratch_string,LLEN,"%s_%d",name,n);
 		s=scratch_string;
 	}
-	sprintf(ERROR_STRING,"Number of %s %s devices exceed configured maximum %d!?",
+	snprintf(ERROR_STRING,LLEN,"Number of %s %s devices exceed configured maximum %d!?",
 		name,PLATFORM_NAME(cpp),max_devices);
 	WARN(ERROR_STRING);
 	error1(ERROR_STRING);

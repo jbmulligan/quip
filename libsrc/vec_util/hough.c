@@ -35,27 +35,27 @@ void _hough( QSP_ARG_DECL  Data_Obj *xform_dp, Data_Obj *src_dp, float threshold
 	INSIST_RAM_OBJ(src_dp,hough);
 
 	if( OBJ_PREC(xform_dp) != PREC_SP ){
-		sprintf(ERROR_STRING,"hough:  transform %s precision (%s) should be %s",
+		snprintf(ERROR_STRING,LLEN,"hough:  transform %s precision (%s) should be %s",
 			OBJ_NAME(xform_dp),OBJ_PREC_NAME(xform_dp),
 			NAME_FOR_PREC_CODE(PREC_SP));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_PREC(src_dp) != PREC_SP ){
-		sprintf(ERROR_STRING,"hough:  source %s precision (%s) should be %s",
+		snprintf(ERROR_STRING,LLEN,"hough:  source %s precision (%s) should be %s",
 			OBJ_NAME(src_dp),OBJ_PREC_NAME(src_dp),
 			NAME_FOR_PREC_CODE(PREC_SP));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( !IS_CONTIGUOUS(xform_dp) ){
-		sprintf(ERROR_STRING,"hough:  transform image %s should be contiguous",
+		snprintf(ERROR_STRING,LLEN,"hough:  transform image %s should be contiguous",
 			OBJ_NAME(xform_dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( !IS_CONTIGUOUS(src_dp) ){
-		sprintf(ERROR_STRING,"hough:  source image %s should be contiguous",
+		snprintf(ERROR_STRING,LLEN,"hough:  source image %s should be contiguous",
 			OBJ_NAME(src_dp));
 		WARN(ERROR_STRING);
 		return;
@@ -99,7 +99,7 @@ void _hough( QSP_ARG_DECL  Data_Obj *xform_dp, Data_Obj *src_dp, float threshold
 	for(y=0;y<OBJ_ROWS(src_dp);y++){
 		for(x=0;x<OBJ_COLS(src_dp);x++){
 			if( *src_ptr >= threshold ){
-//sprintf(ERROR_STRING,"adding votes for pixel at %d %d",x,y);
+//snprintf(ERROR_STRING,LLEN,"adding votes for pixel at %d %d",x,y);
 //advise(ERROR_STRING);
 				/* add votes for x,y */
 				//ang=0;

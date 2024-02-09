@@ -97,6 +97,7 @@ void clear_input_buf()
 		//usleep(1000);
 }
 
+#ifdef NOT_USED
 static void make_pxl_mode_pkt( char *pkt, int pxl_mode, int x, int y, int n, int *pxl_locations_p)
 {
 	u_short i;
@@ -104,20 +105,20 @@ static void make_pxl_mode_pkt( char *pkt, int pxl_mode, int x, int y, int n, int
 	if( ascii_mode ) {
 		switch(pxl_mode) {
 			case 0:
-				sprintf(pkt, "P0\n");
+				snprintf(pkt,PKT_SIZE, "P0\n");
 				break;
 			case 1:
-				sprintf(pkt, "P1\n%d\n", n);
+				snprintf(pkt,PKT_SIZE, "P1\n%d\n", n);
 				break;
 			case 3:
-				sprintf(pkt, "P3\n%d\n%d\n%d\n", x, y, n);
+				snprintf(pkt,PKT_SIZE, "P3\n%d\n%d\n%d\n", x, y, n);
 				break;
 			case 4:
-				sprintf(pkt, "P4\n%d\n", n);
+				snprintf(pkt,PKT_SIZE, "P4\n%d\n", n);
 				
 				for(i=0; i<n; i++) {
 					pkt += strlen(pkt);
-					sprintf(pkt, "%d\n", pxl_locations_p[i]);
+					snprintf(pkt,PKT_SIZE, "%d\n", pxl_locations_p[i]);
 				}
 				break;
 		}
@@ -127,25 +128,26 @@ static void make_pxl_mode_pkt( char *pkt, int pxl_mode, int x, int y, int n, int
 
 				/* P = 0x50 */
 			case 0:
-				sprintf(pkt, "500000");
+				snprintf(pkt,PKT_SIZE, "500000");
 				break;
 			case 1:
-				sprintf(pkt, "500001%.4x", n);
+				snprintf(pkt,PKT_SIZE, "500001%.4x", n);
 				break;
 			case 3:
-				sprintf(pkt, "500003%.4x%.4x%.4x", x, y, n);
+				snprintf(pkt,PKT_SIZE, "500003%.4x%.4x%.4x", x, y, n);
 				break;
 			case 4:
-				sprintf(pkt, "500004%.4x", n);
+				snprintf(pkt,PKT_SIZE, "500004%.4x", n);
 
 				for(i=0; i<n; i++) {
 					pkt += strlen(pkt);
-					sprintf(pkt, "%.4x", pxl_locations_p[i]);
+					snprintf(pkt,PKT_SIZE, "%.4x", pxl_locations_p[i]);
 				}
 				break;
 		}
 	}
 }
+#endif // NOT_USED
 
 int recv_a_byte()
 {
@@ -168,7 +170,7 @@ int recv_a_byte()
 	}
 
 	if( n_waits >= MAX_WAITS && n_received == 0 ) {
-		sprintf(error_string,"No value received after waiting %d n_waits?", n_waits);
+		snprintf(error_string,LLEN,"No value received after waiting %d n_waits?", n_waits);
 		warn(error_string);
 		return -1;
 	}
@@ -176,7 +178,7 @@ int recv_a_byte()
 	value_recvd = (int)recv_buf[0];
 
 	#ifdef DEBUG
-	sprintf(error_string,"byte recvd: 0x%.2x", value_recvd);
+	snprintf(error_string,LLEN,"byte recvd: 0x%.2x", value_recvd);
 	advise(error_string);
 	#endif /* DEBUG */	
 
@@ -220,7 +222,7 @@ int recv_a_value()
 			}
 			
 			if( n_waits >= MAX_WAITS && n_received == 0 ) {
-				sprintf(error_string,"No value received after waiting %d n_waits?", n_waits);
+				snprintf(error_string,LLEN,"No value received after waiting %d n_waits?", n_waits);
 				warn(error_string);
 				return -1;		
 			}
@@ -231,7 +233,7 @@ int recv_a_value()
 			value[n_words_received] = recv_buf[0];
 		}
 
-		sprintf(value, "%.2x%.2x", value[0], value[1]);
+		snprintf(value,MAX_SIZEOF_VALUE, "%.2x%.2x", value[0], value[1]);
 	
 		n_value = strtol(value, NULL, 16);
 		 
@@ -249,14 +251,14 @@ int recv_a_value()
 			}
 		
 			if( n_waits >= MAX_WAITS && n_received == 0 ) {
-				sprintf(error_string,"No value received after waiting %d n_waits?", n_waits);
+				snprintf(error_string,LLEN,"No value received after waiting %d n_waits?", n_waits);
 				warn(error_string);
-				sprintf(error_string,"%d characters already received",i);
+				snprintf(error_string,LLEN,"%d characters already received",i);
 				advise(error_string);
 				
 				if( i > 0 ){
 					value[i]=0;	/* terminate string */
-					sprintf(error_string,"string \"%s\" received so far",value);
+					snprintf(error_string,LLEN,"string \"%s\" received so far",value);
 					advise(error_string);
 				}
 				return -1;		
@@ -268,7 +270,7 @@ int recv_a_value()
 			#ifdef CAUTIOUS
 			if( i > MAX_SIZEOF_VALUE-1 ) {
 				value[i]=0;	/* terminate string */
-				sprintf(error_string, "Impossiblely large value (%s) is being received, Reception ABORTED.", value);
+				snprintf(error_string,LLEN, "Impossiblely large value (%s) is being received, Reception ABORTED.", value);
 				warn(error_string);
 			}
 			#endif /* CAUTIOUS */
@@ -282,7 +284,7 @@ int recv_a_value()
 	} /* else */
 
 	#ifdef DEBUG
-	sprintf(error_string, "n_value: %d", n_value ); 
+	snprintf(error_string,LLEN, "n_value: %d", n_value ); 
 	advise(error_string);
 	#endif /* DEBUG */
 	
@@ -438,7 +440,7 @@ static int get_echo(char *pkt)
 				return -1;
 			
 			if( *(echo_bufp+i) != *(pkt+i) ) { 
-				sprintf(error_string, "Unexpected 0x%x instead of 0x%x received .... please restart the usb2000", 
+				snprintf(error_string,LLEN, "Unexpected 0x%x instead of 0x%x received .... please restart the usb2000", 
 					*(echo_bufp+i), *(pkt+i) );
 				warn(error_string);
 				
@@ -487,12 +489,12 @@ void init_usb2000()
 				if( dev->descriptor.idVendor == OCEAN_OPTICS_VENDOR_ID &&
 					dev->descriptor.idProduct == OCEAN_OPTICS_USB2000_PID ){
 
-					sprintf(error_string,"Ocean Optics USB2000 found at %s/%s",
+					snprintf(error_string,LLEN,"Ocean Optics USB2000 found at %s/%s",
 						usbbus->dirname,usbdev->filename);
 					advise(error_string);
 					spectrometer_dev_h = usbdev_h;
 					spectrometer_dev = dev;
-//sprintf(error_string,"num altsettings = %d, first interface number = %d",
+//snprintf(error_string,LLEN,"num altsettings = %d, first interface number = %d",
 //usbdev->config->interface->num_altsetting,
 //usbdev->config->interface->altsetting->bInterfaceNumber);
 //advise(error_string);
@@ -511,7 +513,7 @@ void init_usb2000()
 				//usb_release_interface(usbdev_h, hidif->interface);
 				usb_close(usbdev_h);
 			} else {
-				sprintf(error_string,"Failed to open USB device %s/%s",
+				snprintf(error_string,LLEN,"Failed to open USB device %s/%s",
 					usbbus->dirname,usbdev->filename);
 	  			warn(error_string);
 			}

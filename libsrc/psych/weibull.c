@@ -190,19 +190,19 @@ void _w_analyse( QSP_ARG_DECL  Fit_Data *fdp )		/** do a regression on the ith t
 
 void _weibull_out(QSP_ARG_DECL  Trial_Class * tcp)			/** verbose analysis report */
 {
-        sprintf(msg_str,"\nTrial_Class %s\n",CLASS_NAME(tcp));
+        snprintf(msg_str,LLEN,"\nTrial_Class %s\n",CLASS_NAME(tcp));
 	prt_msg(msg_str);
 
-	sprintf(msg_str,"alpha (threshold):\t\t%f",alpha);
+	snprintf(msg_str,LLEN,"alpha (threshold):\t\t%f",alpha);
 	prt_msg(msg_str);
-	sprintf(msg_str,"beta (slope):\t\t%f",beta);
+	snprintf(msg_str,LLEN,"beta (slope):\t\t%f",beta);
 	prt_msg(msg_str);
 	/* BUG print out chi-square like statistic */
 }
 
 void _w_tersout(QSP_ARG_DECL  Trial_Class * tcp)
 {
-	sprintf(msg_str,"%s\t%f\t%f",CLASS_NAME(tcp),alpha,beta);
+	snprintf(msg_str,LLEN,"%s\t%f\t%f",CLASS_NAME(tcp),alpha,beta);
 	prt_msg(msg_str);
 	/* BUG should print out chi sq stat */
 }
@@ -217,7 +217,7 @@ void _w_set_error_rate(QSP_ARG_DECL  double er)
 		return;
 	} else if( er < MIN_DELTA ){
 		if( verbose ){
-			sprintf(DEFAULT_ERROR_STRING,
+			snprintf(DEFAULT_ERROR_STRING,LLEN,
 	"Setting error rate to minimum permissable value:  %g", MIN_DELTA);
 			NADVISE(DEFAULT_ERROR_STRING);
 		}

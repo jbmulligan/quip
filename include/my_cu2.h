@@ -130,9 +130,10 @@ extern bitmap_word *gpu_bit_val_array;	/* BUG should have one per device */
 
 #undef BUILD_FOR_OPENCL
 
-#define NO_CUDA_MSG(whence)				\
-							\
-	sprintf(ERROR_STRING,"%s:  Sorry, no CUDA support in this build.",#whence); \
+#define NO_CUDA_MSG(whence)						\
+									\
+	snprintf(ERROR_STRING,LLEN,					\
+		"%s:  Sorry, no CUDA support in this build.",#whence);	\
 	advise(ERROR_STRING);
 
 #define index_type	int32_t	// for vmaxi etc

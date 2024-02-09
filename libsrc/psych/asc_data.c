@@ -123,10 +123,10 @@ fprintf(stderr,"print_class_summary calling init_class_summary\n");
 
 	/*
 	if( verbose ){
-		sprintf(msg_str,"class = %s, %d points",
+		snprintf(msg_str,LLEN,"class = %s, %d points",
 			CLASS_NAME(tc_p),SUMM_DTBL_N(CLASS_SUMM_DTBL(tc_p)));
 		prt_msg(msg_str);
-		sprintf(msg_str,"val\txval\t\tntot\tncorr\t%% corr\n");
+		snprintf(msg_str,LLEN,"val\txval\t\tntot\tncorr\t%% corr\n");
 		prt_msg(msg_str);
 	}
 	*/
@@ -308,7 +308,7 @@ void _write_sequential_data(QSP_ARG_DECL  Sequential_Data_Tbl *qdt_p, FILE *fp )
 #define emit_datum(qd_p) _emit_datum(QSP_ARG  qd_p)
 static void _emit_datum(QSP_ARG_DECL  Sequence_Datum *qd_p)
 {
-	sprintf(MSG_STR,"%d\t%d",SEQ_DATUM_TRIAL_IDX(qd_p),SEQ_DATUM_XVAL_IDX(qd_p));
+	snprintf(MSG_STR,LLEN,"%d\t%d",SEQ_DATUM_TRIAL_IDX(qd_p),SEQ_DATUM_XVAL_IDX(qd_p));
 	prt_msg(MSG_STR);
 }
 
@@ -384,7 +384,7 @@ static int _read_class_name( QSP_ARG_DECL  Experiment *exp_p, FILE *fp )
 	tc_p = create_named_class(buf);
 	// Under normal circumstances, the index should be correct already
 	if( CLASS_INDEX(tc_p) != index ){
-		sprintf(ERROR_STRING,"Automatic index (%d) for class %s does not match specified index %d!?",
+		snprintf(ERROR_STRING,LLEN,"Automatic index (%d) for class %s does not match specified index %d!?",
 			CLASS_INDEX(tc_p),CLASS_NAME(tc_p),index);
 		warn(ERROR_STRING);
 	}
@@ -424,7 +424,7 @@ static int _read_class_preamble( QSP_ARG_DECL  Experiment *exp_p, FILE *fp )
 	CHECK_FOR_PARSE(1,class summary)
 
 	if( n_classes <= 0 ){
-		sprintf(ERROR_STRING,"Number of classes (%d) must be positive!?",n_classes);
+		snprintf(ERROR_STRING,LLEN,"Number of classes (%d) must be positive!?",n_classes);
 		warn(ERROR_STRING);
 		return -1;
 	}
@@ -445,12 +445,12 @@ static int _read_xval_summary(QSP_ARG_DECL  Experiment *exp_p, FILE *fp )
 	CHECK_FOR_PARSE(1,x-value summary)
 
 	if( n_xv <= 0 ){
-		sprintf(ERROR_STRING,"Number of x-values (%d) must be positive!?",n_xv);
+		snprintf(ERROR_STRING,LLEN,"Number of x-values (%d) must be positive!?",n_xv);
 		warn(ERROR_STRING);
 		return -1;
 	}
 	if( n_xv > MAX_X_VALUES ){
-		sprintf(ERROR_STRING,"Number of x-values (%d) must be less than %d!?",n_xv,MAX_X_VALUES);
+		snprintf(ERROR_STRING,LLEN,"Number of x-values (%d) must be less than %d!?",n_xv,MAX_X_VALUES);
 		warn(ERROR_STRING);
 		return -1;
 	}
@@ -610,7 +610,7 @@ int _read_exp_data(QSP_ARG_DECL  FILE *fp)
 void _save_data( QSP_ARG_DECL  Experiment *exp_p, FILE *fp )
 {
 	if( EXPT_SEQ_DTBL(exp_p) == NULL ){
-		sprintf(ERROR_STRING,"save_data:  experiment has no sequential data!?");
+		snprintf(ERROR_STRING,LLEN,"save_data:  experiment has no sequential data!?");
 		warn(ERROR_STRING);
 		return;
 	}

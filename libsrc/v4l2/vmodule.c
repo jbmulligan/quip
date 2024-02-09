@@ -86,7 +86,7 @@ void v4l2_play_movie(QSP_ARG_DECL  Movie *mvip)
 
 void v4l2_reverse_movie(QSP_ARG_DECL  Movie *mvip)
 {
-	sprintf(ERROR_STRING,
+	snprintf(ERROR_STRING,LLEN,
 		"v4l2_reverse_movie:  Sorry, meteor can't reverse movie %s",
 		MOVIE_NAME(mvip));
 
@@ -98,7 +98,7 @@ void v4l2_shuttle_movie(QSP_ARG_DECL  Movie* mvip,uint32_t frame)
 #ifdef HAVE_RAWVOL
 	Image_File *ifp;
 
-sprintf(ERROR_STRING,"v4l2_shuttle_movie %s %d",MOVIE_NAME(mvip),frame);
+snprintf(ERROR_STRING,LLEN,"v4l2_shuttle_movie %s %d",MOVIE_NAME(mvip),frame);
 advise(ERROR_STRING);
 	ifp= (Image_File *) mvip->mvi_data;
 
@@ -172,7 +172,7 @@ int v4l2_setup_movie(QSP_ARG_DECL  Movie *mvip,uint32_t n_fields)
 
 	/* BUG shouldn't insist upon even field count in field mode */
 	if( n_fields % 2 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"v4l2_setup_movie:  requested number of fields (%d) is odd, rounding up",
 			n_fields);
 		warn(ERROR_STRING);
@@ -199,7 +199,7 @@ advise("v4l2_setup_movie");
 
 		new_ftp = FILETYPE_FOR_CODE(IFT_RV);
 		if( verbose ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"v4l2_setup_movie:  default filetype is %s, resetting to type %s",
 				FT_NAME(ftp),
 				FT_NAME(new_ftp) );
@@ -235,7 +235,7 @@ advise("v4l2_setup_movie");
 	n_allocframes = rv_frames_to_allocate( n_frames );
 
 	if( rv_realloc(MOVIE_NAME(mvip),n_allocframes*blocks_per_frame) < 0 ){
-		sprintf(ERROR_STRING,"v4l2_setup_movie:  failed to allocate rawvol storage for %s",
+		snprintf(ERROR_STRING,LLEN,"v4l2_setup_movie:  failed to allocate rawvol storage for %s",
 			MOVIE_NAME(mvip));
 		warn(ERROR_STRING);
 		return -1;
@@ -285,7 +285,7 @@ advise("v4l2_end_assemble");
 		 * We know it is an rv file, so this is really pretty much
 		 * of a no-op???
 		 */
-sprintf(ERROR_STRING,"v4l2_end_assemble calling close_image_file, movie is %s, if is %s",
+snprintf(ERROR_STRING,LLEN,"v4l2_end_assemble calling close_image_file, movie is %s, if is %s",
 MOVIE_NAME(mvip),((Image_File *)mvip->mvi_data)->if_name);
 advise(ERROR_STRING);
 		close_image_file((Image_File *) mvip->mvi_data);

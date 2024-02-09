@@ -55,7 +55,7 @@ debug_flag_t sound_debug=0;
 int _object_is_sound(QSP_ARG_DECL  Data_Obj *dp)
 {
 	if( OBJ_MACH_PREC(dp) != PREC_IN ){
-		sprintf(ERROR_STRING,"Object %s has %s precision, should be %s for sound",
+		snprintf(ERROR_STRING,LLEN,"Object %s has %s precision, should be %s for sound",
 			OBJ_NAME(dp),PREC_NAME(OBJ_MACH_PREC_PTR(dp)),NAME_FOR_PREC_CODE(PREC_IN));
 		warn(ERROR_STRING);
 		return(0);
@@ -121,7 +121,7 @@ static void *sound_recorder(void *argp)
 #endif
 
 	//dp=(Data_Obj *)argp;
-	sprintf(ERROR_STRING,"sound_recorder:  sound is %s",OBJ_NAME(dp));
+	snprintf(ERROR_STRING,LLEN,"sound_recorder:  sound is %s",OBJ_NAME(dp));
 	advise(ERROR_STRING);
 	recording_in_progress=1;
 	record_sound(dp);
@@ -135,7 +135,7 @@ static COMMAND_FUNC( do_recsound )
 	Recorder_Args ra;
 
 	/*
-	sprintf(ERROR_STRING,"audio_state=%d",audio_state);
+	snprintf(ERROR_STRING,LLEN,"audio_state=%d",audio_state);
 	advise(ERROR_STRING);
 	*/
 
@@ -229,7 +229,7 @@ static COMMAND_FUNC( do_set_samp_freq )
 
 	rate = (int)HOW_MANY("sample frequency");
 	if( rate <= 0 ){
-		sprintf(ERROR_STRING,"sample frequency must be greater than or equal to %d",MIN_SAMP_FREQ);
+		snprintf(ERROR_STRING,LLEN,"sample frequency must be greater than or equal to %d",MIN_SAMP_FREQ);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -247,17 +247,17 @@ static COMMAND_FUNC( do_sound_info )
 	if( dp == NULL ) return;
 
 	if( OBJ_MACH_PREC(dp) != PREC_IN ){
-		sprintf(ERROR_STRING,"sound_info:  object %s has %s precision, expect %s for sounds",
+		snprintf(ERROR_STRING,LLEN,"sound_info:  object %s has %s precision, expect %s for sounds",
 			OBJ_NAME(dp),PREC_NAME(OBJ_MACH_PREC_PTR(dp)),NAME_FOR_PREC_CODE(PREC_IN) );
 		warn(ERROR_STRING);
 		return;
 	}
 	if( OBJ_ROWS(dp) > 1 || OBJ_FRAMES(dp) > 1 || OBJ_SEQS(dp) > 1 ){
-		sprintf(ERROR_STRING,"sound_info:  object %s is not a row vector!?",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"sound_info:  object %s is not a row vector!?",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 	}
 	if( OBJ_N_TYPE_ELTS(dp) < N_TIMESTAMP_WORDS ){
-		sprintf(ERROR_STRING,"sound_info:  object %s has too few elements to contain a timestamp",
+		snprintf(ERROR_STRING,LLEN,"sound_info:  object %s has too few elements to contain a timestamp",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
@@ -268,7 +268,7 @@ static COMMAND_FUNC( do_sound_info )
 
 	s=ctime(&sec);
 	s[strlen(s)-1]=0;	/* get rid of final newline */
-	sprintf(msg_str,"%s:  %s, %ld microseconds",OBJ_NAME(dp),s,usec);
+	snprintf(msg_str,LLEN,"%s:  %s, %ld microseconds",OBJ_NAME(dp),s,usec);
 	prt_msg(msg_str);
 }
 
@@ -300,14 +300,14 @@ static COMMAND_FUNC( do_recstream )
 	timestamp_fd=open(s,O_WRONLY|O_CREAT|O_TRUNC,0644);
 
 	if( sound_fd < 0 ){
-		sprintf(ERROR_STRING,"open(%s)",s);
+		snprintf(ERROR_STRING,LLEN,"open(%s)",s);
 		tell_sys_error(ERROR_STRING);
 		warn("error opening audio stream file");
 		return;
 	}
 
 	if( timestamp_fd < 0 ){
-		sprintf(ERROR_STRING,"open(%s)",s);
+		snprintf(ERROR_STRING,LLEN,"open(%s)",s);
 		tell_sys_error(ERROR_STRING);
 		warn("error opening audio timestamp stream file");
 		return;
@@ -324,7 +324,7 @@ static COMMAND_FUNC( do_pb_stream )
 	s=NAMEOF("audio stream file");
 	fd=open(s,O_RDONLY);
 	if( fd < 0 ){
-		sprintf(ERROR_STRING,"open(%s)",s);
+		snprintf(ERROR_STRING,LLEN,"open(%s)",s);
 		tell_sys_error(ERROR_STRING);
 		warn("error opening audio stream file");
 		return;
@@ -348,7 +348,7 @@ static COMMAND_FUNC( do_show_stamps )
 		s=ctime(&tv.tv_sec);
 		if( s[strlen(s)-1] == '\n' )
 			s[strlen(s)-1] = 0;
-		sprintf(msg_str,"%s\t\t%ld",s,(long)tv.tv_usec/1000);
+		snprintf(msg_str,LLEN,"%s\t\t%ld",s,(long)tv.tv_usec/1000);
 		prt_msg(msg_str);
 	}
 	fclose(fp);
@@ -382,7 +382,7 @@ static COMMAND_FUNC(do_seek_play)
 		warn("seek_play:  index must be non-negative!?");
 		return;
     } else if( idx > MAX_INDEX_VAL ){
-        sprintf(ERROR_STRING,"seek_play:  index must be <= %d!?",MAX_INDEX_VAL);
+        snprintf(ERROR_STRING,LLEN,"seek_play:  index must be <= %d!?",MAX_INDEX_VAL);
         warn(ERROR_STRING);
         return;
     }

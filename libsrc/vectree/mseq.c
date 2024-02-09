@@ -48,7 +48,7 @@ static int generate_mseq( int reglen, int tap_n, u_long *data, u_long start_val 
 	reg=start_val;		/* start value */
 	high_bit = 1 << (reglen-1);
 	tap_bit = 1 << tap_n;
-sprintf(DEFAULT_ERROR_STRING,"generate_mseq:  high_bit = %ld (0x%lx), tap_bit = %ld (0x%lx)",
+snprintf(DEFAULT_ERROR_STRING,LLEN,"generate_mseq:  high_bit = %ld (0x%lx), tap_bit = %ld (0x%lx)",
 		high_bit,high_bit,tap_bit,tap_bit);
 NADVISE(DEFAULT_ERROR_STRING);
 
@@ -83,7 +83,7 @@ static COMMAND_FUNC( do_packed_mseq )
 	/* BUG check object here */
 
 	if( (dimension_t)(((1<<n)+n-1)/n) > OBJ_COLS(dp) ){
-		sprintf(ERROR_STRING,"target mseq vector %s (%d) too small for this register length %d",OBJ_NAME(dp),
+		snprintf(ERROR_STRING,LLEN,"target mseq vector %s (%d) too small for this register length %d",OBJ_NAME(dp),
 				OBJ_COLS(dp),n);
 		warn(ERROR_STRING);
 		return;
@@ -91,7 +91,7 @@ static COMMAND_FUNC( do_packed_mseq )
 
 	m = generate_packed_mseq(n,t,(u_long *)OBJ_DATA_PTR(dp),start_val);
 	if( (m+1) == 1<<(n) ){
-		sprintf(msg_str,"GOOD reglen = %d, t = %d, m = %d (0x%x)",n,t,m,m);
+		snprintf(msg_str,LLEN,"GOOD reglen = %d, t = %d, m = %d (0x%x)",n,t,m,m);
 		prt_msg(msg_str);
 	}
 }
@@ -112,7 +112,7 @@ static COMMAND_FUNC( do_mseq )
 	/* BUG check object here */
 
 	if( (dimension_t)((1<<n)-1) > OBJ_COLS(dp) ){
-		sprintf(ERROR_STRING,"target mseq vector %s (%d) too small for this register length %d",OBJ_NAME(dp),
+		snprintf(ERROR_STRING,LLEN,"target mseq vector %s (%d) too small for this register length %d",OBJ_NAME(dp),
 				OBJ_COLS(dp),n);
 		warn(ERROR_STRING);
 		return;
@@ -120,10 +120,10 @@ static COMMAND_FUNC( do_mseq )
 
 	m = generate_mseq(n,t,(u_long *)OBJ_DATA_PTR(dp),start_val);
 	if( (m+1) == 1<<(n) ){
-		sprintf(msg_str,"GOOD reglen = %d, t = %d, seqlen = %d (0x%x)",n,t,m,m);
+		snprintf(msg_str,LLEN,"GOOD reglen = %d, t = %d, seqlen = %d (0x%x)",n,t,m,m);
 		prt_msg(msg_str);
 	} else {
-		sprintf(ERROR_STRING,"BAD reglen = %d, t = %d, seqlen = %d (0x%x)",n,t,m,m);
+		snprintf(ERROR_STRING,LLEN,"BAD reglen = %d, t = %d, seqlen = %d (0x%x)",n,t,m,m);
 		warn(ERROR_STRING);
 	}
 }

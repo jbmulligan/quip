@@ -179,12 +179,12 @@ static void init_stamps(uint32_t n_frames)
 
 static void show_tmr(struct itimerval *tmrp)
 {
-	sprintf(ERROR_STRING,"interval:  %ld   %ld",
+	snprintf(ERROR_STRING,LLEN,"interval:  %ld   %ld",
 			tmrp->it_interval.tv_sec,
 			tmrp->it_interval.tv_usec);
 	advise(ERROR_STRING);
 
-	sprintf(ERROR_STRING,"value:  %ld   %ld",
+	snprintf(ERROR_STRING,LLEN,"value:  %ld   %ld",
 			tmrp->it_value.tv_sec,
 			tmrp->it_value.tv_usec);
 	advise(ERROR_STRING);
@@ -268,7 +268,7 @@ static struct v4l2_buffer *_next_frame(QSP_ARG_DECL  int n_devices, Video_Device
 	}
 
 	if( r == 0 ) {
-		sprintf(ERROR_STRING, "select timeout");
+		snprintf(ERROR_STRING,LLEN, "select timeout");
 		WARN(ERROR_STRING);
 		return(NULL);
 	}
@@ -301,7 +301,7 @@ static struct v4l2_buffer *_next_frame(QSP_ARG_DECL  int n_devices, Video_Device
 	}
 #ifdef CAUTIOUS
 	if( which_device < 0 ){
-		sprintf(ERROR_STRING,"CAUTIOUS:  next_frame:  no ready device found!?");
+		snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  next_frame:  no ready device found!?");
 		WARN(ERROR_STRING);
 		return(NULL);
 	}
@@ -328,7 +328,7 @@ static struct v4l2_buffer *_next_frame(QSP_ARG_DECL  int n_devices, Video_Device
 	}
 
 	if( r == 0 ) {
-		sprintf(ERROR_STRING, "select timeout");
+		snprintf(ERROR_STRING,LLEN, "select timeout");
 		WARN(ERROR_STRING);
 		return(NULL);
 	}
@@ -351,7 +351,7 @@ static struct v4l2_buffer *_next_frame(QSP_ARG_DECL  int n_devices, Video_Device
 
 #ifdef CAUTIOUS
 	if( nf_buf.index < 0 || nf_buf.index >= (unsigned int) ready_vdp->vd_n_buffers ){
-		sprintf(ERROR_STRING,"CAUTIOUS:  Unexpected buffer number (%d) from VIDIOC_DQBUF, expected 0-%d",
+		snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  Unexpected buffer number (%d) from VIDIOC_DQBUF, expected 0-%d",
 			nf_buf.index,ready_vdp->vd_n_buffers-1);
 		WARN(ERROR_STRING);
 		return(NULL);
@@ -362,7 +362,7 @@ static struct v4l2_buffer *_next_frame(QSP_ARG_DECL  int n_devices, Video_Device
 	/* Store the timestamp for this buffer */
 #ifdef CAUTIOUS
 	if( n_stored_times >= ts_array_size ){
-		sprintf(ERROR_STRING,"CAUTIOUS:  n_stored_times (%d) should be less than ts_array_size (%d) when storing a new timestamp",n_stored_times,ts_array_size);
+		snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  n_stored_times (%d) should be less than ts_array_size (%d) when storing a new timestamp",n_stored_times,ts_array_size);
 		error1(ERROR_STRING);
 	}
 #endif /* CAUTIOUS */
@@ -386,12 +386,12 @@ static void _v4l2_finish_recording(QSP_ARG_DECL  Image_File *ifp)
 {
 	RV_Inode *inp;
 
-//sprintf(ERROR_STRING,"v4l2_finish_recording %s",ifp->if_name);
+//snprintf(ERROR_STRING,LLEN,"v4l2_finish_recording %s",ifp->if_name);
 //advise(ERROR_STRING);
 	inp = get_rv_inode(ifp->if_name);
 #ifdef CAUTIOUS
 	if( inp == NULL ){
-		sprintf(ERROR_STRING,"CAUTIOUS: v4l2_finish_recording:  missing rv inode %s",ifp->if_name);
+		snprintf(ERROR_STRING,LLEN,"CAUTIOUS: v4l2_finish_recording:  missing rv inode %s",ifp->if_name);
 		error1(ERROR_STRING);
 	}
 #endif
@@ -424,7 +424,7 @@ void _v4l2_stream_record(QSP_ARG_DECL  Image_File *ifp,long n_frames,int n_camer
 	int i;
 
 	if( record_state != NOT_RECORDING ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"v4l2_stream_record:  can't record file %s until previous record completes",
 			ifp->if_name);
 		WARN(ERROR_STRING);
@@ -439,7 +439,7 @@ void _v4l2_stream_record(QSP_ARG_DECL  Image_File *ifp,long n_frames,int n_camer
 
 
 	if( FT_CODE(IF_TYPE(ifp)) != IFT_RV ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"stream record:  image file %s (type %s) should be type %s",
 			ifp->if_name,
 			FT_NAME(IF_TYPE(ifp)),
@@ -454,7 +454,7 @@ void _v4l2_stream_record(QSP_ARG_DECL  Image_File *ifp,long n_frames,int n_camer
 
 #ifdef CAUTIOUS
 	if( ndisks < 1 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Bad number (%d) of raw volume disks",ndisks);
 		WARN(ERROR_STRING);
 		return;
@@ -500,9 +500,9 @@ void _v4l2_stream_record(QSP_ARG_DECL  Image_File *ifp,long n_frames,int n_camer
 if( really_writing ){
 		if( (n_written = write(fd_arr[which_disk],vd_tbl[which_device]->vd_buf_tbl[ bufp->index ].mb_start,n_to_write))
 			!= n_to_write ){
-			sprintf(ERROR_STRING,"write (frm %ld, fd=%d)",n_so_far,ifp->if_fd);
+			snprintf(ERROR_STRING,LLEN,"write (frm %ld, fd=%d)",n_so_far,ifp->if_fd);
 			perror(ERROR_STRING);
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"%ld requested, %d written",
 				n_to_write,n_written);
 			WARN(ERROR_STRING);
@@ -591,7 +591,7 @@ COMMAND_FUNC( print_grab_times )
 		s=ctime(&ts_array[i].grab_time.tv_sec);
 		/* remove trailing newline */
 		if( s[ strlen(s) - 1 ] == '\n' ) s[ strlen(s) - 1 ] = 0;
-		sprintf(msg_str,"%d\t%s\t%ld\t%3ld.%03ld",
+		snprintf(msg_str,LLEN,"%d\t%s\t%ld\t%3ld.%03ld",
 				ts_array[i].which_dev,
 				s,
 				ts_array[i].grab_time.tv_sec,
@@ -648,7 +648,7 @@ COMMAND_FUNC( do_stream_record )
 	ifp = img_file_of(name);
 
 	if( ifp != NULL ){
-		sprintf(ERROR_STRING,"Clobbering existing image file %s",name);
+		snprintf(ERROR_STRING,LLEN,"Clobbering existing image file %s",name);
 		advise(ERROR_STRING);
 		image_file_clobber(1);	/* not necessary !? */
 		delete_image_file(ifp);
@@ -663,7 +663,7 @@ COMMAND_FUNC( do_stream_record )
 	 */
 
 	if( ifp == NULL ){
-		sprintf(ERROR_STRING,"Error creating movie file %s",name);
+		snprintf(ERROR_STRING,LLEN,"Error creating movie file %s",name);
 		WARN(ERROR_STRING);
 		return;
 	}
@@ -673,7 +673,7 @@ COMMAND_FUNC( do_stream_record )
 	/* n_blocks is the total number of blocks, not the number per disk(?) */
 
 	if( rv_realloc(name,n_blocks) < 0 ){
-		sprintf(ERROR_STRING,"error reallocating %d blocks for rv file %s",
+		snprintf(ERROR_STRING,LLEN,"error reallocating %d blocks for rv file %s",
 			n_blocks,name);
 		WARN(ERROR_STRING);
 		return;

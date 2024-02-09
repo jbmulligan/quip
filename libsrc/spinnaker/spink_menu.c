@@ -11,13 +11,13 @@ static Spink_Cam *the_cam_p=NULL;	// should this be per-thread?
 
 #define UNIMP_MSG(whence)						\
 									\
-	sprintf(ERROR_STRING,						\
+	snprintf(ERROR_STRING,LLEN,					\
 		"%s:  function not implemented yet!?",whence);		\
 	WARN(ERROR_STRING);
 
 #define NO_LIB_MSG(whence)						\
 									\
-	sprintf(ERROR_STRING,						\
+	snprintf(ERROR_STRING,LLEN,					\
 		"%s:  program built without libspinnaker support!?",whence);	\
 	error1(ERROR_STRING);
 
@@ -29,12 +29,13 @@ static Spink_Cam *the_cam_p=NULL;	// should this be per-thread?
 	NO_LIB_MSG(whence)
 
 
-#define CHECK_CAM(whence)							\
-										\
-	if( the_cam_p == NULL ){ 						\
-		sprintf(ERROR_STRING,"%s:  No spink_cam selected.",#whence);	\
-		warn(ERROR_STRING); 						\
-		return;								\
+#define CHECK_CAM(whence)						\
+									\
+	if( the_cam_p == NULL ){					\
+		snprintf(ERROR_STRING,LLEN				\
+				"%s:  No spink_cam selected.",#whence);	\
+		warn(ERROR_STRING); 					\
+		return;							\
 	}
 
 static Spink_Map *curr_map_p=NULL;
@@ -80,7 +81,7 @@ static COMMAND_FUNC(do_list_spink_nodes)
 {
 	CHECK_CURRENT_MAP
 
-	sprintf(MSG_STR,"\nNodes from %s:\n",curr_map_p->skm_name);
+	snprintf(MSG_STR,LLEN,"\nNodes from %s:\n",curr_map_p->skm_name);
 	list_nodes_from_map(curr_map_p);
 }
 
@@ -100,7 +101,7 @@ static COMMAND_FUNC(do_spink_node_info)
 	skn_p = pick_spink_node("");
 	if( skn_p == NULL ) return;
 
-	sprintf(MSG_STR,"Map %s, Node %s:",skn_p->skn_skm_p->skm_name,skn_p->skn_name);
+	snprintf(MSG_STR,LLEN,"Map %s, Node %s:",skn_p->skn_skm_p->skm_name,skn_p->skn_name);
 	prt_msg(MSG_STR);
 
 	print_spink_node_info(skn_p,0);
@@ -132,7 +133,7 @@ static void _get_dummy_input(SINGLE_QSP_ARG_DECL)
 static void _set_node_from_user_input(QSP_ARG_DECL  Spink_Node *skn_p)
 {
 	if( ! NODE_IS_WRITABLE(skn_p) ){
-		sprintf(ERROR_STRING,"Node %s is not writable!?",skn_p->skn_name);
+		snprintf(ERROR_STRING,LLEN,"Node %s is not writable!?",skn_p->skn_name);
 		warn(ERROR_STRING);
 		get_dummy_input();
 		return;
@@ -225,7 +226,7 @@ static COMMAND_FUNC( do_cam_info )
 	if( skc_p == NULL ) return;
 
 	if( skc_p == the_cam_p ){
-		sprintf(MSG_STR,"%s is selected as current camera.",skc_p->skc_name);
+		snprintf(MSG_STR,LLEN,"%s is selected as current camera.",skc_p->skc_name);
 		prt_msg(MSG_STR);
 	}
 #ifdef HAVE_LIBSPINNAKER
@@ -266,7 +267,7 @@ static COMMAND_FUNC( do_grab )
 		char num_str[32];
 
 		// BUG - we appear to be doing this twice...
-		sprintf(num_str,"%d",the_cam_p->skc_newest);
+		snprintf(num_str,32,"%d",the_cam_p->skc_newest);
 		assign_reserved_var("newest",num_str);
 	}
 
@@ -322,10 +323,10 @@ static COMMAND_FUNC( do_set_n_bufs )
 	CHECK_CAM(set_n_buffers)
 
 	if( n < MIN_N_BUFFERS ){
-		sprintf(ERROR_STRING,"do_set_n_bufs:  n (%d) must be >= %d",n,MIN_N_BUFFERS);
+		snprintf(ERROR_STRING,LLEN,"do_set_n_bufs:  n (%d) must be >= %d",n,MIN_N_BUFFERS);
 		WARN(ERROR_STRING);
 	} else if ( n > MAX_N_BUFFERS ){
-		sprintf(ERROR_STRING,"do_set_n_bufs:  n (%d) must be <= %d",n,MAX_N_BUFFERS);
+		snprintf(ERROR_STRING,LLEN,"do_set_n_bufs:  n (%d) must be <= %d",n,MAX_N_BUFFERS);
 		WARN(ERROR_STRING);
 	} else {
 #ifdef HAVE_LIBSPINNAKER
@@ -351,7 +352,7 @@ static COMMAND_FUNC( do_record )
 	nf=HOW_MANY("total number of frames");
 	nc=HOW_MANY("number of cameras");
 	if( nc < 1 || nc > MAX_CAMERAS ){
-		sprintf(ERROR_STRING,"Number of cameras (%d) must be greater than zero and less than or equal to %d",
+		snprintf(ERROR_STRING,LLEN,"Number of cameras (%d) must be greater than zero and less than or equal to %d",
 			nc,MAX_CAMERAS);
 		warn(ERROR_STRING);
 		return;
@@ -362,7 +363,7 @@ static COMMAND_FUNC( do_record )
 	for(i=0;i<nc;i++){
 		if( skc_p_tbl[i] == NULL ) return;
 		if( skc_p_tbl[i]->skc_n_buffers <= 0 ){
-			sprintf(ERROR_STRING,"record:  number of buffers for %s (%d) must be positive!?",
+			snprintf(ERROR_STRING,LLEN,"record:  number of buffers for %s (%d) must be positive!?",
 				skc_p_tbl[i]->skc_name, skc_p_tbl[i]->skc_n_buffers);
 			warn(ERROR_STRING);
 			return;
@@ -393,7 +394,7 @@ static COMMAND_FUNC(do_set_n_capture)
 	CHECK_CAM(set_n_capture)	// insure the_cam_p is valid...
 
 	if( n <= 0 ){
-		sprintf(ERROR_STRING,"set_n_capture:  count must be positive!?");
+		snprintf(ERROR_STRING,LLEN,"set_n_capture:  count must be positive!?");
 		warn(ERROR_STRING);
 		return;
 	}
@@ -446,7 +447,7 @@ static COMMAND_FUNC( do_fmt7_setsize )
 		return;
 	}
 	UNIMP_MSG("set_fmt7_size");
-	sprintf(ERROR_STRING,"Can't set image size to %d x %d",w,h);
+	snprintf(ERROR_STRING,LLEN,"Can't set image size to %d x %d",w,h);
 	advise(ERROR_STRING);
 }
 
@@ -463,13 +464,13 @@ static COMMAND_FUNC( do_fmt7_setposn )
 	// At least on the flea, the position has to be even...
 
 	if( h & 1 ){
-		sprintf(ERROR_STRING,"Horizontal position (%d) should be even, rounding down to %d.",h,h&(~1));
+		snprintf(ERROR_STRING,LLEN,"Horizontal position (%d) should be even, rounding down to %d.",h,h&(~1));
 		advise(ERROR_STRING);
 		h &= ~1;
 	}
 
 	if( v & 1 ){
-		sprintf(ERROR_STRING,"Vertical position (%d) should be even, rounding down to %d.",v,v&(~1));
+		snprintf(ERROR_STRING,LLEN,"Vertical position (%d) should be even, rounding down to %d.",v,v&(~1));
 		advise(ERROR_STRING);
 		v &= ~1;
 	}
@@ -563,7 +564,7 @@ static COMMAND_FUNC(do_disp_chunk)
 	fetch_chunk_data(cd_p,dp);
 	format_chunk_data(buf,cd_p);
 
-	sprintf(MSG_STR,"\t%s:  ",cd_p->cd_name);
+	snprintf(MSG_STR,LLEN,"\t%s:  ",cd_p->cd_name);
 	prt_msg_frag(MSG_STR);
 	prt_msg(buf);
 }

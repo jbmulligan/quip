@@ -42,17 +42,17 @@ static int _resamp_check(QSP_ARG_DECL  Data_Obj *dpto,Data_Obj *dpfr,Data_Obj *d
 		return(-1);
 	}
 	if( OBJ_COMPS(dpto) != OBJ_COMPS(dpfr) ){
-		sprintf(ERROR_STRING,"resamp_check:  type dimension mismatch between %s (%d) and %s (%d)",
+		snprintf(ERROR_STRING,LLEN,"resamp_check:  type dimension mismatch between %s (%d) and %s (%d)",
 				OBJ_NAME(dpto),OBJ_COMPS(dpto),OBJ_NAME(dpfr),OBJ_COMPS(dpfr));
 		WARN(ERROR_STRING);
 		return(-1);
 	}
 	if( (OBJ_ROWS(dpto) != OBJ_ROWS(dpwarp)) ||
 		(OBJ_COLS(dpto) != OBJ_COLS(dpwarp))){
-sprintf(ERROR_STRING,"target %s, %d rows by %d cols",
+snprintf(ERROR_STRING,LLEN,"target %s, %d rows by %d cols",
 OBJ_NAME(dpto),OBJ_ROWS(dpto),OBJ_COLS(dpto));
 advise(ERROR_STRING);
-sprintf(ERROR_STRING,"map %s, %d rows by %d cols",
+snprintf(ERROR_STRING,LLEN,"map %s, %d rows by %d cols",
 OBJ_NAME(dpwarp),OBJ_ROWS(dpwarp),OBJ_COLS(dpwarp));
 advise(ERROR_STRING);
 		WARN("size mismatch between target and resample map");
@@ -61,7 +61,7 @@ advise(ERROR_STRING);
 	// We allow 1-component complex or two-component float
 	if( (!(OBJ_PREC(dpwarp) == PREC_CPX && OBJ_COMPS(dpwarp)==1)) &&
 	    (!(OBJ_PREC(dpwarp) == PREC_SP  && OBJ_COMPS(dpwarp)==2)) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "warp control image %s (%ld component %s) must be complex or 2-component float",
 			OBJ_NAME(dpwarp),(long)OBJ_COMPS(dpwarp),
 			PREC_NAME(OBJ_PREC_PTR(dpwarp)));

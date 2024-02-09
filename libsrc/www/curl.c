@@ -52,7 +52,7 @@ static size_t buffer_url_text(void *buffer, size_t size, size_t nmemb, void *use
 
 	// The data comes in chunks of unknown size...
 
-//sprintf(ERROR_STRING,"buffer_url_text:  %ld elements of size %ld",nmemb,size);
+//snprintf(ERROR_STRING,LLEN,"buffer_url_text:  %ld elements of size %ld",nmemb,size);
 //advise(ERROR_STRING);
 
 	// Make sure that all characters are printable.

@@ -24,7 +24,7 @@ const char *argset_type_name[N_ARGSET_TYPES]={
 
 static void _shape_error(QSP_ARG_DECL  Vector_Function *vfp, Data_Obj *dp)
 {
-	sprintf(ERROR_STRING,"shape_error:  Vector function %s:  argument %s has unknown shape!?",
+	snprintf(ERROR_STRING,LLEN,"shape_error:  Vector function %s:  argument %s has unknown shape!?",
 		VF_NAME(vfp),OBJ_NAME(dp));
 	warn(ERROR_STRING);
 }
@@ -250,7 +250,7 @@ static int _chktyp(QSP_ARG_DECL  Vector_Function *vfp,Vec_Obj_Args *oap)
 			SET_OA_ARGSTYPE(oap, QUATERNION_ARGS);
 		}
 	} else {
-		sprintf(ERROR_STRING,"chktyp:  can't categorize destination object %s!?",OBJ_NAME(OA_DEST(oap) ) );
+		snprintf(ERROR_STRING,LLEN,"chktyp:  can't categorize destination object %s!?",OBJ_NAME(OA_DEST(oap) ) );
 		warn(ERROR_STRING);
 	}
 
@@ -265,7 +265,7 @@ static int _chktyp(QSP_ARG_DECL  Vector_Function *vfp,Vec_Obj_Args *oap)
 		assert( OA_SRC1(oap) != NULL );
 
 		if( ! IS_COMPLEX( OA_SRC1(oap) ) ){
-			sprintf(ERROR_STRING,"chktyp:  source vector %s (%s) must be complex with function %s",
+			snprintf(ERROR_STRING,LLEN,"chktyp:  source vector %s (%s) must be complex with function %s",
 				OBJ_NAME( OA_SRC1(oap) ) ,OBJ_PREC_NAME( OA_DEST(oap) ),VF_NAME(vfp) );
 			warn(ERROR_STRING);
 			list_dobj(OA_SRC1(oap) );
@@ -273,7 +273,7 @@ static int _chktyp(QSP_ARG_DECL  Vector_Function *vfp,Vec_Obj_Args *oap)
 		}
 		if( (VF_FLAGS(vfp) & INV_FT)==0 ){
 			if( ! IS_REAL(OA_DEST(oap)) ){
-				sprintf(ERROR_STRING,"chktyp:  destination vector %s (%s) must be real with function %s",
+				snprintf(ERROR_STRING,LLEN,"chktyp:  destination vector %s (%s) must be real with function %s",
 					OBJ_NAME(OA_DEST(oap) ) ,OBJ_PREC_NAME( OA_DEST(oap) ),VF_NAME(vfp) );
 				warn(ERROR_STRING);
 				list_dobj(OA_DEST(oap) );
@@ -294,7 +294,7 @@ static int _chktyp(QSP_ARG_DECL  Vector_Function *vfp,Vec_Obj_Args *oap)
 	/* now the type field has been set - make sure it's legal */
 	assert( OA_ARGSTYPE(oap) != UNKNOWN_ARGS );
 	if( (VF_TYPEMASK(vfp) & VL_TYPE_MASK(OA_ARGSTYPE(oap) ) )==0 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"chktyp:  Arguments of type %s are not permitted with function %s",
 			argset_type_name[OA_ARGSTYPE(oap) ],VF_NAME(vfp) );
 		warn(ERROR_STRING);
@@ -302,7 +302,7 @@ static int _chktyp(QSP_ARG_DECL  Vector_Function *vfp,Vec_Obj_Args *oap)
 	}
 
 /*
-sprintf(ERROR_STRING,"function %s:  oa_argstype = %s",VF_NAME(vfp) ,argset_type_name[OA_ARGSTYPE(oap) ]);
+snprintf(ERROR_STRING,LLEN,"function %s:  oa_argstype = %s",VF_NAME(vfp) ,argset_type_name[OA_ARGSTYPE(oap) ]);
 advise(ERROR_STRING);
 */
 
@@ -320,14 +320,14 @@ advise(ERROR_STRING);
 	 */
 
 	if( HAS_MIXED_ARGS(oap) && ! IS_COMPLEX(OA_DEST(oap)) ){
-		sprintf(ERROR_STRING,"chktyp:  destination vector %s must be complex when mixing types with function %s",
+		snprintf(ERROR_STRING,LLEN,"chktyp:  destination vector %s must be complex when mixing types with function %s",
 			OBJ_NAME(OA_DEST(oap) ) ,VF_NAME(vfp) );
 		warn(ERROR_STRING);
 		return -1;
 	}
 
 	if( HAS_QMIXED_ARGS(oap)  && ! IS_QUAT(OA_DEST(oap) ) ){
-		sprintf(ERROR_STRING,"chktyp:  destination vector %s must be quaternion when mixing types with function %s",
+		snprintf(ERROR_STRING,LLEN,"chktyp:  destination vector %s must be quaternion when mixing types with function %s",
 			OBJ_NAME(OA_DEST(oap) ) ,VF_NAME(vfp) );
 		warn(ERROR_STRING);
 		return -1;
@@ -357,13 +357,13 @@ advise(ERROR_STRING);
 	
 		/*
 		show_obj_args(oap);
-sprintf(ERROR_STRING,"Function %s.",VF_NAME(vfp) );
+snprintf(ERROR_STRING,LLEN,"Function %s.",VF_NAME(vfp) );
 advise(ERROR_STRING);
 		error1("chktyp:  Sorry, not sure how to deal with this situation...");
 		*/
 
 		if( ! IS_COMPLEX( OA_SRC1(oap) ) ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 "chktyp:  first source vector (%s,%s) must be complex when mixing types with function %s",
 				OBJ_NAME( OA_SRC1(oap) ) ,
 				name_for_type( OA_SRC1(oap) ),
@@ -376,7 +376,7 @@ advise(ERROR_STRING);
 		assert( OA_SRC2(oap) != NULL );
 
 		if( ! IS_REAL(OA_SRC2(oap) ) ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 "second source vector (%s,%s) must be real when mixing types with function %s",
 				OBJ_NAME(OA_SRC2(oap) ) ,
 				name_for_type(OA_SRC2(oap) ),
@@ -394,7 +394,7 @@ advise(ERROR_STRING);
 	return 0;
 
 type_mismatch13:
-	sprintf(ERROR_STRING,"Type mismatch between objects %s (%s) and %s (%s), function %s",
+	snprintf(ERROR_STRING,LLEN,"Type mismatch between objects %s (%s) and %s (%s), function %s",
 		OBJ_NAME( OA_SRC1(oap) ) ,name_for_type( OA_SRC1(oap) ),
 		OBJ_NAME( OA_SRC3(oap) ) ,name_for_type( OA_SRC3(oap) ),
 		VF_NAME(vfp) );
@@ -402,7 +402,7 @@ type_mismatch13:
 	return -1;
     
 type_mismatch01:
-	sprintf(ERROR_STRING,"Type mismatch between objects %s (%s) and %s (%s), function %s",
+	snprintf(ERROR_STRING,LLEN,"Type mismatch between objects %s (%s) and %s (%s), function %s",
             OBJ_NAME( OA_SRC1(oap) ) ,name_for_type( OA_SRC1(oap) ),
             OBJ_NAME(OA_DEST(oap) ) ,name_for_type(OA_DEST(oap) ),
             VF_NAME(vfp) );
@@ -411,7 +411,7 @@ type_mismatch01:
     
     
 type_mismatch23:
-	sprintf(ERROR_STRING,"Type mismatch between objects %s (%s) and %s (%s), function %s",
+	snprintf(ERROR_STRING,LLEN,"Type mismatch between objects %s (%s) and %s (%s), function %s",
 		OBJ_NAME(OA_SRC2(oap) ) ,name_for_type(OA_SRC2(oap) ),
 		OBJ_NAME( OA_SRC3(oap) ) ,name_for_type( OA_SRC3(oap) ),
 		VF_NAME(vfp) );
@@ -430,7 +430,7 @@ static void _show_legal_precisions(QSP_ARG_DECL  uint32_t mask)
 	for( prec = 0; prec < 32 ; prec ++ ){
 		bit = 1 << prec ;
 		if( mask & bit ){
-			sprintf(ERROR_STRING,"\t%s",NAME_FOR_PREC_CODE(prec));
+			snprintf(ERROR_STRING,LLEN,"\t%s",NAME_FOR_PREC_CODE(prec));
 			advise(ERROR_STRING);
 		}
 	}
@@ -438,7 +438,7 @@ static void _show_legal_precisions(QSP_ARG_DECL  uint32_t mask)
 
 #define NEW_PREC_ERROR_MSG( prec )					\
 									\
-	sprintf(ERROR_STRING,						\
+	snprintf(ERROR_STRING,LLEN,						\
 "chkprec:  %s:  input %s (%s) should have %s or %s precision with target %s (%s)",	\
 VF_NAME(vfp) ,OBJ_NAME( OA_SRC1(oap) ) ,OBJ_PREC_NAME( OA_SRC1(oap) ),	\
 NAME_FOR_PREC_CODE( prec ),NAME_FOR_PREC_CODE(dst_prec),		\
@@ -451,7 +451,7 @@ OBJ_NAME(OA_DEST(oap) ) ,OBJ_PREC_NAME( OA_DEST(oap) ));		\
 											\
 	if( VF_CODE(vfp) == func_code ){						\
 		if( OBJ_MACH_PREC(dp) != prec_code ){					\
-			sprintf(ERROR_STRING,						\
+			snprintf(ERROR_STRING,LLEN,						\
 		"Source object %s (%s) must have %s precision for function %s",		\
 		OBJ_NAME(dp),OBJ_PREC_NAME(dp),						\
 		NAME_FOR_PREC_CODE(prec_code),VF_NAME(vfp));				\
@@ -471,7 +471,7 @@ OBJ_NAME(OA_DEST(oap) ) ,OBJ_PREC_NAME( OA_DEST(oap) ));		\
 #define CHECK_OBJ_PREC_LEGAL_FOR_FUNC(dp,vfp,role)					\
 											\
 	if( ( VF_PRECMASK(vfp) & (1<<OBJ_MACH_PREC(dp))) == 0 ){			\
-		sprintf(ERROR_STRING,							\
+		snprintf(ERROR_STRING,LLEN,							\
 "chkprec:  %s precision %s (obj %s) cannot be used with function %s",			\
 			#role,OBJ_PREC_NAME(dp),OBJ_NAME( dp ) ,VF_NAME(vfp) );		\
 		warn(ERROR_STRING);							\
@@ -510,7 +510,7 @@ static int _check_sources_precisions_for_func(QSP_ARG_DECL  Vector_Function *vfp
 
 #define REPORT_DEST_SRC_MISMATCH_ERROR(vfp,dp1,dp2)					\
 											\
-	sprintf(ERROR_STRING,								\
+	snprintf(ERROR_STRING,LLEN,								\
 "chkprec:  %s: destination %s (%s) and source %s (%s) should have the same precision",	\
 		VF_NAME(vfp),								\
 		OBJ_NAME( dp1 ),							\
@@ -530,7 +530,7 @@ static int _check_sources_precisions_for_func(QSP_ARG_DECL  Vector_Function *vfp
 
 #define REPORT_SRC_SRC_MISMATCH_ERROR(vfp,dp1,dp2)					\
 											\
-	sprintf(ERROR_STRING,								\
+	snprintf(ERROR_STRING,LLEN,								\
 "chkprec:  %s operands %s (%s) and %s (%s) should have the same precision",		\
 		VF_NAME(vfp),								\
 		OBJ_NAME( dp1 ),							\
@@ -605,7 +605,7 @@ static int _check_special_projections(QSP_ARG_DECL  Vector_Function *vfp, Vec_Ob
 	 * not a bitmap.
 	 */
 	if( OBJ_PREC( OA_DEST(oap) ) != PREC_DI ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "chkprec:  %s:  destination vector %s (%s) should have %s precision",
 			VF_NAME(vfp) ,OBJ_NAME(OA_DEST(oap) ) ,
 			OBJ_PREC_NAME( OA_DEST(oap) ),
@@ -625,7 +625,7 @@ static int _check_special_projections(QSP_ARG_DECL  Vector_Function *vfp, Vec_Ob
 static int _check_bitmap_dest(QSP_ARG_DECL  Vector_Function *vfp, Vec_Obj_Args *oap)
 {
 	if( OBJ_PREC( OA_DEST(oap) ) != PREC_BIT ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"%s:  result vector %s (%s) should have %s precision",
 			VF_NAME(vfp) ,OBJ_NAME(OA_DEST(oap) ) ,
 			OBJ_PREC_NAME( OA_DEST(oap) ),
@@ -784,7 +784,7 @@ static int _chkprec(QSP_ARG_DECL  Vector_Function *vfp,Vec_Obj_Args *oap)
 			NEW_PREC_ERROR_MSG(PREC_IN);
 			break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 "chkprec:  %s:  target '%s' (%s) cannot be used with mixed prec source '%s' (%s)",
 				VF_NAME(vfp) ,OBJ_NAME(OA_DEST(oap) ) ,
 				OBJ_PREC_NAME( OA_DEST(oap) ),
@@ -807,7 +807,7 @@ static int _check_size_match(QSP_ARG_DECL  Vector_Function *vfp, Data_Obj *dp1, 
 	if( dp2 == NULL ) return 0;
 
 	if( (status=cksiz(VF_FLAGS(vfp), dp1 ,dp2 )) == (-1) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"check_size_match:  Size mismatch between objects %s and %s, function %s",
 			OBJ_NAME( dp1 ) ,OBJ_NAME( dp2 ), VF_NAME(vfp) );
 		advise(ERROR_STRING);	// why not warning???
@@ -842,7 +842,7 @@ static int _chksiz(QSP_ARG_DECL  Vector_Function *vfp,Vec_Obj_Args *oap)	/* chec
 			if( (status=cksiz(VF_FLAGS(vfp),OA_SBM(oap) ,OA_DEST(oap) ))
 				== (-1) )
 			{
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"chksiz:  bitmap arg func size error, function %s",VF_NAME(vfp) );
 				advise(ERROR_STRING);
 				return -1;
@@ -861,7 +861,7 @@ static int _chksiz(QSP_ARG_DECL  Vector_Function *vfp,Vec_Obj_Args *oap)	/* chec
 	}
 #ifdef QUIP_DEBUG
 if( debug & veclib_debug ){
-sprintf(ERROR_STRING,"chksiz:  destv %s (%s)  arg1 %s (%s)",
+snprintf(ERROR_STRING,LLEN,"chksiz:  destv %s (%s)  arg1 %s (%s)",
 OBJ_NAME(OA_DEST(oap) ), AREA_NAME(OBJ_AREA(OA_DEST(oap))),
 OBJ_NAME( OA_SRC1(oap) ), AREA_NAME(OBJ_AREA(OA_SRC1(oap))) );
 advise(ERROR_STRING);
@@ -875,7 +875,7 @@ advise(ERROR_STRING);
 	 */
 	if( VF_CODE(vfp) == FVDOT ){
 		if( (status=cksiz(VF_FLAGS(vfp), OA_SRC1(oap) ,OA_SRC2(oap) )) == (-1) ){
-			sprintf(ERROR_STRING,"chksiz:  Size mismatch between arg1 (%s) and arg2 (%s), function %s",
+			snprintf(ERROR_STRING,LLEN,"chksiz:  Size mismatch between arg1 (%s) and arg2 (%s), function %s",
 				OBJ_NAME( OA_SRC1(oap) ) ,OBJ_NAME(OA_SRC2(oap) ) ,VF_NAME(vfp) );
 			advise(ERROR_STRING);
 			return -1;
@@ -892,7 +892,7 @@ advise(ERROR_STRING);
 		// For FVLUTMAPS, we pass the table size as a scalar arg.
 		if( VF_CODE(vfp) == FVLUTMAPB ){
 			if( OBJ_N_MACH_ELTS(OA_SRC2(oap)) != 256 ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"chksiz:  byte-indexed map object %s (%d) should have 256 elements!?",
 			OBJ_NAME(OA_SRC2(oap)),OBJ_N_MACH_ELTS(OA_SRC2(oap)));
 				warn(ERROR_STRING);
@@ -900,7 +900,7 @@ advise(ERROR_STRING);
 			}
 		}
 		if( ! IS_CONTIGUOUS(OA_SRC2(oap)) ){
-			sprintf(ERROR_STRING,"chksiz:  map object %s must be contiguous!?",
+			snprintf(ERROR_STRING,LLEN,"chksiz:  map object %s must be contiguous!?",
 				OBJ_NAME(OA_SRC2(oap)));
 			warn(ERROR_STRING);
 			return -1;
@@ -954,7 +954,7 @@ static int _chkargs( QSP_ARG_DECL  Vector_Function *vfp, Vec_Obj_Args *oap)
 
 #define PREC_ERROR_MSG( prec )						\
 									\
-	sprintf(ERROR_STRING,						\
+	snprintf(ERROR_STRING,LLEN,						\
 "chkprec:  %s:  input %s (%s) should have %s or %s precision with target %s (%s)",	\
 VF_NAME(vfp) ,OBJ_NAME( OA_SRC1(oap) ) ,OBJ_PREC_NAME( OA_SRC1(oap) ),	\
 NAME_FOR_PREC_CODE( prec ),NAME_FOR_PREC_CODE(dst_prec),		\
@@ -972,7 +972,7 @@ int cktype(Data_Obj *dp1,Data_Obj *dp2)
 
 void wacky_arg(Data_Obj *dp)
 {
-	sprintf(ERROR_STRING, "%s:  inc = %d, cols = %d",
+	snprintf(ERROR_STRING,LLEN, "%s:  inc = %d, cols = %d",
 		OBJ_NAME(dp) , dp->dt_inc, dp->dt_cols );
 	warn(ERROR_STRING);
 	list_dobj(dp);
@@ -1025,7 +1025,7 @@ static int make_arg_evenly_spaced(Vec_Obj_Args *oap,int index)
 	if( IS_EVENLY_SPACED(arg_dp) ) return 0;
 
 	/* If the object is subscripted, the brackets will break the name */
-	sprintf(tmp_name,"%s.dup",remove_brackets(OBJ_NAME(arg_dp) ));
+	snprintf(tmp_name,LLEN,"%s.dup",remove_brackets(OBJ_NAME(arg_dp) ));
 	new_dp = dup_obj(arg_dp,tmp_name);
 	dp_copy(new_dp,arg_dp);	/* BUG use vmov */
 	if( OA_DEST(oap)  == arg_dp )
@@ -1046,7 +1046,7 @@ int _perf_vfunc(QSP_ARG_DECL  Vec_Func_Code code, Vec_Obj_Args *oap)
 
 static int _default_gpu_dispatch(QSP_ARG_DECL  Vector_Function *vfp, Vec_Obj_Args *oap)
 {
-	sprintf(ERROR_STRING,"No GPU dispatch function specified, can't call %s",VF_NAME(vfp) );
+	snprintf(ERROR_STRING,LLEN,"No GPU dispatch function specified, can't call %s",VF_NAME(vfp) );
 	warn(ERROR_STRING);
 	advise("Please call set_gpu_dispatch_func().");
 	return -1;
@@ -1056,7 +1056,7 @@ static int (*gpu_dispatch_func)(QSP_ARG_DECL  Vector_Function *vfp, Vec_Obj_Args
 
 void set_gpu_dispatch_func( int (*func)(QSP_ARG_DECL  Vector_Function *vfp, Vec_Obj_Args *oap) )
 {
-//sprintf(ERROR_STRING,"Setting gpu dispatch func (0x%"PRIxPTR")",(uintptr_t)func);
+//snprintf(ERROR_STRING,LLEN,"Setting gpu dispatch func (0x%"PRIxPTR")",(uintptr_t)func);
 //advise(ERROR_STRING);
 	gpu_dispatch_func = func;
 }
@@ -1077,7 +1077,7 @@ int _call_vfunc( QSP_ARG_DECL  Vector_Function *vfp, Vec_Obj_Args *oap )
 	} else if( OA_DEST(oap)  != NULL ){
 		SET_OA_ARGSPREC_CODE(oap, ARGSET_PREC( OBJ_PREC( OA_DEST(oap) )  ));
 	} else {
-		sprintf(ERROR_STRING,"call_vfunc %s:",VF_NAME(vfp) );
+		snprintf(ERROR_STRING,LLEN,"call_vfunc %s:",VF_NAME(vfp) );
 		advise(ERROR_STRING);
 		error1("call_vfunc:  no prototype vector!?");
 	}

@@ -32,7 +32,7 @@ void set_curr_win(Window win)
 {
 #ifdef QUIP_DEBUG
 if( debug & xdebug ){
-sprintf(DEFAULT_ERROR_STRING,"set_curr_win:  setting current window to 0x%lx",(u_long)win);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"set_curr_win:  setting current window to 0x%lx",(u_long)win);
 NADVISE(DEFAULT_ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -45,7 +45,7 @@ void cmap_setup(Viewer *vp)
 
 #ifdef QUIP_DEBUG
 if( debug & xdebug ){
-sprintf(DEFAULT_ERROR_STRING,"cmap_setup: viewer %s", vp->vw_name);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"cmap_setup: viewer %s", vp->vw_name);
 NADVISE(DEFAULT_ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -89,7 +89,7 @@ warn("simulate_lut_mapping:  no colormap!?");
 	index = color;
 
 	if( index < 0 || index >= N_COLORS ){
-		sprintf(DEFAULT_ERROR_STRING,"simulate_lut_mapping:  index %d (0x%x) must be in the range 0-%d",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"simulate_lut_mapping:  index %d (0x%x) must be in the range 0-%d",
 			index,index,N_COLORS);
 		warn(DEFAULT_ERROR_STRING);
 		return(0);
@@ -143,7 +143,7 @@ void x_init_lb_data( Lutbuf *lbp )
 
 	if( DO_DEPTH(dop) != 8 ){
 		if( verbose && !depth_warned ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"Display depth (%d) must be 8 for colormaps, simulating...",
 				DO_DEPTH(dop));
 			advise(ERROR_STRING);
@@ -156,15 +156,15 @@ void x_init_lb_data( Lutbuf *lbp )
 		/* the ld_data points to a cmap structure */
 		char cmap_name[LLEN];
 		Data_Obj *dp;
-		sprintf(cmap_name,"lutbuf_data%d",lb_data_serial++);
+		snprintf(cmap_name,LLEN,"lutbuf_data%d",lb_data_serial++);
 		/* lbp->lb_data = new_colormap(cmap_name); */
-sprintf(ERROR_STRING,"testing colormap %s",cmap_name);
+snprintf(ERROR_STRING,LLEN,"testing colormap %s",cmap_name);
 advise(ERROR_STRING);
 		dp=obj_of(cmap_name);
 		if( dp == NULL ){
 			lbp->lb_dp = new_colormap(cmap_name);
 		} else {
-			sprintf(ERROR_STRING,"x_init_lb_data:  colormap object %s already exists",OBJ_NAME(dp));
+			snprintf(ERROR_STRING,LLEN,"x_init_lb_data:  colormap object %s already exists",OBJ_NAME(dp));
 			advise(ERROR_STRING);
 			lbp->lb_dp = dp;
 		}
@@ -215,7 +215,7 @@ void x_assign_lutbuf(Lutbuf *lbp,Data_Obj *cm_dp)
 	if( simulating_luts ){
 		assert( lbp->lb_dp != NULL );
 
-sprintf(ERROR_STRING,"x_assign_lutbuf:  copying data from %s to %s",OBJ_NAME(cm_dp),lbp->OBJ_NAME(lb_dp));
+snprintf(ERROR_STRING,LLEN,"x_assign_lutbuf:  copying data from %s to %s",OBJ_NAME(cm_dp),lbp->OBJ_NAME(lb_dp));
 advise(ERROR_STRING);
 		dp_copy(lbp->lb_dp,cm_dp);
 	} else {
@@ -254,7 +254,7 @@ void _x_read_lutbuf(QSP_ARG_DECL  Data_Obj *cm_dp,Lutbuf *lbp)
 	if( simulating_luts ){
 		assert( lbp->lb_dp != NULL );
 
-sprintf(ERROR_STRING,"x_read_lutbuf:  copying data from %s to %s",OBJ_NAME(lbp->lb_dp),OBJ_NAME(cm_dp));
+snprintf(ERROR_STRING,LLEN,"x_read_lutbuf:  copying data from %s to %s",OBJ_NAME(lbp->lb_dp),OBJ_NAME(cm_dp));
 advise(ERROR_STRING);
 		dp_copy(cm_dp,lbp->lb_dp);
 		return;
@@ -374,7 +374,7 @@ void x_dump_lut(Dpyable *dpyp)
 
 #ifdef QUIP_DEBUG
 if( debug & xdebug ){
-sprintf(DEFAULT_ERROR_STRING,"dumping colormap %s",OBJ_NAME(DPA_CMAP_OBJ(dpyp)));
+snprintf(DEFAULT_ERROR_STRING,LLEN,"dumping colormap %s",OBJ_NAME(DPA_CMAP_OBJ(dpyp)));
 NADVISE(DEFAULT_ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */

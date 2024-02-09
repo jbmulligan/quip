@@ -111,9 +111,9 @@ static int _baud_for_code(QSP_ARG_DECL  int c)
 #ifdef CAUTIOUS
 		default:
 			b=0;	/* elim warning */
-			sprintf(ERROR_STRING,"CAUTIOUS:  show_baud:  undefined baud rate constant 0x%x!?",c);
+			snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  show_baud:  undefined baud rate constant 0x%x!?",c);
 			warn(ERROR_STRING);
-			sprintf(ERROR_STRING,"\tB9600 = 0x%x",B9600);
+			snprintf(ERROR_STRING,LLEN,"\tB9600 = 0x%x",B9600);
 			advise(ERROR_STRING);
 			break;
 #endif /* CAUTIOUS */
@@ -148,7 +148,7 @@ static void show_baud(SINGLE_QSP_ARG_DECL)
 
 #endif // ! HAVE_CFGETISPEED
 
-	sprintf(msg_str,"%d baud",b);
+	snprintf(msg_str,LLEN,"%d baud",b);
 	prt_msg(msg_str);
 }
 
@@ -323,7 +323,7 @@ void _set_tty_flag(QSP_ARG_DECL  const char *flagname,int fd,int value)
 	}
 
 	if( top == NULL ){
-		sprintf(ERROR_STRING,"Unrecognized flag %s",flagname);
+		snprintf(ERROR_STRING,LLEN,"Unrecognized flag %s",flagname);
 		warn(ERROR_STRING);
 		return;
 	}

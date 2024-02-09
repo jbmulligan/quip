@@ -37,7 +37,7 @@ static Visca_Cam *the_vcam_p=NULL;
 
 #define NO_VISCA_MSG(p,v)									\
 												\
-	sprintf(ERROR_STRING,"Sorry, no VISCA support in this build, can't set %s to %s.",p,v);	\
+	snprintf(ERROR_STRING,LLEN,"Sorry, no VISCA support in this build, can't set %s to %s.",p,v);	\
 	WARN(ERROR_STRING);
 
 #ifdef FOOBAR
@@ -559,7 +559,7 @@ static int _table_index_for_inq(QSP_ARG_DECL   Visca_Inq_Def *tbl, Inq_Type code
 		tbl++;
 		i++;
 	}
-	sprintf(ERROR_STRING,"table_index_for_inq:  No visca inquiry definition found for code %d!?",code);
+	snprintf(ERROR_STRING,LLEN,"table_index_for_inq:  No visca inquiry definition found for code %d!?",code);
 	WARN(ERROR_STRING);
 	return -1;
 }
@@ -583,7 +583,7 @@ static void _init_visca_cmd( QSP_ARG_DECL  Visca_Cmd_Def *vcdp )
 		assert( vcsp != NULL );
 		vcsp->vcs_icp = create_visca_cmd_context(vcdp->vcd_set);
 		if( vcsp->vcs_icp == NULL ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"Couldn't create item context %s",
 				vcdp->vcd_set);
 			error1(ERROR_STRING);
@@ -594,7 +594,7 @@ static void _init_visca_cmd( QSP_ARG_DECL  Visca_Cmd_Def *vcdp )
 
 	vcmdp = new_visca_cmd(vcdp->vcd_cmd);
 	if( vcmdp == NULL ){
-		sprintf(ERROR_STRING,"Couldn't create visca cmd %s",
+		snprintf(ERROR_STRING,LLEN,"Couldn't create visca cmd %s",
 			vcdp->vcd_cmd);
 		error1(ERROR_STRING);
 	}
@@ -701,7 +701,7 @@ static int _get_cmd_ack(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Cmd_Def *vcdp)
 	 */
 
 	if( ack_buf[0] != reply_addr ){
-		sprintf(ERROR_STRING,"Ack buffer camera address mismatch (expected 0x%x, received 0x%x)",
+		snprintf(ERROR_STRING,LLEN,"Ack buffer camera address mismatch (expected 0x%x, received 0x%x)",
 			reply_addr,ack_buf[0]);
 		WARN(ERROR_STRING);
 	}
@@ -724,7 +724,7 @@ static int _get_cmd_ack(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Cmd_Def *vcdp)
 		const char *err_msg;
 
 		err_msg = error_message(ack_buf[2]);
-		sprintf(ERROR_STRING,"Command %s %s:  %s",
+		snprintf(ERROR_STRING,LLEN,"Command %s %s:  %s",
 			vcdp->vcd_set,vcdp->vcd_cmd,err_msg);
 		WARN(ERROR_STRING);
 
@@ -737,7 +737,7 @@ static int _get_cmd_ack(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Cmd_Def *vcdp)
 		n = recv_somex(vcam_p->vcam_fd,ack_buf,LLEN,n);
 
 		if( ack_buf[0] != 0xff ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"Error string terminated with 0x%x, expected 0xff!?",
 				ack_buf[0]);
 			WARN(ERROR_STRING);
@@ -746,7 +746,7 @@ static int _get_cmd_ack(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Cmd_Def *vcdp)
 		return(-1);
 	}
 
-	sprintf(ERROR_STRING,"get_cmd_ack:  Unexpected ACK msg (0x%.2x%.2x%.2x) for %s %s",
+	snprintf(ERROR_STRING,LLEN,"get_cmd_ack:  Unexpected ACK msg (0x%.2x%.2x%.2x) for %s %s",
 		ack_buf[0], ack_buf[1], ack_buf[2], vcdp->vcd_set, vcdp->vcd_cmd);
 	advise(ERROR_STRING);
 
@@ -789,11 +789,11 @@ static void _get_cmd_completion( QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Cmd_Def 
 	if( comp_buf[0] == reply_addr && ( comp_buf[1] == 0x50 || comp_buf[1] == 0x51 ) && comp_buf[2] == 0xff ) /* all is normal */
 		return;
 
-	sprintf(ERROR_STRING,"Expected 0x%.2x 0x50/0x51 , received 0x%.2x 0x%.2x!?",
+	snprintf(ERROR_STRING,LLEN,"Expected 0x%.2x 0x50/0x51 , received 0x%.2x 0x%.2x!?",
 			reply_addr, comp_buf[0], comp_buf[1]);
 	WARN(ERROR_STRING);
 	
-	sprintf(ERROR_STRING,"Unexpected completion msg for %s %s",
+	snprintf(ERROR_STRING,LLEN,"Unexpected completion msg for %s %s",
 		vcdp->vcd_set,vcdp->vcd_cmd);
 	advise(ERROR_STRING);
 
@@ -810,14 +810,14 @@ static int _compare_response(QSP_ARG_DECL  Visca_Inq_Def *vidp,
 	int j;
 
 	if( buf[i] != proto[i] ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Inquiry %s, response (0x%.2x) differs from prototype (0x%.2x) at posn %d",
 			vidp->vid_inq,buf[i],proto[i],i);
 		WARN(ERROR_STRING);
 
 		advise("\n\tproto\tresp\n");
 		for(j=0;j<n;j++){
-			sprintf(ERROR_STRING,"\t0x%.2x\t0x%.2x",
+			snprintf(ERROR_STRING,LLEN,"\t0x%.2x\t0x%.2x",
 				proto[j],buf[j]);
 			advise(ERROR_STRING);
 		}
@@ -835,7 +835,7 @@ static long get_binary_number(u_char *buf,int n_bytes,int first_position)
 		n <<= 8;
 		n += buf[first_position+i];
 	}
-//sprintf(ERROR_STRING,"get_binary_number %d %d:  \"%s\" - returning 0x%lx",n_bytes,first_position,printable_string(&buf[first_position]),n);
+//snprintf(ERROR_STRING,LLEN,"get_binary_number %d %d:  \"%s\" - returning 0x%lx",n_bytes,first_position,printable_string(&buf[first_position]),n);
 //advise(ERROR_STRING);
 	return(n);
 }
@@ -858,7 +858,7 @@ static long get_number_reply(u_char *buf,int n_hex_digits,int first_position)
 	if( n_hex_digits == 4 && n&0x8000 )
 		n |= 0xffff0000;
 
-//sprintf(ERROR_STRING,"get_number_reply %d %d:  \"%s\" - returning 0x%lx",n_hex_digits,first_position,printable_string(buf),n);
+//snprintf(ERROR_STRING,LLEN,"get_number_reply %d %d:  \"%s\" - returning 0x%lx",n_hex_digits,first_position,printable_string(buf),n);
 //advise(ERROR_STRING);
 	return(n);
 }
@@ -881,7 +881,7 @@ static void _process_inq_error(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Inq_Def *v
 	n = recv_somex(vcam_p->vcam_fd,err_buf,LLEN,n);
 
 	err_msg = error_message(err_buf[0]);
-	sprintf(ERROR_STRING,"Inquiry %s:  %s",	vidp->vid_inq, err_msg);
+	snprintf(ERROR_STRING,LLEN,"Inquiry %s:  %s",	vidp->vid_inq, err_msg);
 	WARN(ERROR_STRING);
 }
 
@@ -895,21 +895,22 @@ static void inq_result(QSP_ARG_DECL  const char *parameter_name,
 	assign_var(INQ_RESULT_NAME, result_string);
 	if( verbose ){
 		if( parameter_name != NULL ){
-			sprintf(msg_str,"%s is %s",parameter_name,result_string);
+			snprintf(msg_str,LLEN,"%s is %s",parameter_name,result_string);
 		} else {
-			sprintf(msg_str,"%s",result_string);
+			snprintf(msg_str,LLEN,"%s",result_string);
 		}
 
 		prt_msg(msg_str);
 	}
 }
 
-#define BAD_RESP( c )		sprintf(ERROR_STRING,			\
+#define BAD_RESP( c )		snprintf(ERROR_STRING,LLEN,		\
 	"Unexpected response code 0x%.2x, inquiry %s",c, vidp->vid_inq);	\
 				WARN(ERROR_STRING)
 
 #define get_inq_reply(vcam_p,vidp)	_get_inq_reply(QSP_ARG  vcam_p,vidp)
 
+#define RESULT_SLEN	80
 static void _get_inq_reply(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Inq_Def *vidp)
 {
 	u_char reply_buf[LLEN];		/* probably could be MUCH shorter!? */
@@ -917,7 +918,7 @@ static void _get_inq_reply(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Inq_Def *vidp)
 	int i,n;
 	int result;
 	int mem_index;
-	char result_str[80];	/* for passing answers back to scripts... */
+	char result_str[RESULT_SLEN];	/* for passing answers back to scripts... */
 	int reply_addr;
 
 //advise("get_inq_reply BEGIN");
@@ -934,7 +935,8 @@ static void _get_inq_reply(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Inq_Def *vidp)
 	n = recv_somex(vcam_p->vcam_fd,reply_buf,LLEN,n);
 	/* should we check that we got two??? */
 	if( n != 2 ){
-		sprintf(ERROR_STRING,"get_inq_reply:  expected 2 chars, got %d",n);
+		snprintf(ERROR_STRING,LLEN,
+				"get_inq_reply:  expected 2 chars, got %d",n);
 		WARN(ERROR_STRING);
 	}
 	
@@ -946,9 +948,9 @@ static void _get_inq_reply(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Inq_Def *vidp)
 	
 	}
 
-//sprintf(ERROR_STRING,"reply_buf[0] = 0x%x",reply_buf[0]);
+//snprintf(ERROR_STRING,LLEN,"reply_buf[0] = 0x%x",reply_buf[0]);
 //advise(ERROR_STRING);
-//sprintf(ERROR_STRING,"reply_buf[1] = 0x%x",reply_buf[1]);
+//snprintf(ERROR_STRING,LLEN,"reply_buf[1] = 0x%x",reply_buf[1]);
 //advise(ERROR_STRING);
 
 	/* completion message is 0xZ0 0x50/51 0xFF  
@@ -959,7 +961,7 @@ static void _get_inq_reply(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Inq_Def *vidp)
 
 
 	if( reply_buf[0] != reply_addr || ( reply_buf[1] != 0x50 && reply_buf[1] != 0x51 ) ) {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Inquiry %s:  expected 0x%.2x 0x50/51, received 0x%.2x 0x%.2x!?",
 			vidp->vid_inq, reply_addr, reply_buf[0], reply_buf[1]);
 		WARN(ERROR_STRING);
@@ -987,10 +989,10 @@ static void _get_inq_reply(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Inq_Def *vidp)
 
 	n = recv_somex(vcam_p->vcam_fd,reply_buf,LLEN,n);
 
-//sprintf(ERROR_STRING,"Read %d chars",n);
+//snprintf(ERROR_STRING,LLEN,"Read %d chars",n);
 //advise(ERROR_STRING);
 //for(i=0;i<n;i++){
-//sprintf(ERROR_STRING,"\treply_buf[%d] = %s (0x%x)",i,printable_version(reply_buf[i]),reply_buf[i]);
+//snprintf(ERROR_STRING,LLEN,"\treply_buf[%d] = %s (0x%x)",i,printable_version(reply_buf[i]),reply_buf[i]);
 //advise(ERROR_STRING);
 //}
 
@@ -1014,7 +1016,7 @@ static void _get_inq_reply(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Inq_Def *vidp)
 
 #ifdef CAUTIOUS
 		case NULL_INQ:
-			sprintf(ERROR_STRING,"CAUTIOUS:  get_inq_reply:  should not see NULL_INQ!?");
+			snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  get_inq_reply:  should not see NULL_INQ!?");
 			WARN(ERROR_STRING);
 			break;
 #endif // CAUTIOUS
@@ -1023,13 +1025,13 @@ static void _get_inq_reply(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Inq_Def *vidp)
 			/* The position is encoded in bytes 2-5 */
 			result = get_number_reply(reply_buf,4,0);
 			if( verbose ){
-				sprintf(msg_str,"%s is %d (0x%x)",vidp->vid_inq,
+				snprintf(msg_str,LLEN,"%s is %d (0x%x)",vidp->vid_inq,
 					result,result);
 				prt_msg(msg_str);
 			}
 
 
-			sprintf(result_str,"%d",result);
+			snprintf(result_str,RESULT_SLEN,"%d",result);
 			assign_var(INQ_RESULT_NAME, result_str);
 
 			break;
@@ -1222,13 +1224,13 @@ static void _get_inq_reply(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Inq_Def *vidp)
 
 		case DIG_EFFECT_LVL_INQ:
 			result = reply_buf[0];
-			sprintf(msg_str,"%s is %d (0x%x)",vidp->vid_inq,result,result);
+			snprintf(msg_str,LLEN,"%s is %d (0x%x)",vidp->vid_inq,result,result);
 			prt_msg(msg_str);
 			break;
 
 		case MEMORY_INQ:
 			mem_index = reply_buf[0];
-			sprintf(msg_str,"Current memory index is %d", mem_index);
+			snprintf(msg_str,LLEN,"Current memory index is %d", mem_index);
 			prt_msg(msg_str);
 			break;
 
@@ -1241,13 +1243,13 @@ static void _get_inq_reply(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Inq_Def *vidp)
 			break;
 
 		case PT_MODE_INQ:
-			sprintf(msg_str,"Pantilt mode status is 0x%.2x 0x%.2x",
+			snprintf(msg_str,LLEN,"Pantilt mode status is 0x%.2x 0x%.2x",
 				reply_buf[0],reply_buf[1]);
 			prt_msg(msg_str);
 			break;
 
 		case PT_MAX_SPEED_INQ:
-			sprintf(msg_str,"Pan max speed is %d (0x%x)\nTilt max speed is %d (0x%x)",
+			snprintf(msg_str,LLEN,"Pan max speed is %d (0x%x)\nTilt max speed is %d (0x%x)",
 				reply_buf[0],reply_buf[0],reply_buf[1],reply_buf[1]);
 			prt_msg(msg_str);
 			break;
@@ -1255,18 +1257,18 @@ static void _get_inq_reply(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Inq_Def *vidp)
 		case PT_POSN_INQ:
 			result = get_number_reply(reply_buf,4,0);
 			if( verbose ){
-				sprintf(msg_str,"Pan position %d (0x%x) stored in $pan_posn", result,result);
+				snprintf(msg_str,LLEN,"Pan position %d (0x%x) stored in $pan_posn", result,result);
 				prt_msg(msg_str);
 			}
-			sprintf(msg_str,"%d",result);
+			snprintf(msg_str,LLEN,"%d",result);
 			assign_var("pan_posn",msg_str);
 
 			result = get_number_reply(reply_buf,4,4);
 			if( verbose ){
-				sprintf(msg_str,"Tilt position %d (0x%x) stored in $tilt_posn",result,result);
+				snprintf(msg_str,LLEN,"Tilt position %d (0x%x) stored in $tilt_posn",result,result);
 				prt_msg(msg_str);
 			}
-			sprintf(msg_str,"%d",result);
+			snprintf(msg_str,LLEN,"%d",result);
 			assign_var("tilt_posn",msg_str);
 
 			break;
@@ -1286,19 +1288,19 @@ static void _get_inq_reply(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Inq_Def *vidp)
 			vcam_p->vcam_max_socket = get_binary_number(reply_buf,1,6);
 
 			if( verbose ){
-				sprintf(msg_str,"Camera %d:",vcam_p->vcam_index);
+				snprintf(msg_str,LLEN,"Camera %d:",vcam_p->vcam_index);
 				prt_msg(msg_str);
 
-				sprintf(msg_str,"\tVendor ID:  0x%x", vcam_p->vcam_vendor_id);
+				snprintf(msg_str,LLEN,"\tVendor ID:  0x%x", vcam_p->vcam_vendor_id);
 				prt_msg(msg_str);
 
-				sprintf(msg_str,"\tModel ID:   0x%x",vcam_p->vcam_model_id);
+				snprintf(msg_str,LLEN,"\tModel ID:   0x%x",vcam_p->vcam_model_id);
 				prt_msg(msg_str);
 
-				sprintf(msg_str,"\tROM Version:  0x%x",vcam_p->vcam_rom_version);
+				snprintf(msg_str,LLEN,"\tROM Version:  0x%x",vcam_p->vcam_rom_version);
 				prt_msg(msg_str);
 
-				sprintf(msg_str,"\tSocket Number:  0x%x",vcam_p->vcam_max_socket);
+				snprintf(msg_str,LLEN,"\tSocket Number:  0x%x",vcam_p->vcam_max_socket);
 				prt_msg(msg_str);
 			}
 
@@ -1328,7 +1330,7 @@ static void _get_inq_reply(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Inq_Def *vidp)
 
 #ifdef FOOBAR
 		case UNDEF_INQ:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"Response format for inquiry %s is undefined!?",
 				vidp->vid_inq);
 			WARN(ERROR_STRING);
@@ -1346,7 +1348,7 @@ static void _get_inq_reply(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Inq_Def *vidp)
 
                 case ID_INQ:
 			result = get_number_reply(reply_buf,2,0);
-			sprintf(msg_str,"Camera ID is %d",result);
+			snprintf(msg_str,LLEN,"Camera ID is %d",result);
 			prt_msg(msg_str);
 			break;
 
@@ -1362,7 +1364,7 @@ static void _get_inq_reply(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Inq_Def *vidp)
 			break;
 
 		case AT_MODE_INQ:
-			sprintf(msg_str,"AT status is 0x%.2x 0x%.2x",
+			snprintf(msg_str,LLEN,"AT status is 0x%.2x 0x%.2x",
 				reply_buf[0],reply_buf[1]);
 			prt_msg(msg_str);
 			break;
@@ -1378,43 +1380,43 @@ static void _get_inq_reply(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Inq_Def *vidp)
 			break;
 
 		case MD_MODE_INQ:
-			sprintf(msg_str,"MD status is 0x%.2x 0x%.2x",
+			snprintf(msg_str,LLEN,"MD status is 0x%.2x 0x%.2x",
 				reply_buf[0],reply_buf[1]);
 			prt_msg(msg_str);
 			break;
 
 		case AT_POSN_INQ:
-			sprintf(msg_str,"AT posn codes:  0x%.2x 0x%.2x 0x%.2x",
+			snprintf(msg_str,LLEN,"AT posn codes:  0x%.2x 0x%.2x 0x%.2x",
 				reply_buf[0],reply_buf[1],reply_buf[2]);
 			prt_msg(msg_str);
 			break;
 
 		case MD_POSN_INQ:
-			sprintf(msg_str,"MD posn codes:  X: 0x%.2x Y: 0x%.2x Z: 0x%x",
+			snprintf(msg_str,LLEN,"MD posn codes:  X: 0x%.2x Y: 0x%.2x Z: 0x%x",
 				reply_buf[0],reply_buf[1],reply_buf[2]);
 			prt_msg(msg_str);
 			break;
 			
 		case MD_Y_INQ:
-			sprintf(msg_str,"MD Y Level: 0x%x", reply_buf[1]);
+			snprintf(msg_str,LLEN,"MD Y Level: 0x%x", reply_buf[1]);
 			prt_msg(msg_str);
 			break;
 
 		case MD_HUE_INQ:
 			result = get_number_reply(reply_buf,1,3);
-			sprintf(msg_str,"MD hue is %d",result);
+			snprintf(msg_str,LLEN,"MD hue is %d",result);
 			prt_msg(msg_str);
 			break;
 
 		case MD_SIZE_INQ:
 			result = get_number_reply(reply_buf,1,3);
-			sprintf(msg_str,"MD size is %d",result);
+			snprintf(msg_str,LLEN,"MD size is %d",result);
 			prt_msg(msg_str);
 			break;
 
 		case MD_DISP_TIME_INQ:
 			result = get_number_reply(reply_buf,1,3);
-			sprintf(msg_str,"MD disp time is %d",result);
+			snprintf(msg_str,LLEN,"MD disp time is %d",result);
 			prt_msg(msg_str);
 			break;
 
@@ -1429,7 +1431,7 @@ static void _get_inq_reply(QSP_ARG_DECL  Visca_Cam *vcam_p, Visca_Inq_Def *vidp)
 
 		case MD_REF_TIME_INQ:
 			result = get_number_reply(reply_buf,1,1);
-			sprintf(msg_str,"MD ref time is %d",result);
+			snprintf(msg_str,LLEN,"MD ref time is %d",result);
 			prt_msg(msg_str);
 			break;
 
@@ -1450,7 +1452,7 @@ static void _hex_digit_to_ascii(QSP_ARG_DECL  u_char *dest,int val)
 		return;
 	}
 
-	sprintf(ERROR_STRING,"bad hex digit value %d (0x%x)",val,val);
+	snprintf(ERROR_STRING,LLEN,"bad hex digit value %d (0x%x)",val,val);
 
 	WARN(ERROR_STRING);
 }
@@ -1460,12 +1462,12 @@ static COMMAND_FUNC( get_pan_speed )
 	char prompt[LLEN];
 	unsigned int pan_speed;
 
-	sprintf(prompt, "pan speed (0x%x - 0x%x)", vparam_p->pan_speed_min, vparam_p->pan_speed_max);
+	snprintf(prompt,LLEN, "pan speed (0x%x - 0x%x)", vparam_p->pan_speed_min, vparam_p->pan_speed_max);
 
 	pan_speed = HOW_MANY(prompt);
 
 	if( pan_speed < vparam_p->pan_speed_min || pan_speed > vparam_p->pan_speed_max ){
-		sprintf(ERROR_STRING,"Pan speed (0x%x) must be in the range 0x%x-0x%x",
+		snprintf(ERROR_STRING,LLEN,"Pan speed (0x%x) must be in the range 0x%x-0x%x",
 			pan_speed,vparam_p->pan_speed_min, vparam_p->pan_speed_max);
 		WARN(ERROR_STRING);
 		advise("defaulting to 0x10");
@@ -1485,11 +1487,11 @@ static COMMAND_FUNC( get_tilt_speed )
 	char prompt[LLEN];
 	unsigned int tilt_speed;
 
-	sprintf(prompt, "tilt speed (0x%x - 0x%x)", vparam_p->tilt_speed_min, vparam_p->tilt_speed_max);
+	snprintf(prompt,LLEN, "tilt speed (0x%x - 0x%x)", vparam_p->tilt_speed_min, vparam_p->tilt_speed_max);
 	tilt_speed = HOW_MANY(prompt);
 
 	if( tilt_speed < vparam_p->tilt_speed_min || tilt_speed > vparam_p->tilt_speed_max ){
-		sprintf(ERROR_STRING,"Tilt speed (0x%x) must be in the range 0x%x-0x%x",
+		snprintf(ERROR_STRING,LLEN,"Tilt speed (0x%x) must be in the range 0x%x-0x%x",
 			tilt_speed, vparam_p->tilt_speed_min, vparam_p->tilt_speed_max);
 		WARN(ERROR_STRING);
 		advise("defaulting to 0x10");
@@ -1743,7 +1745,7 @@ static int verify_cmd( Visca_Cam *vcam_p, Visca_Cmd_Def *vcdp )
 
 #define SET_ZOOM_ARG							\
 									\
-	sprintf(prompt, "zoom data, %d (wide) - 0x%x (tele)", 		\
+	snprintf(prompt,LLEN, "zoom data, %d (wide) - 0x%x (tele)", 		\
 	vparam_p->zoom_opt_pos_min, vparam_p->zoom_opt_pos_max );	\
 									\
 	zoom_data = HOW_MANY(prompt);					\
@@ -1751,7 +1753,7 @@ static int verify_cmd( Visca_Cam *vcam_p, Visca_Cmd_Def *vcdp )
 	if( zoom_data < vparam_p->zoom_opt_pos_min || 			\
 		zoom_data > vparam_p->zoom_opt_pos_max ){		\
 									\
-		sprintf(ERROR_STRING,					\
+		snprintf(ERROR_STRING,LLEN,					\
 			"optical zoom data (0x%x) should be 0x%x-0x%x",	\
 			zoom_data,vparam_p->zoom_opt_pos_min,		\
 			vparam_p->zoom_opt_pos_max );			\
@@ -1771,7 +1773,7 @@ static int verify_cmd( Visca_Cam *vcam_p, Visca_Cmd_Def *vcdp )
 
 #define SET_FOCUS_ARG							\
 									\
-	sprintf(prompt, "focus data, %d (near) - 0x%x (far)", 		\
+	snprintf(prompt,LLEN, "focus data, %d (near) - 0x%x (far)", 		\
 		vparam_p->focus_pos_min, vparam_p->focus_pos_max );	\
 									\
 	focus_posn = HOW_MANY(prompt);					\
@@ -1779,12 +1781,12 @@ static int verify_cmd( Visca_Cam *vcam_p, Visca_Cmd_Def *vcdp )
 	if( focus_posn < vparam_p->focus_pos_min || 			\
 		focus_posn > vparam_p->focus_pos_max ){			\
 									\
-		sprintf(ERROR_STRING,					\
+		snprintf(ERROR_STRING,LLEN,					\
 			"optical focus data should be 0x%x-0x%x", 	\
 			vparam_p->focus_pos_min,			\
 			vparam_p->focus_pos_max );			\
 		WARN(ERROR_STRING);					\
-		sprintf(ERROR_STRING,"defaulting to 0x%x",		\
+		snprintf(ERROR_STRING,LLEN,"defaulting to 0x%x",		\
 						DEFAULT_FOCUS_POSN);	\
 		advise(ERROR_STRING);					\
 		focus_posn = DEFAULT_FOCUS_POSN;			\
@@ -1815,13 +1817,13 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 			{
 			int pwr_timer;
 			
-			sprintf(prompt,
+			snprintf(prompt,LLEN,
 	"auto power timeout (mins), %x (Timer off) - 0x%x (%d mins)", 
 	MIN_TIMER_EVI100, MAX_TIMER_EVI100, MAX_TIMER_EVI100);
 			pwr_timer = HOW_MANY(prompt);
 			if( pwr_timer < MIN_TIMER_EVI100 ||
 					pwr_timer > MAX_TIMER_EVI100 ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"power timer value should be 0x%x-0x%x",
 			MIN_TIMER_EVI100, MAX_TIMER_EVI100);
 				WARN(ERROR_STRING);
@@ -1838,11 +1840,11 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 
 		case ZOOM_SPEED:	/* evi100 & evi30 */
 
-			sprintf(prompt,"focus speed (%d - %d)", vparam_p->zoom_speed_min, vparam_p->zoom_speed_max);
+			snprintf(prompt,LLEN,"focus speed (%d - %d)", vparam_p->zoom_speed_min, vparam_p->zoom_speed_max);
 			speed = HOW_MANY(prompt);
 			
 			if( speed <  vparam_p->zoom_speed_min || speed > vparam_p->zoom_speed_max ){
-				sprintf(ERROR_STRING, "zoom speed %d must be in the range %d - %d",speed,
+				snprintf(ERROR_STRING,LLEN, "zoom speed %d must be in the range %d - %d",speed,
 					vparam_p->zoom_speed_min, vparam_p->zoom_speed_max);
 				WARN(ERROR_STRING);
 				advise("defaulting to 3");
@@ -1863,10 +1865,10 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 			break;
 
 		case TELE_ARG:
-			sprintf(prompt,"wide/tele index 0 (low) - 7 (high)");
+			snprintf(prompt,LLEN,"wide/tele index 0 (low) - 7 (high)");
 			zoom_data = HOW_MANY(prompt);
 			if( zoom_data < 0 || zoom_data > 7 ){
-				sprintf(ERROR_STRING, "wide/tele data should be in the range 0-7");
+				snprintf(ERROR_STRING,LLEN, "wide/tele data should be in the range 0-7");
 				WARN(ERROR_STRING);
 				advise("defaulting to 0");
 				zoom_data=0;
@@ -1876,10 +1878,10 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 
 		case ZOOM_DIG_ARG:	/* evi100 */
 
-			sprintf(prompt, "zoom data, 0x%x (X 1) - 0x%x (X 4)",MIN_ZOOM_DIG_EVI100, MAX_ZOOM_DIG_EVI100 );
+			snprintf(prompt,LLEN, "zoom data, 0x%x (X 1) - 0x%x (X 4)",MIN_ZOOM_DIG_EVI100, MAX_ZOOM_DIG_EVI100 );
 			zoom_data = HOW_MANY(prompt);
 			if( zoom_data < MIN_ZOOM_DIG_EVI100 || zoom_data > MAX_ZOOM_DIG_EVI100 ){
-				sprintf(ERROR_STRING, "digital zoom data should be 0x%x-0x%x", MIN_ZOOM_DIG_EVI100, MAX_ZOOM_DIG_EVI100 );
+				snprintf(ERROR_STRING,LLEN, "digital zoom data should be 0x%x-0x%x", MIN_ZOOM_DIG_EVI100, MAX_ZOOM_DIG_EVI100 );
 				WARN(ERROR_STRING);
 				advise("defaulting to 0x57ff");
 				zoom_data = 0x57ff;
@@ -1893,11 +1895,11 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 
 		case FOCUS_SPEED:	/* evi100 */
 
-			sprintf(prompt,"focus speed (0x%x - 0x%x)", MIN_FOCUS_SPEED_EVI100, MAX_FOCUS_SPEED_EVI100);
+			snprintf(prompt,LLEN,"focus speed (0x%x - 0x%x)", MIN_FOCUS_SPEED_EVI100, MAX_FOCUS_SPEED_EVI100);
 			speed = HOW_MANY(prompt);
 		
 			if( speed < MIN_FOCUS_SPEED_EVI100 || speed > MAX_FOCUS_SPEED_EVI100 ){
-				sprintf(ERROR_STRING, "Focus speed 0x%x must be in the range 0x%x - 0x%x",speed,
+				snprintf(ERROR_STRING,LLEN, "Focus speed 0x%x must be in the range 0x%x - 0x%x",speed,
 					MIN_FOCUS_SPEED_EVI100, MAX_FOCUS_SPEED_EVI100);
 				WARN(ERROR_STRING);
 				advise("defaulting to 3");
@@ -1910,12 +1912,12 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 		
 		case FOCUS_POS:		/* evi100 & evi30 */
 
-			sprintf(prompt,"focus setting (%x/far - %x/near)", vparam_p->focus_pos_min, vparam_p->focus_pos_max);
+			snprintf(prompt,LLEN,"focus setting (%x/far - %x/near)", vparam_p->focus_pos_min, vparam_p->focus_pos_max);
 			focus_posn = HOW_MANY(prompt);
 
 			if( focus_posn < vparam_p->focus_pos_min || focus_posn > vparam_p->focus_pos_max ){
 
-				sprintf(ERROR_STRING, "Focus position (0x%x) must be in the range 0x%x - 0x%x",focus_posn,
+				snprintf(ERROR_STRING,LLEN, "Focus position (0x%x) must be in the range 0x%x - 0x%x",focus_posn,
 					vparam_p->focus_pos_min,vparam_p->focus_pos_max);
 				WARN(ERROR_STRING);
 				advise("defaulting to 0x5000");
@@ -1930,12 +1932,12 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 
 		case FOCUS_NEAR_LMT_ARG:		/* evi100 */
 
-			sprintf(prompt,"focus setting (%x/far - %x/near)", MIN_FOCUS_LMT_EVI100, MAX_FOCUS_LMT_EVI100);
+			snprintf(prompt,LLEN,"focus setting (%x/far - %x/near)", MIN_FOCUS_LMT_EVI100, MAX_FOCUS_LMT_EVI100);
 			focus_posn = HOW_MANY(prompt);
 
 			if( focus_posn < MIN_FOCUS_LMT_EVI100 || focus_posn > MAX_FOCUS_LMT_EVI100){
 
-				sprintf(ERROR_STRING, "Focus position (0x%x) must be in the range 0x%x - 0x%x",focus_posn,
+				snprintf(ERROR_STRING,LLEN, "Focus position (0x%x) must be in the range 0x%x - 0x%x",focus_posn,
 					MIN_FOCUS_LMT_EVI100, MAX_FOCUS_LMT_EVI100);
 				WARN(ERROR_STRING);
 				advise("defaulting to 0x5000");
@@ -1950,12 +1952,12 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 			
 		case RGAIN_ARG:		/* evi100 */ 	
 		
-			sprintf(prompt,"R gain setting (%d - %d)", MIN_R_GAIN_EVI100, MAX_R_GAIN_EVI100);
+			snprintf(prompt,LLEN,"R gain setting (%d - %d)", MIN_R_GAIN_EVI100, MAX_R_GAIN_EVI100);
 			gain = HOW_MANY(prompt);
 			
 			if ( gain < MIN_R_GAIN_EVI100 || gain > MAX_R_GAIN_EVI100 ){
 
-				sprintf(ERROR_STRING, "R gain (0x%x) must be in the range 0x%x - 0x%x",gain,
+				snprintf(ERROR_STRING,LLEN, "R gain (0x%x) must be in the range 0x%x - 0x%x",gain,
 					MIN_R_GAIN_EVI100, MAX_R_GAIN_EVI100 );
 				WARN(ERROR_STRING);
 				advise("defaulting to 0x7f");
@@ -1971,12 +1973,12 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 		
 		case BGAIN_ARG: 	/* evi100 */
 
-			sprintf(prompt,"B gain setting (0x%x - 0x%x)", MIN_B_GAIN_EVI100, MAX_B_GAIN_EVI100);
+			snprintf(prompt,LLEN,"B gain setting (0x%x - 0x%x)", MIN_B_GAIN_EVI100, MAX_B_GAIN_EVI100);
 			gain = HOW_MANY(prompt);
 	
 			if ( gain < MIN_B_GAIN_EVI100 || gain > MAX_B_GAIN_EVI100 ){
 
-				sprintf(ERROR_STRING, "B gain (0x%x) must be in the range 0x%x - 0x%x",gain,
+				snprintf(ERROR_STRING,LLEN, "B gain (0x%x) must be in the range 0x%x - 0x%x",gain,
 					MIN_B_GAIN_EVI100, MAX_B_GAIN_EVI100 );
 				WARN(ERROR_STRING);
 				advise("defaulting to 0x7f");
@@ -1994,13 +1996,13 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 			{
 			unsigned int shutter_speed;
 
-			sprintf(prompt, "shutter speed %x(NTSC 1/4, PAL 1/3) - %x(1/10000)", 
+			snprintf(prompt,LLEN, "shutter speed %x(NTSC 1/4, PAL 1/3) - %x(1/10000)", 
 				vparam_p->shutr_min, vparam_p->shutr_max);
 			shutter_speed = HOW_MANY(prompt);
 
 			if( shutter_speed < vparam_p->shutr_min || shutter_speed > vparam_p->shutr_max ){
 
-				sprintf(ERROR_STRING, "Shutter speed (0x%x) must be in the range 0x%x - 0x%x",shutter_speed,
+				snprintf(ERROR_STRING,LLEN, "Shutter speed (0x%x) must be in the range 0x%x - 0x%x",shutter_speed,
 					vparam_p->shutr_min,vparam_p->shutr_max);
 				WARN(ERROR_STRING);
 				advise("defaulting to 0x0a");
@@ -2018,13 +2020,13 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 			{
 			unsigned int iris_posn;
 
-			sprintf(prompt, "iris setting (%x/closed - %x/f1.8)",
+			snprintf(prompt,LLEN, "iris setting (%x/closed - %x/f1.8)",
 				vparam_p->iris_pos_min, vparam_p->iris_pos_max);
 			iris_posn = HOW_MANY(prompt);  
 			
 			if( iris_posn < vparam_p->iris_pos_min || iris_posn > vparam_p->iris_pos_max ){
 
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 					"Iris position (0x%x) must be in the range 0x%x - 0x%x",iris_posn,
 						vparam_p->iris_pos_min, vparam_p->iris_pos_max);
 
@@ -2043,13 +2045,13 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 
 		case GAIN_ARG: 		/* evi100 & evi30 */
 
-			sprintf(prompt, "gain setting 0x%x - 0x%x",
+			snprintf(prompt,LLEN, "gain setting 0x%x - 0x%x",
 				vparam_p->gain_pos_min, vparam_p->gain_pos_max);		
 			gain = HOW_MANY(prompt);  
 			
 			if( gain < vparam_p->gain_pos_min || gain > vparam_p->gain_pos_max ){
 
-				sprintf(ERROR_STRING, "Gain position (0x%x) must be in the range 0x%x - 0x%x",
+				snprintf(ERROR_STRING,LLEN, "Gain position (0x%x) must be in the range 0x%x - 0x%x",
 					gain, vparam_p->gain_pos_min, vparam_p->gain_pos_max);
 				
 				WARN(ERROR_STRING);
@@ -2067,12 +2069,12 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 			{
 			int bright_posn;
 
-			sprintf(prompt, "bright_posn %x(close,0dB) - %x(F1.8,+18dB)", MIN_BRIGHT_EVI100, MAX_BRIGHT_EVI100);
+			snprintf(prompt,LLEN, "bright_posn %x(close,0dB) - %x(F1.8,+18dB)", MIN_BRIGHT_EVI100, MAX_BRIGHT_EVI100);
  			bright_posn = HOW_MANY(prompt);  
 			
 			if( bright_posn < MIN_BRIGHT_EVI100 || bright_posn > MAX_BRIGHT_EVI100 ){
 
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 					"Bright position (0x%x) must be in the range 0x%x - 0x%x",bright_posn ,
 					MIN_BRIGHT_EVI100,MAX_BRIGHT_EVI100);
 				WARN(ERROR_STRING);
@@ -2091,12 +2093,12 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 			{
 			int exp_comp;
 
-			sprintf(prompt, "exposure compensation setting %x(-10.5dB) - %x(+10.5dB)",MIN_EXP_COMP_EVI100, MAX_EXP_COMP_EVI100);
+			snprintf(prompt,LLEN, "exposure compensation setting %x(-10.5dB) - %x(+10.5dB)",MIN_EXP_COMP_EVI100, MAX_EXP_COMP_EVI100);
 			exp_comp = HOW_MANY(prompt);		
 			
 			if( exp_comp < MIN_EXP_COMP_EVI100 || exp_comp > MAX_EXP_COMP_EVI100 ){
 
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 					"exposure compensation setting (0x%x) must be in the range 0x%x - 0x%x",exp_comp ,
 					MIN_EXP_COMP_EVI100, MAX_EXP_COMP_EVI100);
 				WARN(ERROR_STRING);
@@ -2113,12 +2115,12 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 			
 		case APERTURE_ARG:		/* evi100 */
 
-			sprintf(prompt, "gain setting (%x - %x)", MIN_APERTURE_GAIN_EVI100, MAX_APERTURE_GAIN_EVI100);
+			snprintf(prompt,LLEN, "gain setting (%x - %x)", MIN_APERTURE_GAIN_EVI100, MAX_APERTURE_GAIN_EVI100);
 			gain = HOW_MANY(prompt);		
 			
 			if( gain < MIN_APERTURE_GAIN_EVI100 || gain > MAX_APERTURE_GAIN_EVI100){
 
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 					"Aperture position (0x%x) must be in the range 0x%x - 0x%x",gain,
 					MIN_APERTURE_GAIN_EVI100, MAX_APERTURE_GAIN_EVI100);
 				WARN(ERROR_STRING);
@@ -2143,12 +2145,12 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 			
 			if ( dig_choice == 0 || dig_choice == 2 ){	/* i.e. still or lumi */
 				
-				sprintf(prompt, "digital effect level for Still/Lumi (%x-%x)", 
+				snprintf(prompt,LLEN, "digital effect level for Still/Lumi (%x-%x)", 
 						MIN_STILL_EFFECT_EVI100, MAX_STILL_EFFECT_EVI100);
 				dig_effect = HOW_MANY(prompt);
 				
 				if ( dig_effect < MIN_STILL_EFFECT_EVI100 || dig_effect > MAX_STILL_EFFECT_EVI100 ) {
-					sprintf(ERROR_STRING,
+					snprintf(ERROR_STRING,LLEN,
 					"digital effect level (0x%x) must be in the range 0x%x - 0x%x",dig_effect,
 					MIN_STILL_EFFECT_EVI100, MAX_STILL_EFFECT_EVI100 );
 					WARN(ERROR_STRING);
@@ -2159,12 +2161,12 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 			
 			if ( dig_choice == 1 || dig_choice == 3 ){	/* i.e. flash or trail */
 				
-				sprintf(prompt, "digital effect level for Flash/Trail (%x-%x)", 
+				snprintf(prompt,LLEN, "digital effect level for Flash/Trail (%x-%x)", 
 						MIN_FLASH_EFFECT_EVI100, MAX_FLASH_EFFECT_EVI100);
 				dig_effect = HOW_MANY(prompt);
 				
 				if ( dig_effect < MIN_FLASH_EFFECT_EVI100 || dig_effect > MAX_FLASH_EFFECT_EVI100 ) {
-					sprintf(ERROR_STRING,
+					snprintf(ERROR_STRING,LLEN,
 					"digital effect level (0x%x) must be in the range 0x%x - 0x%x",dig_effect,
 					MIN_FLASH_EFFECT_EVI100, MAX_FLASH_EFFECT_EVI100 );
 					WARN(ERROR_STRING);
@@ -2185,10 +2187,10 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 			{
 			unsigned int mem_index;
 
-			sprintf(prompt, "memory index (0x%x-0x%x)", vparam_p->mem_min, vparam_p->mem_max);
+			snprintf(prompt,LLEN, "memory index (0x%x-0x%x)", vparam_p->mem_min, vparam_p->mem_max);
 			mem_index = HOW_MANY(prompt);
 			if( mem_index < vparam_p->mem_min || mem_index > vparam_p->mem_max ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"Invalid memory index 0x%x - should be 0x%x-0x%x",mem_index, vparam_p->mem_min, vparam_p->mem_max);
 				WARN(ERROR_STRING);
 				advise("defaulting to 0");				
@@ -2222,11 +2224,11 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 			set_pan_speed(pkt,the_vcam_p->vcam_pan_speed);
 			set_tilt_speed(pkt,the_vcam_p->vcam_tilt_speed);
 
-			sprintf(prompt,"pan position (%d - %d)",
+			snprintf(prompt,LLEN,"pan position (%d - %d)",
 				vparam_p->pan_pos_min,vparam_p->pan_pos_max);
 			pan_posn = HOW_MANY(prompt);
 			if( pan_posn < vparam_p->pan_pos_min || pan_posn > vparam_p->pan_pos_max ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 		"Pan position (%d) must be in the range %d-%d",pan_posn,
 					vparam_p->pan_pos_min,vparam_p->pan_pos_max);
 				WARN(ERROR_STRING);
@@ -2238,15 +2240,15 @@ static void _get_command_args(QSP_ARG_DECL  u_char *pkt, Visca_Cmd_Def *vcdp)
 			hex_digit_to_ascii(&(pkt[15]),(pan_posn & 0x0f00)>>8);
 			hex_digit_to_ascii(&(pkt[13]),(pan_posn & 0xf000)>>12);
 
-			sprintf(prompt,"tilt position (%d - %d)",
+			snprintf(prompt,LLEN,"tilt position (%d - %d)",
 				vparam_p->tilt_pos_min,vparam_p->tilt_pos_max);
 			tilt_posn = HOW_MANY(prompt);
 
 			if( the_vcam_p->vcam_flipped ){
-sprintf(ERROR_STRING,"Camera is flipped, limits are %d to %d",vparam_p->tilt_pos_min_flipped,vparam_p->tilt_pos_max_flipped);
+snprintf(ERROR_STRING,LLEN,"Camera is flipped, limits are %d to %d",vparam_p->tilt_pos_min_flipped,vparam_p->tilt_pos_max_flipped);
 advise(ERROR_STRING);
 				if( tilt_posn < vparam_p->tilt_pos_min_flipped || tilt_posn > vparam_p->tilt_pos_max_flipped ){
-					sprintf(ERROR_STRING,
+					snprintf(ERROR_STRING,LLEN,
 		"Tilt position (%d) must be in the range %d - %d",tilt_posn,vparam_p->tilt_pos_min_flipped,vparam_p->tilt_pos_max_flipped);
 					WARN(ERROR_STRING);
 					advise("defaulting to 0");				
@@ -2254,7 +2256,7 @@ advise(ERROR_STRING);
 				}
 			} else {
 				if( tilt_posn < vparam_p->tilt_pos_min || tilt_posn > vparam_p->tilt_pos_max ){
-					sprintf(ERROR_STRING,
+					snprintf(ERROR_STRING,LLEN,
 		"Tilt position (%d) must be in the range %d - %d",tilt_posn,vparam_p->tilt_pos_min,vparam_p->tilt_pos_max);
 					WARN(ERROR_STRING);
 					advise("defaulting to 0");				
@@ -2273,11 +2275,11 @@ advise(ERROR_STRING);
 			pt_lmt_choice = WHICH_ONE("pantilt downleft/upright", 2, pt_lmt_set_strs); 
 			hex_digit_to_ascii(&(pkt[11]), (pt_lmt_choice & 0x0001));
 		
-			sprintf(prompt,"pan limit position (0x%x - 0x%x)",vparam_p->pan_lmt_min, vparam_p->pan_lmt_max);
+			snprintf(prompt,LLEN,"pan limit position (0x%x - 0x%x)",vparam_p->pan_lmt_min, vparam_p->pan_lmt_max);
 			pan_posn = HOW_MANY(prompt);
 			
 			if( pan_posn < vparam_p->pan_lmt_min || pan_posn > vparam_p->pan_lmt_max ){
-				sprintf(ERROR_STRING, "Pan limit position (0x%x) must be in the range 0x%x-0x%x",
+				snprintf(ERROR_STRING,LLEN, "Pan limit position (0x%x) must be in the range 0x%x-0x%x",
 					pan_posn, vparam_p->pan_lmt_min, vparam_p->pan_lmt_max);
 				
 				WARN(ERROR_STRING);
@@ -2290,11 +2292,11 @@ advise(ERROR_STRING);
 			hex_digit_to_ascii(&(pkt[15]),(pan_posn & 0x0f00)>>8);
 			hex_digit_to_ascii(&(pkt[13]),(pan_posn & 0xf000)>>12);
 
-			sprintf(prompt,"tilt limit position (0x%x - 0x%x)", vparam_p->tilt_lmt_min, vparam_p->tilt_lmt_max);
+			snprintf(prompt,LLEN,"tilt limit position (0x%x - 0x%x)", vparam_p->tilt_lmt_min, vparam_p->tilt_lmt_max);
 			tilt_posn = HOW_MANY(prompt);
 
 			if( tilt_posn < vparam_p->tilt_lmt_min || tilt_posn > vparam_p->tilt_lmt_max ){
-				sprintf(ERROR_STRING, "Tilt limit position (0x%x) must be in the range 0x%x-0x%x",
+				snprintf(ERROR_STRING,LLEN, "Tilt limit position (0x%x) must be in the range 0x%x-0x%x",
 						tilt_posn, vparam_p->tilt_lmt_min, vparam_p->tilt_lmt_max);
 				WARN(ERROR_STRING);
 				advise("defaulting to 0");				
@@ -2355,7 +2357,7 @@ advise(ERROR_STRING);
 			
 			n = HOW_MANY("chase mode (1,2,3)");
 			if( n < 1 || n > 3 ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"Chase mode (%d) must be in the range 1-3",n);
 				WARN(ERROR_STRING);
 				n=1;
@@ -2368,7 +2370,7 @@ advise(ERROR_STRING);
 			
 			n = HOW_MANY("target study mode (1-4)");
 			if( n < 1 || n > 4 ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"target study mode (%d) must be in the range 1-4",n);
 				WARN(ERROR_STRING);
 				n=1;
@@ -2390,7 +2392,7 @@ advise(ERROR_STRING);
 			
 			n = HOW_MANY("detecting condition (0-15)");
 			if( n < 0 || n > 15 ){
-				sprintf(ERROR_STRING, "Detecting level (%d) must be in the range 0-15",n);
+				snprintf(ERROR_STRING,LLEN, "Detecting level (%d) must be in the range 0-15",n);
 				WARN(ERROR_STRING);
 				
 				n=7;
@@ -2403,7 +2405,7 @@ advise(ERROR_STRING);
 			
 			n = HOW_MANY("refresh mode (1-3)");
 			if( n < 1 || n > 3 ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"Refresh mode (%d) must be in the range 1-3",n);
 				WARN(ERROR_STRING);
 				n=1;
@@ -2541,7 +2543,7 @@ static COMMAND_FUNC( do_visca_cmd )
 		s=NAMEOF("dummy word");
 		// this message suppresses a compiler warning, var set but not used...
 		if( verbose ){
-			sprintf(ERROR_STRING,"Invalid command group, can't execute command '%s'",s);
+			snprintf(ERROR_STRING,LLEN,"Invalid command group, can't execute command '%s'",s);
 			advise(ERROR_STRING);
 		}
 		return;
@@ -2574,7 +2576,7 @@ static COMMAND_FUNC( do_visca_cmd )
 	assert( the_vcam_p->vcam_param_p != NULL );
 	
 	if( verify_cmd(the_vcam_p,vcdp) < 0 ) {
-		sprintf(ERROR_STRING, "%s %s not implemented by %s",
+		snprintf(ERROR_STRING,LLEN, "%s %s not implemented by %s",
 			vcdp->vcd_set, vcdp->vcd_cmd,
 			the_vcam_p->vcam_name);
 		WARN(ERROR_STRING);
@@ -2669,7 +2671,7 @@ static COMMAND_FUNC( do_visca_inq )
 	}
 
 	if( verify_inq(vidp) < 0 ) {
-		sprintf(ERROR_STRING, "inquiry %s not implemented by %s", vidp->vid_inq,the_vcam_p->vcam_name);
+		snprintf(ERROR_STRING,LLEN, "inquiry %s not implemented by %s", vidp->vid_inq,the_vcam_p->vcam_name);
 		WARN(ERROR_STRING);
 		return;
 	}	
@@ -2727,7 +2729,7 @@ static COMMAND_FUNC( do_set_async )
 	}
 #else	/* ! VISCA_THREADS */
 	WARN("Sorry, not compiled for asynchronous execution within VISCA library");
-	sprintf(ERROR_STRING,"Can't set async mode to %d",f);	// suppress compiler warning
+	snprintf(ERROR_STRING,LLEN,"Can't set async mode to %d",f);	// suppress compiler warning
 	advise(ERROR_STRING);
 #endif /* ! VISCA_THREADS */
 }
@@ -2740,7 +2742,7 @@ static COMMAND_FUNC( select_cam )
 	if( vcam_p == NULL ) return;
 
 	if( vcam_p->vcam_param_p == NULL ){
-		sprintf(ERROR_STRING,"Oops, the type of camera %s needs to be specified",
+		snprintf(ERROR_STRING,LLEN,"Oops, the type of camera %s needs to be specified",
 			vcam_p->vcam_name);
 		WARN(ERROR_STRING);
 		return;
@@ -2763,7 +2765,7 @@ static void _add_camera(QSP_ARG_DECL  Visca_Port *vport_p)
 	Node *np;
 	int i;
 
-	sprintf(str,"cam%d",++n_vcams);
+	snprintf(str,32,"cam%d",++n_vcams);
 	vcam_p = new_vcam(str);
 	if( vcam_p == NULL ) return;
 
@@ -2815,7 +2817,7 @@ static void _add_camera(QSP_ARG_DECL  Visca_Port *vport_p)
 			vcam_p->vcam_param_p = &evi100_params;
 			break;
 		default:
-			sprintf(ERROR_STRING,"Unexpected camera model id:  0x%x",vcam_p->vcam_model_id);
+			snprintf(ERROR_STRING,LLEN,"Unexpected camera model id:  0x%x",vcam_p->vcam_model_id);
 			WARN(ERROR_STRING);
 			break;
 	}
@@ -2861,7 +2863,7 @@ static void _detect_daisy_chain(QSP_ARG_DECL  Visca_Port *vport_p)
 		const char *err_msg;
 
 		err_msg = error_message(_buf[2]);
-		sprintf(ERROR_STRING,"%s", err_msg);
+		snprintf(ERROR_STRING,LLEN,"%s", err_msg);
 		WARN(ERROR_STRING);
 set_raw_len(_buf);
 		dump_char_buf(_buf);
@@ -2893,7 +2895,7 @@ static void _vcam_info(QSP_ARG_DECL  Visca_Cam *vcam_p)
 		case EVI_D30: s="EVI-D30"; break;
 		default: s="(unspecified)"; break;
 	}
-	sprintf(msg_str, "\t%s\t%d\t%s:\t%s",
+	snprintf(msg_str,LLEN, "\t%s\t%d\t%s:\t%s",
 		vcam_p->vcam_vport_p->vp_name,
 		vcam_p->vcam_index,vcam_p->vcam_name,s);
 	prt_msg(msg_str);
@@ -3085,7 +3087,7 @@ static COMMAND_FUNC(do_get_n_cam)
 		np=np->n_next;
 	}
 
-	sprintf(msg_str,"%d",ntot);
+	snprintf(msg_str,LLEN,"%d",ntot);
 	assign_var(s,msg_str);
 }
 
@@ -3134,7 +3136,7 @@ static void default_camera(SINGLE_QSP_ARG_DECL)
 	 */
 	if( ! path_exists(DEFAULT_PORT_NAME) ){
 		/* say something here? */
-		sprintf(ERROR_STRING,"Default visca port %s does not exist...",DEFAULT_PORT_NAME);
+		snprintf(ERROR_STRING,LLEN,"Default visca port %s does not exist...",DEFAULT_PORT_NAME);
 		advise(ERROR_STRING);
 		return;
 	}
@@ -3142,11 +3144,11 @@ static void default_camera(SINGLE_QSP_ARG_DECL)
 	vport_p = open_port(DEFAULT_PORT_NAME);
 	if( vport_p == NULL ){
 		WARN(ERROR_STRING);
-		sprintf(ERROR_STRING,"Unable to open default visca device %s",DEFAULT_PORT_NAME);
+		snprintf(ERROR_STRING,LLEN,"Unable to open default visca device %s",DEFAULT_PORT_NAME);
 		return;
 	}
 	if( vport_p->vp_n_cams <= 0 ){
-		sprintf(ERROR_STRING,"Default visca port %s is open, but no cameras detected",
+		snprintf(ERROR_STRING,LLEN,"Default visca port %s is open, but no cameras detected",
 			vport_p->vp_name);
 		WARN(ERROR_STRING);
 	} else {

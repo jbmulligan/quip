@@ -122,13 +122,13 @@ int set_playback_nchan(QSP_ARG_DECL  int channels)
 	nchannels = channels;
 
 	if ((err = snd_pcm_hw_params_set_channels (playback_handle, hw_params, nchannels)) < 0) {
-		sprintf(ERROR_STRING,"Cannot set channel count (%s)\n", snd_strerror (err));
+		snprintf(ERROR_STRING,LLEN,"Cannot set channel count (%s)\n", snd_strerror (err));
 		warn(ERROR_STRING);
 		return(-1);
 	}
 
 	if ((err = snd_pcm_hw_params (playback_handle, hw_params)) < 0) {
-		sprintf(ERROR_STRING,"Cannot set hw parameters (%s)\n", snd_strerror (err));
+		snprintf(ERROR_STRING,LLEN,"Cannot set hw parameters (%s)\n", snd_strerror (err));
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -170,20 +170,20 @@ void play_sound(QSP_ARG_DECL  Data_Obj *dp)
 	if(audio_state!=AUDIO_PLAY) audio_init(QSP_ARG  AUDIO_PLAY);	
 
 	if( OBJ_MACH_PREC(dp) != PREC_IN ){
-		sprintf(ERROR_STRING,"Object %s has precision %s, should be %s for sounds",OBJ_NAME(dp),
+		snprintf(ERROR_STRING,LLEN,"Object %s has precision %s, should be %s for sounds",OBJ_NAME(dp),
 			PREC_NAME(OBJ_MACH_PREC_PTR(dp)),NAME_FOR_PREC_CODE(PREC_IN));
 		warn(ERROR_STRING);
 		return;
 	}
 
 	if( OBJ_COMPS(dp) != nchannels ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Sound %s has %ld components, output configured for %d channels!?",  
 			OBJ_NAME(dp),(long)OBJ_COMPS(dp),nchannels);
 		advise(ERROR_STRING);
 
 		if( set_playback_nchan(QSP_ARG  OBJ_COMPS(dp)) < 0 ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"Sound %s has illegal number of channels (%ld)",
 				OBJ_NAME(dp),(long)OBJ_COMPS(dp));
 			warn(ERROR_STRING);
@@ -192,7 +192,7 @@ void play_sound(QSP_ARG_DECL  Data_Obj *dp)
 	}
 
 	/*
-	sprintf(ERROR_STRING,"audio_state=%d",audio_state);
+	snprintf(ERROR_STRING,LLEN,"audio_state=%d",audio_state);
 	advise(ERROR_STRING);
 	*/
 
@@ -203,7 +203,7 @@ void play_sound(QSP_ARG_DECL  Data_Obj *dp)
 	if( state == SND_PCM_STATE_XRUN ){	/* from a previous write? */
 		err = snd_pcm_prepare(playback_handle);
 		if (err < 0){
-			sprintf(ERROR_STRING,"play_sound:  couldn't restore prepared state after underrun");
+			snprintf(ERROR_STRING,LLEN,"play_sound:  couldn't restore prepared state after underrun");
 			warn(ERROR_STRING);
 			return;
 		}
@@ -226,7 +226,7 @@ void play_sound(QSP_ARG_DECL  Data_Obj *dp)
 				/* this is ok? */
 			} else {
 				if( xrun_recovery(playback_handle,err) < 0 ){
-					sprintf (ERROR_STRING,
+					snprintf (ERROR_STRING,LLEN,
 						"write to audio interface failed (%s)\n", snd_strerror (err));
 					warn(ERROR_STRING);
 					return;
@@ -236,7 +236,7 @@ void play_sound(QSP_ARG_DECL  Data_Obj *dp)
 		}
 		/* if no error, the return value is number of samples written? */
 		if( err != n_req ){
-			sprintf(ERROR_STRING,"%ld samples requested, %d written",n_req,err);
+			snprintf(ERROR_STRING,LLEN,"%ld samples requested, %d written",n_req,err);
 			advise(ERROR_STRING);
 		}
 		n_req -= err;
@@ -273,7 +273,7 @@ void set_samp_freq(QSP_ARG_DECL  unsigned int req_rate)
 	samp_freq = req_rate;
 
 	if ((err = snd_pcm_hw_params_set_rate_near (playback_handle, hw_params, &req_rate, 0)) < 0) {
-		sprintf (ERROR_STRING, "cannot set sample rate near %d (%s)\n", req_rate,snd_strerror (err));
+		snprintf (ERROR_STRING,LLEN, "cannot set sample rate near %d (%s)\n", req_rate,snd_strerror (err));
  		warn (ERROR_STRING);
 	}
 }
@@ -417,7 +417,7 @@ void audio_init(QSP_ARG_DECL  int mode)
 
 #ifdef DEBUG
 	if( debug & sound_debug ){
-		sprintf(ERROR_STRING,"audio_init:  mode = %d",mode);
+		snprintf(ERROR_STRING,LLEN,"audio_init:  mode = %d",mode);
 		advise(ERROR_STRING);
 	}
 #endif /* DEBUG */
@@ -426,9 +426,9 @@ void audio_init(QSP_ARG_DECL  int mode)
 
 	if( mfd == 0 ){
 		if( (mfd = open(MIXER_NAME,O_RDWR,0)) < 0 ){
-			sprintf(ERROR_STRING,"open(%s)",MIXER_NAME);
+			snprintf(ERROR_STRING,LLEN,"open(%s)",MIXER_NAME);
 			perror(ERROR_STRING);
-			sprintf(ERROR_STRING,"error opening mixer device %s",
+			snprintf(ERROR_STRING,LLEN,"error opening mixer device %s",
 				MIXER_NAME);
 			warn(ERROR_STRING);
 		}
