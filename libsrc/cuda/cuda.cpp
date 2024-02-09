@@ -425,7 +425,7 @@ void _insure_cuda_device(QSP_ARG_DECL  Data_Obj *dp )
 	assert( cdp != NULL );
 
 	if( curr_cdp != cdp ){
-snprintf(ERROR_STRING,LLEN,"insure_cuda_device:  curr_cdp = 0x%"PRIxPTR"  cdp = 0x%"PRIxPTR,
+snprintf(ERROR_STRING,LLEN,"insure_cuda_device:  curr_cdp = 0x%" PRIxPTR "  cdp = 0x%" PRIxPTR,
 (uintptr_t)curr_cdp,(uintptr_t)cdp);
 advise(ERROR_STRING);
 
