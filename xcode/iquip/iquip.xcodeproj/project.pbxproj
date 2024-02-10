@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F818B732B7764C4003B2FA1 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F818B722B7764C4003B2FA1 /* OpenGLES.framework */; };
 		1F9A0B9027D7E2E800825064 /* include in Resources */ = {isa = PBXBuildFile; fileRef = 1F9A0B8F27D7E2E800825064 /* include */; };
 		1F9A0B9127D7E2E800825064 /* include in Resources */ = {isa = PBXBuildFile; fileRef = 1F9A0B8F27D7E2E800825064 /* include */; };
 		1F9A0B9227D7E2E800825064 /* include in Resources */ = {isa = PBXBuildFile; fileRef = 1F9A0B8F27D7E2E800825064 /* include */; };
@@ -1556,8 +1557,9 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
-		1F9A0B8F27D7E2E800825064 /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; name = include; path = ../../include; sourceTree = "<group>"; };
 		1F5F6EBF28811F6B0093DB11 /* quip_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = quip_config.h; path = ../include/quip_config.h; sourceTree = "<group>"; };
+		1F818B722B7764C4003B2FA1 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		1F9A0B8F27D7E2E800825064 /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; name = include; path = ../../include; sourceTree = "<group>"; };
 		1FFBEEE922CEAD6A00318A39 /* CSF-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "CSF-Info.plist"; path = "xcode/iquip/CSF-Info.plist"; sourceTree = "<group>"; };
 		2299DE10196C6EF800844988 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		2299DE12196C6F2500844988 /* sched.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sched.c; sourceTree = "<group>"; };
@@ -1977,6 +1979,7 @@
 				7CB671B21F9484C5001FFADF /* CoreMedia.framework in Frameworks */,
 				7CB671B31F9484C5001FFADF /* CoreVideo.framework in Frameworks */,
 				7CB671B41F9484C5001FFADF /* CoreMotion.framework in Frameworks */,
+				1F818B732B7764C4003B2FA1 /* OpenGLES.framework in Frameworks */,
 				7CB671B51F9484C5001FFADF /* SystemConfiguration.framework in Frameworks */,
 				7CB671B61F9484C5001FFADF /* AdSupport.framework in Frameworks */,
 				7CB671B71F9484C5001FFADF /* Security.framework in Frameworks */,
@@ -2023,6 +2026,7 @@
 		7106ED0016004437006BF850 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1F818B722B7764C4003B2FA1 /* OpenGLES.framework */,
 				7C1BD1C51C4ECA740093125D /* AudioToolbox.framework */,
 				7C1BD1C31C4ECA6B0093125D /* CoreAudio.framework */,
 				7CE5FE001A60754A0029C7AE /* CoreMedia.framework */,

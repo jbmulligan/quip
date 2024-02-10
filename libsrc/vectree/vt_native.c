@@ -55,18 +55,18 @@ void _eval_vt_native_assignment(QSP_ARG_DECL  Data_Obj *dp, Vec_Expr_Node *enp )
 	}
 }
 
-#define CHECK_ARGLIST(enp,name)							\
-										\
-	if( enp == NULL ){							\
+#define CHECK_ARGLIST(enp,name)						\
+									\
+	if( enp == NULL ){						\
 		snprintf(ERROR_STRING,LLEN,"missing arg list for native function %s",name);	\
-		warn(ERROR_STRING);						\
-		return;								\
-	}									\
-	if( VN_CODE(enp) != T_ARGLIST ){					\
+		warn(ERROR_STRING);					\
+		return;							\
+	}								\
+	if( VN_CODE(enp) != T_ARGLIST ){				\
 		snprintf(ERROR_STRING,LLEN,"Oops, missing arglist for native function %s!?",name);	\
-		warn(ERROR_STRING);						\
-		dump_tree(enp);							\
-		return;								\
+		warn(ERROR_STRING);					\
+		dump_tree(enp);						\
+		return;							\
 	}
 
 void _eval_vt_native_work(QSP_ARG_DECL  Vec_Expr_Node *enp )
@@ -180,7 +180,7 @@ void _eval_vt_native_work(QSP_ARG_DECL  Vec_Expr_Node *enp )
             status=(-1);
 #endif // BUILD_FOR_IOS
                 
-			snprintf(stat_str,LLEN,"%d",status);	// BUG?  protect against buffer overflow?
+			snprintf(stat_str,32,"%d",status);	// BUG?  protect against buffer overflow?
 			vp=_assign_reserved_var(DEFAULT_QSP_ARG  "exit_status",stat_str);
 			assert( vp != NULL );
 				
