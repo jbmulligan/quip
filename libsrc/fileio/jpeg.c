@@ -930,7 +930,7 @@ static int _read_ascii_jpeg_info(QSP_ARG_DECL  Image_File *ifp, FILE *info_fp)
 	// BUG?  this used to be a different string ("JPEGINFO")
 
 	if( (frms=read_jpeg_info_top(info_fp,JPEG_INFO_MAGIC_STRING,ifp)) == 0 ){
-		sLLEN,printf(ERROR_STRING,"read_binary_jpeg_info:  problem with top of info file");
+		snprintf(ERROR_STRING,LLEN,"read_binary_jpeg_info:  problem with top of info file");
 		warn(ERROR_STRING);
 		return(0);
 	}

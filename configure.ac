@@ -494,6 +494,7 @@ fi
 
 if test "x${use_motif_gui}" = xyes; then
   AC_CHECK_FILE([/opt/brew/include],[CPPFLAGS="$CPPFLAGS -I/opt/brew/include"])
+  AC_CHECK_FILE([/opt/homebrew/include],[CPPFLAGS="$CPPFLAGS -I/opt/homebrew/include"])
 fi
 
 if test "x${use_spinnaker}" = xyes; then
@@ -551,6 +552,7 @@ fi
 
 # hack for Silverhawk???
 AC_CHECK_FILE([/opt/brew/opt/mesa/lib],[LDFLAGS="$LDFLAGS -L/opt/brew/opt/mesa/lib"])
+AC_CHECK_FILE([/opt/homebrew/opt/mesa/lib],[LDFLAGS="$LDFLAGS -L/opt/homebrew/opt/mesa/lib"])
 
 # this is for Ubuntu...
 AC_CHECK_FILE([/usr/lib/x86_64-linux-gnu],[LDFLAGS="$LDFLAGS -L/usr/lib/x86_64-linux-gnu"])
@@ -564,6 +566,7 @@ AC_CHECK_FILE([/usr/local/include],[CPPFLAGS="$CPPFLAGS -I/usr/local/include"])
 AC_CHECK_FILE([/usr/include/ffmpeg],[CPPFLAGS="$CPPFLAGS -I/usr/include/ffmpeg"])
 # OR - /opt/brew!?
 AC_CHECK_FILE([/opt/brew/include/ffmpeg],[CPPFLAGS="$CPPFLAGS -I/opt/brew/include/ffmpeg"])
+AC_CHECK_FILE([/opt/homebrew/include/ffmpeg],[CPPFLAGS="$CPPFLAGS -I/opt/homebrew/include/ffmpeg"])
 
 if test "x${use_x11}" = xyes; then
   AC_CHECK_FILE([/usr/X11/lib],[LDFLAGS="$LDFLAGS -L/usr/X11/lib"])
@@ -573,6 +576,7 @@ fi
 
 if test "x${use_motif_gui}" = xyes; then
   AC_CHECK_FILE([/opt/brew/lib],[LDFLAGS="$LDFLAGS -L/opt/brew/lib"])
+  AC_CHECK_FILE([/opt/homebrew/lib],[LDFLAGS="$LDFLAGS -L/opt/homebrew/lib"])
 fi
 
 if test "x${use_cuda}" = xyes; then
