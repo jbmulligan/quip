@@ -234,7 +234,7 @@ static double _parse_num(QSP_ARG_DECL  const char **strptr)
 	int c;
 	int radix;
 
-	int decimal_seen=0;
+	//int decimal_seen=0;
 
 	ptr=(*strptr);
 
@@ -289,7 +289,7 @@ static double _parse_num(QSP_ARG_DECL  const char **strptr)
 			yyerror(THIS_QSP,  (char *)"bizarre radix in intscan");
 	}
 	if( radix==10 && *ptr == '.' ){
-		decimal_seen=1;
+		//decimal_seen=1;
 		ptr++;
 		place =1.0;
 		while( isdigit(*ptr) ){
@@ -302,7 +302,7 @@ static double _parse_num(QSP_ARG_DECL  const char **strptr)
 		int ponent=0;
 		int sign;
 
-		decimal_seen=1;
+		//decimal_seen=1;
 		ptr++;
 
 		if( *ptr == '-' ){
@@ -733,11 +733,13 @@ static void _dump_obj_with_indentation(QSP_ARG_DECL  JSON_Obj *obj_p, int lvl)
 	emit_obj_after(QSP_ARG  obj_p,lvl);
 }
 
+#ifdef NOT_USED
 static void _dump_json_thing(QSP_ARG_DECL  JSON_Thing *thing_p,int lvl)
 {
 	emit_indentation(QSP_ARG  lvl);
 	emit_one_thing(QSP_ARG  thing_p,lvl);
 }
+#endif // NOT_USED
 
 void _dump_json_obj(QSP_ARG_DECL  JSON_Obj *obj_p)
 {
@@ -749,11 +751,12 @@ void _dump_json_obj(QSP_ARG_DECL  JSON_Obj *obj_p)
 void yyerror(Query_Stack *qsp,  char *s)
 {
 	const char *filename;
-	int ql,n;
+	//int ql;
+	int n;
 	/* get the filename and line number */
 
 	filename=CURRENT_FILENAME;
-	ql = QLEVEL;
+	//ql = QLEVEL;
 	//n = THIS_QSP->qs_query[ql].q_lineno;
 	n = current_line_number(SINGLE_QSP_ARG);
 

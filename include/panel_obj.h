@@ -205,7 +205,7 @@ extern Widget curr_thing_obj;
 /* screen_objs.c */
 
 extern void list_panels(void);
-extern Panel_Obj *new_panel(QSP_ARG_DECL  const char *name,int dx,int dy);
+extern Panel_Obj *my_new_panel(QSP_ARG_DECL  const char *name,int dx,int dy);
 extern List *panel_list(SINGLE_QSP_ARG_DECL);
 extern Node *first_panel_node(SINGLE_QSP_ARG_DECL);
 extern double panel_exists(QSP_ARG_DECL  const char *);

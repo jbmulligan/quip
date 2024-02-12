@@ -1082,7 +1082,7 @@ if test "x${use_opengl}" = xyes; then
 fi
 if test "x${have_libgl}" = xno; then
   # are we on a mac?  try framework option...
-  AC_MSG_CHECKING([for OpenGL])
+  AC_MSG_CHECKING([for OpenGL framework])
   cat>ogl_test.c<<EOF
 #include <GL/ll.h>
  
@@ -1092,10 +1092,12 @@ if test "x${have_libgl}" = xno; then
 EOF
   if $CC $CPPFLAGS $LDFLAGS -framework OpenGL ogl_test.c $LIBS 2> /dev/null
     then
+      AC_MSG_RESULT([found OpenGL framework])
       LDFLAGS="$LDFLAGS -framework OpenGL"
       have_libgl=yes
       /bin/rm a.out
     else
+      AC_MSG_RESULT([missing OpenGL framework])
       have_libgl=no
     fi
 fi

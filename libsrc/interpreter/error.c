@@ -857,3 +857,10 @@ void _warn( QSP_ARG_DECL  const char *msg )
 	}
 }
 
+// This doesn't really belong here, but where else should it go?
+
+void suppress_compiler_warning(void *p)
+{
+	// nop
+}
+

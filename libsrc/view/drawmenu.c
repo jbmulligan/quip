@@ -162,10 +162,13 @@ static int _quick_load_font(QSP_ARG_DECL  const char *fontname)
 
 #ifdef BUILD_FOR_IOS
 	return ios_check_font(fontname);
-#endif /* BUILD_FOR_IOS */
+#elif BUILD_FOR_MACOS
+	warn("quick_load_font:  Sorry, not implemented yet.");
+	return 0;
+#endif /* BUILD_FOR_MACOS */
 
 	
-}
+}	// quick_load_font
 
 
 #define find_font(varname, family, bold_name, font_size ) _find_font(QSP_ARG  varname, family, bold_name, font_size )

@@ -195,7 +195,7 @@ Gen_Win * _make_genwin(QSP_ARG_DECL  const char *name,int width,int height)
 	// panel creation...  make sure the other one is created also.
 	Panel_Obj *po = panel_obj_of(GW_NAME(gwp));
 	if( po == NULL ){
-		/* po = */ new_panel(GW_NAME(gwp), GW_WIDTH(gwp), GW_HEIGHT(gwp) );
+		po = my_new_panel(GW_NAME(gwp), GW_WIDTH(gwp), GW_HEIGHT(gwp) );
 	}
 	Viewer *vp = vwr_of(GW_NAME(gwp));
 	if( vp == NULL ){

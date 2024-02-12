@@ -297,7 +297,7 @@ static void make_scrnobj_ctx_for_panel(QSP_ARG_DECL  Panel_Obj *po)
 	SET_PO_CONTEXT(po, icp);
 }
 
-Panel_Obj *new_panel(QSP_ARG_DECL  const char *name,int dx,int dy)
+Panel_Obj *my_new_panel(QSP_ARG_DECL  const char *name,int dx,int dy)
 {
 	Panel_Obj *po;
 
@@ -368,7 +368,7 @@ COMMAND_FUNC( mk_panel )
 	s=nameof("name for panel");
 	dx=(int)how_many("panel width");
 	dy=(int)how_many("panel height");
-	/*po=*/ new_panel(QSP_ARG  s,dx,dy);
+	/*po=*/ my_new_panel(QSP_ARG  s,dx,dy);
 }
 
 COMMAND_FUNC( do_resize_panel )

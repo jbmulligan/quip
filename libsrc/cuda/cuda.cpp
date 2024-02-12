@@ -651,6 +651,7 @@ COMMAND_FUNC( do_init_checkpoints )
 #ifdef HAVE_CUDA
 	init_cuda_checkpoints(n);
 #else // ! HAVE_CUDA
+	suppress_compiler_warning(&n);
 	NO_CUDA_MSG(init_cuda_checkpoints)
 #endif // ! HAVE_CUDA
 }

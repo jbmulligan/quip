@@ -56,7 +56,7 @@ void _swap_buffers(SINGLE_QSP_ARG_DECL)
 #else // BUILD_FOR_OBJC
 	//glSwapBuffers();
 	glFlush();
-	glutPostRedisplay();
+//	glutPostRedisplay();
 #endif // BUILD_FOR_OBJC
 }
 

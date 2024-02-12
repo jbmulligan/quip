@@ -1442,7 +1442,7 @@ void pop_nav(QSP_ARG_DECL int n_levels)
 
 void make_console_panel(QSP_ARG_DECL  const char *name)
 {
-	Panel_Obj *po = new_panel(QSP_ARG  name,	/* make_console_panel */
+	Panel_Obj *po = my_new_panel(QSP_ARG  name,	/* make_console_panel */
 			globalAppDelegate.dev_size.width,
 			globalAppDelegate.dev_size.height);
 

@@ -1844,8 +1844,8 @@ Nav_Panel *_create_nav_panel(QSP_ARG_DECL  const char *name)
 #define DEFAULT_NAV_PANEL_HEIGHT	720
 
 	// Now make a regular panel...
-	// new_panel is supposed to push a scrnobj context...
-	po = new_panel(QSP_ARG  name, DEFAULT_NAV_PANEL_WIDTH, DEFAULT_NAV_PANEL_HEIGHT );
+	// my_new_panel is supposed to push a scrnobj context...
+	po = my_new_panel(QSP_ARG  name, DEFAULT_NAV_PANEL_WIDTH, DEFAULT_NAV_PANEL_HEIGHT );
 	if( po == NULL ){
 		warn("Error creating panel for nav_panel!?");
 		// BUG clean up (delete np_p)
