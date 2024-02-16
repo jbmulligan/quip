@@ -1095,12 +1095,13 @@ EOF
       then
         AC_MSG_RESULT([found OpenGL framework])
         LDFLAGS="$LDFLAGS -framework OpenGL"
+        AC_SEARCH_LIBS([glVertex2d],[GL],[have_libgl=yes],[have_libgl=no])
         have_libgl=yes
-        /bin/rm a.out
       else
         AC_MSG_RESULT([missing OpenGL framework])
         have_libgl=no
       fi
+      /bin/rm a.out
   fi # $os_is_darwin == yes
 fi   # use_opengl
 
@@ -1110,6 +1111,8 @@ if test "x${use_opengl}" = xyes; then
   AC_SEARCH_LIBS([gluLookAt],[GLU],[have_libglu=yes],[have_libglu=no])
   AC_SEARCH_LIBS([glutInit],[glut],[have_libglut=yes],[have_libglut=no])
   AC_SEARCH_LIBS([glewInit],[GLEW],[have_libglew=yes],[have_libglew=no])
+  AC_SEARCH_LIBS([glXSwapBuffers],[GL],[have_libgl=yes],[have_libgl=no])
+  # ertex
 fi
 
 
@@ -1603,7 +1606,7 @@ fi
 
 # opengl, GLUT
 if test "x${use_opengl}" = xyes; then
-  if [[ $is_is_darwin == "no" ]]; then
+  if [[ $os_is_darwin == "no" ]]; then
     AC_MSG_CHECKING([for OpenGL headers (non-Mac)])
     # not Mac
     AC_CHECK_HEADERS([GL/gl.h])
