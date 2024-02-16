@@ -92,10 +92,10 @@ static int dfscanf(QSP_ARG_DECL  int fd,Header *hd)
 	if( s==NULL ) return( fh_err(hd,"no string for dfscanf") );
 	if( sscanf(s,"%d",&n) != 1 ){
 
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"dfscanf:  string \"%s\" is not an integer",s);
 		WARN(ERROR_STRING);
-		sprintf(ERROR_STRING,"Supposed filetype is %s",
+		snprintf(ERROR_STRING,LLEN,"Supposed filetype is %s",
 			FT_NAME(current_filetype()) );
 		advise(ERROR_STRING);
 

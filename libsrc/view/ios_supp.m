@@ -167,7 +167,7 @@ typedef struct pt_arg {
 
 #define CHECK_COLOR_INDEX(funcname,color)		\
 	if( color > 255 ){				\
-		sprintf(ERROR_STRING,		\
+		snprintf(ERROR_STRING,LLEN,		\
 "%s:  color (%ld) must be in the range 0-255",		\
 			#funcname,color);		\
 		warn(ERROR_STRING);		\
@@ -521,7 +521,7 @@ CGSize drawn_size =
 				CGContextShowTextAtPoint (VW_GFX_CTX(vp),
 					x-pt.x, y-pt.y, DOA_STR(do_p), strlen(DOA_STR(do_p)) );
 			} else {
-				sprintf(ERROR_STRING,"Unexpected text justification mode 0x%x!?",VW_FLAGS(vp)&VW_JUSTIFY_MASK);
+				snprintf(ERROR_STRING,LLEN,"Unexpected text justification mode 0x%x!?",VW_FLAGS(vp)&VW_JUSTIFY_MASK);
 				warn(ERROR_STRING);
 			}
 			break;
@@ -837,14 +837,14 @@ static QUIP_IMAGE_TYPE *objc_img_for_dp(Data_Obj *dp, int little_endian_flag)
 	CGImageRef myimg;
 
 	if( OBJ_PREC(dp) != PREC_UBY ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 			"objc_img_for_dp:  object %s (%s) must be u_byte",
 			OBJ_NAME(dp),OBJ_PREC_NAME(dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return NULL;
 	}
 	if( OBJ_COMPS(dp) != 4 ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 			"objc_img_for_dp:  object %s (%d) must have 4 components",
 			OBJ_NAME(dp),OBJ_COMPS(dp));
 		NWARN(DEFAULT_ERROR_STRING);
@@ -1088,13 +1088,13 @@ void _forget_frame( QSP_ARG_DECL  Viewer *vp, Data_Obj *dp )
 
 	uii_p = OBJ_UI_IMG(dp);
 	if( uii_p == NULL ){
-		sprintf(ERROR_STRING,"forget_frame %s:  object %s does not have an associated UIImage!?",
+		snprintf(ERROR_STRING,LLEN,"forget_frame %s:  object %s does not have an associated UIImage!?",
 			VW_NAME(vp),OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}
 	if( VW_IMAGES(vp) == NULL ){
-		sprintf(ERROR_STRING,"forget_frame:  viewer %s does not have an associated UIImageView!?",
+		snprintf(ERROR_STRING,LLEN,"forget_frame:  viewer %s does not have an associated UIImageView!?",
 			VW_NAME(vp));
 		warn(ERROR_STRING);
 		return;
@@ -1473,7 +1473,7 @@ int get_string_width(Viewer *vp, const char *s)
 {
 	// Do we really initialize here???
 	if( VW_GFX_CTX(vp) == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"get_string_width '%s':  drawing context for viewer %s is NULL!?",
 			s,VW_NAME(vp));
 		NADVISE(ERROR_STRING);

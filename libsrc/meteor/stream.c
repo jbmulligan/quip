@@ -222,7 +222,7 @@ static const char *column_doc=
 #define MSTATUS(code)						\
 m_status = code;						\
 if( verbose ){							\
-sprintf(ERROR_STRING,						\
+snprintf(ERROR_STRING,LLEN,					\
 "M %c\t%d\t%d\t%c %d\t%c %d\t%c %d\t%c %d",			\
 mstatstr[m_status],oldest,newest,				\
 statstr[ppi[0].ppi_status],					\
@@ -239,7 +239,7 @@ advise(ERROR_STRING);						\
 #define STATUS(code)						\
 pip->ppi_status = code;						\
 if( verbose ){							\
-sprintf(estring[pip->ppi_index],				\
+snprintf(estring[pip->ppi_index],LLEN,				\
 "%c %c\t%d\t%d\t%c %d\t%c %d\t%c %d\t%c %d",			\
 '0'+pip->ppi_index,mstatstr[m_status],oldest,newest,		\
 statstr[ppi[0].ppi_status],					\
@@ -258,7 +258,7 @@ NADVISE(estring[pip->ppi_index]);				\
 #define RSTATUS(code)						\
 pip->ppi_status = code;						\
 if( verbose ){							\
-sprintf(estring[pip->ppi_index],				\
+snprintf(estring[pip->ppi_index],LLEN,				\
 "%c %c\t%d\t%c %d\t%c %d\t%c %d\t%c %d",			\
 '0'+pip->ppi_index,rmstatstr[m_status],				\
 read_frame_want,						\
@@ -276,7 +276,7 @@ NADVISE(estring[pip->ppi_index]);				\
 #define RMSTATUS(code)						\
 m_status = code;						\
 if( verbose ){							\
-sprintf(ERROR_STRING,						\
+snprintf(ERROR_STRING,LLEN,						\
 "M %c\t%d\t%c %d\t%c %d\t%c %d\t%c %d",				\
 rmstatstr[m_status],						\
 read_frame_want,						\
@@ -391,12 +391,12 @@ void _thread_write_enable(QSP_ARG_DECL  int index, int flag)
 
 static void show_tmr(QSP_ARG_DECL  struct itimerval *tmrp)
 {
-	sprintf(ERROR_STRING,"interval:  %d   %d",
+	snprintf(ERROR_STRING,LLEN,"interval:  %d   %d",
 			tmrp->it_interval.tv_sec,
 			tmrp->it_interval.tv_usec);
 	advise(ERROR_STRING);
 
-	sprintf(ERROR_STRING,"value:  %d   %d",
+	snprintf(ERROR_STRING,LLEN,"value:  %d   %d",
 			tmrp->it_value.tv_sec,
 			tmrp->it_value.tv_usec);
 	advise(ERROR_STRING);
@@ -453,7 +453,7 @@ static void start_dw_threads(QSP_ARG_DECL  int32_t nf,int ndisks,int* fd_arr)
 	 */
 
 if( (ndisks % n_disk_writer_threads) != 0 ){
-	sprintf(ERROR_STRING,"n_disk_writer_threads (%d) must evenly divide ndisks (%d)",
+	snprintf(ERROR_STRING,LLEN,"n_disk_writer_threads (%d) must evenly divide ndisks (%d)",
 			n_disk_writer_threads,ndisks);
 	error1(ERROR_STRING);
 }
@@ -499,7 +499,7 @@ static void stream_wakeup(int unused)
 {
 	NWARN("stream_wakeup:  record failed!? (alarm went off before recording finished)");
 	verbose=1;
-	sprintf(DEFAULT_ERROR_STRING,"%d of %d frames captured",n_so_far,n_stream_frames);
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"%d of %d frames captured",n_so_far,n_stream_frames);
 	NADVISE(DEFAULT_ERROR_STRING);
 
 #ifdef DEBUG_TIMERS
@@ -545,7 +545,7 @@ void _stream_record(QSP_ARG_DECL  Image_File *ifp,int32_t n_frames)
 	RV_Inode *inp;
 
 	if( record_state != NOT_RECORDING ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"stream_record:  can't record file %s until previous record completes",
 			ifp->if_name);
 		warn(ERROR_STRING);
@@ -580,7 +580,7 @@ void _stream_record(QSP_ARG_DECL  Image_File *ifp,int32_t n_frames)
 	total_blocks = n_frames * blocks_per_frame;
 
 	if( FT_CODE(IF_TYPE(ifp)) != IFT_RV ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"stream record:  image file %s (type %s) should be type %s",
 			ifp->if_name,
 			FT_NAME(IF_TYPE(ifp)),
@@ -596,7 +596,7 @@ void _stream_record(QSP_ARG_DECL  Image_File *ifp,int32_t n_frames)
 	assert( ndisks > 0 );
 
 	if( num_meteor_frames < (2*ndisks) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"buffer frames (%d) must be >= 2 x number of disks (%d)",
 			num_meteor_frames,ndisks);
 		warn(ERROR_STRING);
@@ -724,7 +724,7 @@ COMMAND_FUNC( meteor_halt_record )
 		 * that we are in fact in async mode...
 		 */
 		if( record_state & (RECORD_HALTING|RECORD_FINISHING) ){
-			sprintf(ERROR_STRING,"meteor_halt_record:  halt already in progress!?");
+			snprintf(ERROR_STRING,LLEN,"meteor_halt_record:  halt already in progress!?");
 			warn(ERROR_STRING);
 		} else {
 			record_state |= RECORD_HALTING;
@@ -733,7 +733,7 @@ COMMAND_FUNC( meteor_halt_record )
 		/* We make this an advisory instead of a warning because
 		 * the record might just have finished...
 		 */
-		sprintf(ERROR_STRING,"meteor_halt_record:  not currently recording!?");
+		snprintf(ERROR_STRING,LLEN,"meteor_halt_record:  not currently recording!?");
 		advise(ERROR_STRING);
 		return;
 	}
@@ -746,7 +746,7 @@ static void *video_reader_thread(void *argp)
 #ifdef FOOBAR
 	grabber_pid=getpid();
 
-sprintf(ERROR_STRING,"video_reader_thread:  grabber_pid = %d",grabber_pid);
+snprintf(ERROR_STRING,LLEN,"video_reader_thread:  grabber_pid = %d",grabber_pid);
 advise(ERROR_STRING);
 
 	if( assoc_pids(master_pid,grabber_pid) < 0 )
@@ -835,7 +835,7 @@ MSTATUS(MS_INIT)
 	while( _mm->num_active_bufs < 1 ){
 MSTATUS(MS_WAITING)
 /*
-sprintf(ERROR_STRING,"num_activ_bufs = %d",_mm->num_active_bufs);
+snprintf(ERROR_STRING,LLEN,"num_activ_bufs = %d",_mm->num_active_bufs);
 advise(ERROR_STRING);
 */
 		usleep(1000);
@@ -862,7 +862,7 @@ advise(ERROR_STRING);
 
 #ifdef DEBUG_TIMERS
 do_date();
-sprintf(ERROR_STRING,"calling alarm(%d)",seconds_before_alarm);
+snprintf(ERROR_STRING,LLEN,"calling alarm(%d)",seconds_before_alarm);
 advise(ERROR_STRING);
 #endif /* DEBUG_TIMERS */
 
@@ -870,7 +870,7 @@ advise(ERROR_STRING);
 
 #ifdef DEBUG_TIMERS
 if( old_alarm > 0 ){
-sprintf(ERROR_STRING,"old alarm would have occurred in %d seconds",
+snprintf(ERROR_STRING,LLEN,"old alarm would have occurred in %d seconds",
 old_alarm);
 advise(ERROR_STRING);
 } else advise("no old alarm was pending");
@@ -1016,7 +1016,7 @@ MSTATUS(MS_DONE)
 
 #ifdef DEBUG_TIMER
 if( old_alarm > 0 ){
-sprintf(ERROR_STRING,"old alarm would have occurred in %d seconds",
+snprintf(ERROR_STRING,LLEN,"old alarm would have occurred in %d seconds",
 old_alarm);
 advise(ERROR_STRING);
 } else advise("no old alarm was pending");
@@ -1037,7 +1037,7 @@ if( verbose ) advise("main thread stopping capture");
 #endif /* FOOBAR */
 
 		if( pthread_join(dw_thr[i],NULL) != 0 ){
-			sprintf(ERROR_STRING,"Error joining disk writer thread %d",i);
+			snprintf(ERROR_STRING,LLEN,"Error joining disk writer thread %d",i);
 			warn(ERROR_STRING);
 		}
 	}
@@ -1049,7 +1049,7 @@ if( verbose ) advise("main thread stopping capture");
 
 	/*
 	if( (ending_count-starting_count) != n_frames ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Wanted %d frames, captured %d (%d-%d-1)",n_frames,
 			(ending_count-starting_count)-1,ending_count,starting_count);
 		warn(ERROR_STRING);
@@ -1076,10 +1076,10 @@ if( verbose ) advise("main thread stopping capture");
 	} else {
 		if( cnt.fifo_errors > 0 ){
 #ifdef IA64
-			sprintf(ERROR_STRING,"Movie %s:  %d fifo errors",
+			snprintf(ERROR_STRING,LLEN,"Movie %s:  %d fifo errors",
 				stream_ifp->if_name,cnt.fifo_errors);
 #else
-			sprintf(ERROR_STRING,"Movie %s:  %d fifo errors",
+			snprintf(ERROR_STRING,LLEN,"Movie %s:  %d fifo errors",
 				stream_ifp->if_name,cnt.fifo_errors);
 #endif
 			warn(ERROR_STRING);
@@ -1087,10 +1087,10 @@ if( verbose ) advise("main thread stopping capture");
 		}
 		if( cnt.dma_errors > 0 ){
 #ifdef IA64
-			sprintf(ERROR_STRING,"Movie %s:  %d dma errors",
+			snprintf(ERROR_STRING,LLEN,"Movie %s:  %d dma errors",
 				stream_ifp->if_name,cnt.dma_errors);
 #else
-			sprintf(ERROR_STRING,"Movie %s:  %d dma errors",
+			snprintf(ERROR_STRING,LLEN,"Movie %s:  %d dma errors",
 				stream_ifp->if_name,cnt.dma_errors);
 #endif
 			warn(ERROR_STRING);
@@ -1108,10 +1108,10 @@ if( verbose ) advise("main thread stopping capture");
 		perror("ioctl GNDROP failed");
 	} else if( di.n_total > 0 ) {
 #ifdef IA64
-		sprintf(ERROR_STRING,"Movie %s not NOT recorded in real time (%d frames dropped)",
+		snprintf(ERROR_STRING,LLEN,"Movie %s not NOT recorded in real time (%d frames dropped)",
 			stream_ifp->if_name,di.n_total);
 #else
-		sprintf(ERROR_STRING,"Movie %s not NOT recorded in real time (%d frames dropped)",
+		snprintf(ERROR_STRING,LLEN,"Movie %s not NOT recorded in real time (%d frames dropped)",
 			stream_ifp->if_name,di.n_total);
 #endif
 		warn(ERROR_STRING);
@@ -1119,7 +1119,7 @@ if( verbose ) advise("main thread stopping capture");
 	}
 
 	if( real_time_ok ){
-		sprintf(ERROR_STRING,"video_reader:  Movie %s recorded successfully in real time.",stream_ifp->if_name);
+		snprintf(ERROR_STRING,LLEN,"video_reader:  Movie %s recorded successfully in real time.",stream_ifp->if_name);
 		advise(ERROR_STRING);
 	}
 	if( n_hw_errors > 0 ){
@@ -1275,7 +1275,7 @@ STATUS(DW_WAIT)
 		buf = frame_address(next);
 		assert(buf!=NULL);
 
-//sprintf(ERROR_STRING,"disk_writer:  next %d   addr 0x%"PRIxPTR,next,(uintptr_t)buf);
+//snprintf(ERROR_STRING,LLEN,"disk_writer:  next %d   addr 0x%"PRIxPTR,next,(uintptr_t)buf);
 //advise(ERROR_STRING);
 
 		/* write out the next frame */
@@ -1328,9 +1328,9 @@ perror("gettimeofday");
 			for(i_frag=0;i_frag<N_FRAGMENTS;i_frag++){
 				if( (n_written = write(fd,buf+i_frag*n_to_write,n_to_write))
 					!= n_to_write ){
-					sprintf(DEFAULT_ERROR_STRING,"write (frm %d, fd=%d)",next,fd);
+					snprintf(DEFAULT_ERROR_STRING,LLEN,"write (frm %d, fd=%d)",next,fd);
 					perror(DEFAULT_ERROR_STRING);
-					sprintf(DEFAULT_ERROR_STRING,
+					snprintf(DEFAULT_ERROR_STRING,LLEN,
 						"%d requested, %d written",
 						n_to_write,n_written);
 					NWARN(DEFAULT_ERROR_STRING);
@@ -1340,7 +1340,7 @@ perror("gettimeofday");
 if( gettimeofday(&tmp_time2,&tmp_tz) < 0 )
 perror("gettimeofday");
 /* calculate elapsed time */
-sprintf(DEFAULT_ERROR_STRING,"write time frame %d frag %d:  %d msec",j+1,i_frag+1,1000*(tmp_time2.tv_sec-tmp_time1.tv_sec)+
+snprintf(DEFAULT_ERROR_STRING,LLEN,"write time frame %d frag %d:  %d msec",j+1,i_frag+1,1000*(tmp_time2.tv_sec-tmp_time1.tv_sec)+
 (tmp_time2.tv_usec-tmp_time1.tv_usec)/1000);
 advise(DEFAULT_ERROR_STRING);
 #endif /* FOOBAR */
@@ -1367,7 +1367,7 @@ STATUS(DW_DONE)
 #endif	/* RECORD_CAPTURE_COUNT */
 /*
 if( verbose ){
-sprintf(estring[pip->ppi_index],"%c\tpri = %d",'0'+pip->ppi_index,pri);
+snprintf(estring[pip->ppi_index],LLEN,"%c\tpri = %d",'0'+pip->ppi_index,pri);
 advise(estring[pip->ppi_index]);
 }
 */
@@ -1402,7 +1402,7 @@ static void clear_buffers(SINGLE_QSP_ARG_DECL)
 	unsigned int j;
 
 	if( meteor_bytes_per_pixel != DEFAULT_BYTES_PER_PIXEL ) {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"clear_buffers:  meteor_bytes_per_pixel = %d (expected %d)",
 			meteor_bytes_per_pixel,DEFAULT_BYTES_PER_PIXEL);
 		warn(ERROR_STRING);
@@ -1463,7 +1463,7 @@ void print_grab_times()
 		s=ctime(&ts_array[i].grab_time.tv_sec);
 		/* remove trailing newline */
 		if( s[ strlen(s) - 1 ] == '\n' ) s[ strlen(s) - 1 ] = 0;
-		sprintf(msg_str,"%s\t%ld\t%3ld.%03ld",s,
+		snprintf(msg_str,LLEN,"%s\t%ld\t%3ld.%03ld",s,
 				ts_array[i].grab_time.tv_sec,
 				ts_array[i].grab_time.tv_usec/1000,
 				ts_array[i].grab_time.tv_usec%1000
@@ -1481,7 +1481,7 @@ void print_store_times()
 		s=ctime(&ts_array[i].stor_time.tv_sec);
 		/* remove trailing newline */
 		if( s[ strlen(s) - 1 ] == '\n' ) s[ strlen(s) - 1 ] = 0;
-		sprintf(msg_str,"%s\t%ld\t%3ld.%03ld",s,
+		snprintf(msg_str,LLEN,"%s\t%ld\t%3ld.%03ld",s,
 				ts_array[i].stor_time.tv_sec,
 				ts_array[i].stor_time.tv_usec/1000,
 				ts_array[i].stor_time.tv_usec%1000

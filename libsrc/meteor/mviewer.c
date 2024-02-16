@@ -101,7 +101,7 @@ static char estring[MAX_DISKS][128];
 #define RSTATUS(code)						\
 pip->ppi_status = code;						\
 if( verbose ){							\
-sprintf(estring[pip->ppi_index],				\
+snprintf(estring[pip->ppi_index],LLEN,				\
 "%c %c\t%d\t%c %d\t%c %d\t%c %d\t%c %d",			\
 '0'+pip->ppi_index,rmstatstr[m_status],				\
 read_frame_want,						\
@@ -119,7 +119,7 @@ NADVISE(estring[pip->ppi_index]);				\
 #define RMSTATUS(code)						\
 m_status = code;						\
 if( verbose ){							\
-sprintf(ERROR_STRING,						\
+snprintf(ERROR_STRING,LLEN,						\
 "M %c\t%d\t%c %d\t%c %d\t%c %d\t%c %d",				\
 rmstatstr[m_status],						\
 read_frame_want,						\
@@ -317,17 +317,17 @@ RMSTATUS(RM_INIT);
         /* why start threads when it's just one frame? */ 
         if( (n_read = read(fd_arr[disk_index],rdfrmptr[0],n_to_read)) != n_to_read ){
 	  char tmpstr[LLEN];
-	  sprintf(tmpstr,
+	  snprintf(tmpstr,LLEN,
 		  "read (frm %d, buf=0x%"PRIxPTR", fd=%d)",
 		  frame,(uintptr_t)rdfrmptr[0],disk_index);
 	  perror(tmpstr);
-	  sprintf(tmpstr, "%d requested, %d read",
+	  snprintf(tmpstr,LLEN, "%d requested, %d read",
 		  n_to_read,n_read);
 	  WARN(tmpstr);
 	  return;
 	}
 
-	sprintf(ERROR_STRING,"play_meteor_frame:  playing frame: %d of %d",frame + 1, OBJ_FRAMES(ifp->if_dp));
+	snprintf(ERROR_STRING,LLEN,"play_meteor_frame:  playing frame: %d of %d",frame + 1, OBJ_FRAMES(ifp->if_dp));
 	advise(ERROR_STRING);
 
 	RMSTATUS(RM_TOP);
@@ -454,11 +454,11 @@ RSTATUS(DR_READ);
 		rv_frame_seek(pip->ppi_inp,j);
 
 		if( (n_read = read(fd,buf,n_to_read)) != n_to_read ){
-			sprintf(tmpstr,
+			snprintf(tmpstr,LLEN,
 				"read (frm %d, buf=0x%"PRIxPTR", fd=%d)",
 				j,(uintptr_t)buf,fd);
 			perror(tmpstr);
-			sprintf(tmpstr, "%d requested, %d read",
+			snprintf(tmpstr,LLEN, "%d requested, %d read",
 				n_to_read,n_read);
 			NWARN(tmpstr);
 			return(NULL);
@@ -479,13 +479,13 @@ RSTATUS(DR_EXIT);
 #define MAKE_METEOR_VIEWER( index )					\
 									\
 	if( meteor_vp[index] != NULL ){				\
-		sprintf(ERROR_STRING,					\
+		snprintf(ERROR_STRING,LLEN,					\
 		"init_meteor_viewer:  meteor viewer %d (%s) already exists",index,meteor_vp[index]->vw_name);		\
 		WARN(ERROR_STRING);					\
 		return;							\
 	}								\
 									\
-	sprintf(name,"meteor_viewer%d",index);				\
+	snprintf(name,LLEN,"meteor_viewer%d",index);				\
 	meteor_vp[index] = viewer_init(name,width,height,0);	\
 	if( meteor_vp[index] == NULL ) return;			\
 	posn_viewer(meteor_vp[index],sx[index]*width,sy[index]*height);	\
@@ -572,7 +572,7 @@ static void set_display_component()
 	n = how_many("component index");
 
 	if( i < 0 || i > n_displayed_components ){
-		sprintf(ERROR_STRING,"viewer index must be >= 0 and less than the number of displayed components %d",n_displayed_components);
+		snprintf(ERROR_STRING,LLEN,"viewer index must be >= 0 and less than the number of displayed components %d",n_displayed_components);
 		WARN(ERROR_STRING);
 		return;
 	}

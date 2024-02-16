@@ -44,9 +44,9 @@ static COMMAND_FUNC( do_add )
 	s=NAMEOF("elevation map stem");
 
 	for(i=0;i<4;i++){
-		sprintf(prompt,"x coordinate of %s vertex",quad_name[i]);
+		snprintf(prompt,128,"x coordinate of %s vertex",quad_name[i]);
 		x = (float)HOW_MUCH(prompt);
-		sprintf(prompt,"y coordinate of %s vertex",quad_name[i]);
+		snprintf(prompt,128,"y coordinate of %s vertex",quad_name[i]);
 		y = (float)HOW_MUCH(prompt);
 
 		vp[i] = new_vertex(x,y);
@@ -141,7 +141,7 @@ static COMMAND_FUNC( do_tile_info )
 
 	s=NAMEOF("tile name");
 	advise("Sorry, need to compile with HASH_TILE_NAMES defined to do lookup by name");
-	sprintf(ERROR_STRING,"Unable to print info for tile %s",s);
+	snprintf(ERROR_STRING,LLEN,"Unable to print info for tile %s",s);
 	advise(ERROR_STRING);
 #endif
 }

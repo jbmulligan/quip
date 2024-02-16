@@ -25,7 +25,7 @@ void creat_pipe(QSP_ARG_DECL  const char *name, const char* command, const char*
 	if( *rw == 'r' ) flg=READ_PIPE;
 	else if( *rw == 'w' ) flg=WRITE_PIPE;
 	else {
-		sprintf(ERROR_STRING,"create_pipe:  bad r/w string \"%s\"",rw);
+		snprintf(ERROR_STRING,LLEN,"create_pipe:  bad r/w string \"%s\"",rw);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -38,7 +38,7 @@ void creat_pipe(QSP_ARG_DECL  const char *name, const char* command, const char*
 	pp->p_fp = popen(command,rw);
 
 	if( pp->p_fp == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"unable to execute command \"%s\"",command);
 		warn(ERROR_STRING);
 		close_pipe(QSP_ARG  pp);
@@ -48,7 +48,7 @@ void creat_pipe(QSP_ARG_DECL  const char *name, const char* command, const char*
 void close_pipe(QSP_ARG_DECL  Pipe *pp)
 {
 	if( pp->p_fp != NULL && pclose(pp->p_fp) == -1 ){
-		sprintf(ERROR_STRING,"Error closing pipe \"%s\"!?",pp->p_name);
+		snprintf(ERROR_STRING,LLEN,"Error closing pipe \"%s\"!?",pp->p_name);
 		warn(ERROR_STRING);
 	}
 	rls_str(pp->p_cmd);
@@ -58,18 +58,18 @@ void close_pipe(QSP_ARG_DECL  Pipe *pp)
 void sendto_pipe(QSP_ARG_DECL  Pipe *pp,const char* text)
 {
 	if( (pp->p_flgs & WRITE_PIPE) == 0 ){
-		sprintf(ERROR_STRING,"Can't write to read pipe %s",pp->p_name);
+		snprintf(ERROR_STRING,LLEN,"Can't write to read pipe %s",pp->p_name);
 		warn(ERROR_STRING);
 		return;
 	}
 
 	if( fprintf(pp->p_fp,"%s\n",text) == EOF ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"write failed on pipe \"%s\"",pp->p_name);
 		warn(ERROR_STRING);
 		close_pipe(QSP_ARG  pp);
 	} else if( fflush(pp->p_fp) == EOF ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"fflush failed on pipe \"%s\"",pp->p_name);
 		warn(ERROR_STRING);
 		close_pipe(QSP_ARG  pp);
@@ -84,7 +84,7 @@ void readfr_pipe(QSP_ARG_DECL  Pipe *pp,const char* varname)
 	char buf[LLEN];
 
 	if( (pp->p_flgs & READ_PIPE) == 0 ){
-		sprintf(ERROR_STRING,"Can't read from  write pipe %s",pp->p_name);
+		snprintf(ERROR_STRING,LLEN,"Can't read from  write pipe %s",pp->p_name);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -92,18 +92,18 @@ void readfr_pipe(QSP_ARG_DECL  Pipe *pp,const char* varname)
 	if( fgets(buf,LLEN,pp->p_fp) == NULL ){
 		// error or EOF?
 		if( ferror(pp->p_fp) ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"error reading pipe \"%s\"",pp->p_name);
 			advise(ERROR_STRING);
 		}
 		if( feof(pp->p_fp) ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"EOF reading pipe \"%s\"",pp->p_name);
 			advise(ERROR_STRING);
 		}
 			
 	//	if( verbose ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"read failed on pipe \"%s\"",pp->p_name);
 			advise(ERROR_STRING);
 	//	}

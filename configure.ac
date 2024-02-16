@@ -494,6 +494,7 @@ fi
 
 if test "x${use_motif_gui}" = xyes; then
   AC_CHECK_FILE([/opt/brew/include],[CPPFLAGS="$CPPFLAGS -I/opt/brew/include"])
+  AC_CHECK_FILE([/opt/homebrew/include],[CPPFLAGS="$CPPFLAGS -I/opt/homebrew/include"])
 fi
 
 if test "x${use_spinnaker}" = xyes; then
@@ -551,6 +552,7 @@ fi
 
 # hack for Silverhawk???
 AC_CHECK_FILE([/opt/brew/opt/mesa/lib],[LDFLAGS="$LDFLAGS -L/opt/brew/opt/mesa/lib"])
+AC_CHECK_FILE([/opt/homebrew/opt/mesa/lib],[LDFLAGS="$LDFLAGS -L/opt/homebrew/opt/mesa/lib"])
 
 # this is for Ubuntu...
 AC_CHECK_FILE([/usr/lib/x86_64-linux-gnu],[LDFLAGS="$LDFLAGS -L/usr/lib/x86_64-linux-gnu"])
@@ -564,6 +566,7 @@ AC_CHECK_FILE([/usr/local/include],[CPPFLAGS="$CPPFLAGS -I/usr/local/include"])
 AC_CHECK_FILE([/usr/include/ffmpeg],[CPPFLAGS="$CPPFLAGS -I/usr/include/ffmpeg"])
 # OR - /opt/brew!?
 AC_CHECK_FILE([/opt/brew/include/ffmpeg],[CPPFLAGS="$CPPFLAGS -I/opt/brew/include/ffmpeg"])
+AC_CHECK_FILE([/opt/homebrew/include/ffmpeg],[CPPFLAGS="$CPPFLAGS -I/opt/homebrew/include/ffmpeg"])
 
 if test "x${use_x11}" = xyes; then
   AC_CHECK_FILE([/usr/X11/lib],[LDFLAGS="$LDFLAGS -L/usr/X11/lib"])
@@ -573,6 +576,7 @@ fi
 
 if test "x${use_motif_gui}" = xyes; then
   AC_CHECK_FILE([/opt/brew/lib],[LDFLAGS="$LDFLAGS -L/opt/brew/lib"])
+  AC_CHECK_FILE([/opt/homebrew/lib],[LDFLAGS="$LDFLAGS -L/opt/homebrew/lib"])
 fi
 
 if test "x${use_cuda}" = xyes; then
@@ -1074,27 +1078,32 @@ fi
 # On ubuntu, including -lGLU seems to break loading from libm!?
 
 if test "x${use_opengl}" = xyes; then
-  AC_SEARCH_LIBS([glVertex2d],[GL],[have_libgl=yes],[have_libgl=no])
-fi
-if test "x${have_libgl}" = xno; then
-  # are we on a mac?  try framework option...
-  AC_MSG_CHECKING([for OpenGL])
-  cat>ogl_test.c<<EOF
-#include <GL/ll.h>
+  if [[ $os_is_darwin == "no" ]]; then
+    AC_MSG_CHECKING([for OpenGL (GL/libgl)])
+    AC_SEARCH_LIBS([glVertex2d],[GL],[have_libgl=yes],[have_libgl=no])
+  else
+    # are we on a mac?  try framework option...
+    AC_MSG_CHECKING([for OpenGL framework])
+    cat>ogl_test.c<<EOF
+#include <OpenGL/gl.h>
  
-  int main(int ac,char **av)
-  {
-  }
+int main(int ac,char **av)
+{
+}
 EOF
-  if $CC $CPPFLAGS $LDFLAGS -framework OpenGL ogl_test.c $LIBS 2> /dev/null
-    then
-      LDFLAGS="$LDFLAGS -framework OpenGL"
-      have_libgl=yes
+    if $CC $CPPFLAGS $LDFLAGS -framework OpenGL ogl_test.c $LIBS 2> /dev/null
+      then
+        AC_MSG_RESULT([found OpenGL framework])
+        LDFLAGS="$LDFLAGS -framework OpenGL"
+        AC_SEARCH_LIBS([glVertex2d],[GL],[have_libgl=yes],[have_libgl=no])
+        have_libgl=yes
+      else
+        AC_MSG_RESULT([missing OpenGL framework])
+        have_libgl=no
+      fi
       /bin/rm a.out
-    else
-      have_libgl=no
-    fi
-fi
+  fi # $os_is_darwin == yes
+fi   # use_opengl
 
 if test "x${use_opengl}" = xyes; then
   ## # This function is provided by cuda!?
@@ -1102,6 +1111,8 @@ if test "x${use_opengl}" = xyes; then
   AC_SEARCH_LIBS([gluLookAt],[GLU],[have_libglu=yes],[have_libglu=no])
   AC_SEARCH_LIBS([glutInit],[glut],[have_libglut=yes],[have_libglut=no])
   AC_SEARCH_LIBS([glewInit],[GLEW],[have_libglew=yes],[have_libglew=no])
+  AC_SEARCH_LIBS([glXSwapBuffers],[GL],[have_libgl=yes],[have_libgl=no])
+  # ertex
 fi
 
 
@@ -1595,20 +1606,34 @@ fi
 
 # opengl, GLUT
 if test "x${use_opengl}" = xyes; then
-
-  # on Mac, these headers are in /usr/X11/include...
-  AC_CHECK_HEADERS([GL/gl.h])
-  AC_CHECK_HEADERS([GL/glext.h], [], [],
+  if [[ $os_is_darwin == "no" ]]; then
+    AC_MSG_CHECKING([for OpenGL headers (non-Mac)])
+    # not Mac
+    AC_CHECK_HEADERS([GL/gl.h])
+    AC_CHECK_HEADERS([GL/glext.h], [], [],
 [[#ifdef HAVE_GL_GL_H
 # include <GL/gl.h>
 #endif
-  ]])
-  AC_CHECK_HEADERS([GL/glx.h])
-  AC_CHECK_HEADERS([GL/glu.h])
-  AC_CHECK_HEADERS([GL/glut.h])
-  AC_CHECK_HEADERS([GL/freeglut.h])
-  # on wheatstone, this one is in the nvidia distribution...
-  AC_CHECK_HEADERS([GL/glew.h])
+    ]])
+    # on mac, glu.h needs OpenGL/glu.h, not GL/glu.h !?
+    AC_CHECK_HEADERS([GL/glx.h])
+    AC_CHECK_HEADERS([GL/glu.h])
+    AC_CHECK_HEADERS([GL/glut.h])
+    AC_CHECK_HEADERS([GL/freeglut.h])
+    # on wheatstone, this one is in the nvidia distribution...
+    AC_CHECK_HEADERS([GL/glew.h])
+  else			# Mac
+    AC_MSG_CHECKING([for OpenGL headers (Mac)])
+    AC_CHECK_HEADERS([OpenGL/gl.h])
+    AC_CHECK_HEADERS([OpenGL/glext.h])
+    AC_CHECK_HEADERS([GL/glx.h])	# from homebrew?
+    AC_CHECK_HEADERS([OpenGL/glu.h])
+    # what about these?
+    AC_CHECK_HEADERS([GL/glut.h])
+    AC_CHECK_HEADERS([GL/freeglut.h])
+    # on wheatstone, this one is in the nvidia distribution...
+    AC_CHECK_HEADERS([GL/glew.h])
+  fi
 fi
 
 if test "x${use_opencl}" = xyes; then

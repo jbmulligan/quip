@@ -14,7 +14,7 @@ static void _lump(QSP_ARG_DECL  Trial_Class *dst_tcp,Trial_Class *src_tcp)
 	dtp_fr=CLASS_SUMM_DTBL(src_tcp);
 
 	if( SUMM_DTBL_SIZE(dtp_to) != SUMM_DTBL_SIZE(dtp_fr) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"lump:  data table sizes (%d,%d) do not match!?",
 			SUMM_DTBL_SIZE(dtp_to),SUMM_DTBL_SIZE(dtp_fr));
 		warn(ERROR_STRING);

@@ -84,7 +84,7 @@ FIO_OPEN_FUNC( rvfio )
 	RV_Inode *inp;
 
 	if( ! legal_rv_filename(name) ){
-		sprintf(ERROR_STRING,"rv_open:  \"%s\" is not a legal filename",name);
+		snprintf(ERROR_STRING,LLEN,"rv_open:  \"%s\" is not a legal filename",name);
 		warn(ERROR_STRING);
 		return(NULL);
 	}
@@ -113,7 +113,7 @@ fprintf(stderr,"rvfio_open:  file %s already exists, will remove...\n",name);
 		inp = rv_inode_of(name);
 	} else {			/* FILE_READ */
 		if( inp == NULL ){
-			sprintf(ERROR_STRING,"File %s does not exist, can't read",name);
+			snprintf(ERROR_STRING,LLEN,"File %s does not exist, can't read",name);
 			warn(ERROR_STRING);
 			return(NULL);
 		}
@@ -124,7 +124,7 @@ fprintf(stderr,"rvfio_open:  file %s already exists, will remove...\n",name);
 		if( ifp != NULL ){
 			if( ! IS_READABLE(ifp) ){
 				/*
-				sprintf(ERROR_STRING,"Setting READABLE flag on rv file %s",
+				snprintf(ERROR_STRING,LLEN,"Setting READABLE flag on rv file %s",
 						ifp->if_name);
 				advise(ERROR_STRING);
 				*/
@@ -132,7 +132,7 @@ fprintf(stderr,"rvfio_open:  file %s already exists, will remove...\n",name);
 			}
 			if( IS_READABLE(ifp) ){
 				if( (_n_disks=queue_rv_file(inp,rv_fd_arr)) < 0 ){
-			sprintf(ERROR_STRING,"Error queueing file %s",ifp->if_name);
+			snprintf(ERROR_STRING,LLEN,"Error queueing file %s",ifp->if_name);
 					warn(ERROR_STRING);
 				}
 				return(ifp);
@@ -141,7 +141,7 @@ fprintf(stderr,"rvfio_open:  file %s already exists, will remove...\n",name);
 			/* BUG?  what if we are assembling it? */
 
 			/* NOTREACHED */
-			sprintf(ERROR_STRING,"File %s is not readable!?",ifp->if_name);
+			snprintf(ERROR_STRING,LLEN,"File %s is not readable!?",ifp->if_name);
 			warn(ERROR_STRING);
 			return(NULL);
 		}
@@ -181,7 +181,7 @@ fprintf(stderr,"rvfio_open:  file %s already exists, will remove...\n",name);
 
 		/* not hashed into database! */
 		/* give it a name so it has a name to print in case of accident */
-		sprintf(tnam,"dp.%s",ifp->if_name);
+		snprintf(tnam,LLEN,"dp.%s",ifp->if_name);
 		SET_OBJ_NAME(ifp->if_dp, savestr(tnam));
 		rv_to_dp(ifp->if_dp,inp);
 
@@ -193,7 +193,7 @@ fprintf(stderr,"rvfio_open:  file %s already exists, will remove...\n",name);
 		 * if we are reading from a single file.
 		 */
 		if( (_n_disks=queue_rv_file(inp,rv_fd_arr)) < 0 ){
-			sprintf(ERROR_STRING,"Error queueing file %s",ifp->if_name);
+			snprintf(ERROR_STRING,LLEN,"Error queueing file %s",ifp->if_name);
 			warn(ERROR_STRING);
 		}
 	} else {
@@ -251,7 +251,7 @@ off64_t retoff;
 	// the object must be aligned!
 	// BUG - use BLOCKSIZE instead of hard-coding 1024
 	if( ((u_long)(OBJ_DATA_PTR(dp))) & (BLOCK_SIZE-1) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Object %s must have data block-aligned (%d bytes) to write to a raw volume!?",
 			OBJ_NAME(dp),BLOCK_SIZE);
 		WARN(ERROR_STRING);
@@ -299,7 +299,7 @@ off64_t retoff;
 		size *= f2a;
 
 		if( rv_realloc(ifp->if_name,size) < 0 ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"error allocating %ld disk blocks for file %s",
 				size,ifp->if_name);
 			warn(ERROR_STRING);
@@ -328,7 +328,7 @@ fprintf(stderr,"Current file position is 0x%"PRIx64"\n",retoff);
 fprintf(stderr,"writing %ld (0x%lx) bytes of data from 0x%lx\n",bpi,bpi,(u_long)OBJ_DATA_PTR(dp));
 	if( (nw=write(rv_fd_arr[disk_index],OBJ_DATA_PTR(dp),bpi)) != bpi ){
 		if( nw < 0 ) tell_sys_error("write");
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"write error on disk %d (fd=%d), %ld bytes requested, %ld written",disk_index,
 		rv_fd_arr[disk_index],bpi,nw);
 		warn(ERROR_STRING);
@@ -347,7 +347,7 @@ fprintf(stderr,"writing %ld (0x%lx) bytes of data from 0x%lx\n",bpi,bpi,(u_long)
 fprintf(stderr,"writing %ld pad bytes of data from 0x%lx\n",bpf-bpi,(u_long)OBJ_DATA_PTR(dp));
 		if( (nw=write(rv_fd_arr[disk_index],OBJ_DATA_PTR(dp),bpf-bpi)) != bpf-bpi ){
 			if( nw < 0 ) tell_sys_error("write");
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"write error on disk %d (fd=%d), %ld bytes requested, %ld written",disk_index,
 			rv_fd_arr[disk_index],bpf-bpi,nw);
 			warn(ERROR_STRING);
@@ -382,7 +382,7 @@ static struct timeval *_rv_time_ptr(QSP_ARG_DECL  Image_File *ifp, index_t frame
 
 	if( rv_movie_extra( HDR_P(ifp) ) != sizeof(struct timeval) ){
 		/* sizeof is long in ia64? */
-		sprintf(ERROR_STRING,"rv_time_ptr:  expected rvi_extra_bytes (%d) to equal sizeof(struct timeval) (%d) !?",
+		snprintf(ERROR_STRING,LLEN,"rv_time_ptr:  expected rvi_extra_bytes (%d) to equal sizeof(struct timeval) (%d) !?",
 				rv_movie_extra( HDR_P(ifp) ),(int)sizeof(struct timeval));
 		warn(ERROR_STRING);
 		return(NULL);
@@ -396,7 +396,7 @@ static struct timeval *_rv_time_ptr(QSP_ARG_DECL  Image_File *ifp, index_t frame
 
 	if( (n=read(rv_fd_arr[disk_index],buf,n_to_read)) != n_to_read ){
 		if( n < 0 ) tell_sys_error("read");
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"error reading RV data from disk %d (fd=%d), %d bytes read (%ld requested)",
 			disk_index,rv_fd_arr[disk_index],n,n_to_read);
 		warn(ERROR_STRING);
@@ -422,7 +422,7 @@ FIO_RD_FUNC( rvfio )
 	// the object must be aligned!
 	// BUG - use BLOCKSIZE instead of hard-coding 1024
 	if( ((u_long)(OBJ_DATA_PTR(dp))) & (BLOCK_SIZE-1) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Object %s must be block-aligned (%d bytes) to read from a raw volume!?",
 			OBJ_NAME(dp),BLOCK_SIZE);
 		WARN(ERROR_STRING);
@@ -448,7 +448,7 @@ FIO_RD_FUNC( rvfio )
 	 */
 
 if( verbose ){
-sprintf(ERROR_STRING,"rvfio_rd:  file %s seeking to frame %d, will read from disk %d",
+snprintf(ERROR_STRING,LLEN,"rvfio_rd:  file %s seeking to frame %d, will read from disk %d",
 ifp->if_name,ifp->if_nfrms,disk_index);
 advise(ERROR_STRING);
 }
@@ -459,7 +459,7 @@ advise(ERROR_STRING);
 
 	if( (n=read(rv_fd_arr[disk_index],data_ptr,bpi)) != bpi ){
 		if( n < 0 ) tell_sys_error("read");
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"error reading RV data from disk %d (fd=%d), %d bytes read (%ld requested)",
 			disk_index,rv_fd_arr[disk_index],n,bpi);
 		warn(ERROR_STRING);

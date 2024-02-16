@@ -12,23 +12,23 @@
 static int _render_check(QSP_ARG_DECL  Data_Obj *image_dp,Data_Obj *coord_dp,Data_Obj *intens_dp)
 {
 	if( OBJ_PREC(image_dp) != PREC_SP ){
-		sprintf(ERROR_STRING,"render_check:  source image %s must be float",OBJ_NAME(image_dp));
+		snprintf(ERROR_STRING,LLEN,"render_check:  source image %s must be float",OBJ_NAME(image_dp));
 		WARN(ERROR_STRING);
 		return(-1);
 	}
 	if( OBJ_COMPS(coord_dp) != 2 ){
-		sprintf(ERROR_STRING,"render_check:  coordinate list %s (%d) must have two components",OBJ_NAME(coord_dp),
+		snprintf(ERROR_STRING,LLEN,"render_check:  coordinate list %s (%d) must have two components",OBJ_NAME(coord_dp),
 			OBJ_COMPS(coord_dp));
 		WARN(ERROR_STRING);
 		return(-1);
 	}
 	if( OBJ_MACH_PREC(intens_dp) != PREC_SP ){
-		sprintf(ERROR_STRING,"render_check:  intensity list %s must be float",OBJ_NAME(intens_dp));
+		snprintf(ERROR_STRING,LLEN,"render_check:  intensity list %s must be float",OBJ_NAME(intens_dp));
 		WARN(ERROR_STRING);
 		return(-1);
 	}
 	if( OBJ_MACH_PREC(coord_dp) != PREC_SP ){
-		sprintf(ERROR_STRING,"render_check:  coordinate list %s must be float",
+		snprintf(ERROR_STRING,LLEN,"render_check:  coordinate list %s must be float",
 			OBJ_NAME(coord_dp));
 		WARN(ERROR_STRING);
 		return(-1);
@@ -39,13 +39,13 @@ static int _render_check(QSP_ARG_DECL  Data_Obj *image_dp,Data_Obj *coord_dp,Dat
 		return(-1);
 	}
 	if( OBJ_COMPS(image_dp) != OBJ_COMPS(intens_dp) ){
-		sprintf(ERROR_STRING,"render_check:  intensity list %s (%d) must have same number of components as target image %s (%d)",
+		snprintf(ERROR_STRING,LLEN,"render_check:  intensity list %s (%d) must have same number of components as target image %s (%d)",
 			OBJ_NAME(intens_dp),OBJ_COMPS(intens_dp),OBJ_NAME(image_dp),OBJ_COMPS(image_dp));
 		WARN(ERROR_STRING);
 		return(-1);
 	}
 	if( OBJ_COMPS(image_dp)>1 && OBJ_COMP_INC(image_dp) != 1 ){
-		sprintf(ERROR_STRING,"render_check:  Sorry, target image %s has component increment (%d) != 1",
+		snprintf(ERROR_STRING,LLEN,"render_check:  Sorry, target image %s has component increment (%d) != 1",
 				OBJ_NAME(image_dp),OBJ_COMP_INC(image_dp));
 		WARN(ERROR_STRING);
 		advise("Target image component increment must be 1 for rendering and sampling");
@@ -60,7 +60,7 @@ static int _render_check(QSP_ARG_DECL  Data_Obj *image_dp,Data_Obj *coord_dp,Dat
 	if( OBJ_ROWS(coord_dp) != OBJ_ROWS(intens_dp) ||
 		/* BUG should check all dims? */
 		OBJ_COLS(coord_dp) != OBJ_COLS(intens_dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Coordinate object %s (%d x %d) differs in size from intensity object %s (%d x %d)",
 			OBJ_NAME(coord_dp),
 			OBJ_ROWS(coord_dp),
@@ -108,7 +108,7 @@ void _render_samples(QSP_ARG_DECL  Data_Obj *image_dp, Data_Obj *coord_dp, Data_
 					*intens++;
 		} else {
 			if( verbose ){
-				sprintf(msg_str,"render_samples:  clipping point at %d %d",ix,iy);
+				snprintf(msg_str,LLEN,"render_samples:  clipping point at %d %d",ix,iy);
 				prt_msg(msg_str);
 			}
 			for(k=0;k<OBJ_COMPS(image_dp);k++)
@@ -150,7 +150,7 @@ void _render_samples2(QSP_ARG_DECL  Data_Obj *image_dp, Data_Obj *coord_dp, Data
 		y = *coord++;
 
 		if( isnan(x) || isnan(y) ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"render_samples2:  nan value passed in coordinate list %s",
 				OBJ_NAME(coord_dp));
 			error1(ERROR_STRING);

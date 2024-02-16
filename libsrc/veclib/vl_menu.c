@@ -33,7 +33,7 @@ static void _vf_info(QSP_ARG_DECL  Vector_Function *vfp)
 	int i;
 	int n_printed=0;
 
-	sprintf(msg_str,"Vector function %s:",VF_NAME(vfp));
+	snprintf(msg_str,LLEN,"Vector function %s:",VF_NAME(vfp));
 	prt_msg(msg_str);
 
 #define MAX_PER_LINE	4
@@ -42,7 +42,7 @@ static void _vf_info(QSP_ARG_DECL  Vector_Function *vfp)
 	for(i=0;i<N_MACHINE_PRECS;i++){
 		if( VF_PRECMASK(vfp) & (1<<i) ){
 			/* BUG?  is 0 a legal precision code? it is PREC_NONE... */
-			sprintf(msg_str,"%s%s",
+			snprintf(msg_str,LLEN,"%s%s",
 			(n_printed>=MAX_PER_LINE?",\n\t\t\t": (n_printed>0?", ":"")),
 			PREC_NAME(prec_for_code(i)) );
 			prt_msg_frag(msg_str);
@@ -55,7 +55,7 @@ static void _vf_info(QSP_ARG_DECL  Vector_Function *vfp)
 	n_printed=0;
 	for(i=0;i<N_ARGSET_TYPES;i++){
 		if( VF_TYPEMASK(vfp) & VL_TYPE_MASK(i) ){
-			sprintf(msg_str,"%s%s",
+			snprintf(msg_str,LLEN,"%s%s",
 			n_printed>0?", ":"",
 			number_type_name[i]);
 			prt_msg_frag(msg_str);

@@ -59,7 +59,7 @@ static Precision * _prec_of_matlab_object(QSP_ARG_DECL  matvar_t *matp)
 			return(NULL);
 		case MAT_T_CELL:
 			//warn("prec_of_matlab_object:  Need to handle matlab cell type!?");
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"NOT handling matlab type CELL, variable %s",matp->name);
 			advise(ERROR_STRING);
 			return(NULL);
@@ -84,7 +84,7 @@ static Precision * _prec_of_matlab_object(QSP_ARG_DECL  matvar_t *matp)
 		// Comment out the default case to get compiler warnings
 		// about un-handled cases...
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"prec_of_matlab_object:  unexpected data_type %d (0x%x)!?",
 				matp->data_type,matp->data_type);
 			advise(ERROR_STRING);
@@ -98,13 +98,13 @@ static int describe_matlab_object(QSP_ARG_DECL  matvar_t *matp)
 {
 	int i;
 
-	sprintf(msg_str,"Matlab object %s:\trank %d, ",matp->name,matp->rank);
+	snprintf(msg_str,LLEN,"Matlab object %s:\trank %d, ",matp->name,matp->rank);
 	prt_msg_frag(msg_str);
 
 	for(i=0;i<matp->rank;i++){
-		if( i == 0 ) sprintf(msg_str,"\t%ld ",(long)matp->dims[0]);
+		if( i == 0 ) snprintf(msg_str,LLEN,"\t%ld ",(long)matp->dims[0]);
 		else {
-			sprintf(msg_str,"x %ld ",(long)matp->dims[i]);
+			snprintf(msg_str,LLEN,"x %ld ",(long)matp->dims[i]);
 		}
 		prt_msg_frag(msg_str);
 	}
@@ -136,7 +136,7 @@ static int describe_matlab_object(QSP_ARG_DECL  matvar_t *matp)
 		// comment out the default case to get compiler
 		// warnings about un-handled cases
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"(unexpected matlab type code %d)",matp->data_type);
 			strcat(msg_str,ERROR_STRING);
 			break;
@@ -171,7 +171,7 @@ static int describe_matlab_object(QSP_ARG_DECL  matvar_t *matp)
 	}
 	prt_msg_frag(msg_str);
 
-	sprintf(msg_str,"\n\t%d bytes/elt, %ld bytes total",
+	snprintf(msg_str,LLEN,"\n\t%d bytes/elt, %ld bytes total",
 		matp->data_size,(long)matp->nbytes);
 	prt_msg_frag(msg_str);
 
@@ -182,7 +182,7 @@ static int describe_matlab_object(QSP_ARG_DECL  matvar_t *matp)
 
 	prt_msg("");
 
-	//sprintf(ERROR_STRING,"\tdata addr = 0x%lx",(u_long)matp->data);
+	//snprintf(ERROR_STRING,LLEN,"\tdata addr = 0x%lx",(u_long)matp->data);
 	//advise(ERROR_STRING);
 
 	return(0);
@@ -214,7 +214,7 @@ static Data_Obj *make_obj_for_matvar(QSP_ARG_DECL  matvar_t * matvar, matvar_t *
 	} else {
 		if( strlen(matvar->name)+strlen(parent->name)+1 >= LLEN )
 			error1("matvar structure element name is too long!?");
-		sprintf(name,"%s.%s",parent->name,matvar->name);
+		snprintf(name,LLEN,"%s.%s",parent->name,matvar->name);
 	}
 //fprintf(stderr,"%s:  rank is %d\n",matvar->name,matvar->rank);
 	nelts=1;
@@ -283,7 +283,7 @@ warn("Mat_VarGetStructFieldnames failed!?");
 							matvar,prec_p);
 			if( dp == NULL ){
 		//warn("error making structure element!?");
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 					"NOT making data object for %s.%s\n",
 					matvar->name,v_array[i]->name);
 				advise(ERROR_STRING);
@@ -313,7 +313,7 @@ FIO_OPEN_FUNC( mat )
 		mat = Mat_Open(ifp->if_pathname,MAT_ACC_RDONLY);
 		// BUG if the file doesn't exist?
 		if( mat == NULL ){
-			sprintf(ERROR_STRING,"Error opening file %s!?",ifp->if_pathname);
+			snprintf(ERROR_STRING,LLEN,"Error opening file %s!?",ifp->if_pathname);
 			warn(ERROR_STRING);
 			// need to deallocate ifp...
 			mat_close(QSP_ARG  ifp);
@@ -341,7 +341,7 @@ FIO_OPEN_FUNC( mat )
 				if( matvar->data_type == MAT_T_STRUCT ){
 					handle_struct(QSP_ARG  matvar);
 				} else {
-					sprintf(ERROR_STRING,
+					snprintf(ERROR_STRING,LLEN,
 			"mat_open:  Not making object %s, unhandled type",
 						matvar->name);
 					advise(ERROR_STRING);
@@ -422,18 +422,18 @@ FIO_WT_FUNC( mat )
 FIO_RD_FUNC(  mat )
 {
 	if( x_offset != 0 || y_offset != 0  || t_offset != 0 ){
-		sprintf(ERROR_STRING,"mat_rd %s:  Sorry, don't know how to handle non-zero offsets",
+		snprintf(ERROR_STRING,LLEN,"mat_rd %s:  Sorry, don't know how to handle non-zero offsets",
 			ifp->if_name);
 		warn(ERROR_STRING);
 		return;
 	}
 
 	/*
-sprintf(ERROR_STRING,"mat_rd:  reading %ld elements of size %d",
+snprintf(ERROR_STRING,LLEN,"mat_rd:  reading %ld elements of size %d",
 dp->dt_nelts,siztbl[MACHINE_PREC(dp)]);
 advise(ERROR_STRING);
 	if( fread(dp->dt_data,siztbl[MACHINE_PREC(dp)],dp->dt_nelts,ifp->if_fp) != dp->dt_nelts ){
-		sprintf(ERROR_STRING,"mat_rd %s:  error reading data",ifp->if_name);
+		snprintf(ERROR_STRING,LLEN,"mat_rd %s:  error reading data",ifp->if_name);
 		warn(ERROR_STRING);
 	}
 	*/

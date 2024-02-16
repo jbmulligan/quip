@@ -43,7 +43,7 @@ static int force_eye = 0;
 #define INSURE_NVST( whence )					\
 								\
 	if( nv_ctx == NULL ){					\
-		sprintf(ERROR_STRING,				\
+		snprintf(ERROR_STRING,LLEN,			\
 "%s:  nVidia shutter glasses system is not present, or has not been initialized.",	\
 			#whence );				\
 		WARN(ERROR_STRING);				\
@@ -53,7 +53,7 @@ static int force_eye = 0;
 
 #define INSURE_NVST( whence )					\
 								\
-	sprintf(ERROR_STRING,					\
+	snprintf(ERROR_STRING,LLEN,				\
 	"%s:  Sorry, no libusb-1.0 support in this build, no nvidia stereo!?",	\
 		#whence);					\
 	WARN(ERROR_STRING);					\
@@ -134,12 +134,12 @@ static COMMAND_FUNC( init_stereo )
 	if (nv_ctx == NULL) {
 		nv_ctx = nvstusb_init();
 		if (nv_ctx == NULL) {
-			sprintf(ERROR_STRING, "init_stereo:  Could not initialize NVIDIA 3D Vision IR emitter!?");
+			snprintf(ERROR_STRING,LLEN, "init_stereo:  Could not initialize NVIDIA 3D Vision IR emitter!?");
 			WARN(ERROR_STRING);
 		}
 		return;
 	} else {
-		sprintf(ERROR_STRING, "init_stereo:  nVidia 3D Vision IR emitter already initialized!?");
+		snprintf(ERROR_STRING,LLEN, "init_stereo:  nVidia 3D Vision IR emitter already initialized!?");
 		WARN(ERROR_STRING);
 	}
 

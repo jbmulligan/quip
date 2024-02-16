@@ -74,12 +74,12 @@ static int read_traditional_startup(QSP_ARG_DECL  const char *progname)
 	// we copy the file to the device...
 
 	// BUG possible buffer overrun
-	sprintf(filename,"%s/.%src",home,progname);	// e.g. .quiprc
+	snprintf(filename,MAXPATHLEN,"%s/.%src",home,progname);	// e.g. .quiprc
 	fp=fopen(filename,"r");
 
 	if( fp!=NULL ) {
 		if( verbose ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"Interpreting global startup file %s",filename);
 			advise(ERROR_STRING);
 		}
@@ -245,7 +245,7 @@ void rcfile( Query_Stack *qsp, char* progname )
 		/* How would verbose ever be set here? Only by changing compilation default? */
 		// We may not want to print this message if we are using the global startup?
 		if( s != NULL ){
-			sprintf(ERROR_STRING,"Interpreting startup file %s",s);
+			snprintf(ERROR_STRING,LLEN,"Interpreting startup file %s",s);
 			advise(ERROR_STRING);
 		}
 	}

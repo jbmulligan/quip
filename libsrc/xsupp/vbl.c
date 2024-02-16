@@ -72,7 +72,7 @@ static void dump_all_regs()
 			a++;
 		}
 		/*               addr   0   1   2   3   4   5   6   7   8 */
-		sprintf(msg_str,"0x%x:\t%x\t%x\t%x\t%x\t%x\t%x\t%x\t%x\t%x",addr,rv[0],rv[1],rv[2],rv[3],rv[4],rv[5],rv[6],rv[7],rv[8]);
+		snprintf(msg_str,LLEN,"0x%x:\t%x\t%x\t%x\t%x\t%x\t%x\t%x\t%x\t%x",addr,rv[0],rv[1],rv[2],rv[3],rv[4],rv[5],rv[6],rv[7],rv[8]);
 		addr+=8;
 		prt_msg(msg_str);
 	}
@@ -103,7 +103,7 @@ void _vbl_wait(SINGLE_QSP_ARG_DECL)
 
 #ifdef QUIP_DEBUG
 //if( debug & xdebug ){
-//sprintf(ERROR_STRING,"vbl_wait:  reg 0x3da = 0x%x",regval);
+//snprintf(ERROR_STRING,LLEN,"vbl_wait:  reg 0x3da = 0x%x",regval);
 //advise(ERROR_STRING);
 //}
 #endif /* QUIP_DEBUG */
@@ -119,20 +119,20 @@ void _vbl_wait(SINGLE_QSP_ARG_DECL)
 		ctr++;
 #ifdef QUIP_DEBUG
 //if( debug & xdebug ){
-//sprintf(ERROR_STRING,"vbl_wait:  reg 0x3da = 0x%x   (ctr = %d)",regval,ctr);
+//snprintf(ERROR_STRING,LLEN,"vbl_wait:  reg 0x3da = 0x%x   (ctr = %d)",regval,ctr);
 //advise(ERROR_STRING);
 //}
 #endif /* QUIP_DEBUG */
 	}
 #ifdef QUIP_DEBUG
 //if( debug & xdebug ){
-//sprintf(ERROR_STRING,"vbl_wait:  bit clear after %d counts",ctr);
+//snprintf(ERROR_STRING,LLEN,"vbl_wait:  bit clear after %d counts",ctr);
 //advise(ERROR_STRING);
 //}
 #endif /* QUIP_DEBUG */
 
 	if( ctr >= MAX_WAITS ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "vbl_wait:  polled MAX_WAITS (0x%x) times waiting for VBLANK bit to clear",
 			MAX_WAITS);
 		warn(ERROR_STRING);
@@ -144,7 +144,7 @@ void _vbl_wait(SINGLE_QSP_ARG_DECL)
 		ctr++;
 #ifdef QUIP_DEBUG
 //if( debug & xdebug ){
-//sprintf(ERROR_STRING,"vbl_wait:  reg 0x3da = 0x%x   (ctr = %d)",regval,ctr);
+//snprintf(ERROR_STRING,LLEN,"vbl_wait:  reg 0x3da = 0x%x   (ctr = %d)",regval,ctr);
 //advise(ERROR_STRING);
 //}
 #endif /* QUIP_DEBUG */
@@ -152,13 +152,13 @@ void _vbl_wait(SINGLE_QSP_ARG_DECL)
 
 #ifdef QUIP_DEBUG
 if( debug & xdebug ){
-sprintf(ERROR_STRING,"vbl_wait:  bit set after %d counts",ctr);
+snprintf(ERROR_STRING,LLEN,"vbl_wait:  bit set after %d counts",ctr);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
 
 	if( ctr >= MAX_WAITS ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "vbl_wait:  polled MAX_WAITS (0x%x) times waiting for VBLANK bit to set",
 			MAX_WAITS);
 		warn(ERROR_STRING);

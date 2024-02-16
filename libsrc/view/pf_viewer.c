@@ -190,7 +190,7 @@ COMMAND_FUNC( do_new_pf_vwr )
 	if( vp == NULL ) return;
 
 	if( ! READY_FOR_GLX(vp) ) {
-		sprintf(ERROR_STRING,"do_new_pf_vwr:  Existing viewer %s must be initialized for GL before using!?",VW_NAME(vp) );
+		snprintf(ERROR_STRING,LLEN,"do_new_pf_vwr:  Existing viewer %s must be initialized for GL before using!?",VW_NAME(vp) );
 		warn(ERROR_STRING);
 		return;
 	}
@@ -200,7 +200,7 @@ COMMAND_FUNC( do_new_pf_vwr )
 #endif // HAVE_OPENGL
 
 	if( new_pf_viewer(vp) == NULL ){
-		sprintf(ERROR_STRING,"Error making %s a cuda viewer!?",VW_NAME(vp));
+		snprintf(ERROR_STRING,LLEN,"Error making %s a cuda viewer!?",VW_NAME(vp));
 		warn(ERROR_STRING);
 	}
 } // do_new_pf_viewer
@@ -222,7 +222,7 @@ COMMAND_FUNC( do_load_pf_vwr )
 	select_gl_viewer( QSP_ARG  /*pvp->pv_vp*/ PFVWR_VIEWER(pvp) );
 
 	if( ! IS_GL_BUFFER(dp) ){
-		sprintf(ERROR_STRING,"Object %s is not a GL buffer object.",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"Object %s is not a GL buffer object.",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}

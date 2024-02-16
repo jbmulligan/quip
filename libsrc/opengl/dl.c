@@ -50,7 +50,7 @@ COMMAND_FUNC( do_new_dl )
 
 	dlp=dl_of(s);
 	if( dlp != NULL ){
-		sprintf(ERROR_STRING,"A display list named \"%s\" already exists!?",s);
+		snprintf(ERROR_STRING,LLEN,"A display list named \"%s\" already exists!?",s);
 		WARN(ERROR_STRING);
 		return;
 	}
@@ -62,10 +62,10 @@ void new_display_list(QSP_ARG_DECL  const char *name)
 	Display_List *dlp;
 
 	if( current_dlp != NULL ){
-		sprintf(ERROR_STRING,"Display list %s is already open, can't create new display list %s",
+		snprintf(ERROR_STRING,LLEN,"Display list %s is already open, can't create new display list %s",
 			current_dlp->dl_name,name);
 		WARN(ERROR_STRING);
-		sprintf(ERROR_STRING,"End display list %s first",current_dlp->dl_name);
+		snprintf(ERROR_STRING,LLEN,"End display list %s first",current_dlp->dl_name);
 		advise(ERROR_STRING);
 		return;
 	}
@@ -106,15 +106,15 @@ COMMAND_FUNC( do_call_dl )
 
 void info_dl(QSP_ARG_DECL  Display_List *dlp)
 {
-	sprintf(msg_str,"Display List \"%s\":",dlp->dl_name);
+	snprintf(msg_str,LLEN,"Display List \"%s\":",dlp->dl_name);
 	prt_msg(msg_str);
-	sprintf(msg_str,"\tserial = %d",dlp->dl_serial);
+	snprintf(msg_str,LLEN,"\tserial = %d",dlp->dl_serial);
 	prt_msg(msg_str);
 }
 
 //void dump_dl(Display_List *dlp)
 //{
-//	sprintf(ERROR_STRING,"Sorry, don't know how to dump a display list yet");
+//	snprintf(ERROR_STRING,LLEN,"Sorry, don't know how to dump a display list yet");
 //	advise(ERROR_STRING);
 //}
 
@@ -136,7 +136,7 @@ void _end_dl(SINGLE_QSP_ARG_DECL)
 void _call_dl(QSP_ARG_DECL  Display_List *dlp)
 {
 	if( current_dlp != NULL && dlp==current_dlp ){
-		sprintf(ERROR_STRING,"Recursive call to display list %s!?",dlp->dl_name);
+		snprintf(ERROR_STRING,LLEN,"Recursive call to display list %s!?",dlp->dl_name);
 		warn(ERROR_STRING);
 		return;
 	}

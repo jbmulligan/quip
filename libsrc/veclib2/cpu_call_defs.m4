@@ -122,7 +122,7 @@ ifdef(`MAX_DEBUG',`
 define(`ANNOUNCE_FUNCTION',`
 
 	if( verbose ){
-		sprintf(DEFAULT_ERROR_STRING,"BEGIN function %s",db_func_name);
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"BEGIN function %s",db_func_name);
 		NADVISE(DEFAULT_ERROR_STRING);
 	}
 ')
@@ -130,7 +130,7 @@ define(`ANNOUNCE_FUNCTION',`
 define(`REPORT_OBJ_METHOD_DONE',`
 
 	if( verbose ){
-		sprintf(DEFAULT_ERROR_STRING,"Function %s DONE",db_func_name);
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"Function %s DONE",db_func_name);
 		NADVISE(DEFAULT_ERROR_STRING);
 	}
 ')
@@ -138,7 +138,7 @@ define(`REPORT_OBJ_METHOD_DONE',`
 define(`REPORT_FAST_CALL',`
 
 	if( verbose ){
-		sprintf(DEFAULT_ERROR_STRING,"Function %s calling fast func",db_func_name);
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"Function %s calling fast func",db_func_name);
 		NADVISE(DEFAULT_ERROR_STRING);
 	}
 ')
@@ -146,7 +146,7 @@ define(`REPORT_FAST_CALL',`
 define(`REPORT_EQSP_CALL',`
 
 	if( verbose ){
-		sprintf(DEFAULT_ERROR_STRING,"Function %s calling eqsp func",db_func_name);
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"Function %s calling eqsp func",db_func_name);
 		NADVISE(DEFAULT_ERROR_STRING);
 	}
 ')
@@ -154,7 +154,7 @@ define(`REPORT_EQSP_CALL',`
 define(`REPORT_SLOW_CALL',`
 
 	if( verbose ){
-		sprintf(DEFAULT_ERROR_STRING,"Function %s calling slow func",db_func_name);
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"Function %s calling slow func",db_func_name);
 		NADVISE(DEFAULT_ERROR_STRING);
 	}
 ')
@@ -189,7 +189,7 @@ define(`CHECK_MATCH',`
 				! UNKNOWN_SHAPE($1) ){
 			install_shape($2,$1);
 		} else {
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 "Shape mismatch between objects %s and %s",OBJ_NAME($1),OBJ_NAME($2));
 			warn(ERROR_STRING);
 			return;
@@ -230,7 +230,7 @@ dnl	OBJ_ARG_CHK(dp,string)
 define(`OBJ_ARG_CHK',`
 
 	if( $1==NULL ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 			"CAUTIOUS:  Null %s object!?",$2);
 		NERROR1(DEFAULT_ERROR_STRING);
 		IOS_RETURN
@@ -780,13 +780,13 @@ define(`SET_DBM_BIT',`
 ')
 
 define(`DEBUG_SBM_',`
-sprintf(DEFAULT_ERROR_STRING,"sbm_ptr = 0x%"PRIxPTR"   sbm_bit_offset = %d",
+snprintf(DEFAULT_ERROR_STRING,LLEN,"sbm_ptr = 0x%"PRIxPTR"   sbm_bit_offset = %d",
 (uintptr_t)sbm_ptr,sbm_bit_offset);
 NADVISE(DEFAULT_ERROR_STRING);
 ')
 
 define(`DEBUG_DBM_',`
-sprintf(DEFAULT_ERROR_STRING,"dbm_ptr = 0x%"PRIxPTR"   dbm_bit_idx = %d",
+snprintf(DEFAULT_ERROR_STRING,LLEN,"dbm_ptr = 0x%"PRIxPTR"   dbm_bit_idx = %d",
 (uintptr_t)dbm_ptr,dbm_bit_idx);
 NADVISE(DEFAULT_ERROR_STRING);
 ')
@@ -1325,7 +1325,7 @@ define(`ADJ_COUNTS',`
 
 					n = MIN(INDEX_COUNT($1,i_dim),
 						INDEX_COUNT($2,i_dim));
-					sprintf(DEFAULT_ERROR_STRING,
+					snprintf(DEFAULT_ERROR_STRING,LLEN,
 	"Oops: %s count mismatch, (%d != %d), using %d",
 						dimension_name[i_dim],
 						INDEX_COUNT($1,i_dim),
@@ -1338,11 +1338,11 @@ define(`ADJ_COUNTS',`
 ')
 
 define(`SHOW_BASES',`
-sprintf(DEFAULT_ERROR_STRING,"s1_ptr:  0x%"PRIxPTR,(uintptr_t)s1_ptr);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"s1_ptr:  0x%"PRIxPTR,(uintptr_t)s1_ptr);
 NADVISE(DEFAULT_ERROR_STRING);
-/*sprintf(DEFAULT_ERROR_STRING,"bm_ptr:  0x%"PRIxPTR", which_bit = %d",(uintptr_t)bm_ptr,which_bit);
+/*snprintf(DEFAULT_ERROR_STRING,LLEN,"bm_ptr:  0x%"PRIxPTR", which_bit = %d",(uintptr_t)bm_ptr,which_bit);
 NADVISE(DEFAULT_ERROR_STRING);*/
-sprintf(DEFAULT_ERROR_STRING,"s1_base:  0x%"PRIxPTR"  0x%"PRIxPTR"  0x%"PRIxPTR"  0x%"PRIxPTR,(uintptr_t)s1_base[0],(uintptr_t)s1_base[1],(uintptr_t)s1_base[2],(uintptr_t)s1_base[3]);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"s1_base:  0x%"PRIxPTR"  0x%"PRIxPTR"  0x%"PRIxPTR"  0x%"PRIxPTR,(uintptr_t)s1_base[0],(uintptr_t)s1_base[1],(uintptr_t)s1_base[2],(uintptr_t)s1_base[3]);
 NADVISE(DEFAULT_ERROR_STRING);
 ')
 
@@ -1407,7 +1407,7 @@ define(`CHECK_IDXVEC_OVERFLOW',`
 
 	if( nocc >= idx_len ){
 		if( verbose && ! overflow_warned ){
-			sprintf(DEFAULT_ERROR_STRING,
+			snprintf(DEFAULT_ERROR_STRING,LLEN,
 "%s:  index vector has %d elements, more occurrences of extreme value", 
 				func_name, idx_len);
 			NADVISE(DEFAULT_ERROR_STRING);
@@ -1423,7 +1423,7 @@ define(`CHECK_IDXVEC_OVERFLOW',`
 /******************* Section 2 - slow loop bodies *******************/
 
 define(`SHOW_SLOW_COUNT',`
-sprintf(DEFAULT_ERROR_STRING,"count = %d %d %d %d %d",
+snprintf(DEFAULT_ERROR_STRING,LLEN,"count = %d %d %d %d %d",
 INDEX_COUNT(count,0),
 INDEX_COUNT(count,1),
 INDEX_COUNT(count,2),
@@ -1474,17 +1474,17 @@ define(`DEBUG_2',`DEBUG_DST DEBUG_SRC1')
 define(`DEBUG_2SRCS',`DEBUG_SRC1 DEBUG_SRC2')
 
 define(`DEBUG_DST',`
-	sprintf(DEFAULT_ERROR_STRING,"tdst = 0x%"PRIxPTR,(uintptr_t)dst_ptr);
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"tdst = 0x%"PRIxPTR,(uintptr_t)dst_ptr);
 	NADVISE(DEFAULT_ERROR_STRING);
 ')
 
 define(`DEBUG_SRC1',`
-	sprintf(DEFAULT_ERROR_STRING,"tsrc1 = 0x%"PRIxPTR,(uintptr_t)s1_ptr);
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"tsrc1 = 0x%"PRIxPTR,(uintptr_t)s1_ptr);
 	NADVISE(DEFAULT_ERROR_STRING);
 ')
 
 define(`DEBUG_SRC2',`
-	sprintf(DEFAULT_ERROR_STRING,"tsrc2 = 0x%"PRIxPTR,(uintptr_t)s2_ptr);
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"tsrc2 = 0x%"PRIxPTR,(uintptr_t)s2_ptr);
 	NADVISE(DEFAULT_ERROR_STRING);
 ')
 
@@ -1554,7 +1554,7 @@ define(`SIMPLE_EQSP_BODY',`
 ')
 
 define(`DEBUG_CPX_3',`
-sprintf(DEFAULT_ERROR_STRING,"executing dst = 0x%"PRIxPTR"   src1 = 0x%"PRIxPTR"  src2 = 0x%"PRIxPTR,
+snprintf(DEFAULT_ERROR_STRING,LLEN,"executing dst = 0x%"PRIxPTR"   src1 = 0x%"PRIxPTR"  src2 = 0x%"PRIxPTR,
 (uintptr_t)cdst_ptr,
 (uintptr_t)cs1_ptr,
 (uintptr_t)cs2_ptr);
@@ -2161,7 +2161,7 @@ define(`IDXRES_FAST_FUNC',`
 
 FF_DECL($1)(IDX_PTR_ARG,PTR_ARGS_SRC1,COUNT_ARG)
 {
-	sprintf(ERROR_STRING,"Sorry, Function %s is not implemented.","$1");
+	snprintf(ERROR_STRING,LLEN,"Sorry, Function %s is not implemented.","$1");
 	warn(ERROR_STRING);
 }
 ')
@@ -2686,11 +2686,11 @@ define(`FAST_BODY_RQ_2',`SIMPLE_FAST_BODY($1,$2,RQ_,2,`',`')')
 
 dnl	SHOW_VEC_ARGS(speed)
 define(`SHOW_VEC_ARGS',`
-	sprintf(DEFAULT_ERROR_STRING,"%s:  vap.va_dst_vp = 0x%"PRIxPTR,"$1",(uintptr_t)VA_DEST_PTR(vap);
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"%s:  vap.va_dst_vp = 0x%"PRIxPTR,"$1",(uintptr_t)VA_DEST_PTR(vap);
 	NADVISE(DEFAULT_ERROR_STRING);
-	sprintf(DEFAULT_ERROR_STRING,"%s:  vap.va_src_vp[0] = 0x%"PRIxPTR,"$1",(uintptr_t)VA_SRC_PTR(vap,0) );
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"%s:  vap.va_src_vp[0] = 0x%"PRIxPTR,"$1",(uintptr_t)VA_SRC_PTR(vap,0) );
 	NADVISE(DEFAULT_ERROR_STRING);
-	sprintf(DEFAULT_ERROR_STRING,"%s:  vap.va_src_vp[1] = 0x%"PRIxPTR,"$1",(uintptr_t)VA_SRC_PTR(vap,1) );
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"%s:  vap.va_src_vp[1] = 0x%"PRIxPTR,"$1",(uintptr_t)VA_SRC_PTR(vap,1) );
 	NADVISE(DEFAULT_ERROR_STRING);
 ')
 
@@ -2718,7 +2718,7 @@ define(`SHOW_FAST_TEST_4',`')
 define(`SHOW_FAST_TEST_5',`')
 
 define(`SHOW_FAST_TEST_1',`
-	sprintf(DEFAULT_ERROR_STRING,"fast_test_1:  %d",FAST_TEST_1?1:0);
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"fast_test_1:  %d",FAST_TEST_1?1:0);
 	NADVISE(DEFAULT_ERROR_STRING);
 ')
 
@@ -2726,13 +2726,13 @@ dnl  These macros that use IS_CONTIGUOUS have qsp problems...
 
 define(`SHOW_FAST_TEST_2',`
 SHOW_FAST_TEST_1
-	sprintf(DEFAULT_ERROR_STRING,"fast_test_src1:  %d",IS_CONTIGUOUS(SRC1_DP)?1:0);
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"fast_test_src1:  %d",IS_CONTIGUOUS(SRC1_DP)?1:0);
 	NADVISE(DEFAULT_ERROR_STRING);
 ')
 
 define(`SHOW_FAST_TEST_3',`
 SHOW_FAST_TEST_2
-	sprintf(DEFAULT_ERROR_STRING,"fast_test_src2:  %d",IS_CONTIGUOUS(SRC2_DP)?1:0);
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"fast_test_src2:  %d",IS_CONTIGUOUS(SRC2_DP)?1:0);
 	NADVISE(DEFAULT_ERROR_STRING);
 ')
 

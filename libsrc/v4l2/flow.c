@@ -64,11 +64,11 @@ static inline void _update_index_var(QSP_ARG_DECL  const char *stem, My_Buffer *
 	char varname[128];
 	char val[32];
 
-	sprintf(varname,"%s.%s",stem,curr_vdp->vd_name);
+	snprintf(varname,128,"%s.%s",stem,curr_vdp->vd_name);
 	if( mbp == NULL ){
 		assign_var(varname,"-1");
 	} else {
-		sprintf(val,"%d",mbp->mb_index);
+		snprintf(val,32,"%d",mbp->mb_index);
 		assign_var(varname,val);
 	}
 }
@@ -81,8 +81,8 @@ static COMMAND_FUNC( update_vars )
 
 	n=check_queue_status(curr_vdp);
 
-	sprintf(val,"%d",n);
-	sprintf(varname,"n_ready.%s",curr_vdp->vd_name);
+	snprintf(val,32,"%d",n);
+	snprintf(varname,128,"n_ready.%s",curr_vdp->vd_name);
 	assign_var(varname,val);
 
 	update_index_var("oldest",curr_vdp->vd_oldest_mbp);
@@ -121,7 +121,7 @@ static COMMAND_FUNC( wait_next )	/* wait til we have another frame */
 	CHECK_DEVICE(wait_next)
 
 	if( ! IS_CAPTURING(curr_vdp) ){
-		sprintf(ERROR_STRING,"wait_next:  Video device %s is not capturing!?",
+		snprintf(ERROR_STRING,LLEN,"wait_next:  Video device %s is not capturing!?",
 			curr_vdp->vd_name);
 		WARN(ERROR_STRING);
 		return;
@@ -129,7 +129,7 @@ static COMMAND_FUNC( wait_next )	/* wait til we have another frame */
 
 	n = check_queue_status(curr_vdp);
 	if( n == curr_vdp->vd_n_buffers ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"wait_next:  device %s already has all of its %d buffers ready!?",
 			curr_vdp->vd_name,curr_vdp->vd_n_buffers);
 		WARN(ERROR_STRING);
@@ -155,7 +155,7 @@ static COMMAND_FUNC( wait_drip )	/* wait til we have at least one frame */
 	CHECK_DEVICE(wait_drip)
 
 	if( ! IS_CAPTURING(curr_vdp) ){
-		sprintf(ERROR_STRING,"wait_drip:  Video device %s is not capturing!?",
+		snprintf(ERROR_STRING,LLEN,"wait_drip:  Video device %s is not capturing!?",
 			curr_vdp->vd_name);
 		WARN(ERROR_STRING);
 		return;
@@ -230,7 +230,7 @@ fprintf(stderr,"release_oldest_buffer new oldest_buffer is %d\n",vdp->vd_oldest_
 
 #define INSIST_CAPTURING								\
 	if( ! IS_CAPTURING(curr_vdp) ){							\
-		sprintf(ERROR_STRING,"wait_next:  Video device %s is not capturing!?",	\
+		snprintf(ERROR_STRING,LLEN,"wait_next:  Video device %s is not capturing!?",	\
 			curr_vdp->vd_name);						\
 		WARN(ERROR_STRING);							\
 		return;									\

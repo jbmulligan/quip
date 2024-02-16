@@ -3,10 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F818B782B799EAA003B2FA1 /* mac_sound.c in Sources */ = {isa = PBXBuildFile; fileRef = 1F818B772B799EAA003B2FA1 /* mac_sound.c */; };
+		1F818B7B2B799F2C003B2FA1 /* CoreAudioTypes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F818B792B799EF3003B2FA1 /* CoreAudioTypes.framework */; };
+		1F818B7C2B799F2C003B2FA1 /* CoreAudioTypes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1F818B792B799EF3003B2FA1 /* CoreAudioTypes.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		71614B3C18774639001AC360 /* fbmenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 71614B3B18774639001AC360 /* fbmenu.m */; };
 		71614B3E187746AF001AC360 /* genlock.c in Sources */ = {isa = PBXBuildFile; fileRef = 71614B3D187746AF001AC360 /* genlock.c */; };
 		71614B40187746FC001AC360 /* mouse.c in Sources */ = {isa = PBXBuildFile; fileRef = 71614B3F187746FC001AC360 /* mouse.c */; };
@@ -570,6 +573,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		1F818B7D2B799F2C003B2FA1 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1F818B7C2B799F2C003B2FA1 /* CoreAudioTypes.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7CE62D0E1DCC0CB5000FED59 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -582,6 +596,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1F818B772B799EAA003B2FA1 /* mac_sound.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mac_sound.c; sourceTree = "<group>"; };
+		1F818B792B799EF3003B2FA1 /* CoreAudioTypes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioTypes.framework; path = System/Library/Frameworks/CoreAudioTypes.framework; sourceTree = SDKROOT; };
 		71614B3B18774639001AC360 /* fbmenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fbmenu.m; sourceTree = "<group>"; };
 		71614B3D187746AF001AC360 /* genlock.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = genlock.c; sourceTree = "<group>"; };
 		71614B3F187746FC001AC360 /* mouse.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mouse.c; sourceTree = "<group>"; };
@@ -897,6 +913,7 @@
 				7C653CBC1CA7326100F33A85 /* CoreVideo.framework in Frameworks */,
 				7C653CBA1CA7324900F33A85 /* AVFoundation.framework in Frameworks */,
 				7C653CB81CA7323000F33A85 /* CoreMedia.framework in Frameworks */,
+				1F818B7B2B799F2C003B2FA1 /* CoreAudioTypes.framework in Frameworks */,
 				71AC49D517E000A400AABB78 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -917,6 +934,7 @@
 		7177F9011A00ABF600BB5918 /* sound */ = {
 			isa = PBXGroup;
 			children = (
+				1F818B772B799EAA003B2FA1 /* mac_sound.c */,
 				7CE624B42190F0B400DE68C9 /* no_sound.c */,
 				7177F9061A00AC2500BB5918 /* alert.c */,
 				7177F9021A00AC0800BB5918 /* soundmenu.c */,
@@ -945,6 +963,7 @@
 		71AC49D317E000A400AABB78 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1F818B792B799EF3003B2FA1 /* CoreAudioTypes.framework */,
 				7C14654720990FD40055B598 /* libtermcap.tbd */,
 				7CDCA7241CC1941F004AD95C /* GLUT.framework */,
 				7C6CDBFA1CBF7553001AC12F /* OpenGL.framework */,
@@ -1467,6 +1486,7 @@
 				71AC49CD17E000A400AABB78 /* Sources */,
 				71AC49CE17E000A400AABB78 /* Frameworks */,
 				71AC49CF17E000A400AABB78 /* Resources */,
+				1F818B7D2B799F2C003B2FA1 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1761,6 +1781,7 @@
 				71CE755617E59B0300D93DE7 /* lump.c in Sources */,
 				71CE755D17E59B1600D93DE7 /* mlfit.c in Sources */,
 				71CE756017E59B1600D93DE7 /* stc_edit.c in Sources */,
+				1F818B782B799EAA003B2FA1 /* mac_sound.c in Sources */,
 				71CE756117E59B1600D93DE7 /* weibull.c in Sources */,
 				71CE756417E59B2700D93DE7 /* exp.c in Sources */,
 				71CE756717E59B3B00D93DE7 /* stair.c in Sources */,
@@ -2247,9 +2268,10 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
+					.,
 					../../include,
-					/sw/include,
 				);
+				INCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "libsrc/*";
 				INFOPLIST_FILE = "MacQuIP/MacQuIP-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
 				"OTHER_CFLAGS[arch=*]" = "-DBUILD_FOR_MACOS_APP";
@@ -2285,9 +2307,10 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
+					.,
 					../../include,
-					/sw/include,
 				);
+				INCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "libsrc/*";
 				INFOPLIST_FILE = "MacQuIP/MacQuIP-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 13.3;
 				"OTHER_CFLAGS[arch=*]" = "-DBUILD_FOR_MACOS_APP";

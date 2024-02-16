@@ -58,7 +58,7 @@ Framebuffer *create_framebuffer(QSP_ARG_DECL  const char *name, int width, int h
 
 	status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER);
 	if( status != GL_FRAMEBUFFER_COMPLETE ){
-		sprintf(ERROR_STRING,"create_framebuffer:  frame buffer %s is not complete!?",
+		snprintf(ERROR_STRING,LLEN,"create_framebuffer:  frame buffer %s is not complete!?",
 			name);
 		WARN(ERROR_STRING);
 		delete_framebuffer(QSP_ARG  fbp);
@@ -89,7 +89,7 @@ void delete_framebuffer(QSP_ARG_DECL  Framebuffer *fbp)
 
 void glfb_info(QSP_ARG_DECL  Framebuffer *fbp)
 {
-	sprintf(MSG_STR,"Framebuffer %s:  %d x %d",
+	snprintf(MSG_STR,LLEN,"Framebuffer %s:  %d x %d",
 		fbp->fb_name,fbp->fb_height,fbp->fb_width);
 	prt_msg(MSG_STR);
 }

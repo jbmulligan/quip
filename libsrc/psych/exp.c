@@ -44,12 +44,12 @@ void _get_rsp_word(QSP_ARG_DECL Response_Index idx)
 	char pmpt[LLEN];
 	const char *s;
 
-	sprintf(pmpt,"custom '%s' response",response_words[idx].dflt);
+	snprintf(pmpt,LLEN,"custom '%s' response",response_words[idx].dflt);
 	s=nameof(pmpt);
 
 	// only confirm if interactive...
 	if( intractive() ){
-		sprintf(pmpt,"use \"%s\" for '%s' response",s,response_words[idx].dflt);
+		snprintf(pmpt,LLEN,"use \"%s\" for '%s' response",s,response_words[idx].dflt);
 		if( !confirm(pmpt) ) return;
 	}
 
@@ -76,7 +76,7 @@ static void init_response_prompt(char *target_prompt_string,const char *question
 	get_response_parts(&c1_no,&s2_no,NO_INDEX);
 	get_response_parts(&c1_redo,&s2_redo,REDO_INDEX);
 
-	sprintf(target_prompt_string,
+	snprintf(target_prompt_string,LLEN,
 "%s? [(%c)%s (yes), (%c)%s (no), (%c)%s (redo), (a)bort, (u)ndo previous finger error] : ",
 		question_string, c1_yes,s2_yes, c1_no,s2_no, c1_redo,s2_redo);
 }
@@ -106,7 +106,7 @@ int _check_custom_response(QSP_ARG_DECL  int rsp_idx)
 			const char *w;
 			w = current_response_word(idx);
 			if( r[0] == w[0] ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 	"Responses '%s' (%d) and '%s' (%d) must differ in the 1st character!?",
 					r,rsp_idx, w,idx);
 				warn(ERROR_STRING);
@@ -308,7 +308,7 @@ void _add_class_to_expt( QSP_ARG_DECL  Experiment *exp_p, Trial_Class *tc_p )
 
 	np = nodeOf(EXPT_CLASS_LIST(exp_p),tc_p);
 	if( np != NULL ){
-		sprintf(ERROR_STRING,"add_class_to_expt:  trial class %s has already been added!?",
+		snprintf(ERROR_STRING,LLEN,"add_class_to_expt:  trial class %s has already been added!?",
 			CLASS_NAME(tc_p));
 		warn(ERROR_STRING);
 		return;
@@ -329,13 +329,13 @@ static void _print_expt_classes( QSP_ARG_DECL  Experiment *exp_p )
 		prt_msg("No conditions specified.");
 	} else {
 		Node *np;
-		sprintf(MSG_STR,"\t%d Condition%s:",n,n==1?"":"s");
+		snprintf(MSG_STR,LLEN,"\t%d Condition%s:",n,n==1?"":"s");
 		prt_msg(MSG_STR);
 		np = QLIST_HEAD( EXPT_CLASS_LIST(exp_p) );
 		while(np!=NULL){
 			Trial_Class *tc_p;
 			tc_p = NODE_DATA(np);
-			sprintf(MSG_STR,"\t\t%s",CLASS_NAME(tc_p));
+			snprintf(MSG_STR,LLEN,"\t\t%s",CLASS_NAME(tc_p));
 			prt_msg(MSG_STR);
 			np = NODE_NEXT(np);
 		}
@@ -350,18 +350,18 @@ void _print_expt_info( QSP_ARG_DECL  Experiment *exp_p )
 	if( EXPT_XVAL_OBJ(exp_p) == NULL ){
 		prt_msg("\tX-values not specified");
 	} else {
-		sprintf(MSG_STR,"\tX-values provided in object %s",OBJ_NAME( EXPT_XVAL_OBJ(exp_p) ) );
+		snprintf(MSG_STR,LLEN,"\tX-values provided in object %s",OBJ_NAME( EXPT_XVAL_OBJ(exp_p) ) );
 		prt_msg(MSG_STR);
 	}
 
 	print_expt_classes(exp_p);
 
 	n = EXPT_N_STAIRCASES(exp_p);
-	sprintf(MSG_STR,"\t%d staircase%s",n,n==1?"":"s");
+	snprintf(MSG_STR,LLEN,"\t%d staircase%s",n,n==1?"":"s");
 	prt_msg(MSG_STR);
 
 	n = EXPT_N_TOTAL_TRIALS(exp_p);
-	sprintf(MSG_STR,"\t%d trial%s",n,n==1?"":"s");
+	snprintf(MSG_STR,LLEN,"\t%d trial%s",n,n==1?"":"s");
 	prt_msg(MSG_STR);
 }
 

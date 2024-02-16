@@ -54,8 +54,8 @@ int bmp_to_dp(Data_Obj *dp, BMP_Header *hd_p)
 //void bmp_info(QSP_ARG_DECL  Image_File *ifp)
 FIO_INFO_FUNC( bmp )
 {
-	sprintf(msg_str,"\tcompression %d (0x%x)",HDR_P(ifp)->bmp_compression,HDR_P(ifp)->bmp_compression);
-	sprintf(msg_str,"\tbit_count %d (0x%x)",HDR_P(ifp)->bmp_bit_count,HDR_P(ifp)->bmp_bit_count);
+	snprintf(msg_str,LLEN,"\tcompression %d (0x%x)",HDR_P(ifp)->bmp_compression,HDR_P(ifp)->bmp_compression);
+	snprintf(msg_str,LLEN,"\tbit_count %d (0x%x)",HDR_P(ifp)->bmp_bit_count,HDR_P(ifp)->bmp_bit_count);
 	prt_msg(msg_str);
 	/* BUG do the rest of these */
 }
@@ -136,7 +136,7 @@ if( debug ) advise("allocating hips header");
 		HDR_P(ifp)->bmp_bytes_read = 0;
 
 		if (read8BitValue(ifp) != 66 || read8BitValue(ifp) != 77){
-			sprintf(ERROR_STRING,"bmp_open %s:  bad magic number",ifp->if_name);
+			snprintf(ERROR_STRING,LLEN,"bmp_open %s:  bad magic number",ifp->if_name);
 			WARN(ERROR_STRING);
 			return(NULL);
 		}
@@ -149,7 +149,7 @@ if( debug ) advise("allocating hips header");
 		HDR_P(ifp)->bmp_info_size = (unsigned int)read32BitValue(ifp);
 
 		if (HDR_P(ifp)->bmp_info_size < 40){
-			sprintf(ERROR_STRING,"bmp_open %s:  bad info header size (%d)",
+			snprintf(ERROR_STRING,LLEN,"bmp_open %s:  bad info header size (%d)",
 				ifp->if_name,HDR_P(ifp)->bmp_info_size);
 			WARN(ERROR_STRING);
 			return(NULL);
@@ -160,7 +160,7 @@ if( debug ) advise("allocating hips header");
 		HDR_P(ifp)->bmp_rows = read32BitValue(ifp);
 
 		if (read16BitValue(ifp) != 1){
-			sprintf(ERROR_STRING,"bmp_open %s: expected word after height to be 1!?",
+			snprintf(ERROR_STRING,LLEN,"bmp_open %s: expected word after height to be 1!?",
 				ifp->if_name);
 			WARN(ERROR_STRING);
 			return(NULL);
@@ -169,7 +169,7 @@ if( debug ) advise("allocating hips header");
 		HDR_P(ifp)->bmp_bit_count = read16BitValue(ifp);
 
 		if (HDR_P(ifp)->bmp_bit_count != 1 && HDR_P(ifp)->bmp_bit_count != 4 && HDR_P(ifp)->bmp_bit_count != 8 && HDR_P(ifp)->bmp_bit_count != 24){
-			sprintf(ERROR_STRING,"bmp_open %s: bad bit count (%d)!?",
+			snprintf(ERROR_STRING,LLEN,"bmp_open %s: bad bit count (%d)!?",
 				ifp->if_name,HDR_P(ifp)->bmp_bit_count);
 			WARN(ERROR_STRING);
 			return(NULL);
@@ -180,7 +180,7 @@ if( debug ) advise("allocating hips header");
 		if (HDR_P(ifp)->bmp_compression != BMP_BI_RGB && HDR_P(ifp)->bmp_compression != BMP_BI_RLE8 && 
 	    		HDR_P(ifp)->bmp_compression != BMP_BI_RLE4){
 
-			sprintf(ERROR_STRING,"bmp_open %s: bad compression code (%d)!?",
+			snprintf(ERROR_STRING,LLEN,"bmp_open %s: bad compression code (%d)!?",
 				ifp->if_name,HDR_P(ifp)->bmp_compression);
 			WARN(ERROR_STRING);
 			return(NULL);
@@ -205,7 +205,7 @@ if( debug ) advise("allocating hips header");
 			int numColors, i, j;
 
 			/* read the palette */
-//sprintf(ERROR_STRING,"allocating palette, bit_count = %d",HDR_P(ifp)->bmp_bit_count);
+//snprintf(ERROR_STRING,LLEN,"allocating palette, bit_count = %d",HDR_P(ifp)->bmp_bit_count);
 //advise(ERROR_STRING);
 			HDR_P(ifp)->bmp_palette_p = (u_char *)getbuf( 3 * 256 * sizeof(u_char) );
 
@@ -294,7 +294,7 @@ static void bmp_rd_bit_image(Data_Obj *dp,Image_File *ifp,index_t x_offset,index
 
 	/* 1-bit format cannot be compressed */
 	if (HDR_P(ifp)->bmp_compression != BMP_BI_RGB){
-		sprintf(ERROR_STRING,"bmp_rd %s:  compression code (%d) is not BMP+BI_RGB (%d)!?",
+		snprintf(ERROR_STRING,LLEN,"bmp_rd %s:  compression code (%d) is not BMP+BI_RGB (%d)!?",
 			ifp->if_name,HDR_P(ifp)->bmp_compression,BMP_BI_RGB);
 		warn(ERROR_STRING);
 		return;

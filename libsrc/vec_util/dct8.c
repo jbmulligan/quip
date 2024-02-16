@@ -203,18 +203,18 @@ static void _dct8_2D(QSP_ARG_DECL  Data_Obj *dp,int direction)
 
 #ifdef CAUTIOUS
 	if( OBJ_COLS(dp) != DCT_SIZE || OBJ_ROWS(dp) != DCT_SIZE ){
-		sprintf(ERROR_STRING,"Object %s should be 8x8 for DCT",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"Object %s should be 8x8 for DCT",OBJ_NAME(dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_PREC(dp) != PREC_SP ){
-		sprintf(ERROR_STRING,"Object %s has prec %s, should be float for DCT",
+		snprintf(ERROR_STRING,LLEN,"Object %s has prec %s, should be float for DCT",
 			OBJ_NAME(dp),PREC_NAME(OBJ_PREC_PTR(dp)));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_COMPS(dp) != 1 ){
-		sprintf(ERROR_STRING,"Object %s has %d components, should be 1 for DCT",
+		snprintf(ERROR_STRING,LLEN,"Object %s has %d components, should be 1 for DCT",
 			OBJ_NAME(dp),OBJ_COMPS(dp));
 		WARN(ERROR_STRING);
 		return;
@@ -285,25 +285,25 @@ void _compute_dct(QSP_ARG_DECL  Data_Obj *dp,int direction)
 	/* some fatal errors */
 
 	if( OBJ_PREC(dp) != PREC_SP ){
-		sprintf(ERROR_STRING,"Object %s has prec %s, should be float for DCT",
+		snprintf(ERROR_STRING,LLEN,"Object %s has prec %s, should be float for DCT",
 			OBJ_NAME(dp),PREC_NAME(OBJ_PREC_PTR(dp)));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_COMPS(dp) != 1 ){
-		sprintf(ERROR_STRING,"Object %s has %d components, should be 1 for DCT",
+		snprintf(ERROR_STRING,LLEN,"Object %s has %d components, should be 1 for DCT",
 			OBJ_NAME(dp),OBJ_COMPS(dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_FRAMES(dp) != 1 ){
-		sprintf(ERROR_STRING,"Object %s has %d frames, should be 1 for DCT",
+		snprintf(ERROR_STRING,LLEN,"Object %s has %d frames, should be 1 for DCT",
 			OBJ_NAME(dp),OBJ_FRAMES(dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_SEQS(dp) != 1 ){
-		sprintf(ERROR_STRING,"Object %s has %d seqs, should be 1 for DCT",
+		snprintf(ERROR_STRING,LLEN,"Object %s has %d seqs, should be 1 for DCT",
 			OBJ_NAME(dp),OBJ_SEQS(dp));
 		WARN(ERROR_STRING);
 		return;
@@ -312,7 +312,7 @@ void _compute_dct(QSP_ARG_DECL  Data_Obj *dp,int direction)
 	/* some non-fatal errors */
 
 	if( (OBJ_COLS(dp)%8) != 0 || (OBJ_ROWS(dp)%8) != 0 ){
-		sprintf(ERROR_STRING,"Image %s dimension(s) not a multiple of 8 for DCT",
+		snprintf(ERROR_STRING,LLEN,"Image %s dimension(s) not a multiple of 8 for DCT",
 			OBJ_NAME(dp));
 		WARN(ERROR_STRING);
 	}

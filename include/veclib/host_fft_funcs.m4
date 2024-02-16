@@ -20,7 +20,7 @@ switch( OBJ_MACH_PREC($2) ){
 	case PREC_SP:  HOST_TYPED_CALL_NAME_REAL($1,sp)(HOST_CALL_ARGS); break;
 	case PREC_DP:  HOST_TYPED_CALL_NAME_REAL($1,dp)(HOST_CALL_ARGS); break;
 	default:
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"real_float_switch (%s):  missing precision case (obj %s, prec %s)",
 		"$1", OBJ_NAME($2), OBJ_MACH_PREC_NAME($2) );
 		warn(ERROR_STRING);
@@ -39,7 +39,7 @@ switch( OBJ_MACH_PREC(OA_SRC1(oap)) ){
 	case PREC_DP:
 		HOST_TYPED_CALL_NAME_CPX($1,dp)(HOST_CALL_ARGS, $2);
 		break;
-	default:	sprintf(ERROR_STRING,
+	default:	snprintf(ERROR_STRING,LLEN,
 "fft_switch (%s):  object %s has bad machine precision %s",
 "$1",OBJ_NAME(OA_SRC1(oap)),OBJ_MACH_PREC_NAME(OA_SRC1(oap)) );
 		warn(ERROR_STRING);

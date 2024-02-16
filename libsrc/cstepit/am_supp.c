@@ -115,7 +115,7 @@ static float amoeba_scr_funk(float *p)
 		Opt_Param *opp;
 
 		opp=(Opt_Param *)np->n_data;
-		sprintf(str,"%g",p[i+1]);
+		snprintf(str,128,"%g",p[i+1]);
 		assign_var(opp->op_name,str);
 		i++;
 		np=np->n_next;

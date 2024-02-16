@@ -153,7 +153,7 @@ static void _make_zombie(QSP_ARG_DECL  Data_Obj *dp)
 	 */
 	zombie_item(dobj_itp,(Item *)dp);
 
-	sprintf(zname,"Z.%s.%d",OBJ_NAME(dp),n_zombie++);
+	snprintf(zname,LLEN,"Z.%s.%d",OBJ_NAME(dp),n_zombie++);
 fprintf(stderr,"make_zombie, changing object %s to %s\n",OBJ_NAME(dp),zname);
 	rls_str( (char *) OBJ_NAME(dp) );	/* unsave old name, make_zombie */
 	SET_OBJ_NAME(dp,savestr(zname));
@@ -186,7 +186,7 @@ void _delvec(QSP_ARG_DECL  Data_Obj *dp)
 #ifdef ZOMBIE_SUPPORT
 	// This should go back in eventually!
 	if( OBJ_FLAGS(dp) & DT_STATIC && OWNS_DATA(dp) ){
-sprintf(ERROR_STRING,"delvec:  static object %s will be made a zombie",OBJ_NAME(dp));
+snprintf(ERROR_STRING,LLEN,"delvec:  static object %s will be made a zombie",OBJ_NAME(dp));
 advise(ERROR_STRING);
 		make_zombie(dp);
 		return;
@@ -207,7 +207,7 @@ advise(ERROR_STRING);
 		 * be able to crash the program either...
 		 */
 
-sprintf(ERROR_STRING,"delvec:  object %s (refcount = %d) will be made a zombie",OBJ_NAME(dp),dp->dt_refcount);
+snprintf(ERROR_STRING,LLEN,"delvec:  object %s (refcount = %d) will be made a zombie",OBJ_NAME(dp),dp->dt_refcount);
 advise(ERROR_STRING);
 		make_zombie(dp);
 		return;
@@ -243,7 +243,7 @@ advise(ERROR_STRING);
 	if( IS_TEMP(dp) ){
 
 if( OBJ_DECLFILE(dp) != NULL ){
-sprintf(ERROR_STRING,"delvec %s:  temp object has declfile %s!?\n",
+snprintf(ERROR_STRING,LLEN,"delvec %s:  temp object has declfile %s!?\n",
 OBJ_NAME(dp),OBJ_DECLFILE(dp));
 advise(ERROR_STRING);
 }
@@ -388,7 +388,7 @@ int same_shape(Shape_Info *shpp1,Shape_Info *shpp2)
 		return(0);
 /*
 {
-sprintf(ERROR_STRING,"same_shape:  masked flags are 0x%lx and 0x%lx",
+snprintf(ERROR_STRING,LLEN,"same_shape:  masked flags are 0x%lx and 0x%lx",
 SHP_FLAGS(shpp1)&SHAPE_MASK,SHP_FLAGS(shpp2)&SHAPE_MASK);
 advise(ERROR_STRING);
 		return(0);

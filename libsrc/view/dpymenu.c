@@ -24,7 +24,7 @@ static COMMAND_FUNC( do_new_do )
 	s=nameof("display");
 #ifdef HAVE_X11
 	if( open_display(s,8) == NULL ){
-		sprintf(ERROR_STRING,"unable to open %s",s);
+		snprintf(ERROR_STRING,LLEN,"unable to open %s",s);
 		warn(ERROR_STRING);
 	}
 #endif /* HAVE_X11 */
@@ -39,7 +39,7 @@ static COMMAND_FUNC( do_open_do )
 	d=how_many("desired bit depth");
 #ifdef HAVE_X11
 	if( open_display(s,d) == NULL ){
-		sprintf(ERROR_STRING,"unable to open %s",s);
+		snprintf(ERROR_STRING,LLEN,"unable to open %s",s);
 		warn(ERROR_STRING);
 	}
 #endif /* HAVE_X11 */

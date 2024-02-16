@@ -169,7 +169,7 @@ static void check_max_warnings(SINGLE_QSP_ARG_DECL)
 	if( QS_MAX_WARNINGS(THIS_QSP) > 0 &&
 		QS_N_WARNINGS(THIS_QSP) >= QS_MAX_WARNINGS(THIS_QSP) ){
 
-		sprintf(ERROR_STRING,"Too many warnings (%d max)",
+		snprintf(ERROR_STRING,LLEN,"Too many warnings (%d max)",
 			QS_MAX_WARNINGS(THIS_QSP));
 		error1(ERROR_STRING);
 	}
@@ -195,13 +195,13 @@ static void _deliver_warning(QSP_ARG_DECL  const char* msg)
 	check_max_warnings(SINGLE_QSP_ARG);
 }
 
-#define format_expected(dest, msg) _format_expected(QSP_ARG  dest, msg)
+#define format_expected(dest,len,msg) _format_expected(QSP_ARG  dest,len,msg)
 
-static void _format_expected(QSP_ARG_DECL  char *dest, const char *msg)
+static void _format_expected(QSP_ARG_DECL  char *dest, int destlen,
+							const char *msg)
 {
-	// BUG - possible buffer overrun
-	sprintf( dest, "%s%s", EXPECTED_PREFIX, msg );
-	assert(strlen(dest)<LLEN);	// at this point, it's too late!?
+	// BUG check it all fit
+	snprintf( dest,destlen, "%s%s", EXPECTED_PREFIX, msg );
 }
 
 #define deliver_expected(msg) _deliver_expected(QSP_ARG  msg)
@@ -209,7 +209,7 @@ static void _format_expected(QSP_ARG_DECL  char *dest, const char *msg)
 static void _deliver_expected(QSP_ARG_DECL  const char *msg)
 {
 	char msg_to_print[LLEN];	// BUG use String_Buf?
-	format_expected(msg_to_print,msg);
+	format_expected(msg_to_print,LLEN,msg);
 	if( ! silent(SINGLE_QSP_ARG) ){
 		(*advise_vec)(QSP_ARG  msg_to_print);
 	}
@@ -309,7 +309,7 @@ void _log_message(QSP_ARG_DECL  const char *msg)
 		} else {
 			unsigned long c;
 			if( (c=LOG_MSG_COUNT(THIS_QSP)) > 1 ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 "%s:  previous message was repeated %ld time%s", log_time,c-1,c==2?"":"s");
 				advise(ERROR_STRING);
 			}
@@ -318,7 +318,7 @@ void _log_message(QSP_ARG_DECL  const char *msg)
 	} else {
 		SET_QS_FLAG_BITS(THIS_QSP,QS_HAS_PREV_LOG_MSG);
 	}
-	sprintf(ERROR_STRING,"%s:  %s", log_time,msg);
+	snprintf(ERROR_STRING,LLEN,"%s:  %s", log_time,msg);
 	advise(ERROR_STRING);
 	SET_PREV_LOG_MSG(THIS_QSP,savestr(msg));
 	SET_LOG_MSG_COUNT(THIS_QSP,1);
@@ -350,7 +350,7 @@ static const char *show_unprintable(QSP_ARG_DECL  const char* s)
 	to=printable_str;
 
 	if( strlen(s) >= PRINTABLE_LEN ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"show_unprintable:  input string length (%ld) is greater than buffer size (%d)!?",
 			(long) strlen(s), PRINTABLE_LEN );
 		warn(ERROR_STRING);
@@ -583,9 +583,9 @@ static void _tty_error1(QSP_ARG_DECL  const char *s1)
 	char msg[LLEN];
 
 	if( (pn=tell_progname()) != NULL )
-		sprintf(msg,"\n%sprogram %s:  %s",ERROR_PREFIX,pn,s1);
+		snprintf(msg,LLEN,"\n%sprogram %s:  %s",ERROR_PREFIX,pn,s1);
 	else
-		sprintf(msg,"\n%s%s",ERROR_PREFIX,s1);
+		snprintf(msg,LLEN,"\n%s%s",ERROR_PREFIX,s1);
 
 #ifndef NO_STDIO
 	if( QS_ERROR_FILE(THIS_QSP)==NULL )
@@ -665,7 +665,7 @@ void _check_expected_warnings(QSP_ARG_DECL  int clear_flag)
 
 	np = QLIST_HEAD(lp);
 	while(np!=NULL){
-		sprintf(ERROR_STRING,"Expected warning beginning with \"%s\" never issued!?",
+		snprintf(ERROR_STRING,LLEN,"Expected warning beginning with \"%s\" never issued!?",
 			(const char *)NODE_DATA(np));
 		advise(ERROR_STRING);
 		if( clear_flag ){
@@ -701,19 +701,20 @@ static int is_expected(QSP_ARG_DECL  const char *warning_msg)
 	return 0;
 }
 
-#define format_warning(dest, msg) _format_warning(QSP_ARG  dest, msg)
+#define format_warning(dest,len,msg) _format_warning(QSP_ARG  dest,len,msg)
 
-static void _format_warning(QSP_ARG_DECL  char *dest, const char *msg)
+static void _format_warning(QSP_ARG_DECL  char *dest, int destlen,
+							const char *msg)
 {
 	// BUG - possible buffer overrun
-	sprintf(dest,"%s%s",WARNING_PREFIX,msg);
+	snprintf(dest,destlen,"%s%s",WARNING_PREFIX,msg);
 	assert(strlen(dest)<LLEN);	// at this point, it's too late!?
 }
 
 void _tty_warn(QSP_ARG_DECL  const char *warning_message)
 {
 	char msg_to_print[LLEN];	// BUG use String_Buf?
-	format_warning(msg_to_print,warning_message);
+	format_warning(msg_to_print,LLEN,warning_message);
 	tty_advise(msg_to_print);
 
 #ifdef MAIL_BUGS
@@ -770,7 +771,7 @@ void error2(QSP_ARG_DECL  const char *progname,const char* msg)
 {
 	char msgstr[LLEN];
 
-	sprintf(msgstr,"program %s,  %s",progname,msg);
+	snprintf(msgstr,LLEN,"program %s,  %s",progname,msg);
 	error1(msgstr);
 }
 
@@ -797,7 +798,7 @@ void _tell_sys_error(QSP_ARG_DECL  const char* s)
 #endif /* SUN */
     
 	if( s != NULL && *s )
-		sprintf(ERROR_STRING,"%s: ",s);
+		snprintf(ERROR_STRING,LLEN,"%s: ",s);
 	else ERROR_STRING[0]=0;
 
 #ifdef HAVE_ERRNO_H
@@ -854,5 +855,12 @@ void _warn( QSP_ARG_DECL  const char *msg )
 		tell_input_location(SINGLE_QSP_ARG);
 		deliver_warning(msg);
 	}
+}
+
+// This doesn't really belong here, but where else should it go?
+
+void suppress_compiler_warning(void *p)
+{
+	// nop
 }
 

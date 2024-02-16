@@ -48,7 +48,7 @@ static COMMAND_FUNC( do_read_data )	/** read a data file */
 
 	if( read_exp_data(fp) != 0 ){
 		fclose(fp);
-		sprintf(ERROR_STRING,"do_read_data:  error return from read_exp_data, file %s",filename);
+		snprintf(ERROR_STRING,LLEN,"do_read_data:  error return from read_exp_data, file %s",filename);
 		WARN(ERROR_STRING);
 		return;
 	}
@@ -60,13 +60,13 @@ static COMMAND_FUNC( do_read_data )	/** read a data file */
 
 	n_have_classes = eltcount(trial_class_list());
 
-	sprintf(num_str,"%d",n_have_classes);	// BUG?  buffer overflow
+	snprintf(num_str,16,"%d",n_have_classes);	// BUG?  buffer overflow
 						// if n_have_classes too big???
 	assign_reserved_var( "n_classes" , num_str );
 	
 	if( verbose ){
 		assert(EXPT_XVAL_OBJ(&expt1)!=NULL);
-		sprintf(ERROR_STRING,"File %s read, %d classes, %d x-values",
+		snprintf(ERROR_STRING,LLEN,"File %s read, %d classes, %d x-values",
 			filename,n_have_classes,OBJ_COLS(EXPT_XVAL_OBJ(&expt1)));
 		advise(ERROR_STRING);
 	}
@@ -125,9 +125,9 @@ static void _print_psychometric_pts(QSP_ARG_DECL  FILE *fp, Trial_Class * tcp)
 			float *xv_p;
 			xv_p = indexed_data( CLASS_XVAL_OBJ(tcp), j);
 			assert(xv_p!=NULL);
-			sprintf(MSG_STR,"%f\t", *xv_p);
+			snprintf(MSG_STR,LLEN,"%f\t", *xv_p);
 			fputs(MSG_STR,fp);
-			sprintf(MSG_STR,"%f\n",DATUM_FRACTION(SUMM_DTBL_ENTRY(dtp,j)));
+			snprintf(MSG_STR,LLEN,"%f\n",DATUM_FRACTION(SUMM_DTBL_ENTRY(dtp,j)));
 			fputs(MSG_STR,fp);
 			//fflush(fp);
 		}
@@ -155,9 +155,9 @@ static void _print_old_ogive_terse(QSP_ARG_DECL  Fit_Data *fdp, const char *msg)
 {
 	// BUG move fcflag into fit_data struct
 	if( !fc_flag ) 
-		sprintf(msg_str,"%s\t%d\t%f\t%f\t%f",msg,FIT_CLASS_INDEX(fdp),FIT_R(fdp),FIT_THRESH(fdp),FIT_SIQD(fdp));
+		snprintf(msg_str,LLEN,"%s\t%d\t%f\t%f\t%f",msg,FIT_CLASS_INDEX(fdp),FIT_R(fdp),FIT_THRESH(fdp),FIT_SIQD(fdp));
 	else
-		sprintf(msg_str,"%s\t%d\t%f\t%f",msg,FIT_CLASS_INDEX(fdp),FIT_R(fdp), FIT_THRESH(fdp));
+		snprintf(msg_str,LLEN,"%s\t%d\t%f\t%f",msg,FIT_CLASS_INDEX(fdp),FIT_R(fdp), FIT_THRESH(fdp));
 
 	prt_msg(msg_str);
 }
@@ -167,7 +167,7 @@ static void _print_old_ogive_terse(QSP_ARG_DECL  Fit_Data *fdp, const char *msg)
 static void _print_new_ogive_terse(QSP_ARG_DECL  Fit_Data *fdp, const char *msg)
 {
 	// BUG - should print sum of log likelihood too?
-	sprintf(msg_str,"%s\tclass %d\t\tthresh %f\tsiqd %f",msg,FIT_CLASS_INDEX(fdp),FIT_THRESH(fdp),FIT_SIQD(fdp));
+	snprintf(msg_str,LLEN,"%s\tclass %d\t\tthresh %f\tsiqd %f",msg,FIT_CLASS_INDEX(fdp),FIT_THRESH(fdp),FIT_SIQD(fdp));
 	prt_msg(msg_str);
 }
 
@@ -189,7 +189,7 @@ static void _print_data_terse(QSP_ARG_DECL  Fit_Data *fdp, const char *msg)
 	} else if( FIT_TYPE(fdp) == FIT_WEIBULL ){
 		print_weibull_terse(fdp,msg);
 	} else {
-		sprintf(ERROR_STRING,"print_data_terse:  unexpected fit type (%d)!?",FIT_TYPE(fdp));
+		snprintf(ERROR_STRING,LLEN,"print_data_terse:  unexpected fit type (%d)!?",FIT_TYPE(fdp));
 		warn(ERROR_STRING);
 	}
 }
@@ -205,20 +205,20 @@ static void _print_weibull_verbose(QSP_ARG_DECL  Fit_Data *fdp)	// verbose analy
 
 static void _print_ogive_verbose(QSP_ARG_DECL  Fit_Data *fdp)	// verbose analysis report
 {
-        sprintf(msg_str,"\nTrial_Class %s\n",CLASS_NAME(FIT_CLASS(fdp)));
+        snprintf(msg_str,LLEN,"\nTrial_Class %s\n",CLASS_NAME(FIT_CLASS(fdp)));
 	prt_msg(msg_str);
-        sprintf(msg_str,"initial correlation:\t\t\t%f", FIT_R_INITIAL(fdp) );
+        snprintf(msg_str,LLEN,"initial correlation:\t\t\t%f", FIT_R_INITIAL(fdp) );
 	prt_msg(msg_str);
-        sprintf(msg_str,"final correlation:\t\t\t%f", FIT_R(fdp) );
+        snprintf(msg_str,LLEN,"final correlation:\t\t\t%f", FIT_R(fdp) );
 	prt_msg(msg_str);
 
         if(!fc_flag) {
-                sprintf(msg_str,"x value at inflection pt:\t\t%f", FIT_THRESH(fdp) );
+                snprintf(msg_str,LLEN,"x value at inflection pt:\t\t%f", FIT_THRESH(fdp) );
 		prt_msg(msg_str);
-                sprintf(msg_str,"semi-interquartile difference:\t\t%f",FIT_SIQD( fdp ) );
+                snprintf(msg_str,LLEN,"semi-interquartile difference:\t\t%f",FIT_SIQD( fdp ) );
 		prt_msg(msg_str);
         } else {
-		sprintf(msg_str,"x value for 75%%:\t%f", FIT_THRESH(fdp) );
+		snprintf(msg_str,LLEN,"x value for 75%%:\t%f", FIT_THRESH(fdp) );
 		prt_msg(msg_str);
 	}
 }
@@ -232,7 +232,7 @@ static void _print_data_verbose(QSP_ARG_DECL  Fit_Data *fdp )
 	} else if( FIT_TYPE(fdp) == FIT_WEIBULL ){
 		print_weibull_verbose(fdp);
 	} else {
-		sprintf(ERROR_STRING,"print_data_verbose:  unexpected fit type (%d)!?",FIT_TYPE(fdp));
+		snprintf(ERROR_STRING,LLEN,"print_data_verbose:  unexpected fit type (%d)!?",FIT_TYPE(fdp));
 		warn(ERROR_STRING);
 	}
 }
@@ -327,7 +327,7 @@ static COMMAND_FUNC( do_set_chance_rate )
 {
 	float r = how_much("Probability of correct response due to guessing");
 	if( r < 0 || r > 1 ){
-		sprintf(ERROR_STRING,"Chance rate (%g) should be between 0 and 1!?",r);
+		snprintf(ERROR_STRING,LLEN,"Chance rate (%g) should be between 0 and 1!?",r);
 		warn(ERROR_STRING);
 		return;
 	}

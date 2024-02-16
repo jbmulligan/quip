@@ -64,7 +64,7 @@ static inline int _check_polh_err(QSP_ARG_DECL  char err)
 			/* set the error message */		
 			polh_errs[i].pe_msg = ph_err_msgs[ polh_errs[i].pe_code ]; 
 
-			sprintf(ERROR_STRING, "check_polh_err: err. code: %s err msg.: %s", 
+			snprintf(ERROR_STRING,LLEN, "check_polh_err: err. code: %s err msg.: %s", 
 				polh_errs[i].pe_str, polh_errs[i].pe_msg);
 			warn(ERROR_STRING);
 
@@ -85,7 +85,7 @@ int _check_polh_data(QSP_ARG_DECL  char *rawdata, Polh_Record_Format *prfp)
 	
 #ifdef QUIP_DEBUG
 if( debug & debug_polhemus ){
-	sprintf(ERROR_STRING,"check_polh_data:  station = %d, nwords = %d",prfp->rf_station,prfp->rf_n_words);
+	snprintf(ERROR_STRING,LLEN,"check_polh_data:  station = %d, nwords = %d",prfp->rf_station,prfp->rf_n_words);
 	_advise(DEFAULT_QSP_ARG  ERROR_STRING);
 	display_polh_buffer((short *)rawdata,prfp->rf_n_words);
 }
@@ -97,14 +97,14 @@ if( debug & debug_polhemus ){
 	/* check for blank space */
 	if(!isspace(rawdata[0])) {
 		warn("check_polh_data: unexpected polhemus data format (no initial blank space found)");
-sprintf(ERROR_STRING,"rawdata[0] = 0x%x",rawdata[0]);
+snprintf(ERROR_STRING,LLEN,"rawdata[0] = 0x%x",rawdata[0]);
 _advise(DEFAULT_QSP_ARG  ERROR_STRING);
 		return(-1);
 	}
 	
 	/* check for the correct station number */
 	if(rawdata[1] != STATION_CHAR(prfp->rf_station)) {
-		sprintf(ERROR_STRING, "check_polh_data: unexpected station number %c, expected station number %c",
+		snprintf(ERROR_STRING,LLEN, "check_polh_data: unexpected station number %c, expected station number %c",
 			rawdata[1], STATION_CHAR(prfp->rf_station));
 		warn(ERROR_STRING);
 		return(-1);
@@ -131,14 +131,14 @@ int _check_polh_output(QSP_ARG_DECL  char *out, int expected_station, Ph_Cmd_Cod
 	/* check for the record type */
 #ifdef QUIP_DEBUG
 if( debug & debug_polhemus ){
-sprintf(ERROR_STRING,"check_polh_output:  cmd=%d, expect station %d, checking \"%s\"",
+snprintf(ERROR_STRING,LLEN,"check_polh_output:  cmd=%d, expect station %d, checking \"%s\"",
 cmd,expected_station,show_printable(out));
 _advise(DEFAULT_QSP_ARG  ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
 
 	if(*out != PH_RECORD_TYPE) {
-		sprintf(ERROR_STRING, "check_polh_output: Unexpected record type %c in output", out[0]);
+		snprintf(ERROR_STRING,LLEN, "check_polh_output: Unexpected record type %c in output", out[0]);
 		warn(ERROR_STRING);
 		return(-1);	
 	}
@@ -156,7 +156,7 @@ _advise(DEFAULT_QSP_ARG  ERROR_STRING);
 		 */
 		if( expected_station != -1 ){
 			if(out[1] != STATION_CHAR(expected_station)) {
-				sprintf(ERROR_STRING, "check_polh_output: unexpected station number %c, expected station %d",
+				snprintf(ERROR_STRING,LLEN, "check_polh_output: unexpected station number %c, expected station %d",
 					out[1], expected_station);
 				warn(ERROR_STRING);
 				return(-1);
@@ -166,7 +166,7 @@ _advise(DEFAULT_QSP_ARG  ERROR_STRING);
 
 	/* check for sub-record type */
 	if( *polh_cmds[cmd].pc_cmdstr != out[2]) {
-		sprintf(ERROR_STRING, "check_polh_output: unexpected sub-record type %c, expected sub-record type %c",
+		snprintf(ERROR_STRING,LLEN, "check_polh_output: unexpected sub-record type %c, expected sub-record type %c",
 			out[2], *polh_cmds[cmd].pc_cmdstr);
 		warn(ERROR_STRING);
 		return(-1);	

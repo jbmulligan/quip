@@ -156,11 +156,11 @@ typedef struct dpyable {		/* canvas & panel shared */
 #ifndef HAVE_X11
 
 /* dummy functions so program will link w/o X11 */
-#define UNIMP_MSG(func_name)					\
-								\
-	sprintf(DEFAULT_ERROR_STRING,				\
+#define UNIMP_MSG(func_name)						\
+									\
+	snprintf(DEFAULT_ERROR_STRING,LLEN,				\
 		"%s:  program not configured with X11 support!?",	\
-		#func_name);					\
+		#func_name);						\
 	NWARN(DEFAULT_ERROR_STRING);
 
 #endif /* ! HAVE_X11 */

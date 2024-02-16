@@ -144,10 +144,10 @@ static const char * available_ocl_device_name(QSP_ARG_DECL  const char *name,cha
 		if( strlen(name)+1+MAX_DIGIT_CHARS+1 > scratch_len )
 			error1("available_ocl_device_name:  size of scratch_string is insufficient!?");
 
-		sprintf(scratch_string,"%s_%d",name,n);
+		snprintf(scratch_string,scratch_len,"%s_%d",name,n);
 		s=scratch_string;
 	}
-	sprintf(ERROR_STRING,"Number of %s OpenCL devices exceed configured maximum %d!?",
+	snprintf(ERROR_STRING,LLEN,"Number of %s OpenCL devices exceed configured maximum %d!?",
 		name,MAX_OCL_DEVICES);
 	warn(ERROR_STRING);
 	error1(ERROR_STRING);
@@ -166,7 +166,7 @@ static void init_ocl_dev_memory(QSP_ARG_DECL  Platform_Device *pdp)
 	if( strlen(PLATFORM_NAME(PFDEV_PLATFORM(pdp)))+strlen(PFDEV_NAME(pdp))+strlen("._host_mapped") > MAX_AREA_NAME_LEN )
 		error1("init_ocl_dev_memory:  area name too large for buffer, increase MAX_AREA_NAME_LEN!?");
 
-	sprintf(area_name,"%s.%s",
+	snprintf(area_name,MAX_AREA_NAME_LEN+1,"%s.%s",
 		PLATFORM_NAME(PFDEV_PLATFORM(pdp)),PFDEV_NAME(pdp));
 
 	// what should the name for the memory area be???
@@ -175,7 +175,7 @@ static void init_ocl_dev_memory(QSP_ARG_DECL  Platform_Device *pdp)
 
 	ap = pf_area_init(area_name,NULL,0, MAX_OCL_GLOBAL_OBJECTS,DA_OCL_GLOBAL,pdp);
 	if( ap == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"init_ocl_dev_memory:  error creating global data area %s",area_name);
 		warn(ERROR_STRING);
 	}
@@ -202,13 +202,13 @@ static void init_ocl_dev_memory(QSP_ARG_DECL  Platform_Device *pdp)
 	 */
 
 	//strcat(cname,"_host");
-	sprintf(area_name,"%s.%s_host",
+	snprintf(area_name,MAX_AREA_NAME_LEN+1,"%s.%s_host",
 		PLATFORM_NAME(PFDEV_PLATFORM(pdp)),PFDEV_NAME(pdp));
 
 	ap = pf_area_init(area_name,(u_char *)NULL,0,MAX_OCL_MAPPED_OBJECTS,
 							DA_OCL_HOST,pdp);
 	if( ap == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"init_ocl_dev_memory:  error creating host data area %s",area_name);
 		error1(ERROR_STRING);
 	}
@@ -227,13 +227,13 @@ static void init_ocl_dev_memory(QSP_ARG_DECL  Platform_Device *pdp)
 
 	//strcpy(cname,dname);
 	//strcat(cname,"_host_mapped");
-	sprintf(area_name,"%s.%s_host_mapped",
+	snprintf(area_name,MAX_AREA_NAME_LEN+1,"%s.%s_host_mapped",
 		PLATFORM_NAME(PFDEV_PLATFORM(pdp)),PFDEV_NAME(pdp));
 
 	ap = pf_area_init(area_name,(u_char *)NULL,0,MAX_OCL_MAPPED_OBJECTS,
 						DA_OCL_HOST_MAPPED,pdp);
 	if( ap == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"init_ocl_dev_memory:  error creating host-mapped data area %s",area_name);
 		error1(ERROR_STRING);
 	}
@@ -241,7 +241,7 @@ static void init_ocl_dev_memory(QSP_ARG_DECL  Platform_Device *pdp)
 	pdp->pd_ap[PF_HOST_MAPPED_AREA_INDEX] = ap;
 
 	if( verbose ){
-		sprintf(ERROR_STRING,"init_ocl_dev_memory DONE");
+		snprintf(ERROR_STRING,LLEN,"init_ocl_dev_memory DONE");
 		advise(ERROR_STRING);
 	}
 }
@@ -250,7 +250,7 @@ static void init_ocl_dev_memory(QSP_ARG_DECL  Platform_Device *pdp)
 
 static void ocl_dev_info(QSP_ARG_DECL  Platform_Device *pdp)
 {
-	sprintf(MSG_STR,"%s:",PFDEV_NAME(pdp));
+	snprintf(MSG_STR,LLEN,"%s:",PFDEV_NAME(pdp));
 	prt_msg(MSG_STR);
 	prt_msg("Sorry, no OpenCL-specific device info yet.");
 }
@@ -259,18 +259,18 @@ static void ocl_info(QSP_ARG_DECL  Compute_Platform *cpp)
 {
 	int s;
 
-	sprintf(MSG_STR,"Vendor:  %s",OCLPF_VENDOR(cpp));
+	snprintf(MSG_STR,LLEN,"Vendor:  %s",OCLPF_VENDOR(cpp));
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"Version:  %s",OCLPF_VERSION(cpp));
+	snprintf(MSG_STR,LLEN,"Version:  %s",OCLPF_VERSION(cpp));
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"Profile:  %s",OCLPF_PROFILE(cpp));
+	snprintf(MSG_STR,LLEN,"Profile:  %s",OCLPF_PROFILE(cpp));
 	prt_msg(MSG_STR);
 
 	// The extensions can be long...
 	s = (int) strlen(OCLPF_EXTENSIONS(cpp))+strlen(EXTENSIONS_PREFIX)+2;
 	if( s > sb_size(QS_SCRATCH) )
 		enlarge_buffer( QS_SCRATCH, s );
-	sprintf(sb_buffer(QS_SCRATCH),"%s%s\n",EXTENSIONS_PREFIX,OCLPF_EXTENSIONS(cpp));
+	snprintf(sb_buffer(QS_SCRATCH),s,"%s%s\n",EXTENSIONS_PREFIX,OCLPF_EXTENSIONS(cpp));
 	prt_msg(sb_buffer(QS_SCRATCH));
 }
 
@@ -384,7 +384,7 @@ static void init_ocl_device(QSP_ARG_DECL  cl_device_id dev_id,
 
 	pdp = create_ocl_device(QSP_ARG  dev_id, cpp);
 	if( pdp == NULL ) return;
-sprintf(ERROR_STRING,"init_ocl_device %s BEGIN",PFDEV_NAME(pdp));
+snprintf(ERROR_STRING,LLEN,"init_ocl_device %s BEGIN",PFDEV_NAME(pdp));
 advise(ERROR_STRING);
 
 	/* Remember this name in case the default is not found */
@@ -403,7 +403,7 @@ advise(ERROR_STRING);
 	SET_OCLDEV_DEV_ID(pdp,dev_id);
 	SET_PFDEV_PLATFORM(pdp,cpp);
 	if( n_ocl_devs >= MAX_OPENCL_DEVICES ){
-		sprintf(ERROR_STRING,"More than %d OpenCL devices found;"
+		snprintf(ERROR_STRING,LLEN,"More than %d OpenCL devices found;"
 			"need to increase MAX_OPENCL_DEVICES and recompile",
 			MAX_OPENCL_DEVICES);
 		error1(ERROR_STRING);
@@ -575,7 +575,7 @@ static void init_ocl_devices(QSP_ARG_DECL  Compute_Platform *cpp )
 //fprintf(stderr,"init_ocl_devices:  %d device%s found\n",n_devs,n_devs==1?"":"s");
 
 	if( verbose ){
-		sprintf(ERROR_STRING,"%d OpenCL device%s found...",n_devs,
+		snprintf(ERROR_STRING,LLEN,"%d OpenCL device%s found...",n_devs,
 			n_devs==1?"":"s");
 		advise(ERROR_STRING);
 	}
@@ -602,7 +602,7 @@ static void *_ocl_mem_alloc(QSP_ARG_DECL  Platform_Device *pdp, dimension_t size
 
 	if( status != CL_SUCCESS ){
 		report_ocl_error(status,"clCreateBuffer");
-		sprintf(ERROR_STRING,"ocl_mem_alloc:  Attempting to allocate %d bytes.",size);
+		snprintf(ERROR_STRING,LLEN,"ocl_mem_alloc:  Attempting to allocate %d bytes.",size);
 		advise(ERROR_STRING);
 		return NULL;
 	}
@@ -614,7 +614,7 @@ static int _ocl_obj_alloc(QSP_ARG_DECL  Data_Obj *dp, dimension_t size, int alig
 {
 	OBJ_DATA_PTR(dp) = ocl_mem_alloc(OBJ_PFDEV(dp), size, align );
 	if( OBJ_DATA_PTR(dp) == NULL ){
-		sprintf(ERROR_STRING,"ocl_obj_alloc:  error allocating memory for object %s!?",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"ocl_obj_alloc:  error allocating memory for object %s!?",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return -1;
 	}

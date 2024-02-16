@@ -268,7 +268,7 @@ void _normalize_filter(QSP_ARG_DECL  Data_Obj *fdp)
 	}
 	length = sqrt(sos);
 	if( verbose ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Normalizing filter by factor %g",length);
 		advise(ERROR_STRING);
 	}
@@ -353,7 +353,7 @@ void _scan2_requant(QSP_ARG_DECL  int ntimes)
 			(*scan_func)(QSP_ARG  i,OBJ_COLS(_edp),OBJ_ROWS(_edp),&x,&y);
 			n_changed += redo_two_pixels(x,y);
 		}
-sprintf(ERROR_STRING,"Iteration %d:  %d pixels changed",j+1,n_changed);
+snprintf(ERROR_STRING,LLEN,"Iteration %d:  %d pixels changed",j+1,n_changed);
 advise(ERROR_STRING);
 		if( n_changed == 0 ) return;
 	}
@@ -396,7 +396,7 @@ int _redo_pixel(QSP_ARG_DECL  dimension_t x,dimension_t y)
 	if( verbose ){
 		if( the_sos == NO_VALUE ){
 			the_sos = get_sos(_edp,_fdp);
-			sprintf(DEFAULT_MSG_STR,"Initial SOS:  %g",the_sos);
+			snprintf(DEFAULT_MSG_STR,LLEN,"Initial SOS:  %g",the_sos);
 			_prt_msg(DEFAULT_QSP_ARG  DEFAULT_MSG_STR);
 		}
 		oldsos = the_sos;
@@ -413,13 +413,13 @@ int _redo_pixel(QSP_ARG_DECL  dimension_t x,dimension_t y)
 
 	if( delta_E >= 0 ){
 		if( verbose ){
-			sprintf(ERROR_STRING,"clearing pixel at %d, %d",x,y);
+			snprintf(ERROR_STRING,LLEN,"clearing pixel at %d, %d",x,y);
 			advise(ERROR_STRING);
 		}
 		*(_hptr+offset) = -1;
 	} else {
 		if( verbose ){
-			sprintf(ERROR_STRING,"setting pixel at %d, %d",x,y);
+			snprintf(ERROR_STRING,LLEN,"setting pixel at %d, %d",x,y);
 			advise(ERROR_STRING);
 		}
 		*(_hptr+offset) =  1;
@@ -438,13 +438,13 @@ int _redo_pixel(QSP_ARG_DECL  dimension_t x,dimension_t y)
 	add_impulse(errval-olderr,_fedp,_ffdp,x,y);
 
 	if( verbose ){
-		sprintf(DEFAULT_MSG_STR,
+		snprintf(DEFAULT_MSG_STR,LLEN,
 			"Pixel at %d,%d\t SOS:  %g\t\tdelta = %g",
 			x,y,the_sos,the_sos-oldsos);
 		_prt_msg(DEFAULT_QSP_ARG  DEFAULT_MSG_STR);
 #ifdef QUIP_DEBUG
 if( debug & spread_debug ){
-sprintf(ERROR_STRING,"total sse: %g",get_sos(_edp,_fdp));
+snprintf(ERROR_STRING,LLEN,"total sse: %g",get_sos(_edp,_fdp));
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -504,7 +504,7 @@ int _redo_two_pixels(QSP_ARG_DECL  dimension_t x,dimension_t y)
 
 #ifdef QUIP_DEBUG
 if( debug & spread_debug ){
-sprintf(ERROR_STRING,"optimizing at %d, %d",x,y);
+snprintf(ERROR_STRING,LLEN,"optimizing at %d, %d",x,y);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -532,7 +532,7 @@ advise(ERROR_STRING);
 	dtbl[ HERE ] = delta_E  * oldbit ;
 #ifdef QUIP_DEBUG
 if( debug & spread_debug ){
-sprintf(ERROR_STRING,"energy gain from flip:  %g",dtbl[HERE]);
+snprintf(ERROR_STRING,LLEN,"energy gain from flip:  %g",dtbl[HERE]);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -574,7 +574,7 @@ advise(ERROR_STRING);
 		dtbl[ loc ] = ( delta_E - get_delta(xx,yy) ) * oldbit;
 #ifdef QUIP_DEBUG
 if( debug & spread_debug ){
-sprintf(ERROR_STRING,"energy gain from exchange w %d %d:  %g",xx,yy,dtbl[loc]);
+snprintf(ERROR_STRING,LLEN,"energy gain from exchange w %d %d:  %g",xx,yy,dtbl[loc]);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -591,7 +591,7 @@ advise(ERROR_STRING);
 	if( bestloc == NO_LOC ){	/* restore to original state */
 #ifdef QUIP_DEBUG
 if( debug & spread_debug ){
-sprintf(ERROR_STRING,"no improvement from pair flip");
+snprintf(ERROR_STRING,LLEN,"no improvement from pair flip");
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -603,7 +603,7 @@ advise(ERROR_STRING);
 	} else if( bestloc != HERE ){
 #ifdef QUIP_DEBUG
 if( debug & spread_debug ){
-sprintf(ERROR_STRING,"improvement from pair flip at %d %d",dx_tbl[bestloc],dy_tbl[bestloc]);
+snprintf(ERROR_STRING,LLEN,"improvement from pair flip at %d %d",dx_tbl[bestloc],dy_tbl[bestloc]);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -641,7 +641,7 @@ static void _anneal_pixel(QSP_ARG_DECL  dimension_t x,dimension_t y)
 	if( verbose ){
 		if( the_sos == NO_VALUE ){
 			the_sos = get_sos(_edp,_fdp);
-			sprintf(DEFAULT_MSG_STR,"Initial SOS:  %g",the_sos);
+			snprintf(DEFAULT_MSG_STR,LLEN,"Initial SOS:  %g",the_sos);
 			_prt_msg(DEFAULT_QSP_ARG  DEFAULT_MSG_STR);
 		}
 		oldsos = the_sos;
@@ -697,7 +697,7 @@ static void _anneal_pixel(QSP_ARG_DECL  dimension_t x,dimension_t y)
 
 	if( verbose ){
 		if( verbose ){
-			sprintf(DEFAULT_MSG_STR,
+			snprintf(DEFAULT_MSG_STR,LLEN,
 			"Pixel at %d,%d\t SOS:  %g\t\tdelta = %g",
 				x,y,the_sos,the_sos-oldsos);
 			advise(DEFAULT_MSG_STR);

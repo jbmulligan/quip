@@ -53,7 +53,7 @@ void float_init_rowlist(float **list, Data_Obj *dp)
 	fbase --;				/* for numrec fortran indices */
 
 	if( OBJ_ROWS(dp) > MAX_DIM ){
-		sprintf(DEFAULT_ERROR_STRING,"Sorry, object %s has %d rows but MAX_DIM is %d",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"Sorry, object %s has %d rows but MAX_DIM is %d",
 			OBJ_NAME(dp),OBJ_ROWS(dp),MAX_DIM);
 		NERROR1(DEFAULT_ERROR_STRING);
 	}
@@ -119,7 +119,7 @@ void dp_choldc(Data_Obj *a_dp, Data_Obj *p_dp)
 
 	if( n > MAX_DIM ){
 		NWARN("Sorry, MAX dimension exceeded in dp_choldc");
-		sprintf(DEFAULT_ERROR_STRING,"dp_choldc:  MAX_DIM = %d, n = %d", MAX_DIM,n);
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_choldc:  MAX_DIM = %d, n = %d", MAX_DIM,n);
 		NADVISE(DEFAULT_ERROR_STRING);
 		return;
 	}
@@ -129,7 +129,7 @@ void dp_choldc(Data_Obj *a_dp, Data_Obj *p_dp)
 
 	if( n > MAX_DIM || m > MAX_DIM ){
 		NWARN("Sorry, MAX dimension exceeded in dp_choldc");
-		sprintf(DEFAULT_ERROR_STRING,"dp_choldc:  MAX_DIM = %d, n = %d, m = %d",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_choldc:  MAX_DIM = %d, n = %d, m = %d",
 			MAX_DIM,n,m);
 		NADVISE(DEFAULT_ERROR_STRING);
 		return;
@@ -171,7 +171,7 @@ void dp_svd(Data_Obj *a_dp, Data_Obj *w_dp, Data_Obj *v_dp)
 
 	if( n > MAX_DIM || m > MAX_DIM ){
 		NWARN("Sorry, MAX dimension exceeded in dp_svd");
-		sprintf(DEFAULT_ERROR_STRING,"dp_svdcmp:  MAX_DIM = %d, n = %d, m = %d",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_svdcmp:  MAX_DIM = %d, n = %d, m = %d",
 			MAX_DIM,n,m);
 		NADVISE(DEFAULT_ERROR_STRING);
 		return;
@@ -179,26 +179,26 @@ void dp_svd(Data_Obj *a_dp, Data_Obj *w_dp, Data_Obj *v_dp)
 
 	/*
 	if( m < n ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_svdcmp:  input matrix %s (%d x %d) cannot be wider than tall!?",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_svdcmp:  input matrix %s (%d x %d) cannot be wider than tall!?",
 			OBJ_NAME(a_dp),m,n);
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	*/
 	if( OBJ_COLS(w_dp) != n ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_svdcmp:  weight vector %s should have %d columns, to match input matrix %s!?",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_svdcmp:  weight vector %s should have %d columns, to match input matrix %s!?",
 			OBJ_NAME(w_dp),n,OBJ_NAME(a_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if(OBJ_ROWS(w_dp) != 1 ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_svdcmp:  weight vector %s should be a vector, (rows = %d)!?",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_svdcmp:  weight vector %s should be a vector, (rows = %d)!?",
 			OBJ_NAME(w_dp),OBJ_ROWS(w_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if( OBJ_COLS(v_dp) != n || OBJ_ROWS(v_dp) != n ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 			"V matrix %s should be square with dimension %d, to match # columns of input %s",
 			OBJ_NAME(v_dp),n,OBJ_NAME(a_dp));
 		NWARN(DEFAULT_ERROR_STRING);
@@ -240,7 +240,7 @@ void dp_zroots(Data_Obj *r_dp, Data_Obj *a_dp, int polish )
 	m=OBJ_COLS(r_dp);
 
 	if( m != n-1 ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 	"dp_zroots:  len of root vector %s (%d) inconsistent with coefficients vector %s (%d)",
 			OBJ_NAME(r_dp),OBJ_COLS(r_dp),OBJ_NAME(a_dp),OBJ_COLS(a_dp));
 		NWARN(DEFAULT_ERROR_STRING);
@@ -250,13 +250,13 @@ void dp_zroots(Data_Obj *r_dp, Data_Obj *a_dp, int polish )
 	/* BUG make sure are row vectors */
 
 	if(OBJ_ROWS(a_dp) != 1 ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_zroots:  coefficient vector %s should be a row vector, (rows = %d)!?",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_zroots:  coefficient vector %s should be a row vector, (rows = %d)!?",
 			OBJ_NAME(a_dp),OBJ_ROWS(a_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if( OBJ_ROWS(r_dp) != 1 ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_zroots:  root vector %s should be a row vector, (rows = %d)!?",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_zroots:  root vector %s should be a row vector, (rows = %d)!?",
 			OBJ_NAME(r_dp),OBJ_ROWS(r_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
@@ -300,56 +300,56 @@ void dp_svbksb(Data_Obj *x_dp, Data_Obj *u_dp, Data_Obj *w_dp, Data_Obj *v_dp, D
 	n=OBJ_COLS(u_dp);
 	m=OBJ_ROWS(u_dp);
 	if( m < n ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_svbksb:  matrix %s (%d x %d) cannot be wider than tall",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_svbksb:  matrix %s (%d x %d) cannot be wider than tall",
 			OBJ_NAME(u_dp),m,n);
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if( OBJ_COLS(w_dp) != n ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 			"dimension of eigenvalue vector %s (%d) must be match # of columns of matrix %s (%d)",
 			OBJ_NAME(w_dp),OBJ_COLS(w_dp),OBJ_NAME(u_dp),n);
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if(OBJ_ROWS(w_dp) != 1){
-		sprintf(DEFAULT_ERROR_STRING,"dp_svbksb:  eigenvalue vector %s (%d rows) should be a row vector!?",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_svbksb:  eigenvalue vector %s (%d rows) should be a row vector!?",
 			OBJ_NAME(w_dp),OBJ_ROWS(w_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if(OBJ_ROWS(b_dp) != 1){
-		sprintf(DEFAULT_ERROR_STRING,"dp_svbksb:  data vector %s (%d rows) should be a row vector!?",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_svbksb:  data vector %s (%d rows) should be a row vector!?",
 			OBJ_NAME(b_dp),OBJ_ROWS(b_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if( OBJ_ROWS(x_dp) != 1 ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_svbksb:  weight vector %s (%d rows) should be a row vector!?",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_svbksb:  weight vector %s (%d rows) should be a row vector!?",
 			OBJ_NAME(x_dp),OBJ_ROWS(x_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if( OBJ_COLS(v_dp) != n || OBJ_ROWS(v_dp) != n ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_svbksb:  V matrix %s (%d x %d) should be square with dimension %d",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_svbksb:  V matrix %s (%d x %d) should be square with dimension %d",
 			OBJ_NAME(v_dp),OBJ_ROWS(v_dp),OBJ_COLS(v_dp),n);
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if( OBJ_ROWS(u_dp) > MAX_DIM ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_svbksb:  matrix %s has %d rows, max is %d",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_svbksb:  matrix %s has %d rows, max is %d",
 			OBJ_NAME(u_dp),OBJ_ROWS(u_dp),MAX_DIM);
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if( OBJ_ROWS(v_dp) > MAX_DIM ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_svbksb:  matrix %s has %d rows, max is %d",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_svbksb:  matrix %s has %d rows, max is %d",
 			OBJ_NAME(v_dp),OBJ_ROWS(u_dp),MAX_DIM);
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if( OBJ_COLS(b_dp) != OBJ_ROWS(u_dp) ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_svbksb:  Number of elements of data vector %s (%ld) should match number of rows of U matrix %s (%ld)",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_svbksb:  Number of elements of data vector %s (%ld) should match number of rows of U matrix %s (%ld)",
 			OBJ_NAME(b_dp),(long)OBJ_COLS(b_dp),OBJ_NAME(u_dp),(long)OBJ_ROWS(u_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
@@ -382,39 +382,39 @@ void _dp_jacobi(QSP_ARG_DECL  Data_Obj *v_dp, Data_Obj *d_dp, Data_Obj *a_dp, in
 	int n;
 
 	if( OBJ_COLS(a_dp) != OBJ_ROWS(a_dp) ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_jacobi:  matrix %s must be square for jacobi",OBJ_NAME(a_dp));
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_jacobi:  matrix %s must be square for jacobi",OBJ_NAME(a_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if( OBJ_COLS(v_dp) != OBJ_ROWS(v_dp) ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_jacobi:  matrix %s must be square for jacobi",OBJ_NAME(v_dp));
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_jacobi:  matrix %s must be square for jacobi",OBJ_NAME(v_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if( OBJ_COLS(v_dp) != OBJ_COLS(a_dp) ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_jacobi:  size of eigenvector matrix %s must match input matrix %s for jacobi",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_jacobi:  size of eigenvector matrix %s must match input matrix %s for jacobi",
 			OBJ_NAME(v_dp),OBJ_NAME(a_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if( OBJ_COLS(d_dp) != OBJ_COLS(a_dp) ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_jacobi:  size of eigenvalue vector %s must match input matrix %s for jacobi",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_jacobi:  size of eigenvalue vector %s must match input matrix %s for jacobi",
 			OBJ_NAME(d_dp),OBJ_NAME(a_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if( ! IS_CONTIGUOUS(a_dp) ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_jacobi:  Object %s must be contiguous for jacobi",OBJ_NAME(a_dp));
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_jacobi:  Object %s must be contiguous for jacobi",OBJ_NAME(a_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if( ! IS_CONTIGUOUS(d_dp) ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_jacobi:  Object %s must be contiguous for jacobi",OBJ_NAME(d_dp));
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_jacobi:  Object %s must be contiguous for jacobi",OBJ_NAME(d_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if( ! IS_CONTIGUOUS(v_dp) ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_jacobi:  Object %s must be contiguous for jacobi",OBJ_NAME(v_dp));
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_jacobi:  Object %s must be contiguous for jacobi",OBJ_NAME(v_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
@@ -443,23 +443,23 @@ void _dp_eigsrt(QSP_ARG_DECL  Data_Obj *v_dp, Data_Obj *d_dp)
 	int n;
 
 	if( OBJ_COLS(v_dp) != OBJ_ROWS(v_dp) ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_eigsrt:  matrix %s must be square for eigsrt",OBJ_NAME(v_dp));
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_eigsrt:  matrix %s must be square for eigsrt",OBJ_NAME(v_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if( OBJ_COLS(v_dp) != OBJ_COLS(d_dp) ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_eigsrt:  size of eigenvalue vector %s must match input matrix %s for eigsrt",
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_eigsrt:  size of eigenvalue vector %s must match input matrix %s for eigsrt",
 			OBJ_NAME(v_dp),OBJ_NAME(d_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if( ! IS_CONTIGUOUS(d_dp) ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_eigsrt:  Object %s must be contiguous for eigsrt",OBJ_NAME(d_dp));
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_eigsrt:  Object %s must be contiguous for eigsrt",OBJ_NAME(d_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
 	if( ! IS_CONTIGUOUS(v_dp) ){
-		sprintf(DEFAULT_ERROR_STRING,"dp_eigsrt:  Object %s must be contiguous for eigsrt",OBJ_NAME(v_dp));
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_eigsrt:  Object %s must be contiguous for eigsrt",OBJ_NAME(v_dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
@@ -484,7 +484,7 @@ void _dp_moment(QSP_ARG_DECL  Data_Obj *d_dp)
 	/* std_type *d_rowlist[MAX_DIM]; */
 	int n;
 	if( ! IS_CONTIGUOUS(d_dp) ){
-           	sprintf(DEFAULT_ERROR_STRING,"dp_moment:  Object %s must be contiguous for eigsrt",OBJ_NAME(d_dp));
+           	snprintf(DEFAULT_ERROR_STRING,LLEN,"dp_moment:  Object %s must be contiguous for eigsrt",OBJ_NAME(d_dp));
                 NWARN(DEFAULT_ERROR_STRING);
                 return;
         }

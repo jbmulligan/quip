@@ -122,7 +122,7 @@ static int _get_data_space(QSP_ARG_DECL  Data_Obj *dp,dimension_t size, int min_
 
 #ifdef QUIP_DEBUG
 if( debug & debug_data ){
-sprintf(ERROR_STRING,"get_data_space:  requesting %d (0x%x) bytes for object %s",
+snprintf(ERROR_STRING,LLEN,"get_data_space:  requesting %d (0x%x) bytes for object %s",
 size,size,OBJ_NAME(dp));
 advise(ERROR_STRING);
 }
@@ -274,7 +274,7 @@ static Data_Obj * _make_dp_with_shape(QSP_ARG_DECL  const char *name,
 
 	/* make sure that the new name contains only legal chars */
 	if( !is_valid_dname(name) ){
-		sprintf(ERROR_STRING,"invalid data object name \"%s\"",name);
+		snprintf(ERROR_STRING,LLEN,"invalid data object name \"%s\"",name);
 		warn(ERROR_STRING);
 		return(NULL);
 	}
@@ -293,11 +293,11 @@ static Data_Obj * _make_dp_with_shape(QSP_ARG_DECL  const char *name,
 	// which is not very helpful...
 	// We really need to save the whole decl_stack!
 
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"Object \"%s\" created w/ filestack:  %s",
 				OBJ_NAME(dp),OBJ_DECLFILE(dp));
 			advise(ERROR_STRING);
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"Ignoring redeclaration w/ filestack: %s",
 				CURRENT_FILENAME );
 				//current_input_stack(SINGLE_QSP_ARG)
@@ -335,7 +335,7 @@ static void _make_device_alias( QSP_ARG_DECL  Data_Obj *dp, uint32_t type_flag )
 	assert( OBJ_AREA(dp)->da_flags == DA_CUDA_HOST );
 
 	/* Find the pseudo-area for the device mapping */
-	sprintf(name,"%s_mapped",OBJ_AREA(dp)->da_name);
+	snprintf(name,LLEN,"%s_mapped",OBJ_AREA(dp)->da_name);
 	ap = get_data_area(name);
 	if( ap == NULL ){
 		warn("Failed to find mapped data area");
@@ -343,7 +343,7 @@ static void _make_device_alias( QSP_ARG_DECL  Data_Obj *dp, uint32_t type_flag )
 	}
 
 	/* BUG check name length to make sure no buffer overrun */
-	sprintf(name,"dev_%s",OBJ_NAME(dp));
+	snprintf(name,LLEN,"dev_%s",OBJ_NAME(dp));
 
 	new_dp = new_dobj(name);
 	if( new_dp==NULL )
@@ -442,7 +442,7 @@ _make_dobj_with_shape(QSP_ARG_DECL  const char *name,
 
 #ifdef QUIP_DEBUG
 if( debug & debug_data ){
-sprintf(ERROR_STRING,"make_dobj %s, requesting %d data bytes",name,size);
+snprintf(ERROR_STRING,LLEN,"make_dobj %s, requesting %d data bytes",name,size);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -486,7 +486,7 @@ int _set_obj_dimensions(QSP_ARG_DECL  Data_Obj *dp,Dimension_Set *dsp,Precision 
 //	int retval=0;
 
 	if( set_shape_dimensions(OBJ_SHAPE(dp),dsp,prec_p) < 0 ){
-//		sprintf(ERROR_STRING,
+//		snprintf(ERROR_STRING,LLEN,
 //			"set_obj_dimensions:  error setting shape dimensions for object %s",
 //			OBJ_NAME(dp));
 //		warn(ERROR_STRING);
@@ -566,7 +566,7 @@ int _set_shape_dimensions(QSP_ARG_DECL  Shape_Info *shpp,Dimension_Set *dsp,Prec
 
 	if( COMPLEX_PRECISION(PREC_CODE(prec_p)) ){
 		if( DIMENSION(dsp,0) != 1 ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"Sorry, multi-component (%d) not allowed for complex",
 				DIMENSION(dsp,0));
 			warn(ERROR_STRING);
@@ -620,7 +620,7 @@ _comp_replicate(QSP_ARG_DECL  Data_Obj *dp,int n,int allocate_data)
 	s=str;
 	while( *s && *s != '[' && *s != '{' )
 		s++;
-	sprintf(s,".%d",n);
+	snprintf(s,256,".%d",n);
 
 	if( allocate_data )
 		dp2=make_dobj(str,dsp,OBJ_PREC_PTR(dp));

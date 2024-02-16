@@ -104,7 +104,7 @@ static void _yuv422_to_rgb24(unsigned char* dest, unsigned char* s, int p)
 
 #define INSIST_BYTE(dp,whence)						\
 	if( OBJ_PREC(dp) != PREC_BY && OBJ_PREC(dp) != PREC_UBY ){	\
-		sprintf(ERROR_STRING,					\
+		snprintf(ERROR_STRING,LLEN,					\
 	"%s:  object %s (%s) must have %s or %s precision!?",		\
 			#whence,OBJ_NAME(dp),PREC_NAME(OBJ_PREC_PTR(dp)), \
 			PREC_BY_NAME, PREC_UBY_NAME);			\
@@ -114,7 +114,7 @@ static void _yuv422_to_rgb24(unsigned char* dest, unsigned char* s, int p)
 
 #define INSIST_NCOMPS(dp,n,whence)					\
 	if( OBJ_COMPS(dp) != n ){					\
-		sprintf(ERROR_STRING,					\
+		snprintf(ERROR_STRING,LLEN,					\
 	"%s:  object %s (%ld) must have %d components!?",		\
 			#whence,OBJ_NAME(dp),(long)OBJ_COMPS(dp),n);	\
 		WARN(ERROR_STRING);					\
@@ -123,7 +123,7 @@ static void _yuv422_to_rgb24(unsigned char* dest, unsigned char* s, int p)
 
 #define INSIST_SAME_AREA(dp1,dp2,whence)					\
 	if( OBJ_ROWS(dp1) != OBJ_ROWS(dp2) || OBJ_COLS(dp1) != OBJ_COLS(dp2) ){	\
-		sprintf(ERROR_STRING,					\
+		snprintf(ERROR_STRING,LLEN,					\
 	"%s:  object %s (%ld x %ld) must be same size as object %s (%ld x %ld).", \
 			#whence,					\
 			OBJ_NAME(dp1),(long)OBJ_ROWS(dp1),(long)OBJ_COLS(dp1),	\
@@ -138,7 +138,7 @@ static void _yuv422_to_rgb24(unsigned char* dest, unsigned char* s, int p)
 
 #define CHECK_EXTRA_DIM(dp,idx,whence)					\
 	if( OBJ_TYPE_DIM(dp,idx) != 1 ){				\
-		sprintf(ERROR_STRING,					\
+		snprintf(ERROR_STRING,LLEN,					\
 	"%s:  ignoring extra %ss, object %s (%ld)",#whence,		\
 			DIMENSION_NAME(idx),OBJ_NAME(dp),		\
 			(long)OBJ_TYPE_DIM(dp,idx) );			\
@@ -175,7 +175,7 @@ void _yuv422_to_rgb24(QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj * src_dp )
 	u_p  = y_p + 1;
 	v_p  = y_p + 3;
 
-//sprintf(error_string,"y_p = 0x%lx, u_p = 0x%lx, v_p = 0x%lx",y_p,u_p,v_p);
+//snprintf(error_string,LLEN,"y_p = 0x%lx, u_p = 0x%lx, v_p = 0x%lx",y_p,u_p,v_p);
 //advise(error_string);
 	for (i = 0; i < OBJ_ROWS(dst_dp); i++) {
 		d_p = dst_p;
@@ -264,13 +264,13 @@ void yuv420p_to_rgb24(Data_Obj *dst_dp, unsigned char *src )
 	u0_p  = y_p + OBJ_COLS(dst_dp) * OBJ_ROWS(dst_dp);
 	v0_p  = u0_p + OBJ_COLS(dst_dp) * OBJ_ROWS(dst_dp) / 2;	/* was 4 instead of 2? */
 
-//sprintf(error_string,"y_p = 0x%lx, u_p = 0x%lx, v_p = 0x%lx",y_p,u_p,v_p);
+//snprintf(error_string,LLEN,"y_p = 0x%lx, u_p = 0x%lx, v_p = 0x%lx",y_p,u_p,v_p);
 //advise(error_string);
 	for (i = 0; i < OBJ_ROWS(dst_dp); i++) {
 	d_p = dst_p;
 	v_p=v0_p; u_p=u0_p;
 	for (j = 0; j < OBJ_COLS(dst_dp); j+= 2) {
-//sprintf(error_string,"i = %d, j = %d,	y = %d	u = %d	v = %d",i,j,*y_p,*u_p,*v_p);
+//snprintf(error_string,LLEN,"i = %d, j = %d,	y = %d	u = %d	v = %d",i,j,*y_p,*u_p,*v_p);
 //prt_msg(error_string);
 		gray = GRAY(*y_p);
 		// for display sometimes we want BGR!?

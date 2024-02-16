@@ -64,7 +64,7 @@ void _sort_table(SINGLE_QSP_ARG_DECL)
 
 	for(i=0;i<N_PH_CMD_CODES;i++){
 		if( polh_cmds[i].pc_code != i ){
-			sprintf(ERROR_STRING,"Polhemus command table entry %d has code %d!?",
+			snprintf(ERROR_STRING,LLEN,"Polhemus command table entry %d has code %d!?",
 					i,polh_cmds[i].pc_code);
 			error1(ERROR_STRING);
 		}

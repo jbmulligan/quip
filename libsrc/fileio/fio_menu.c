@@ -51,7 +51,7 @@ static COMMAND_FUNC( do_read_image_file )	/** open file for reading */
 	Filetype *ftp;
 
 	ftp = current_filetype();
-	sprintf(prompt,"input %s file",FT_NAME(ftp));
+	snprintf(prompt,256,"input %s file",FT_NAME(ftp));
 	s = NAMEOF(prompt);
 
 	if( s == NULL || *s == 0 ){
@@ -61,7 +61,7 @@ static COMMAND_FUNC( do_read_image_file )	/** open file for reading */
 
 	ifp = img_file_of(s);
 	if( ifp != NULL ){
-		sprintf(ERROR_STRING,"do_read_image_file:  file %s is already open",ifp->if_name);
+		snprintf(ERROR_STRING,LLEN,"do_read_image_file:  file %s is already open",ifp->if_name);
 		WARN(ERROR_STRING);
 		return;
 	}
@@ -86,7 +86,7 @@ static COMMAND_FUNC( do_write_image_file )
 
 	ifp = img_file_of(s);
 	if( ifp != NULL ){
-		sprintf(ERROR_STRING,"do_write_image_file:  file %s is already open",ifp->if_name);
+		snprintf(ERROR_STRING,LLEN,"do_write_image_file:  file %s is already open",ifp->if_name);
 		WARN(ERROR_STRING);
 		return;
 	}
@@ -171,7 +171,7 @@ static COMMAND_FUNC( do_set_raw_sizes )
 	for(i=0;i<N_DIMENSIONS;i++){
 		char pmt[LLEN];
 
-		sprintf(pmt,"number of raw %ss",dimension_name[i]);
+		snprintf(pmt,LLEN,"number of raw %ss",dimension_name[i]);
 		arr[i] = (dimension_t)HOW_MANY(pmt);
 	}
 	set_raw_sizes(arr);
@@ -224,7 +224,7 @@ static COMMAND_FUNC( do_delete_imgfile )
 	if( ifp == NULL ) return;
 
 	if( FT_CODE(IF_TYPE(ifp)) != IFT_RV ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Use \"close\" for image file %s, not \"delete\"",
 			ifp->if_name);
 		WARN(ERROR_STRING);

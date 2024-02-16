@@ -118,7 +118,7 @@ COMMAND_FUNC( do_track )
 	GET_VIEWER("do_track")
 	if( vp == NULL ) return;
 	if( !IS_ADJUSTER(vp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"viewer %s is not an adjuster",VW_NAME(vp));
 		warn(ERROR_STRING);
 		return;
@@ -294,7 +294,7 @@ static COMMAND_FUNC( do_cycle_viewer )
 
 #ifdef BUILD_FOR_IOS
 	if( VW_IMAGES(vp) == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"do_cycle_viewer:  viewer %s does not have an associated image viewer!?",
 			VW_NAME(vp));
 		warn(ERROR_STRING);
@@ -320,7 +320,7 @@ static COMMAND_FUNC( do_bring_fwd )
 
 #ifdef BUILD_FOR_IOS
 	if( VW_IMAGES(vp) == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"do_bring_fwd:  viewer %s does not have an associated image viewer!?",
 			VW_NAME(vp));
 		warn(ERROR_STRING);
@@ -346,7 +346,7 @@ static COMMAND_FUNC( do_send_back )
 
 #ifdef BUILD_FOR_IOS
 	if( VW_IMAGES(vp) == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"do_send_back:  viewer %s does not have an associated image viewer!?",
 			VW_NAME(vp));
 		warn(ERROR_STRING);
@@ -370,7 +370,7 @@ static COMMAND_FUNC( do_hide_imgs )
 
 #ifdef BUILD_FOR_IOS
 	if( VW_IMAGES(vp) == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"do_send_back:  viewer %s does not have an associated image viewer!?",
 			VW_NAME(vp));
 		warn(ERROR_STRING);
@@ -397,7 +397,7 @@ static COMMAND_FUNC( do_reveal_imgs )
 	INSIST_IMAGE_VIEWER(reveal_images)
 
 	if( VW_IMAGES(vp) == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"do_send_back:  viewer %s does not have an associated image viewer!?",
 			VW_NAME(vp));
 		warn(ERROR_STRING);
@@ -423,7 +423,7 @@ static COMMAND_FUNC( do_cycle_func )
 
 #ifdef BUILD_FOR_IOS
 	if( VW_IMAGES(vp) == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"do_cycle_viewer:  viewer %s does not have an associated image viewer!?",
 			VW_NAME(vp));
 		warn(ERROR_STRING);
@@ -433,7 +433,7 @@ static COMMAND_FUNC( do_cycle_func )
 #else
 	warn("image cycle functions not implemented for this platform");
 	// suppress warning
-	sprintf(ERROR_STRING,"Not interpreting \"%s\" in viewer 0x%lx",
+	snprintf(ERROR_STRING,LLEN,"Not interpreting \"%s\" in viewer 0x%lx",
 		s,(long)vp);
 	advise(ERROR_STRING);
 #endif
@@ -452,7 +452,7 @@ static COMMAND_FUNC( do_cycle_done_func )
 
 #ifdef BUILD_FOR_IOS
 	if( VW_IMAGES(vp) == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"do_cycle_viewer:  viewer %s does not have an associated image viewer!?",
 			VW_NAME(vp));
 		warn(ERROR_STRING);
@@ -462,7 +462,7 @@ static COMMAND_FUNC( do_cycle_done_func )
 #else
 	warn("image cycle functions not implemented for this platform");
 	// suppress warning
-	sprintf(ERROR_STRING,"Not interpreting \"%s\" in viewer 0x%lx",
+	snprintf(ERROR_STRING,LLEN,"Not interpreting \"%s\" in viewer 0x%lx",
 		s,(long)vp);
 	advise(ERROR_STRING);
 #endif
@@ -522,7 +522,7 @@ static COMMAND_FUNC( do_after_animation )
 #ifdef BUILD_FOR_OBJC
 	exec_after_animation(vp,s);
 #else // ! BUILD_FOR_OBJC
-	sprintf(ERROR_STRING,"ignoring after-animation string '%s'",s);
+	snprintf(ERROR_STRING,LLEN,"ignoring after-animation string '%s'",s);
 	advise(ERROR_STRING);
 #endif // BUILD_FOR_OBJC
 }
@@ -547,7 +547,7 @@ static COMMAND_FUNC( do_set_backlight )
         level = (float) how_much("backlight (0.0-1.0)");
 
         if( level < 0.0 || level > 1.0 ){
-		sprintf(ERROR_STRING,"Backlight level (%g) must be between 0 and 1",level);
+		snprintf(ERROR_STRING,LLEN,"Backlight level (%g) must be between 0 and 1",level);
 		warn(ERROR_STRING);
 		return;
         }

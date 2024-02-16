@@ -71,7 +71,7 @@ static Debug_Module * add_auto_module(QSP_ARG_DECL  const char *name, debug_flag
 	// Don't increase the number of modules for the special choices yes/no all/none
 	if( bit_count(mask) == 1 ){
 		if( mask != (1<<n_debug_modules) ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"Debug module %s (mask = 0x%x) added out of sequence (n_debug_modules = %d)!?",
 				name,mask,n_debug_modules);
 			warn(ERROR_STRING);
@@ -129,10 +129,10 @@ static void _init_dbm(SINGLE_QSP_ARG_DECL)
 
 void _set_debug(QSP_ARG_DECL  Debug_Module *dbmp)
 {
-	sprintf(ERROR_STRING,"enabling debugging messages for %s module",
+	snprintf(ERROR_STRING,LLEN,"enabling debugging messages for %s module",
 		DEBUG_NAME(dbmp));
 	advise(ERROR_STRING);
-//sprintf(ERROR_STRING,"mask = 0x%x",DEBUG_MASK(dbmp));
+//snprintf(ERROR_STRING,LLEN,"mask = 0x%x",DEBUG_MASK(dbmp));
 //advise(ERROR_STRING);
 
 	if( DEBUG_FLAGS(dbmp) & DEBUG_SET )
@@ -140,7 +140,7 @@ void _set_debug(QSP_ARG_DECL  Debug_Module *dbmp)
 	else
 		debug &= ~DEBUG_MASK(dbmp);
 
-//sprintf(ERROR_STRING,"debug = 0x%x",debug);
+//snprintf(ERROR_STRING,LLEN,"debug = 0x%x",debug);
 //advise(ERROR_STRING);
 }
 
@@ -154,11 +154,11 @@ debug_flag_t _add_debug_module(QSP_ARG_DECL  const char *name)
 	if( n_debug_modules < 0 ) init_dbm();
 
 	if( n_debug_modules >= MAX_DEBUG_MODULES ){
-		sprintf(ERROR_STRING,"Can't add debug module %s",name);
+		snprintf(ERROR_STRING,LLEN,"Can't add debug module %s",name);
 		warn(ERROR_STRING);
-		sprintf(ERROR_STRING,"n is %d",n_debug_modules);
+		snprintf(ERROR_STRING,LLEN,"n is %d",n_debug_modules);
 		advise(ERROR_STRING);
-		sprintf(ERROR_STRING,"Max is %ld",(long)MAX_DEBUG_MODULES);
+		snprintf(ERROR_STRING,LLEN,"Max is %ld",(long)MAX_DEBUG_MODULES);
 		advise(ERROR_STRING);
 		advise("Modules:");
 		list_debugs(tell_errfile());

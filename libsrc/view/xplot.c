@@ -83,13 +83,13 @@ static void unscalefxy(Viewer *vp,float *px,float *py)
 
 void _tell_plot_space(SINGLE_QSP_ARG_DECL)
 {
-	sprintf(msg_str,"Viewer %s:",VW_NAME(plot_vp));
+	snprintf(msg_str,LLEN,"Viewer %s:",VW_NAME(plot_vp));
 	prt_msg(msg_str);
-	sprintf(msg_str,"\twidth = %d\theight = %d",VW_WIDTH(plot_vp),VW_HEIGHT(plot_vp));
+	snprintf(msg_str,LLEN,"\twidth = %d\theight = %d",VW_WIDTH(plot_vp),VW_HEIGHT(plot_vp));
 	prt_msg(msg_str);
-	sprintf(msg_str,"\txmin = %g\txdel = %g",VW_XMIN(plot_vp),VW_XDEL(plot_vp));
+	snprintf(msg_str,LLEN,"\txmin = %g\txdel = %g",VW_XMIN(plot_vp),VW_XDEL(plot_vp));
 	prt_msg(msg_str);
-	sprintf(msg_str,"\tymin = %g\tydel = %g",VW_YMIN(plot_vp),VW_YDEL(plot_vp));
+	snprintf(msg_str,LLEN,"\tymin = %g\tydel = %g",VW_YMIN(plot_vp),VW_YDEL(plot_vp));
 	prt_msg(msg_str);
 }
 
@@ -366,7 +366,7 @@ void _xplot_text(QSP_ARG_DECL  const char *s)
 void _xplot_setup(QSP_ARG_DECL  Viewer *vp)
 {
 	if( ! IS_PLOTTER(vp) ){
-		sprintf(ERROR_STRING,"xp_setup:  viewer %s is not a plotter!?",
+		snprintf(ERROR_STRING,LLEN,"xp_setup:  viewer %s is not a plotter!?",
 			VW_NAME(vp));
 		warn(ERROR_STRING);
 	}

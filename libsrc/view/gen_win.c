@@ -52,7 +52,7 @@ static double get_genwin_posn(QSP_ARG_DECL  IOS_Item *ip, int index)
 	gwp = (Gen_Win *)ip;
 
 	warn("get_genwin_posn:  NOT IMPLEMENTED YET!?");
-    sprintf(ERROR_STRING,"unable to get position of genwin %s",GW_NAME(gwp));
+    snprintf(ERROR_STRING,LLEN,"unable to get position of genwin %s",GW_NAME(gwp));
     advise(ERROR_STRING);
     return 0.0;
 }
@@ -195,7 +195,7 @@ Gen_Win * _make_genwin(QSP_ARG_DECL  const char *name,int width,int height)
 	// panel creation...  make sure the other one is created also.
 	Panel_Obj *po = panel_obj_of(GW_NAME(gwp));
 	if( po == NULL ){
-		/* po = */ new_panel(GW_NAME(gwp), GW_WIDTH(gwp), GW_HEIGHT(gwp) );
+		po = my_new_panel(GW_NAME(gwp), GW_WIDTH(gwp), GW_HEIGHT(gwp) );
 	}
 	Viewer *vp = vwr_of(GW_NAME(gwp));
 	if( vp == NULL ){
@@ -365,7 +365,7 @@ void _posn_genwin(QSP_ARG_DECL  Gen_Win *gwp,int x,int y)
 	mip = get_ios_member_info(gw_iclp,GW_NAME(gwp));
 #ifdef CAUTIOUS
 	if( mip == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"CAUTIOUS:  position_genwin %s %d %d, missing member info #2",
 			GW_NAME(gwp),x,y);
 		error1(ERROR_STRING);
@@ -418,7 +418,7 @@ static void show_genwin(QSP_ARG_DECL  IOS_Item *ip)
 
 #ifdef CAUTIOUS
 	if( mip == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"CAUTIOUS:  show_genwin %s, missing member info #2",
 			IOS_ITEM_NAME(ip));
 		error1(ERROR_STRING);
@@ -446,7 +446,7 @@ static void unshow_genwin(QSP_ARG_DECL  IOS_Item *ip)
 
 #ifdef CAUTIOUS
 	if( mip == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"CAUTIOUS:  position_genwin %s, missing member info #2",
 			IOS_ITEM_NAME(ip));
 		error1(ERROR_STRING);
@@ -477,7 +477,7 @@ void _show_genwin(QSP_ARG_DECL  Gen_Win *gwp)
 #endif // ! BUILD_FOR_OBJC
 			break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"show_genwin:  unexpected type code %d!?",GW_TYPE(gwp));
 			warn(ERROR_STRING);
 			break;
@@ -501,7 +501,7 @@ void _unshow_genwin(QSP_ARG_DECL  Gen_Win *gwp)
 #endif // ! BUILD_FOR_OBJC
 			break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"show_genwin:  unexpected type code %d!?",GW_TYPE(gwp));
 			warn(ERROR_STRING);
 			break;
@@ -526,7 +526,7 @@ static void _delete_genwin(QSP_ARG_DECL  Gen_Win *gwp)
 
 #ifdef CAUTIOUS
 	if( mip == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"CAUTIOUS:  position_genwin %s, missing member info #2",
 			GW_NAME(gwp));
 		error1(ERROR_STRING);

@@ -91,10 +91,10 @@ uint64_t my_absolute_to_nanoseconds( uint64_t *t )
 	if( (QI_QV(self)).baseTime == 0 ){
 		[QI_QV(self) setBaseTime:t];
 	}
-//sprintf(DEFAULT_ERROR_STRING,"_onScreenRefresh:  t = %g, base_time = %g",t,(QI_QV(self)).baseTime);
-//sprintf(DEFAULT_ERROR_STRING,"_onScreenRefresh:  _vbl_count = %d, _frame_duration = %d",_vbl_count,_frame_duration);
+//snprintf(DEFAULT_ERROR_STRING,LLEN,"_onScreenRefresh:  t = %g, base_time = %g",t,(QI_QV(self)).baseTime);
+//snprintf(DEFAULT_ERROR_STRING,LLEN,"_onScreenRefresh:  _vbl_count = %d, _frame_duration = %d",_vbl_count,_frame_duration);
 //NADVISE(DEFAULT_ERROR_STRING);
-	sprintf(time_buf,"%g",t - (QI_QV(self)).baseTime);
+	snprintf(time_buf,64,"%g",t - (QI_QV(self)).baseTime);
 	assign_var(DEFAULT_QSP_ARG  "refresh_time", time_buf );
 
 	//ltime -= _time0_2;
@@ -102,7 +102,7 @@ uint64_t my_absolute_to_nanoseconds( uint64_t *t )
 	uint64_t ns;
 	//ns = AbsoluteToNanoseconds( *(AbsoluteTime *) &ltime );
 	ns = my_absolute_to_nanoseconds( &ltime );
-	sprintf(time_buf,"%g",round(ns/100000)/10.0);
+	snprintf(time_buf,64,"%g",round(ns/100000)/10.0);
 	assign_var(DEFAULT_QSP_ARG  "refresh_time2", time_buf );
 }
 

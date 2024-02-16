@@ -62,7 +62,7 @@ static COMMAND_FUNC( do_start_flow )
 
 	while( _mm->num_active_bufs < 1 ){
 /*
-sprintf(ERROR_STRING,"num_activ_bufs = %d",_mm->num_active_bufs);
+snprintf(ERROR_STRING,LLEN,"num_activ_bufs = %d",_mm->num_active_bufs);
 advise(ERROR_STRING);
 */
 		usleep(1000);
@@ -91,7 +91,7 @@ static COMMAND_FUNC( update_vars )
 	 * currently active buffer!
 	 */
 /*
-sprintf(ERROR_STRING,"cur_frame:\t%d\t\tnum_activ:\t%d\tmask = 0x%x",_mm->cur_frame,_mm->num_active_bufs,_mm->active);
+snprintf(ERROR_STRING,LLEN,"cur_frame:\t%d\t\tnum_activ:\t%d\tmask = 0x%x",_mm->cur_frame,_mm->num_active_bufs,_mm->active);
 advise(ERROR_STRING);
 */
 	/*newest = (_mm->cur_frame + num_meteor_frames - 2 ) % num_meteor_frames; */
@@ -104,20 +104,20 @@ advise(ERROR_STRING);
 	/* NO num_active_bufs counts the frames which have been acquired so we subtract one... */
 	oldest = (newest + num_meteor_frames - (_mm->num_active_bufs-1)) % num_meteor_frames;
 
-	sprintf(s,"%d",oldest);
+	snprintf(s,32,"%d",oldest);
 	assign_var("oldest",s);
 
-	sprintf(s,"%d",newest);
+	snprintf(s,32,"%d",newest);
 	assign_var("newest",s);
 
 /*
-sprintf(ERROR_STRING,"update_vars:\toldest = %d\t\tnewest = %d",oldest,newest);
+snprintf(ERROR_STRING,LLEN,"update_vars:\toldest = %d\t\tnewest = %d",oldest,newest);
 advise(ERROR_STRING);
 */
-	sprintf(s,"%d",_mm->num_active_bufs);
+	snprintf(s,32,"%d",_mm->num_active_bufs);
 	assign_var("n_active",s);
 
-	sprintf(s,"0x%lx",(long)_mm->active);
+	snprintf(s,32,"0x%lx",(long)_mm->active);
 	assign_var("active_mask",s);
 }
 
@@ -127,13 +127,13 @@ static COMMAND_FUNC( do_wait_next )	/* wait til we have another frame */
 
 	start_n=_mm->num_active_bufs;
 	if( start_n == _hiwat ){
-		sprintf(ERROR_STRING,"do_wait_next:  ring buffer already containts %d active frames, will not advance until one is released.",start_n);
+		snprintf(ERROR_STRING,LLEN,"do_wait_next:  ring buffer already containts %d active frames, will not advance until one is released.",start_n);
 		WARN(ERROR_STRING);
 		update_vars(SINGLE_QSP_ARG);
 		return;
 	}
 /*
-sprintf(ERROR_STRING,"do_wait_next BEGIN:  num_active_bufs = %d",start_n);
+snprintf(ERROR_STRING,LLEN,"do_wait_next BEGIN:  num_active_bufs = %d",start_n);
 advise(ERROR_STRING);
 */
 	while( _mm->num_active_bufs == start_n )

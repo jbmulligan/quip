@@ -80,7 +80,7 @@ static COMMAND_FUNC( set_onintr )
 		/*warn("no previous interrupt action"); */
 	} else {
 		if( verbose ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"former interrupt action string was \"%s\"",
 				intr_str);
 			advise(ERROR_STRING);
@@ -177,7 +177,7 @@ static COMMAND_FUNC( do_ckpt )
 		
 		siz2 = sizeof(suseconds_t);
 		if( siz2 > siz ) {
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 "CAUTIOUS:  do_ckpt:  size of suseconds_t (%d) is greater than that of time_t (%d).",siz2,siz);
 			error1(ERROR_STRING);
 		}
@@ -202,12 +202,12 @@ static COMMAND_FUNC( do_ckpt )
 	}
 
 	if( strlen(s) >= MAX_MSG_LEN ){
-		sprintf(ERROR_STRING,"Sorry, checkpoint tag has too many characters (%ld, max %d), truncating...",
+		snprintf(ERROR_STRING,LLEN,"Sorry, checkpoint tag has too many characters (%ld, max %d), truncating...",
 			(long)strlen(s),MAX_MSG_LEN-1);
 		warn(ERROR_STRING);
 	}
 	if( n_ckpts >= MAX_CKPTS ){
-		sprintf(ERROR_STRING,"Sorry, %d checkpoints already placed, can't place '%s'.",n_ckpts,s);
+		snprintf(ERROR_STRING,LLEN,"Sorry, %d checkpoints already placed, can't place '%s'.",n_ckpts,s);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -259,7 +259,7 @@ static COMMAND_FUNC( do_tell_ckpts )
 	secs  = (long) *(tptr+  2*(n_ckpts-1));
 	usecs = (long) *(tptr+1+2*(n_ckpts-1));
 	delta_ms = 1000.0*(secs-secs0) + (usecs-usecs0)/1000.0;
-	sprintf(msg_str,"Total HOST time:  %12.3f",delta_ms);
+	snprintf(msg_str,LLEN,"Total HOST time:  %12.3f",delta_ms);
 	prt_msg(msg_str);
 
 	cum_ms = 0.0;
@@ -270,7 +270,7 @@ static COMMAND_FUNC( do_tell_ckpts )
 		delta_ms = 1000.0*(secs-secs0) + (usecs-usecs0)/1000.0;
 		cum_ms += delta_ms;
 
-		sprintf(msg_str,"HOST %3d  %12.3f  %12.3f  %s",i+1,delta_ms,
+		snprintf(msg_str,LLEN,"HOST %3d  %12.3f  %12.3f  %s",i+1,delta_ms,
 			cum_ms,mptr);
 		prt_msg(msg_str);
 
@@ -301,10 +301,10 @@ static COMMAND_FUNC( get_time_of_day )
 		return;
 	}
 
-	sprintf(msg_str,"%ld",tv.tv_sec);
+	snprintf(msg_str,LLEN,"%ld",tv.tv_sec);
 	assign_var(s1,msg_str);
 	// on mac, tv_usec has a wierd type?
-	sprintf(msg_str,"%ld",(long)tv.tv_usec);
+	snprintf(msg_str,LLEN,"%ld",(long)tv.tv_usec);
 	assign_var(s2,msg_str);
 #else // ! HAVE_GETTIMEOFDAY
 	assign_var(s1,"0");
@@ -324,7 +324,7 @@ static COMMAND_FUNC( get_time )
 		tell_sys_error("time");
 		t = (time_t) 0;
 	}
-	sprintf(msg_str,"%ld",t);
+	snprintf(msg_str,LLEN,"%ld",t);
 	assign_var(s,msg_str);
 }
 
@@ -343,7 +343,7 @@ static COMMAND_FUNC( do_system )				/** execute a shell command */
 	
 	if( euid == 0 && ruid != 0 ){
 		warn("Sorry, shell commands not allowed for set-uid root programs");
-        sprintf(ERROR_STRING,"Unable to execute command '%s'",s);
+        snprintf(ERROR_STRING,LLEN,"Unable to execute command '%s'",s);
         advise(ERROR_STRING);
 		return;
 	}
@@ -357,7 +357,7 @@ static COMMAND_FUNC( do_system )				/** execute a shell command */
 	if( stat == -1 )
 		tell_sys_error("system");
 	else if( verbose ){
-		sprintf(ERROR_STRING,"Exit status %d",stat);
+		snprintf(ERROR_STRING,LLEN,"Exit status %d",stat);
 		advise(ERROR_STRING);
 	}
 #else // ! BUILD_FOR_IOS
@@ -365,7 +365,7 @@ static COMMAND_FUNC( do_system )				/** execute a shell command */
 	stat=(-1);
 #endif // ! BUILD_FOR_IOS
 
-	sprintf(msg_str,"%d",stat);
+	snprintf(msg_str,LLEN,"%d",stat);
 	assign_reserved_var("exit_status",msg_str);
 }
 

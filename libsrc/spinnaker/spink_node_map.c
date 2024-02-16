@@ -42,7 +42,7 @@ int _release_current_camera(QSP_ARG_DECL  int strict)
 {
 	if( current_skc_p==NULL ){
 		if( strict ){
-			sprintf(ERROR_STRING,"Unnecessary call to release_current_camera!?");
+			snprintf(ERROR_STRING,LLEN,"Unnecessary call to release_current_camera!?");
 			warn(ERROR_STRING);
 		}
 		return 0;
@@ -61,7 +61,7 @@ void _report_node_access_error(QSP_ARG_DECL  spinNodeHandle hNode, const char *w
 	if( get_display_name(dname,&len,hNode) < 0 ){
 		strcpy(dname,"(unable to get display name)");
 	}
-	sprintf(ERROR_STRING,"feature node '%s' not %s!?",dname,w);
+	snprintf(ERROR_STRING,LLEN,"feature node '%s' not %s!?",dname,w);
 	advise(ERROR_STRING);
 }
 
@@ -267,7 +267,7 @@ int _get_node_map_handle(QSP_ARG_DECL  spinNodeMapHandle *hMap_p, Spink_Map *skm
 	switch( skm_p->skm_type ){
 		case INVALID_NODE_MAP:
 		case N_NODE_MAP_TYPES:
-			sprintf(ERROR_STRING,"get_node_map_handle (%s):  invalid type code!?",whence);
+			snprintf(ERROR_STRING,LLEN,"get_node_map_handle (%s):  invalid type code!?",whence);
 			warn(ERROR_STRING);
 			break;
 		case CAM_NODE_MAP:
@@ -280,7 +280,7 @@ int _get_node_map_handle(QSP_ARG_DECL  spinNodeMapHandle *hMap_p, Spink_Map *skm
 			}
 
 			if( get_camera_node_map(hCam,hMap_p) < 0 ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"get_node_map_handle (%s):  error getting camera node map!?",whence);
 				error1(ERROR_STRING);
 			}
@@ -288,14 +288,14 @@ int _get_node_map_handle(QSP_ARG_DECL  spinNodeMapHandle *hMap_p, Spink_Map *skm
 		case DEV_NODE_MAP:
 //fprintf(stderr,"get_node_map_handle calling get_device_node_map\n");
 			if( get_device_node_map(hCam,hMap_p) < 0 ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"get_node_map_handle (%s):  error getting device node map!?",whence);
 				error1(ERROR_STRING);
 			}
 			break;
 		case STREAM_NODE_MAP:
 			if( get_stream_node_map(hCam,hMap_p) < 0 ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"get_node_map_handle (%s):  error getting stream node map!?",whence);
 				error1(ERROR_STRING);
 			}

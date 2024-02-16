@@ -73,7 +73,7 @@ int _obj_rename(QSP_ARG_DECL  Data_Obj *dp,const char *newname)
 
 	dp2=dobj_of(newname);
 	if( dp2 != NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"name \"%s\" is already in use in area \"%s\"",
 			newname,AREA_NAME( OBJ_AREA(dp) ) );
 		warn(ERROR_STRING);
@@ -136,7 +136,7 @@ Data_Obj *_make_obj_list(QSP_ARG_DECL  const char *name, List *lp)
 
 	dp = dobj_of(name);
 	if( dp != NULL ){
-		sprintf(ERROR_STRING,"make_obj_list:  object %s already exists!?",name);
+		snprintf(ERROR_STRING,LLEN,"make_obj_list:  object %s already exists!?",name);
 		warn(ERROR_STRING);
 		return(NULL);
 	}
@@ -144,7 +144,7 @@ Data_Obj *_make_obj_list(QSP_ARG_DECL  const char *name, List *lp)
 	SET_DIMENSION(dsp,0,1);
 	SET_DIMENSION(dsp,1,eltcount(lp));
 	if( DIMENSION(dsp,1) < 1 ){
-		sprintf(ERROR_STRING,"make_obj_list %s:  object list has no elements!?",name);
+		snprintf(ERROR_STRING,LLEN,"make_obj_list %s:  object list has no elements!?",name);
 		warn(ERROR_STRING);
 		return(NULL);
 	}
@@ -225,7 +225,7 @@ void _assign_scalar_obj(QSP_ARG_DECL  Data_Obj *dp,Scalar_Value *svp)
 
 	prec_p = OBJ_PREC_PTR(dp);
 	if( (*(prec_p->assign_scalar_obj_func))(dp,svp) < 0 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Unable to set scalar value for object %s!?",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
@@ -320,7 +320,7 @@ Data_Obj * _dup_half(QSP_ARG_DECL  Data_Obj *dp,const char *name)
 	Data_Obj *dp2;
 
 	if( !IS_IMAGE(dp) ){
-		sprintf(ERROR_STRING,"dup_half:  \"%s\" is not an image",
+		snprintf(ERROR_STRING,LLEN,"dup_half:  \"%s\" is not an image",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return(NULL);
@@ -335,7 +335,7 @@ Data_Obj * _dup_dbl(QSP_ARG_DECL  Data_Obj *dp,const char *name)
 	Data_Obj *dp2;
 
 	if( !IS_IMAGE(dp) ){
-		sprintf(ERROR_STRING,"dup_half:  \"%s\" is not an image",
+		snprintf(ERROR_STRING,LLEN,"dup_half:  \"%s\" is not an image",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return(NULL);
@@ -367,7 +367,7 @@ const char *localname(void)
 	const char *s;
 
 	localn++;
-	sprintf(buf,"L.%d",localn);
+	snprintf(buf,32,"L.%d",localn);
 	s = savestr(buf);
 	return s;
 }
@@ -389,7 +389,7 @@ int _is_valid_dname(QSP_ARG_DECL  const char *name)
 	const char *s=name;
 	while( *s ){
 		if( !isalnum(*s) && !is_in_string(*s,DNAME_VALID) ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 			"illegal character '%c' (0x%x) in data name (\"%s\")",
 				*s,*s,name);
 			warn(ERROR_STRING);

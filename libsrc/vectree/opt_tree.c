@@ -46,7 +46,7 @@ static void collapse_literal(QSP_ARG_DECL  Vec_Expr_Node *enp)
 
 		/* BUG need to free the children here */
 	} else {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"collapse_literal:  unexpected node precision %s",
 			NAME_FOR_PREC_CODE(VN_PREC(enp)));
 		warn(ERROR_STRING);
@@ -262,11 +262,11 @@ void _optimize_subrt(QSP_ARG_DECL Subrt *srp)
 	nf_after = VN_FLOPS(SR_BODY(srp));
 
 	if( nf_before == nf_after ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"No optimization found for subroutine %s",SR_NAME(srp));
 		advise(ERROR_STRING);
 	} else {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Optimization of subroutine %s reduced flop count from %ld to %ld",
 			SR_NAME(srp),nf_before,nf_after);
 		advise(ERROR_STRING);

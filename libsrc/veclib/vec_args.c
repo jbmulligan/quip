@@ -71,10 +71,10 @@ static int _get_src4(QSP_ARG_DECL  Vec_Obj_Args *oap)
 #ifdef NOT_YET
 void show_vf(Vector_Function *vfp)
 {
-	sprintf(ERROR_STRING,"function %s, flags = 0x%x",VF_NAME(vfp),VF_FLAGS(vfp) );
+	snprintf(ERROR_STRING,LLEN,"function %s, flags = 0x%x",VF_NAME(vfp),VF_FLAGS(vfp) );
 	advise(ERROR_STRING);
 	/*
-	sprintf(ERROR_STRING,"V_INPLACE = 0x%x",V_INPLACE);
+	snprintf(ERROR_STRING,LLEN,"V_INPLACE = 0x%x",V_INPLACE);
 	advise(ERROR_STRING);
 	*/
 }
@@ -87,7 +87,7 @@ static int _get_src_bitmap(QSP_ARG_DECL Vec_Obj_Args *oap)
 	SET_OA_SBM( oap, pick_obj( "source bitmap object" ) );
 	if( OA_SBM(oap) == NULL ) return(-1);
 	if( OBJ_PREC( OA_SBM(oap) ) != PREC_BIT ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"get_src_bitmap:  bitmap \"%s\" (%s,0x%x) must have bit precision (0x%x)",
 			OBJ_NAME(OA_SBM(oap) ),
 			OBJ_PREC_NAME( OA_SBM(oap) ), OBJ_PREC( OA_SBM(oap) ),PREC_BIT);
@@ -104,7 +104,7 @@ static int _get_dst_bitmap(QSP_ARG_DECL Vec_Obj_Args *oap)
 	SET_OA_DBM( oap, pick_obj( "destination bitmap object" ) );
 	if( OA_DBM(oap) == NULL ) return(-1);
 	if( OBJ_PREC( OA_DBM(oap) ) != PREC_BIT ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"get_dst_bitmap:  bitmap \"%s\" (%s,0x%x) must have bit precision (0x%x)",
 			OBJ_NAME(OA_DBM(oap) ),
 			OBJ_PREC_NAME( OA_DBM(oap) ), OBJ_PREC( OA_DBM(oap) ),PREC_BIT);
@@ -165,13 +165,13 @@ static Data_Obj * get_return_scalar(QSP_ARG_DECL const char *pmpt,Precision *pre
 	dp=pick_obj( pmpt );
 	if( dp == NULL ) return(NULL);
 	if( !IS_SCALAR(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"get_return_scalar:  %s is not a scalar",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return(NULL);
 	}
 	if( OBJ_PREC_PTR( dp) != prec_p ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"get_return_scalar:  %s scalar %s should have precision %s",
 			OBJ_PREC_NAME(dp),OBJ_NAME(dp),PREC_NAME(prec_p));
 		warn(ERROR_STRING);
@@ -179,7 +179,7 @@ static Data_Obj * get_return_scalar(QSP_ARG_DECL const char *pmpt,Precision *pre
 	}
 #ifdef QUIP_DEBUG
 if( debug & veclib_debug ){
-sprintf(ERROR_STRING,"get_return_scalar:  returning %s scalar %s",OBJ_MACH_PREC_NAME(dp),OBJ_NAME(dp));
+snprintf(ERROR_STRING,LLEN,"get_return_scalar:  returning %s scalar %s",OBJ_MACH_PREC_NAME(dp),OBJ_NAME(dp));
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -345,11 +345,11 @@ static int _get_scalar_args(QSP_ARG_DECL Vec_Obj_Args *oap, Vector_Function *vfp
 				// destination obj here, but in case
 				// it could be null...
 				if( OA_DEST(oap) != NULL )
-					sprintf(ERROR_STRING,
+					snprintf(ERROR_STRING,LLEN,
 "get_scalar_args:  function %s does not permit operations with complex targets (%s)",
 		VF_NAME(vfp),OBJ_NAME(OA_DEST(oap) ));
 				else
-					sprintf(ERROR_STRING,
+					snprintf(ERROR_STRING,LLEN,
 "get_scalar_args:  function %s does not permit operations with complex targets",
 						VF_NAME(vfp) );
 				warn(ERROR_STRING);
@@ -361,7 +361,7 @@ static int _get_scalar_args(QSP_ARG_DECL Vec_Obj_Args *oap, Vector_Function *vfp
 			/* this should not happen!? */
 			/* Does the function permit quaternions? */
 			if( (VF_TYPEMASK(vfp) & (QUAT_ARG_MASK)) == 0 ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 	"get_scalar_args:  function %s does not permit operations with quaternion targets (%s)",
 					VF_NAME(vfp),
 					OA_DEST(oap) == NULL ?
@@ -466,7 +466,7 @@ static int _get_scalar_args(QSP_ARG_DECL Vec_Obj_Args *oap, Vector_Function *vfp
 	if( VF_FLAGS(vfp) & TWO_SCALAR_RESULTS ){
 		Data_Obj *_dp1, *_dp2;
 		if( OA_SRC1(oap) == NULL ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"get_scalar_args (%s):  no argument to use for precision prototype!?",
 				VF_NAME(vfp));
 			warn(ERROR_STRING);
@@ -604,7 +604,7 @@ if( OA_PFDEV(oap) == NULL ) warn("Null platform device!?");
 		return 0;
 	}
 	if( OA_PFDEV(oap) != OBJ_PFDEV(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "check_obj_device:  object %s device %s does not match expected device %s!?",
 			OBJ_NAME(dp),
 			PFDEV_NAME( OBJ_PFDEV(dp) ),
@@ -674,7 +674,7 @@ int are_ram_args( Vec_Obj_Args *oap )
 static void _report_obj_device(QSP_ARG_DECL  Data_Obj *dp)
 {
 	if( dp == NULL ) return;
-	sprintf(ERROR_STRING,"\t%s:\t%s",OBJ_NAME(dp),PFDEV_NAME( OBJ_PFDEV(dp) ) );
+	snprintf(ERROR_STRING,LLEN,"\t%s:\t%s",OBJ_NAME(dp),PFDEV_NAME( OBJ_PFDEV(dp) ) );
 	advise(ERROR_STRING);
 }
 
@@ -682,7 +682,7 @@ void _mixed_location_error(QSP_ARG_DECL  Vector_Function *vfp, Vec_Obj_Args *oap
 {
 	int i;
 
-	sprintf(ERROR_STRING,"%s:  arguments must reside on a single device.",VF_NAME(vfp));
+	snprintf(ERROR_STRING,LLEN,"%s:  arguments must reside on a single device.",VF_NAME(vfp));
 	warn(ERROR_STRING);
 
 	report_obj_device( OA_DEST(oap) );
@@ -700,7 +700,7 @@ void _do_vfunc( QSP_ARG_DECL  Vector_Function *vfp )
 	clear_obj_args(oap);
 
 	if( get_args(oap, vfp) < 0 ){
-		sprintf(ERROR_STRING,"Error getting arguments for function %s",
+		snprintf(ERROR_STRING,LLEN,"Error getting arguments for function %s",
 			VF_NAME(vfp));
 		warn(ERROR_STRING);
 		return;
@@ -708,7 +708,7 @@ void _do_vfunc( QSP_ARG_DECL  Vector_Function *vfp )
 
 if( OA_DEST(oap) == NULL ){
 /* BUG?  is this really an error?  The bitmap destination might be here... */
-sprintf(ERROR_STRING,"%s:  Null destination!?!?", VF_NAME(vfp));
+snprintf(ERROR_STRING,LLEN,"%s:  Null destination!?!?", VF_NAME(vfp));
 warn(ERROR_STRING);
 }
 
@@ -827,7 +827,7 @@ void show_vec_args(const Vector_Args *vap)
 	for(i=0;i<MAX_N_ARGS;i++){
 		if( VA_SRC_PTR(vap,i) != NULL ){
 			char name[8];
-			sprintf(name,"src%d",i+1);
+			snprintf(name,8,"src%d",i+1);
 			show_vector_arg( name, & VA_SRC(vap,i) );
 		}
 	}
@@ -1062,7 +1062,7 @@ static dimension_t tabulate_bitmap_word(Data_Obj *dp, bitnum_t bit_number, dimen
 static void _show_bitmap_word_info(QSP_ARG_DECL  Bitmap_GPU_Word_Info *bmwi_p, int tbl_idx)
 {
 	// BUG - get correct format!
-	sprintf(MSG_STR,"word %3d   offset %d   first bit %"PRId64"  seq %4d  frame %4d   row %4d   col %4d   comp %4d   mask = 0x%"PRIx64,
+	snprintf(MSG_STR,LLEN,"word %3d   offset %d   first bit %"PRId64"  seq %4d  frame %4d   row %4d   col %4d   comp %4d   mask = 0x%"PRIx64,
 		tbl_idx,BMWI_OFFSET(bmwi_p),
 		BMWI_FIRST_BIT_NUM(bmwi_p),
 		BMWI_FIRST_INDEX(bmwi_p,4),
@@ -1080,13 +1080,13 @@ static void show_bitmap_gpu_info(QSP_ARG_DECL  Bitmap_GPU_Info *bmi_p)
 	dimension_t i;
 	Bitmap_GPU_Word_Info * bmwi_p;
 
-	sprintf(MSG_STR,"Bitmap_GPU_Info at 0x%lx",(long)bmi_p);
+	snprintf(MSG_STR,LLEN,"Bitmap_GPU_Info at 0x%lx",(long)bmi_p);
 	prt_msg(MSG_STR);
 
-	sprintf(MSG_STR,"\t%d total bytes",BMI_STRUCT_SIZE(bmi_p));
+	snprintf(MSG_STR,LLEN,"\t%d total bytes",BMI_STRUCT_SIZE(bmi_p));
 	prt_msg(MSG_STR);
 
-	sprintf(MSG_STR,"\tobj dimensions:  %d  %d  %d  %d  %d",
+	snprintf(MSG_STR,LLEN,"\tobj dimensions:  %d  %d  %d  %d  %d",
 		BMI_DIMENSION(bmi_p,4),
 		BMI_DIMENSION(bmi_p,3),
 		BMI_DIMENSION(bmi_p,2),
@@ -1094,7 +1094,7 @@ static void show_bitmap_gpu_info(QSP_ARG_DECL  Bitmap_GPU_Info *bmi_p)
 		BMI_DIMENSION(bmi_p,0) );
 	prt_msg(MSG_STR);
 
-	sprintf(MSG_STR,"\t%d words:",BMI_N_WORDS(bmi_p));
+	snprintf(MSG_STR,LLEN,"\t%d words:",BMI_N_WORDS(bmi_p));
 	prt_msg(MSG_STR);
 
 	for(i=0;i<BMI_N_WORDS(bmi_p);i++){

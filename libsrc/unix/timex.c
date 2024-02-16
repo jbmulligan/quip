@@ -50,9 +50,9 @@ static void check_timex(QSP_ARG_DECL  struct timex *tp)
 	/* if( verbose ) */ tell_timex_retval(QSP_ARG  retval);
 
 	/* set the script variables tick and freq */
-	sprintf(str,"%ld",tp->tick);
+	snprintf(str,32,"%ld",tp->tick);
 	assign_reserved_var("timex_tick",str);
-	sprintf(str,"%ld",tp->freq);
+	snprintf(str,32,"%ld",tp->freq);
 	assign_reserved_var("timex_freq",str);
 }
 
@@ -62,9 +62,9 @@ static COMMAND_FUNC( do_get_timex )
 
 	check_timex(QSP_ARG  &tb);
 
-	sprintf(msg_str,"tick:\t%ld",tb.tick);
+	snprintf(msg_str,LLEN,"tick:\t%ld",tb.tick);
 	prt_msg(msg_str);
-	sprintf(msg_str,"freq:\t%ld",tb.freq);
+	snprintf(msg_str,LLEN,"freq:\t%ld",tb.freq);
 	prt_msg(msg_str);
 }
 
@@ -121,7 +121,7 @@ static COMMAND_FUNC( do_set_freq )
 
 	f=HOW_MANY("New value for frequency parameter");
 	if( f > MAX_FREQ || f < MIN_FREQ ){
-		sprintf(ERROR_STRING,"freq parameter (%ld) must be between %d and %d",f,MIN_FREQ,MAX_FREQ);
+		snprintf(ERROR_STRING,LLEN,"freq parameter (%ld) must be between %d and %d",f,MIN_FREQ,MAX_FREQ);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -134,11 +134,11 @@ static COMMAND_FUNC( do_set_tick )
 
 	t=HOW_MANY("New value for tick parameter");
 	if( abs(10000-t) > 1 ){
-		sprintf(ERROR_STRING,"tick parameter (%ld) usually differs by no more than one from default (10000)",t);
+		snprintf(ERROR_STRING,LLEN,"tick parameter (%ld) usually differs by no more than one from default (10000)",t);
 		warn(ERROR_STRING);
 	}
 	if( abs(10000-t) > 100 ){
-		sprintf(ERROR_STRING,"tick parameter (%ld) may not differ by more than 100 from default (10000)",t);
+		snprintf(ERROR_STRING,LLEN,"tick parameter (%ld) may not differ by more than 100 from default (10000)",t);
 		warn(ERROR_STRING);
 		return;
 	}

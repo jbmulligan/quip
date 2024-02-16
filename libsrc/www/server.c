@@ -56,11 +56,11 @@ static COMMAND_FUNC( do_server_read )
 if( verbose ){
 advise("VERBOSE");
 if( strlen(s) > LLEN ){
-sprintf(error_string,"length of s is %d",strlen(s));
+snprintf(error_string,LLEN,"length of s is %d",strlen(s));
 warn(error_string);
 }
 
-sprintf(error_string,"s = %s\n\ncwd = %s\n\nabsolute_url = %s\n",s,cwd,absolute_url);
+snprintf(error_string,LLEN,"s = %s\n\ncwd = %s\n\nabsolute_url = %s\n",s,cwd,absolute_url);
 advise(error_string);
 }
 	anchor = HTAnchor_findAddress(absolute_url);

@@ -26,7 +26,7 @@ float by_weight=1.0;
 
 void _showvec(QSP_ARG_DECL  float *p)
 {
-sprintf(ERROR_STRING,"vector:  %g %g %g",p[0],p[1],p[2]);
+snprintf(ERROR_STRING,LLEN,"vector:  %g %g %g",p[0],p[1],p[2]);
 advise(ERROR_STRING);
 }
 
@@ -44,7 +44,7 @@ int getbest(QSP_ARG_DECL  int col_index)
 		for(grn_level=0;grn_level<nlevels;grn_level++){
 			for(blu_level=0;blu_level<nlevels;blu_level++){
 /*
-sprintf(ERROR_STRING,"getbest:  desired = %g %g %g",
+snprintf(ERROR_STRING,LLEN,"getbest:  desired = %g %g %g",
 desired[0][col_index],desired[1][col_index],desired[2][col_index]);
 advise(ERROR_STRING);
 */
@@ -70,7 +70,7 @@ advise(ERROR_STRING);
 			for(blu_level=0;blu_level<nlevels;blu_level++){
 #ifdef QUIP_DEBUG
 if( debug & spread_debug ){
-sprintf(ERROR_STRING,"getbest %d %d %d:  err_dist[%d] = %g",red_level,grn_level,blu_level,n,err_dist[n]);
+snprintf(ERROR_STRING,LLEN,"getbest %d %d %d:  err_dist[%d] = %g",red_level,grn_level,blu_level,n,err_dist[n]);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -88,7 +88,7 @@ advise(ERROR_STRING);
 	if( best== -1 ) error1("error too big!!!");
 #ifdef QUIP_DEBUG
 if( debug & spread_debug ){
-sprintf(ERROR_STRING,"getbest RETURNING %d",best);
+snprintf(ERROR_STRING,LLEN,"getbest RETURNING %d",best);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */

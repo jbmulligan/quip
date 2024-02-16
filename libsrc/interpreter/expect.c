@@ -34,10 +34,11 @@ static u_long sb_debug=0;
 
 static int i_string=0;
 #define N_STRINGS	10
+#define CSTR_LEN	4
 
 char *printable_version(int c)
 {
-	static char str[N_STRINGS][4];
+	static char str[N_STRINGS][CSTR_LEN];
 	char *s;
 
 	s=str[i_string];
@@ -59,11 +60,11 @@ char *printable_version(int c)
 	else if( c == '\0' )
 		strcpy(s,"\\0");
 	else if( iscntrl(c) )
-		sprintf(s,"^%c",'A'+c-1);
+		snprintf(s,CSTR_LEN,"^%c",'A'+c-1);
 	else if( isprint(c) )
-		sprintf(s,"%c",c);
+		snprintf(s,CSTR_LEN,"%c",c);
 	else
-		sprintf(s,"\%3x",c);
+		snprintf(s,CSTR_LEN,"\%3x",c);
 			
 	return(s);
 }
@@ -87,7 +88,7 @@ void show_buffer(Serial_Buffer *sbp)
 	u_char *s;
 	int i;
 
-/*sprintf(ERROR_STRING,"show_buffer 0x%lx, %d received, %d scanned",(u_long)sbp,sbp->sb_n_recvd,sbp->sb_n_scanned);*/
+/*snprintf(ERROR_STRING,LLEN,"show_buffer 0x%lx, %d received, %d scanned",(u_long)sbp,sbp->sb_n_recvd,sbp->sb_n_scanned);*/
 /* advise(ERROR_STRING);*/
 	s=sbp->sb_buf+sbp->sb_n_scanned;
 	while( *s ){
@@ -126,14 +127,14 @@ int _replenish_buffer(QSP_ARG_DECL  Serial_Buffer *sbp,int max_expected)
 
 	/* BUG? are we guaranteed that this won't overflow? */
 	if( sbp->sb_n_recvd + max_expected >= BUFSIZE ){
-		sprintf(ERROR_STRING,"trouble?  n_recvd = %d, max_expected = %d. BUFSIZE = %d",
+		snprintf(ERROR_STRING,LLEN,"trouble?  n_recvd = %d, max_expected = %d. BUFSIZE = %d",
 			sbp->sb_n_recvd,max_expected,BUFSIZE);
 		advise(ERROR_STRING);
 	}
 	n = recv_somex(sbp->sb_fd, &sbp->sb_buf[sbp->sb_n_recvd], BUFSIZE-sbp->sb_n_recvd, max_expected);
 //#ifdef QUIP_DEBUG
 //if( (debug & sb_debug) ){
-//sprintf(msg_str,"replenish_buffer:  expected up to %d chars, received %d",
+//snprintf(msg_str,LLEN,"replenish_buffer:  expected up to %d chars, received %d",
 //max_expected,n);
 //prt_msg(msg_str);
 //}
@@ -170,7 +171,7 @@ else prt_msg_frag(",");
 */
 #endif /* QUIP_DEBUG */
 
-/*sprintf(ERROR_STRING,"buffered_char 0x%lx, %d received, %d scanned",(u_long)sbp,sbp->sb_n_recvd,sbp->sb_n_scanned);*/
+/*snprintf(ERROR_STRING,LLEN,"buffered_char 0x%lx, %d received, %d scanned",(u_long)sbp,sbp->sb_n_recvd,sbp->sb_n_scanned);*/
 /*advise(ERROR_STRING); */
 
 	if( *buf == 0 ){
@@ -189,7 +190,7 @@ else prt_msg_frag(",");
 		}
 //#ifdef QUIP_DEBUG
 //if( debug & sb_debug ){
-//sprintf(ERROR_STRING,"buffered char 0x%lx:  there are %d new chars available, calling replenish_buffer",(u_long) sbp,n);
+//snprintf(ERROR_STRING,LLEN,"buffered char 0x%lx:  there are %d new chars available, calling replenish_buffer",(u_long) sbp,n);
 //advise(ERROR_STRING);
 //}
 //#endif /* QUIP_DEBUG */
@@ -199,7 +200,7 @@ else prt_msg_frag(",");
 
 //#ifdef QUIP_DEBUG
 //if( debug & sb_debug ){
-//sprintf(ERROR_STRING,"buffered_char returning '%s' (0x%x)",printable_version(*buf),*buf);
+//snprintf(ERROR_STRING,LLEN,"buffered_char returning '%s' (0x%x)",printable_version(*buf),*buf);
 //advise(ERROR_STRING);
 //}
 //#endif /* QUIP_DEBUG */
@@ -273,10 +274,10 @@ char *_expect_string(QSP_ARG_DECL  Serial_Buffer *sbp, const char *expected_str)
 #ifdef QUIP_DEBUG
 if( debug & sb_debug ){
 //int n;
-sprintf(ERROR_STRING,"expect_string(\"%s\");",printable_string(expected_str));
+snprintf(ERROR_STRING,LLEN,"expect_string(\"%s\");",printable_string(expected_str));
 advise(ERROR_STRING);
 //n = n_serial_chars(sbp->sb_fd);
-//sprintf(ERROR_STRING,"%d chars available on serial port",n);
+//snprintf(ERROR_STRING,LLEN,"%d chars available on serial port",n);
 //advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -292,7 +293,7 @@ advise(ERROR_STRING);
 		if( received < 0 ){	/* no chars? */
 #ifdef QUIP_DEBUG
 if( debug & sb_debug ){
-sprintf(msg_str,"expect_string:  no buffered char!?");
+snprintf(msg_str,LLEN,"expect_string:  no buffered char!?");
 advise(msg_str);
 }
 #endif /* QUIP_DEBUG */
@@ -310,7 +311,7 @@ advise(msg_str);
 			if( received != expected ){
 #ifdef QUIP_DEBUG
 if( debug & sb_debug ){
-sprintf(msg_str,"expect_string:  received 0x%x, expected 0x%x",received,expected);
+snprintf(msg_str,LLEN,"expect_string:  received 0x%x, expected 0x%x",received,expected);
 advise(msg_str);
 }
 #endif /* QUIP_DEBUG */
@@ -327,13 +328,13 @@ advise(msg_str);
 			}
 		} else {
 //if( mismatch ){
-//sprintf(msg_str,"expect_string:  received '%s' after mismatch",printable_version(received));
+//snprintf(msg_str,LLEN,"expect_string:  received '%s' after mismatch",printable_version(received));
 //advise(msg_str);
 //}
 			rcvd_str[i_r] = received;
 			i_r++;
 			if( i_r >= LLEN ){
-				sprintf(ERROR_STRING,"expect_string:  too many received characters (%d max)",LLEN-1);
+				snprintf(ERROR_STRING,LLEN,"expect_string:  too many received characters (%d max)",LLEN-1);
 				warn(ERROR_STRING);
 			}
 		}
@@ -355,7 +356,7 @@ finish_expect_string:
 	if( mismatch ) {
 #ifdef QUIP_DEBUG
 if( debug & sb_debug ){
-sprintf(ERROR_STRING,"expect_string:  expected \"%s\", but received \"%s\"",
+snprintf(ERROR_STRING,LLEN,"expect_string:  expected \"%s\", but received \"%s\"",
 	printable_string(expected_str),printable_string(rcvd_str));
 advise(ERROR_STRING);
 }
@@ -364,7 +365,7 @@ advise(ERROR_STRING);
 	} else {
 #ifdef QUIP_DEBUG
 if( debug & sb_debug ){
-sprintf(ERROR_STRING,"expect_string:  received expected string \"%s\";",
+snprintf(ERROR_STRING,LLEN,"expect_string:  received expected string \"%s\";",
 	printable_string(expected_str));
 advise(ERROR_STRING);
 }
@@ -399,7 +400,7 @@ static int get_token(QSP_ARG_DECL  Serial_Buffer *sbp, char *token)
 #ifdef QUIP_DEBUG
 /*
 if( debug & sb_debug ){
-sprintf(ERROR_STRING,"get_token:  input string is \"%s\"",s);
+snprintf(ERROR_STRING,LLEN,"get_token:  input string is \"%s\"",s);
 advise(ERROR_STRING);
 }
 */
@@ -408,7 +409,7 @@ advise(ERROR_STRING);
 #ifdef QUIP_DEBUG
 /*
 if( debug & sb_debug ){
-sprintf(ERROR_STRING,"get_token fetching more input, position = %d",s-sbp->sb_buf);
+snprintf(ERROR_STRING,LLEN,"get_token fetching more input, position = %d",s-sbp->sb_buf);
 advise(ERROR_STRING);
 }
 */
@@ -424,13 +425,13 @@ advise(ERROR_STRING);
 #ifdef QUIP_DEBUG
 /*
 if( debug & sb_debug ){
-sprintf(ERROR_STRING,"get_token:  token = \"%s\", \"%s\" left to scan",token,s);
+snprintf(ERROR_STRING,LLEN,"get_token:  token = \"%s\", \"%s\" left to scan",token,s);
 advise(ERROR_STRING);
 }
 */
 #endif /* QUIP_DEBUG */
 			} else {
-				sprintf(ERROR_STRING,"get_token:  too many token chars!?");
+				snprintf(ERROR_STRING,LLEN,"get_token:  too many token chars!?");
 				warn(ERROR_STRING);
 				s++;
 				n_scanned++;
@@ -449,7 +450,7 @@ advise(ERROR_STRING);
 	}
 #ifdef QUIP_DEBUG
 if( debug & sb_debug ){
-sprintf(ERROR_STRING,"get_token returning \"%s\" after scanning %d chars",token,n_scanned);
+snprintf(ERROR_STRING,LLEN,"get_token returning \"%s\" after scanning %d chars",token,n_scanned);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -481,9 +482,9 @@ void _expected_response( QSP_ARG_DECL  Serial_Buffer *sbp, const char *expected_
 	s=expect_string(sbp,expected_str);
 	if( s != NULL ){
 		warn("response mismatch");
-		sprintf(ERROR_STRING,"Expected string:  \"%s\"",printable_string(expected_str));
+		snprintf(ERROR_STRING,LLEN,"Expected string:  \"%s\"",printable_string(expected_str));
 		advise(ERROR_STRING);
-		sprintf(ERROR_STRING,"Received string:  \"%s\"",printable_string(s));
+		snprintf(ERROR_STRING,LLEN,"Received string:  \"%s\"",printable_string(s));
 		advise(ERROR_STRING);
 	}
 }

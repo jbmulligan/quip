@@ -34,7 +34,7 @@ static Item * _eval_szbl_expr( QSP_ARG_DECL  Scalar_Expr_Node *enp )
 			}
 			*/
 			if( szp == NULL ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 					"No sizable object \"%s\"!?",s);
 				warn(ERROR_STRING);
 				return NULL;
@@ -47,7 +47,7 @@ static Item * _eval_szbl_expr( QSP_ARG_DECL  Scalar_Expr_Node *enp )
 			s = eval_scalexp_string(enp);
 			szp = _find_sizable( DEFAULT_QSP_ARG  s );
 			if( szp == NULL ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 					"No sizable object \"%s\"!?",s);
 				warn(ERROR_STRING);
 				return NULL;
@@ -78,7 +78,7 @@ static Item * _eval_szbl_expr( QSP_ARG_DECL  Scalar_Expr_Node *enp )
 			szp = (Item *) (*enp->sen_func_p->fn_u.dobjv_str_arg_func)( QSP_ARG  s );
 			break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"unexpected case in eval_szbl_expr %d",enp->sen_code);
 			warn(ERROR_STRING);
 			assert(0);
@@ -97,7 +97,7 @@ static Item * _eval_szbl_expr( QSP_ARG_DECL  Scalar_Expr_Node *enp )
 
 static Data_Obj * _def_obj(QSP_ARG_DECL  const char *name)
 {
-	sprintf(ERROR_STRING,"can't search for object \"%s\"; ",name);
+	snprintf(ERROR_STRING,LLEN,"can't search for object \"%s\"; ",name);
 	warn(ERROR_STRING);
 
 	warn("data module not linked");
@@ -189,7 +189,7 @@ static Data_Obj *_eval_dobj_expr( QSP_ARG_DECL  Scalar_Expr_Node *enp )
 				Identifier *idp;
 				idp = id_of(s);
 				if( idp == NULL ){
-					sprintf(ERROR_STRING,
+					snprintf(ERROR_STRING,LLEN,
 	"No object or identifier %s!?",s);
 					warn(ERROR_STRING);
 					return NULL;
@@ -197,7 +197,7 @@ static Data_Obj *_eval_dobj_expr( QSP_ARG_DECL  Scalar_Expr_Node *enp )
 				if( ID_TYPE(idp) == ID_SCALAR ){
 					dp = scalar_obj_for_id(idp);
 				} else {
-					sprintf(ERROR_STRING,
+					snprintf(ERROR_STRING,LLEN,
 	"Identifier %s is not a scalar!?",s);
 					warn(ERROR_STRING);
 					return NULL;
@@ -229,7 +229,7 @@ static Data_Obj *_eval_dobj_expr( QSP_ARG_DECL  Scalar_Expr_Node *enp )
 			break;
 
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"unexpected case (%d) in eval_dobj_expr",enp->sen_code);
 			warn(ERROR_STRING);
 			assert(0);

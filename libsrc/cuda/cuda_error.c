@@ -11,23 +11,25 @@
 #define CUDA_RUNTIME_ERROR( e , s )					\
 									\
 case e:									\
-	sprintf(DEFAULT_ERROR_STRING, "%s:  CUDA runtime error:  %s",whence,s);	\
-	NWARN(DEFAULT_ERROR_STRING);						\
+	snprintf(DEFAULT_ERROR_STRING,LLEN,				\
+			 "%s:  CUDA runtime error:  %s",whence,s);	\
+	NWARN(DEFAULT_ERROR_STRING);					\
 	break;
 
 //#if CUDA_VERSION<6000
 
 #define CUDA_DRIVER_ERROR( e, s ) \
 case cudaErrorApiFailureBase+e:						\
-	sprintf(DEFAULT_ERROR_STRING, "%s:  CUDA driver error:  %s",whence,s);	\
-	NWARN(DEFAULT_ERROR_STRING);						\
+	snprintf(DEFAULT_ERROR_STRING,LLEN,				\
+			 "%s:  CUDA driver error:  %s",whence,s);	\
+	NWARN(DEFAULT_ERROR_STRING);					\
 	break;
 
 /*#else // CUDA_VERSION >= 6000
 //
 //#define CUDA_DRIVER_ERROR( e, s ) \
 //case e:						\
-//	sprintf(DEFAULT_ERROR_STRING, "%s:  CUDA driver error:  %s",whence,s);	\
+//	snprintf(DEFAULT_ERROR_STRING,LLEN, "%s:  CUDA driver error:  %s",whence,s);	\
 //	NWARN(DEFAULT_ERROR_STRING);						\
 //	break;
 //
@@ -42,7 +44,7 @@ void describe_cuda_error2(const char *whence, const char *msg,
 {
 	char str[LLEN];
 
-	sprintf(str,"%s:  %s",whence,msg);
+	snprintf(str,LLEN,"%s:  %s",whence,msg);
 	describe_cuda_error(str,e);
 }
 
@@ -51,14 +53,15 @@ void describe_cuda_driver_error2(const char *whence, const char *msg,
 {
 	char str[LLEN];
 
-	sprintf(str,"%s:  %s",whence,msg);
+	snprintf(str,LLEN,"%s:  %s",whence,msg);
 	describe_cuda_driver_error(str,e);
 }
 
 #define RUNTIME_ERROR_CASE(code,msg)					\
 									\
 	case code:							\
-		sprintf(DEFAULT_ERROR_STRING,"%s:  %s.",whence,msg);	\
+		snprintf(DEFAULT_ERROR_STRING,LLEN,			\
+						"%s:  %s.",whence,msg);	\
 		NWARN(DEFAULT_ERROR_STRING);				\
 		break;
 
@@ -68,7 +71,8 @@ void describe_cuda_error(const char *whence, CUresult e)
 
 	switch(e){
 		case CUDA_SUCCESS:
-			sprintf(DEFAULT_ERROR_STRING,"%s:  No errors.",whence);
+			snprintf(DEFAULT_ERROR_STRING,LLEN,		\
+						,"%s:  No errors.",whence);
 			NADVISE(DEFAULT_ERROR_STRING);
 			break;
 
@@ -169,7 +173,7 @@ RUNTIME_ERROR_CASE( CUDA_ERROR_PRIMARY_CONTEXT_ACTIVE , "primary context already
 					"Startup failure." )
 #endif // FOOBAR
 		default:
-			sprintf(DEFAULT_ERROR_STRING,
+			spnrintf(DEFAULT_ERROR_STRING,LLEN,
 		"%s:  unrecognized cuda error code %d",whence,e);
 			NWARN(DEFAULT_ERROR_STRING);
 			break;
@@ -187,7 +191,7 @@ RUNTIME_ERROR_CASE( CUDA_ERROR_PRIMARY_CONTEXT_ACTIVE , "primary context already
 #define DRIVER_ERROR_CASE(code,msg)					\
 									\
 	case code:							\
-		sprintf(DEFAULT_ERROR_STRING,"%s:  %s.",whence,msg);	\
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"%s:  %s.",whence,msg); \
 		NADVISE(DEFAULT_ERROR_STRING);				\
 		break;
 
@@ -310,7 +314,7 @@ DRIVER_ERROR_CASE(cudaErrorApiFailureBase,"Unexpected driver error")
 #endif // WHAT_CUDA_VERSION
 
 		default:
-			sprintf(DEFAULT_ERROR_STRING,
+			snprintf(DEFAULT_ERROR_STRING,LLEN,
 		"%s:  unrecognized cuda error code %d",whence,e);
 			NWARN(DEFAULT_ERROR_STRING);
 			break;
@@ -318,7 +322,7 @@ DRIVER_ERROR_CASE(cudaErrorApiFailureBase,"Unexpected driver error")
 	e2 = cudaGetLastError();		// clear error
 #ifdef CAUTIOUS
 	if( e2 != e ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 	"e = %d (0x%x), cudaGetLastError() = %d (0x%x)",e,e,e2,e2);
 		NADVISE(DEFAULT_ERROR_STRING);
 		NERROR1("CAUTIOUS:  describe_cuda_driver_error:  errors do not match!?");

@@ -111,7 +111,7 @@ static COMMAND_FUNC( set_dither )
 
 static COMMAND_FUNC( report_version )
 {
-	sprintf(ERROR_STRING, "JPEG library version %d%c\n",
+	snprintf(ERROR_STRING,LLEN, "JPEG library version %d%c\n",
 		JPEG_LIB_VERSION/10, 'a'-1+JPEG_LIB_VERSION%10);
 	advise(ERROR_STRING);
 }
@@ -192,13 +192,13 @@ static COMMAND_FUNC( do_prm_display )
 {
 	const char *s;
 
-	sprintf(msg_str,"\ttrace_level:\t%d",djp_p1.djp_trace_level);
+	snprintf(msg_str,LLEN,"\ttrace_level:\t%d",djp_p1.djp_trace_level);
 	prt_msg(msg_str);
 
-	sprintf(msg_str,"\tncolors:\t%d",djp_p1.djp_desired_number_of_colors);
+	snprintf(msg_str,LLEN,"\tncolors:\t%d",djp_p1.djp_desired_number_of_colors);
 	prt_msg(msg_str);
 
-	sprintf(msg_str,"\tquantize_colors:\t%s",
+	snprintf(msg_str,LLEN,"\tquantize_colors:\t%s",
 		(djp_p1.djp_quantize_colors==TRUE)?"TRUE":"FALSE" );
 	prt_msg(msg_str);
 
@@ -225,11 +225,11 @@ static COMMAND_FUNC( do_prm_display )
 	}
 	prt_msg(s);
 
-	sprintf(msg_str,"\ttwo_pass_quantize:\t%s",
+	snprintf(msg_str,LLEN,"\ttwo_pass_quantize:\t%s",
 		(djp_p1.djp_two_pass_quantize==TRUE)?"TRUE":"FALSE" );
 	prt_msg(msg_str);
 
-	sprintf(msg_str,"\tdo_fancy_upsampling:\t%s",
+	snprintf(msg_str,LLEN,"\tdo_fancy_upsampling:\t%s",
 		(djp_p1.djp_do_fancy_upsampling==TRUE)?"TRUE":"FALSE" );
 	prt_msg(msg_str);
 
@@ -243,12 +243,12 @@ static COMMAND_FUNC( do_prm_display )
 	}
 	prt_msg(s);
 
-	sprintf(msg_str,"\tmax_memory_to_use:\t%ld (0x%lx)",
+	snprintf(msg_str,LLEN,"\tmax_memory_to_use:\t%ld (0x%lx)",
 		djp_p1.djp_max_memory_to_use,
 		djp_p1.djp_max_memory_to_use);
 	prt_msg(msg_str);
 
-	sprintf(msg_str,"\tscaling:\t\t%d/%d",djp_p1.djp_scale_num,djp_p1.djp_scale_denom);
+	snprintf(msg_str,LLEN,"\tscaling:\t\t%d/%d",djp_p1.djp_scale_num,djp_p1.djp_scale_denom);
 	prt_msg(msg_str);
 }
 
@@ -300,7 +300,7 @@ void install_djpeg_params(j_decompress_ptr cinfop)
 	if( djp_p1.djp_mapfilename != NULL ){
 		FILE *fp;
 		if ((fp = fopen(djp_p1.djp_mapfilename, "rb")) == NULL) {
-			sprintf(ERROR_STRING, "set_map: can't open %s\n", djp_p1.djp_mapfilename);
+			snprintf(ERROR_STRING,LLEN, "set_map: can't open %s\n", djp_p1.djp_mapfilename);
 			WARN(ERROR_STRING);
 			cinfop->quantize_colors = FALSE;
 			rls_str(djp_p1.djp_mapfilename);

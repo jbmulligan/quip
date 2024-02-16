@@ -62,21 +62,21 @@ void meteor_status(SINGLE_QSP_ARG_DECL)
 //	INSURE_MM("meteor_status");
 	assert( _mm != NULL );
 
-	sprintf(msg_str,"_mm = 0x%"PRIxPTR,(uintptr_t)_mm);
+	snprintf(msg_str,LLEN,"_mm = 0x%"PRIxPTR,(uintptr_t)_mm);
 	prt_msg(msg_str);
-	sprintf(msg_str,"frame size: %d (0x%x)",_mm->frame_size,_mm->frame_size);
+	snprintf(msg_str,LLEN,"frame size: %d (0x%x)",_mm->frame_size,_mm->frame_size);
 	prt_msg(msg_str);
-	sprintf(msg_str,"num bufs: %d",_mm->num_bufs);
+	snprintf(msg_str,LLEN,"num bufs: %d",_mm->num_bufs);
 	prt_msg(msg_str);
-	sprintf(msg_str,"%d frames captured",_mm->n_frames_captured);
+	snprintf(msg_str,LLEN,"%d frames captured",_mm->n_frames_captured);
 	prt_msg(msg_str);
-	sprintf(msg_str,"current frame %d, field %d",_mm->cur_frame,_mm->cur_field);
+	snprintf(msg_str,LLEN,"current frame %d, field %d",_mm->cur_frame,_mm->cur_field);
 	prt_msg(msg_str);
-	sprintf(msg_str,"lowat %d, hiwat %d",_mm->lowat,_mm->hiwat);
+	snprintf(msg_str,LLEN,"lowat %d, hiwat %d",_mm->lowat,_mm->hiwat);
 	prt_msg(msg_str);
-	sprintf(msg_str,"active mask 0x%lx",_mm->active);
+	snprintf(msg_str,LLEN,"active mask 0x%lx",_mm->active);
 	prt_msg(msg_str);
-	sprintf(msg_str,"%d active bufs",_mm->num_active_bufs);
+	snprintf(msg_str,LLEN,"%d active bufs",_mm->num_active_bufs);
 	prt_msg(msg_str);
 }
 
@@ -88,14 +88,14 @@ static void meteor_get_errors(SINGLE_QSP_ARG_DECL)
 		perror("ioctl GetCount failed");
 		exit(1);
 	}
-	sprintf(ERROR_STRING, "Frames: %d\nEven:   %d\nOdd:	%d\n", 
+	snprintf(ERROR_STRING,LLEN, "Frames: %d\nEven:   %d\nOdd:	%d\n", 
 		cnt.n_frames_captured,
 		cnt.even_fields_captured,
 		cnt.odd_fields_captured);
 	advise(ERROR_STRING);
-	sprintf(ERROR_STRING, "Fifo errors: %d\n", cnt.fifo_errors);
+	snprintf(ERROR_STRING,LLEN, "Fifo errors: %d\n", cnt.fifo_errors);
 	advise(ERROR_STRING);
-	sprintf(ERROR_STRING, "DMA errors:  %d\n", cnt.dma_errors);
+	snprintf(ERROR_STRING,LLEN, "DMA errors:  %d\n", cnt.dma_errors);
 	advise(ERROR_STRING);
 }
 
@@ -142,7 +142,7 @@ static void meteor_check_capture_control(SINGLE_QSP_ARG_DECL)
 		perror("ioctl GetCapt failed");
 		exit(1);
 	}
-	sprintf(ERROR_STRING, "Capture control: 0x%x\n", cap);
+	snprintf(ERROR_STRING,LLEN, "Capture control: 0x%x\n", cap);
 	advise(ERROR_STRING);
 }
 
@@ -191,7 +191,7 @@ int meteor_capture(SINGLE_QSP_ARG_DECL)
 #ifndef FAKE_METEOR_HARDWARE
 	if( capture_code == METEORCAPTUR ){
 /*
-sprintf(ERROR_STRING,"capture_code = METEORCAPTUR, mode = %d (0x%x)",capture_mode,capture_mode);
+snprintf(ERROR_STRING,LLEN,"capture_code = METEORCAPTUR, mode = %d (0x%x)",capture_mode,capture_mode);
 advise(ERROR_STRING);
 */
 		if (ioctl(meteor_fd, METEORCAPTUR, &capture_mode)){
@@ -310,7 +310,7 @@ void setup_monitor_capture(SINGLE_QSP_ARG_DECL)
 		} else {
 			int i;
 			i=index_of_mode(QSP_ARG  capture_mode);
-			sprintf(ERROR_STRING,"Meteor is already capturing in %s mode!?",
+			snprintf(ERROR_STRING,LLEN,"Meteor is already capturing in %s mode!?",
 					i>=0 ?  mode_names[ i ] : "(unknown)" );
 			warn(ERROR_STRING);
 		}
@@ -505,7 +505,7 @@ static COMMAND_FUNC( do_record )
 	ifp = img_file_of(name);
 
 	if( ifp != NULL ){
-		sprintf(ERROR_STRING,"Clobbering existing image file %s",name);
+		snprintf(ERROR_STRING,LLEN,"Clobbering existing image file %s",name);
 		advise(ERROR_STRING);
 		image_file_clobber(1);	/* not necessary !? */
 		delete_image_file(ifp);
@@ -520,7 +520,7 @@ static COMMAND_FUNC( do_record )
 	 */
 
 	if( ifp == NULL ){
-		sprintf(ERROR_STRING,"Error creating movie file %s",name);
+		snprintf(ERROR_STRING,LLEN,"Error creating movie file %s",name);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -530,7 +530,7 @@ static COMMAND_FUNC( do_record )
 	/* n_blocks is the total number of blocks, not the number per disk(?) */
 
 	if( rv_realloc(name,n_blocks) < 0 ){
-		sprintf(ERROR_STRING,"error reallocating %d blocks for rv file %s",
+		snprintf(ERROR_STRING,LLEN,"error reallocating %d blocks for rv file %s",
 			n_blocks,name);
 		warn(ERROR_STRING);
 		return;
@@ -632,7 +632,7 @@ fprintf(stderr,"calling map_mem_data...\n");
 #ifndef FAKE_METEOR_HARDWARE
 	while(_mm->n_frames_captured< n_frames){
 /*
-sprintf(ERROR_STRING,"%d of %d frames captured",_mm->n_frames_captured,n_frames);
+snprintf(ERROR_STRING,LLEN,"%d of %d frames captured",_mm->n_frames_captured,n_frames);
 advise(ERROR_STRING);
 */
 		usleep(16000);
@@ -669,7 +669,7 @@ advise("faking hardware");
 
 	inp = (RV_Inode *)ifp->if_hdr_p;
 	if( rv_movie_extra(inp) != 0 ){
-		sprintf(ERROR_STRING,"File %s, rvi_extra_bytes = %d!?",ifp->if_name,rv_movie_extra(inp));
+		snprintf(ERROR_STRING,LLEN,"File %s, rvi_extra_bytes = %d!?",ifp->if_name,rv_movie_extra(inp));
 		warn(ERROR_STRING);
 		error1("Sorry, can't record timestamps in memory recordings at present...");
 	}
@@ -750,9 +750,9 @@ static void _get_error_counts(QSP_ARG_DECL  const char* s,const char* s2,int ind
 	ei1.ei[2].n_total = ei1.ei[2].n_saved = 0;
 #endif
 
-	sprintf(val,"%d",ei1.ei[index].n_total);
+	snprintf(val,32,"%d",ei1.ei[index].n_total);
 	assign_var(s,val);
-	sprintf(val,"%d",ei1.ei[index].n_saved);
+	snprintf(val,32,"%d",ei1.ei[index].n_saved);
 
 	assign_var(s2,val);
 }
@@ -805,9 +805,9 @@ static COMMAND_FUNC( do_get_ndrops )
 	di.n_total = di.n_saved = 0;
 #endif
 
-	sprintf(val,"%d",di.n_total);
+	snprintf(val,32,"%d",di.n_total);
 	assign_var(s,val);
-	sprintf(val,"%d",di.n_saved);
+	snprintf(val,32,"%d",di.n_saved);
 	assign_var(s2,val);
 }
 
@@ -819,13 +819,13 @@ static void _get_err_fields(QSP_ARG_DECL  Data_Obj *dp,int index)
 	unsigned int nerrs;
 
 	if( index < 0 || index > 2 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"error index (%d) must be between 0 and 2",index);
 		warn(ERROR_STRING);
 	}
 
 	if( OBJ_MACH_PREC(dp) != PREC_UDI ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Vector %s has precision %s, should be %s for METEORGERRFRMS",
 			OBJ_NAME(dp),PREC_NAME(OBJ_MACH_PREC_PTR(dp)),
 			PREC_UDI_NAME);
@@ -840,7 +840,7 @@ static void _get_err_fields(QSP_ARG_DECL  Data_Obj *dp,int index)
 	nerrs = ei.ei[index].n_saved;
 
 	if( OBJ_N_TYPE_ELTS(dp) < nerrs ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Vector %s has %d elements, not big enough to store %d errors",
 			OBJ_NAME(dp),OBJ_N_TYPE_ELTS(dp),nerrs);
 		warn(ERROR_STRING);
@@ -848,7 +848,7 @@ static void _get_err_fields(QSP_ARG_DECL  Data_Obj *dp,int index)
 	}
 
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Vector %s should be contiguous for METEORGERRFRMS",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
@@ -904,7 +904,7 @@ static COMMAND_FUNC( do_get_drops )
 	if( dp== NULL ) return;
 
 	if( OBJ_MACH_PREC(dp) != PREC_UDI ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Vector %s has precision %s, should be %s for METEORGDRPFRMS",
 			OBJ_NAME(dp),PREC_NAME(OBJ_MACH_PREC_PTR(dp)),
 			PREC_UDI_NAME);
@@ -922,7 +922,7 @@ static COMMAND_FUNC( do_get_drops )
 #endif
 
 	if( OBJ_N_TYPE_ELTS(dp) < di.n_saved ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Vector %s has %d elements, not big enough to store %d drops",
 			OBJ_NAME(dp),OBJ_N_TYPE_ELTS(dp),di.n_saved);
 		warn(ERROR_STRING);
@@ -930,7 +930,7 @@ static COMMAND_FUNC( do_get_drops )
 	}
 
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Vector %s should be contiguous for METEORGDRPFRMS",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
@@ -995,7 +995,7 @@ static COMMAND_FUNC( do_write_enable )
 	char pmpt[LLEN];
 
 	index = HOW_MANY("index of disk writer thread");
-	sprintf(pmpt,"Write data to disk-writer thread %d",index);
+	snprintf(pmpt,LLEN,"Write data to disk-writer thread %d",index);
 	flag = ASKIF(pmpt);
 
 	thread_write_enable(index,flag);

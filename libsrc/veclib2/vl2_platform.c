@@ -68,14 +68,14 @@ static void *_vl2_make_kernel(QSP_ARG_DECL  const char *src, const char *name, P
 
 static void vl2_dev_info(QSP_ARG_DECL  Platform_Device *pdp)
 {
-	sprintf(MSG_STR,"%s:",PFDEV_NAME(pdp));
+	snprintf(MSG_STR,LLEN,"%s:",PFDEV_NAME(pdp));
 	prt_msg(MSG_STR);
 	prt_msg("Sorry, vl2 device info not implemented yet!?");
 }
 
 static void vl2_info(QSP_ARG_DECL  Compute_Platform *cdp)
 {
-	sprintf(MSG_STR,"%s:",PLATFORM_NAME(cdp));
+	snprintf(MSG_STR,LLEN,"%s:",PLATFORM_NAME(cdp));
 	prt_msg(MSG_STR);
 	prt_msg("Sorry, vl2 platform info not implemented yet!?");
 }

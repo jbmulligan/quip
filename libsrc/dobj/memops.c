@@ -38,7 +38,7 @@ void _getmean( QSP_ARG_DECL  Data_Obj *dp )
 		return;
 	}
 	if( OBJ_MACH_DIM(dp,0) != 1 ){
-		sprintf(ERROR_STRING,"ALERT:  getmean:  object %s has %d components!?",
+		snprintf(ERROR_STRING,LLEN,"ALERT:  getmean:  object %s has %d components!?",
 			OBJ_NAME(dp),OBJ_MACH_DIM(dp,0));
 		advise(ERROR_STRING);
 	}
@@ -91,19 +91,19 @@ void _getmean( QSP_ARG_DECL  Data_Obj *dp )
 	sos -= n * sum * sum;
 
 	if( verbose ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"mean:  %f\nvariance:  %f\nmax:  %f\nmin:  %f",
 			sum,sos,max,min);
 		advise(ERROR_STRING);
 	}
 
-	sprintf(ERROR_STRING,"%f",sum);
+	snprintf(ERROR_STRING,LLEN,"%f",sum);
 	assign_var("mean",ERROR_STRING);
-	sprintf(ERROR_STRING,"%f",sos);
+	snprintf(ERROR_STRING,LLEN,"%f",sos);
 	assign_var("variance",ERROR_STRING);
-	sprintf(ERROR_STRING,"%f",max);
+	snprintf(ERROR_STRING,LLEN,"%f",max);
 	assign_var("max",ERROR_STRING);
-	sprintf(ERROR_STRING,"%f",min);
+	snprintf(ERROR_STRING,LLEN,"%f",min);
 	assign_var("min",ERROR_STRING);
 }
 
@@ -135,7 +135,7 @@ static inline void _fast_equate(QSP_ARG_DECL  Data_Obj *dp )
 
 #ifdef QUIP_DEBUG
 if( debug & debug_data ){
-sprintf(ERROR_STRING,"fast_equate %s",OBJ_NAME(dp));
+snprintf(ERROR_STRING,LLEN,"fast_equate %s",OBJ_NAME(dp));
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -180,7 +180,7 @@ static void _contig_copy(QSP_ARG_DECL  Data_Obj *dp_to, Data_Obj *dp_fr )
 
 #ifdef QUIP_DEBUG
 if( debug & debug_data ){
-sprintf(ERROR_STRING,"contig_copy:  %s  %s",OBJ_NAME(dp_to),OBJ_NAME(dp_fr));
+snprintf(ERROR_STRING,LLEN,"contig_copy:  %s  %s",OBJ_NAME(dp_to),OBJ_NAME(dp_fr));
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -234,7 +234,7 @@ static void _fast_copy(QSP_ARG_DECL  Data_Obj *dp_to, Data_Obj *dp_fr )
 
 #ifdef QUIP_DEBUG
 if( debug & debug_data ){
-sprintf(ERROR_STRING,"fast_copy:  %s  %s",OBJ_NAME(dp_to),OBJ_NAME(dp_fr));
+snprintf(ERROR_STRING,LLEN,"fast_copy:  %s  %s",OBJ_NAME(dp_to),OBJ_NAME(dp_fr));
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -248,7 +248,7 @@ advise(ERROR_STRING);
 
 #ifdef QUIP_DEBUG
 if( debug & debug_data ){
-sprintf(ERROR_STRING,"fast_copy'ing %s (inc %ld) to %s (inc %ld)",
+snprintf(ERROR_STRING,LLEN,"fast_copy'ing %s (inc %ld) to %s (inc %ld)",
 OBJ_NAME(dp_fr),fr_inc,OBJ_NAME(dp_to),to_inc);
 advise(ERROR_STRING);
 }
@@ -312,7 +312,7 @@ void _i_rnd( QSP_ARG_DECL  Data_Obj *dp, int imin, int imax )
 {
 	if( dp==NULL ) return;
 	if( OBJ_MACH_PREC(dp) != PREC_BY && OBJ_MACH_PREC(dp) != PREC_UBY ){
-		sprintf(ERROR_STRING,"i_rnd:  object %s (%s) should have %s or %s precision",
+		snprintf(ERROR_STRING,LLEN,"i_rnd:  object %s (%s) should have %s or %s precision",
 				OBJ_NAME(dp),OBJ_PREC_NAME(dp),NAME_FOR_PREC_CODE(PREC_BY),NAME_FOR_PREC_CODE(PREC_UBY));
 		warn(ERROR_STRING);
 		return;
@@ -396,7 +396,7 @@ int _dp_same_dim(QSP_ARG_DECL  Data_Obj *dp1,Data_Obj *dp2,int index,const char 
 	if( OBJ_TYPE_DIM(dp1,index) == OBJ_TYPE_DIM(dp2,index) ) return(1);
 
 	DEFAULT_WHENCE("dp_same_dim")
-	sprintf(ERROR_STRING,
+	snprintf(ERROR_STRING,LLEN,
 	"%s:  Objects %s and %s differ in %s size (%u, %u)",
 		whence,
 		OBJ_NAME(dp1),OBJ_NAME(dp2),dimension_name[index],
@@ -464,7 +464,7 @@ int _dp_same_prec(QSP_ARG_DECL  Data_Obj *dp1,Data_Obj *dp2, const char *whence 
 {
 	if( whence == NULL ) whence = "sp_same_prec";
 	if( OBJ_PREC(dp1) != OBJ_PREC(dp2) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s:  Objects %s (%s) and %s (%s) differ in precision",
 			whence,
 			OBJ_NAME(dp1),OBJ_PREC_NAME(dp1),
@@ -479,7 +479,7 @@ int _dp_same_mach_prec(QSP_ARG_DECL  Data_Obj *dp1,Data_Obj *dp2, const char *wh
 {
 	DEFAULT_WHENCE("dp_same_mach_prec")
 	if( OBJ_MACH_PREC(dp1) != OBJ_MACH_PREC(dp2) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"%s:  Objects %s (%s) and %s (%s) differ in machine precision",
 			whence,
 			OBJ_NAME(dp1),OBJ_MACH_PREC_NAME(dp1),
@@ -497,7 +497,7 @@ int _dp_same_pixel_type( QSP_ARG_DECL  Data_Obj *dp1, Data_Obj *dp2, const char 
 	if( !dp_same_prec(dp1,dp2,whence) ) return(0);
 
 	if( OBJ_MACH_DIM(dp1,0) != OBJ_MACH_DIM(dp2,0) ){
-		sprintf(ERROR_STRING,"%s:  type dimension mismatch between %s (%d) and %s (%d)",
+		snprintf(ERROR_STRING,LLEN,"%s:  type dimension mismatch between %s (%d) and %s (%d)",
 			whence,
 			OBJ_NAME(dp1),OBJ_MACH_DIM(dp1,0),
 			OBJ_NAME(dp2),OBJ_MACH_DIM(dp2,0));
@@ -567,7 +567,7 @@ void _check_vectorization(QSP_ARG_DECL  Data_Obj *dp)
 	 */
 
 	if( IS_BITMAP(dp) ){
-		sprintf(ERROR_STRING,"check_vectorization:  may be incorrect for bitmap object %s!?",
+		snprintf(ERROR_STRING,LLEN,"check_vectorization:  may be incorrect for bitmap object %s!?",
 			OBJ_NAME(dp));
 		advise(ERROR_STRING);
 	}
@@ -575,7 +575,7 @@ void _check_vectorization(QSP_ARG_DECL  Data_Obj *dp)
 #ifdef QUIP_DEBUG
 /*
 if( debug & debug_data ){
-sprintf(ERROR_STRING,"check_vectorization %s:  max_vectorizable = %d",OBJ_NAME(dp),max_vectorizable());
+snprintf(ERROR_STRING,LLEN,"check_vectorization %s:  max_vectorizable = %d",OBJ_NAME(dp),max_vectorizable());
 advise(ERROR_STRING);
 }
 */
@@ -594,7 +594,7 @@ void _dp2_vectorize(QSP_ARG_DECL  int level,Data_Obj *dpto,Data_Obj *dpfr,void (
 
 #ifdef QUIP_DEBUG
 if( debug & debug_data ){
-sprintf(ERROR_STRING,"level = %d, max_v = %d",level,max_vectorizable());
+snprintf(ERROR_STRING,LLEN,"level = %d, max_v = %d",level,max_vectorizable());
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -610,7 +610,7 @@ advise(ERROR_STRING);
 
 #ifdef QUIP_DEBUG
 if( debug & debug_data ){
-sprintf(ERROR_STRING,"dp2_vec:  subscripting at level %d, n=%u (max_vec = %d)",
+snprintf(ERROR_STRING,LLEN,"dp2_vec:  subscripting at level %d, n=%u (max_vec = %d)",
 level,OBJ_TYPE_DIM(dpto,level),max_vectorizable());
 advise(ERROR_STRING);
 }
@@ -642,7 +642,7 @@ void _dp1_vectorize(QSP_ARG_DECL  int level,Data_Obj *dp,void (*dp_func)(QSP_ARG
 
 #ifdef QUIP_DEBUG
 if( debug & debug_data ){
-sprintf(ERROR_STRING,"level = %d, max_v = %d",level,max_vectorizable());
+snprintf(ERROR_STRING,LLEN,"level = %d, max_v = %d",level,max_vectorizable());
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -658,7 +658,7 @@ advise(ERROR_STRING);
 
 #ifdef QUIP_DEBUG
 if( debug & debug_data ){
-sprintf(ERROR_STRING,"dp1_vec:  subscripting at level %d, n=%u (max_vec = %d)",
+snprintf(ERROR_STRING,LLEN,"dp1_vec:  subscripting at level %d, n=%u (max_vec = %d)",
 level,OBJ_TYPE_DIM(dp,level),max_vectorizable());
 advise(ERROR_STRING);
 }
@@ -682,7 +682,7 @@ advise(ERROR_STRING);
 int _not_prec(QSP_ARG_DECL  Data_Obj *dp,prec_t prec)
 {
 	if( OBJ_MACH_PREC(dp) != prec ){
-		sprintf(ERROR_STRING,"Object %s has precision %s, expecting %s",
+		snprintf(ERROR_STRING,LLEN,"Object %s has precision %s, expecting %s",
 			OBJ_NAME(dp),OBJ_MACH_PREC_NAME(dp),NAME_FOR_PREC_CODE(prec));
 		warn(ERROR_STRING);
 		return(1);

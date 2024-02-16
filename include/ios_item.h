@@ -159,7 +159,7 @@ type *_new_##stem(QSP_ARG_DECL  const char *name)		\
 	}							\
     ip = _##stem##_of(QSP_ARG  name);				\
 	if( ip != NULL ){					\
-		sprintf(ERROR_STRING,"new_%s:  \"%s\" already exists!?", \
+		snprintf(ERROR_STRING,LLEN,"new_%s:  \"%s\" already exists!?", \
 			#stem,name);				\
 		WARN(ERROR_STRING);				\
 		return((type *)NULL);				\

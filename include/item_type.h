@@ -395,7 +395,7 @@ type *_new_##stem(QSP_ARG_DECL  const char *name)		\
 								\
 	stem##_p = (type *) new_item(stem##_itp, name, sizeof(type));		\
 	if( stem##_p == NULL ){					\
-		sprintf(ERROR_STRING,				\
+		snprintf(ERROR_STRING,LLEN,			\
 	"Error creating item %s!?",name);			\
 		WARN(ERROR_STRING);				\
 		/* BUG release name here */			\

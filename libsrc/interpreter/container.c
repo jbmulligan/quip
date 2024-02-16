@@ -42,7 +42,7 @@ void _set_container_type(QSP_ARG_DECL  Container *cnt_p, int type)
 			break;
 		default:
 			// could be assertion?
-			sprintf(DEFAULT_ERROR_STRING,"add_type_to_container:  Invalid container type code %d",type);
+			snprintf(DEFAULT_ERROR_STRING,LLEN,"add_type_to_container:  Invalid container type code %d",type);
 			NERROR1(DEFAULT_ERROR_STRING);
 			break;
 	}
@@ -387,7 +387,7 @@ static void _rb_tree_delete(QSP_ARG_DECL  Container *cnt_p)
 
 static void _print_container_info_header(QSP_ARG_DECL  Container *cnt_p)
 {
-	sprintf(MSG_STR,"Container %s:\n",
+	snprintf(MSG_STR,LLEN,"Container %s:\n",
 		cnt_p->name==NULL?"<null>":cnt_p->name);
 	prt_msg(MSG_STR);
 }
@@ -395,7 +395,7 @@ static void _print_container_info_header(QSP_ARG_DECL  Container *cnt_p)
 static void _list_dump_info(QSP_ARG_DECL Container *cnt_p)
 {
 	print_container_info_header(cnt_p);
-	sprintf(MSG_STR,"\tlist with %d elements\n",eltcount(cnt_p->cnt_lp));
+	snprintf(MSG_STR,LLEN,"\tlist with %d elements\n",eltcount(cnt_p->cnt_lp));
 	prt_msg(MSG_STR);
 }
 

@@ -12,7 +12,7 @@ static int check_lm(str)
 char *str;
 {
 	if( curr_lmp == NO_LUT_MODULE ){
-		sprintf(ERROR_STRING,"%s:  no LUT module loaded",str);
+		snprintf(ERROR_STRING,LLEN,"%s:  no LUT module loaded",str);
 		warn(ERROR_STRING);
 		return(-1);
 	}

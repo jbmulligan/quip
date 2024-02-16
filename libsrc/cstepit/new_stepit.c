@@ -726,13 +726,13 @@ void new_getvals(double *arr, int n)
 int new_reset_n_params(int n)
 {
 	if( n<=0 ){
-		sprintf(error_string,
+		snprintf(error_string,LLEN,
 	"requested n_params %d must be positive (and <= %d)",
 			n,VARS);
 		warn(error_string);
 		n=1;
 	} else if( n>VARS ){
-		sprintf(error_string,
+		snprintf(error_string,LLEN,
 	"requested n_params %d is too large, must be <= %d",
 			n,VARS);
 		warn(error_string);
@@ -748,7 +748,7 @@ void new_setvals(double *arr, int n)
 	if( n_params == 0 )
 		n_params=n;
 	else if( n!=n_params ){
-		sprintf(error_string,"setvals:  n_params = %d, n = %d",n_params,n);
+		snprintf(error_string,LLEN,"setvals:  n_params = %d, n = %d",n_params,n);
 		advise(error_string);
 		warn("parameter count mismatch");
 	}
@@ -764,7 +764,7 @@ void new_setminmax(double *minarr, double *maxarr, int n)
 	if( n_params==0 )
 		n_params=n;
 	else if( n!=n_params ){
-		sprintf(error_string,"setminmax:  n_params = %d, n = %d",n_params,n);
+		snprintf(error_string,LLEN,"setminmax:  n_params = %d, n = %d",n_params,n);
 		advise(error_string);
 		warn("parameter count mismatch");
 	}
@@ -782,7 +782,7 @@ void new_setdelta(double *delarr, double *dmnarr, int n)
 	if( n_params==0 )
 		n_params=n;
 	else if( n!=n_params ){
-		sprintf(error_string,"setminmax:  n_params = %d, n = %d",n_params,n);
+		snprintf(error_string,LLEN,"setminmax:  n_params = %d, n = %d",n_params,n);
 		advise(error_string);
 		warn("parameter count mismatch");
 	}

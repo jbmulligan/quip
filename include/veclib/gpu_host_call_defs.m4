@@ -282,7 +282,7 @@ static void HOST_TYPED_CALL_NAME($1,type_code)(HOST_CALL_ARG_DECLS )
 	Vector_Args va1, *vap=(&va1);
 
 	if( OBJ_MACH_PREC(OA_DEST(oap)) != INDEX_PREC ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "%s:  destination index %s has %s precision, should be %s",
 			STRINGIFY(HOST_TYPED_CALL_NAME($1,type_code)),
 			OBJ_NAME(OA_DEST(oap)),
@@ -494,7 +494,7 @@ static void HOST_TYPED_CALL_NAME($1,type_code)(HOST_CALL_ARG_DECLS )
 
 	/* BUG? - isnt precision check done elsewhere??? */
 	if( OBJ_MACH_PREC(OA_DEST(oap)) != INDEX_PREC ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"%s:  destination index %s has %s precision, should be %s",
 	"$1",OBJ_NAME(OA_DEST(oap)),
 	PREC_NAME(OBJ_MACH_PREC_PTR(OA_DEST(oap))),
@@ -505,7 +505,7 @@ static void HOST_TYPED_CALL_NAME($1,type_code)(HOST_CALL_ARG_DECLS )
 
 	if( OBJ_N_TYPE_ELTS(OA_DEST(oap)) !=
 		OBJ_N_TYPE_ELTS(oap->oa_dp[0]) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "%s:  number of elements of index array %s (%d) must match source %s (%d)",
 			"$1", OBJ_NAME(OA_DEST(oap)),
 			OBJ_N_TYPE_ELTS(OA_DEST(oap)),

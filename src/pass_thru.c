@@ -45,7 +45,7 @@ static int open_serial_port(char *s)
 
 	fd=open(s,O_RDWR);
 	if( fd < 0 ){
-		sprintf(error_string,"error opening tty file \"%s\"",s);
+		snprintf(error_string,"error opening tty file \"%s\"",s);
 		warn(error_string);
 		return(fd);
 	}

@@ -162,7 +162,7 @@ static int release_mapped_frames(SINGLE_QSP_ARG_DECL)
 
 	for(i=0;i<n_mapped_frames;i++){
 		if( release_meteor_frame(QSP_ARG  i) < 0 ){
-			sprintf(ERROR_STRING,"release_mapped_frames:  error releasing frame %d!?",i);
+			snprintf(ERROR_STRING,LLEN,"release_mapped_frames:  error releasing frame %d!?",i);
 			WARN(ERROR_STRING);
 			return -1;
 		}
@@ -207,7 +207,7 @@ void meteor_mmap(SINGLE_QSP_ARG_DECL)
 
 	for(i=0;i<n_frames;i++){
 		if( map_meteor_frame(QSP_ARG  i) < 0 ){
-			sprintf(ERROR_STRING,"meteor_mmap:  error mapping frame %d!?",i);
+			snprintf(ERROR_STRING,LLEN,"meteor_mmap:  error mapping frame %d!?",i);
 			WARN(ERROR_STRING);
 
 			if( release_mapped_frames(SINGLE_QSP_ARG) < 0 ){

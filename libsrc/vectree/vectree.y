@@ -466,7 +466,7 @@ objref		: '(' objref ')'
 			{
 #ifdef QUIP_DEBUG
 if( debug & parser_debug ){
-sprintf(ERROR_STRING,"parser recognized pointer dereference");
+snprintf(ERROR_STRING,LLEN,"parser recognized pointer dereference");
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -483,7 +483,7 @@ advise(ERROR_STRING);
 			usp=undef_of($1);
 			if( usp == NULL ){
 				/* BUG?  are contexts handled correctly??? */
-				sprintf(YY_ERR_STR,"Undefined symbol %s",$1);
+				snprintf(YY_ERR_STR,LLEN,"Undefined symbol %s",$1);
 				yyerror(qsp,  YY_ERR_STR);
 				new_undef($1);
 			}
@@ -632,7 +632,7 @@ expression	: FIX_SIZE '(' expression ')'
 			CURDLE($$)
 			}
 		| SUM '(' pointer ')' {
-			sprintf(YY_ERR_STR,"need to dereference pointer %s",VN_STRING($3));
+			snprintf(YY_ERR_STR,LLEN,"need to dereference pointer %s",VN_STRING($3));
 			yyerror(THIS_QSP,  YY_ERR_STR);
 			$$=NULL;
 			}
@@ -717,7 +717,7 @@ fprintf(stderr,"vectree.y:  expression, setting VN_SUBRT\n");
 			/* make sure this is not a void subroutine! */
 			if( SR_PREC_CODE($1) == PREC_VOID ){
 				node_error($$);
-				sprintf(YY_ERR_STR,"void subroutine %s used in expression!?",SR_NAME($1));
+				snprintf(YY_ERR_STR,LLEN,"void subroutine %s used in expression!?",SR_NAME($1));
 				advise(YY_ERR_STR);
 				CURDLE($$)
 			}
@@ -846,7 +846,7 @@ func_arg	: expression
 		| ptr_assgn
 		| '&' pointer
 			{
-			sprintf(YY_ERR_STR,"shouldn't try to reference pointer variable %s",VN_STRING($2));
+			snprintf(YY_ERR_STR,LLEN,"shouldn't try to reference pointer variable %s",VN_STRING($2));
 			yyerror(THIS_QSP,  YY_ERR_STR);
 			$$=$2;
 			}
@@ -873,7 +873,7 @@ void_call	: FUNCNAME '(' func_args ')'
 			/* check to see that this subrt is void! */
 			if( SR_PREC_CODE($1) != PREC_VOID ){
 				node_error($$);
-				sprintf(YY_ERR_STR,"return value of function %s is ignored",SR_NAME($1));
+				snprintf(YY_ERR_STR,LLEN,"return value of function %s is ignored",SR_NAME($1));
 				advise(YY_ERR_STR);
 			}
 			}
@@ -906,7 +906,7 @@ fprintf(stderr,"vectree.y:  ref_arg, setting VN_SUBRT\n");
 			/* make sure this is not a void subroutine! */
 			if( SR_PREC_CODE($1) == PREC_VOID ){
 				node_error($$);
-				sprintf(YY_ERR_STR,"void subroutine %s used in pointer expression!?",SR_NAME($1));
+				snprintf(YY_ERR_STR,LLEN,"void subroutine %s used in pointer expression!?",SR_NAME($1));
 				advise(YY_ERR_STR);
 				CURDLE($$)
 			}
@@ -1091,7 +1091,7 @@ new_func_decl	: NEWNAME '(' arg_decl_list ')'
 			{
 #ifdef QUIP_DEBUG
 if( debug & parser_debug ){
-sprintf(ERROR_STRING,"parser recognized new_func_decl");
+snprintf(ERROR_STRING,LLEN,"parser recognized new_func_decl");
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -1109,7 +1109,7 @@ advise(ERROR_STRING);
 old_func_decl	: FUNCNAME '(' arg_decl_list ')'
 			{
 			if( SR_FLAGS($1) != SR_PROTOTYPE ){
-				sprintf(YY_ERR_STR,"Subroutine %s multiply defined!?",SR_NAME($1));
+				snprintf(YY_ERR_STR,LLEN,"Subroutine %s multiply defined!?",SR_NAME($1));
 				yyerror(THIS_QSP,  YY_ERR_STR);
 				/* now what??? */
 			}
@@ -1332,7 +1332,7 @@ script_stat	:	SCRIPTFUNC '(' print_list ')'
 str_ptr_arg	: str_ptr
 		| NEWNAME
 			{
-			sprintf(YY_ERR_STR,"undefined string pointer \"%s\"",$1);
+			snprintf(YY_ERR_STR,LLEN,"undefined string pointer \"%s\"",$1);
 			yyerror(THIS_QSP,  YY_ERR_STR);
 			$$=NULL;
 			rls_str($1);
@@ -1853,21 +1853,21 @@ badname		:	oldname
 
 oldname		:	OBJNAME
 			{
-			sprintf(YY_ERR_STR,"Object %s already declared",
+			snprintf(YY_ERR_STR,LLEN,"Object %s already declared",
 				OBJ_NAME($1));
 			yyerror(THIS_QSP,  YY_ERR_STR);
 			$$ = OBJ_NAME($1);
 			}
 		|	STRNAME
 			{
-			sprintf(YY_ERR_STR,"string %s already declared",
+			snprintf(YY_ERR_STR,LLEN,"string %s already declared",
 				ID_NAME($1));
 			yyerror(THIS_QSP,  YY_ERR_STR);
 			$$ = ID_NAME($1);
 			}
 		|	PTRNAME
 			{
-			sprintf(YY_ERR_STR,"Pointer %s already declared",
+			snprintf(YY_ERR_STR,LLEN,"Pointer %s already declared",
 				ID_NAME($1));
 			yyerror(THIS_QSP,  YY_ERR_STR);
 			$$ = ID_NAME($1);
@@ -2147,7 +2147,7 @@ static const char *_match_quote(QSP_ARG_DECL  const char **spp)
 	}
 	if( c != '"' ) {
 		warn("missing quote");
-		sprintf(ERROR_STRING,"string \"%s\" stored",CURR_STRING);
+		snprintf(ERROR_STRING,LLEN,"string \"%s\" stored",CURR_STRING);
 		advise(ERROR_STRING);
 	} else (*spp)++;			/* skip over closing quote */
 
@@ -2271,7 +2271,7 @@ nexttok:
 
 #ifdef QUIP_DEBUG
 if( debug & parser_debug ){
-sprintf(ERROR_STRING,"yylex scanning \"%s\"",YY_CP);
+snprintf(ERROR_STRING,LLEN,"yylex scanning \"%s\"",YY_CP);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -2406,7 +2406,7 @@ if( debug & parser_debug ){ advise("yylex returning CHAR_CONST"); }
 		if( tok == NEXT_TOKEN ) goto nexttok;
 		else {
 #ifdef QUIP_DEBUG
-if( debug & parser_debug ){ sprintf(ERROR_STRING,"yylex returning token %d (%s)",tok,name_for_token(tok)); advise(ERROR_STRING); }
+if( debug & parser_debug ){ snprintf(ERROR_STRING,LLEN,"yylex returning token %d (%s)",tok,name_for_token(tok)); advise(ERROR_STRING); }
 #endif /* QUIP_DEBUG */
 			return(tok);
 		}
@@ -2567,7 +2567,7 @@ if( debug & parser_debug ){ advise("yylex returning DIV_EQ"); }
 		}
 
 #ifdef QUIP_DEBUG
-if( debug & parser_debug ){ sprintf(ERROR_STRING,"yylex returning char '%c' (0x%x)",c,c); advise(ERROR_STRING); }
+if( debug & parser_debug ){ snprintf(ERROR_STRING,LLEN,"yylex returning char '%c' (0x%x)",c,c); advise(ERROR_STRING); }
 #endif /* QUIP_DEBUG */
 		return(c);
 	} else {
@@ -2708,7 +2708,7 @@ static int name_token(QSP_ARG_DECL  YYSTYPE *yylvp)
 			if( REF_TYPE(ID_REF(idp)) == OBJ_REFERENCE ){
 				yylvp->dp = REF_OBJ(ID_REF(idp));
 			} else if( REF_TYPE(ID_REF(idp)) == STR_REFERENCE ){
-sprintf(ERROR_STRING,"name_token:  identifier %s refers to a string!?",ID_NAME(idp));
+snprintf(ERROR_STRING,LLEN,"name_token:  identifier %s refers to a string!?",ID_NAME(idp));
 WARN(ERROR_STRING);
 				yylvp->dp = (Data_Obj *)REF_SBUF(ID_REF(idp));
 			}
@@ -2778,7 +2778,7 @@ double parse_stuff(SINGLE_QSP_ARG_DECL)		/** parse expression */
 	} else {
 		// Do we get here on a syntax error???
 		warn("Unsuccessfully parsed statement (top_node=NULL");
-		sprintf(ERROR_STRING,"status = %d\n",stat);	// suppress compiler warning
+		snprintf(ERROR_STRING,LLEN,"status = %d\n",stat);	// suppress compiler warning
 		advise(ERROR_STRING);
 	}
 
@@ -2798,10 +2798,10 @@ void yyerror(Query_Stack *qsp,  char *s)
 	//n = THIS_QSP->qs_query[ql].q_lineno;
 	n = current_line_number(SINGLE_QSP_ARG);
 
-	sprintf(ERROR_STRING,"%s, line %d:  %s",filename,n,s);
+	snprintf(ERROR_STRING,LLEN,"%s, line %d:  %s",filename,n,s);
 	warn(ERROR_STRING);
 
-	sprintf(ERROR_STRING,"\t%s",sb_buffer(YY_INPUT_LINE));
+	snprintf(ERROR_STRING,LLEN,"\t%s",sb_buffer(YY_INPUT_LINE));
 	advise(ERROR_STRING);
 	/* print an arrow at the problem point... */
 	n=(int)(strlen(sb_buffer(YY_INPUT_LINE))-strlen(YY_CP));
@@ -2815,7 +2815,7 @@ void yyerror(Query_Stack *qsp,  char *s)
 	/* we might use this to print an arrow at the problem point... */
 	/*
 	if( *YY_CP ){
-		sprintf(ERROR_STRING,"\"%s\" left in the buffer",YY_CP);
+		snprintf(ERROR_STRING,LLEN,"\"%s\" left in the buffer",YY_CP);
 		advise(ERROR_STRING);
 	} else advise("no buffered text");
 	*/

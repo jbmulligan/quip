@@ -30,7 +30,7 @@ static COMMAND_FUNC( do_set_bg_color )
 	bg_color= HOW_MANY("background color 0x000000 - 0xFFFFFF");
 
 	if( bg_color < MIN_BG_COLOR || bg_color > MAX_BG_COLOR ) {
-		sprintf(ERROR_STRING, "background color (%d) should be in range %d - %d",
+		snprintf(ERROR_STRING,LLEN, "background color (%d) should be in range %d - %d",
 			bg_color, MIN_BG_COLOR, MAX_BG_COLOR);
 
 		WARN(ERROR_STRING);

@@ -123,7 +123,7 @@ static COMMAND_FUNC( do_cuda_centroid )
 	src_dp = PICK_OBJ("source image");
 
 	if( OBJ_MACH_PREC(src_dp) != PREC_SP && OBJ_MACH_PREC(src_dp) != PREC_DP ){
-		sprintf(ERROR_STRING,"Object %s (%s) must have %s or %s precision for centroid helper",
+		snprintf(ERROR_STRING,LLEN,"Object %s (%s) must have %s or %s precision for centroid helper",
 			OBJ_NAME(src_dp),PREC_NAME(OBJ_PREC_PTR(src_dp)),PREC_NAME(PREC_FOR_CODE(PREC_SP)),
 			PREC_NAME(PREC_FOR_CODE(PREC_DP)));
 		WARN(ERROR_STRING);
@@ -215,13 +215,13 @@ static COMMAND_FUNC( do_prt_cap )
 {
 #ifdef HAVE_CUDA
 #ifdef CUDA_COMP_CAP
-	sprintf(MSG_STR,"Compiled for compute capability %d.%d",
+	snprintf(MSG_STR,LLEN,"Compiled for compute capability %d.%d",
 		CUDA_COMP_CAP/10,CUDA_COMP_CAP%10);
 #else	// ! CUDA_COMP_CAP
 	ERROR1("CAUTIOUS:  HAVE_CUDA is defined, but CUDA_COMP_CAP is not!?!?");
 #endif	// ! CUDA_COMP_CAP
 #else	// ! HAVE_CUDA
-	sprintf(MSG_STR,"No CUDA support in this build");
+	snprintf(MSG_STR,LLEN,"No CUDA support in this build");
 #endif	// ! HAVE_CUDA
 
 	prt_msg(MSG_STR);
@@ -230,7 +230,7 @@ static COMMAND_FUNC( do_prt_cap )
 static COMMAND_FUNC( do_about_cuda )
 {
 #ifdef HAVE_CUDA
-	sprintf(MSG_STR,"CUDA version:  %d.%d",
+	snprintf(MSG_STR,LLEN,"CUDA version:  %d.%d",
 		CUDA_VERSION/1000,(CUDA_VERSION%100)/10);
 	prt_msg(MSG_STR);
 #else // ! HAVE_CUDA

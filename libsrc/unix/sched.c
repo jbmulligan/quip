@@ -93,7 +93,7 @@ static COMMAND_FUNC( do_get_pri )
 
 	min = sched_get_priority_min(curr_policy);
 	max = sched_get_priority_max(curr_policy);
-	sprintf(msg_str,"Priority is %d (range %d-%d)" ,p.sched_priority,min,max);
+	snprintf(msg_str,LLEN,"Priority is %d (range %d-%d)" ,p.sched_priority,min,max);
 	prt_msg(msg_str);
 #endif /* ALLOW_RT_SCHED */
 #else // ! HAVE_SCHED_GETPARAM
@@ -112,10 +112,10 @@ static COMMAND_FUNC( do_set_pri )
     
 	min = sched_get_priority_min(curr_policy);
 	max = sched_get_priority_max(curr_policy);
-	sprintf(msg_str,"priority (%d-%d)",min,max);
+	snprintf(msg_str,LLEN,"priority (%d-%d)",min,max);
 	pri = HOW_MANY(msg_str);
 	if( pri < min || pri > max ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
                 "do_set_pri:  priority (%d) must be in the range %d-%d!?",
                 pri,min,max);
 		warn(ERROR_STRING);

@@ -83,20 +83,20 @@ static FILE * _remove_avi_info_if_stale(QSP_ARG_DECL  const char *info_name,FILE
 #ifdef LONG_64_BIT
 //#ifdef IA64
 		tell_sys_error("remove_avi_info_if_stale:  stat:");
-		sprintf(ERROR_STRING,"unable to stat avi data file %s",src_name);
+		snprintf(ERROR_STRING,LLEN,"unable to stat avi data file %s",src_name);
 		error1(ERROR_STRING);
 #elif defined(LONG_32_BIT)
 		if( errno == EOVERFLOW ){
 			struct stat64 stat64b;
 			if( stat64(src_name,&stat64b) < 0 ){
 				tell_sys_error("remove_avi_info_if_stale:  stat64:");
-				sprintf(ERROR_STRING,"unable to stat64 avi data file %s",src_name);
+				snprintf(ERROR_STRING,LLEN,"unable to stat64 avi data file %s",src_name);
 				error1(ERROR_STRING);
 			}
 			file_statb.st_mtime = stat64b.st_mtime;
 		} else {
 			tell_sys_error("remove_avi_info_if_stale:  stat:");
-			sprintf(ERROR_STRING,"unable to stat avi data file %s",src_name);
+			snprintf(ERROR_STRING,LLEN,"unable to stat avi data file %s",src_name);
 			error1(ERROR_STRING);
 		}
 #else
@@ -107,7 +107,7 @@ static FILE * _remove_avi_info_if_stale(QSP_ARG_DECL  const char *info_name,FILE
 
 	/* now compare mod times */
 	if( file_statb.st_mtime > info_statb.st_mtime ){
-		sprintf(ERROR_STRING,"Existing jpeg info file %s is older than file %s, will unlink and recompute",
+		snprintf(ERROR_STRING,LLEN,"Existing jpeg info file %s is older than file %s, will unlink and recompute",
 				info_name,src_name);
 		advise(ERROR_STRING);
 		fclose(info_fp);
@@ -133,20 +133,20 @@ static int _read_avi_info(QSP_ARG_DECL  Image_File *ifp, FILE *info_fp)
 
 	/* first check the magic number */
 	if( fread(buf,1,strlen(AVI_INFO_MAGIC_STRING)+1,info_fp) != strlen(AVI_INFO_MAGIC_STRING)+1 ){
-		sprintf(ERROR_STRING,"read_avi_info_top:  missing magic number data");
+		snprintf(ERROR_STRING,LLEN,"read_avi_info_top:  missing magic number data");
 		warn(ERROR_STRING);
 		return(-1);
 	}
 	if( buf[strlen(AVI_INFO_MAGIC_STRING)] != '\n' ){
-		sprintf(ERROR_STRING,"read_avi_info_top:  bad magic number terminator");
+		snprintf(ERROR_STRING,LLEN,"read_avi_info_top:  bad magic number terminator");
 		warn(ERROR_STRING);
 		return(-1);
 	}
 	buf[strlen(AVI_INFO_MAGIC_STRING)]=0;
 	if( strcmp(buf,AVI_INFO_MAGIC_STRING) ){
-		sprintf(ERROR_STRING,"read_avi_info_top:  bad magic number data");
+		snprintf(ERROR_STRING,LLEN,"read_avi_info_top:  bad magic number data");
 		warn(ERROR_STRING);
-		sprintf(ERROR_STRING,"read_jpeg_info_top:  expected \"%s\" but encountered \"%s\"",
+		snprintf(ERROR_STRING,LLEN,"read_jpeg_info_top:  expected \"%s\" but encountered \"%s\"",
 			AVI_INFO_MAGIC_STRING,buf);
 		warn(ERROR_STRING);
 		return(-1);
@@ -155,13 +155,13 @@ static int _read_avi_info(QSP_ARG_DECL  Image_File *ifp, FILE *info_fp)
 	/* now we know that the file starts out in the right format */
 
 	if( fscanf(info_fp,"%ld",&nf) != 1 ){
-		sprintf(ERROR_STRING,"read_avi_info_top:  bad nframes");
+		snprintf(ERROR_STRING,LLEN,"read_avi_info_top:  bad nframes");
 		warn(ERROR_STRING);
 		return(-1);
 	}
 
 	if( fscanf(info_fp,"%ld",&n_skew) != 1 ){
-		sprintf(ERROR_STRING,"read_avi_info_top:  bad n_skew");
+		snprintf(ERROR_STRING,LLEN,"read_avi_info_top:  bad n_skew");
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -181,7 +181,7 @@ static int _read_avi_info(QSP_ARG_DECL  Image_File *ifp, FILE *info_fp)
 	}
 
 	if( fscanf(info_fp,"%ld",&n_seek) != 1 ){
-		sprintf(ERROR_STRING,"read_avi_info_top:  bad n_seek");
+		snprintf(ERROR_STRING,LLEN,"read_avi_info_top:  bad n_seek");
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -217,7 +217,7 @@ int _check_avi_info(QSP_ARG_DECL  Image_File *ifp)
 	FILE *fp;
 
 	make_avs_name(avs_name,ifp);	/* look for (fast) binary version first */
-//sprintf(error_string,"Checking for avi info file %s",avs_name);
+//snprintf(error_string,LLEN,"Checking for avi info file %s",avs_name);
 //advise(error_string);
 	fp=fopen(avs_name,"r");
 	if( !fp ) {
@@ -277,7 +277,7 @@ void _save_avi_info(QSP_ARG_DECL  Image_File *ifp)
 	make_avs_name(avs_name,ifp);
 	fp = fopen(avs_name,"w");
 	if( !fp ){
-		sprintf(ERROR_STRING,"save_avi_info:  couldn't open avi info file %s for writing",avs_name);
+		snprintf(ERROR_STRING,LLEN,"save_avi_info:  couldn't open avi info file %s for writing",avs_name);
 		warn(ERROR_STRING);
 		return;
 	}

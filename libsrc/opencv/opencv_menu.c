@@ -41,7 +41,7 @@ static COMMAND_FUNC( do_face_finder );
 #ifdef NOT_USED
 void report_opencv_version(SINGLE_QSP_ARG_DECL)
 {
-	sprintf(ERROR_STRING,"OpenCV version %d.%d.%d",
+	snprintf(ERROR_STRING,LLEN,"OpenCV version %d.%d.%d",
 		CV_MAJOR_VERSION,CV_MINOR_VERSION,CV_SUBMINOR_VERSION);
 	advise(ERROR_STRING);
 }
@@ -84,7 +84,7 @@ static COMMAND_FUNC( do_convert_color )
 		code = CV_GRAY2BGR;
 	} else {
 		code = -1;
-		sprintf(ERROR_STRING,"Error (do_convert_color): No such OpenCV conversion code: %s\n",s);
+		snprintf(ERROR_STRING,LLEN,"Error (do_convert_color): No such OpenCV conversion code: %s\n",s);
 		//WARN(ERROR_STRING);
 		return;
 	}
@@ -217,7 +217,7 @@ static COMMAND_FUNC( do_create_scanner )
 
 	s=NAMEOF("name for Scanner");
 	ocv_scanner_p = create_ocv_scanner(QSP_ARG  s);
-	/*sprintf(ERROR_STRING, "do_create_scanner: Address of new scanner: %p", &(ocv_scanner_p->ocv_scanner));
+	/*snprintf(ERROR_STRING,LLEN, "do_create_scanner: Address of new scanner: %p", &(ocv_scanner_p->ocv_scanner));
 	WARN(ERROR_STRING);*/
 
 	if( ocv_scanner_p == NULL ) WARN("Error creating openCV scanner!?");
@@ -231,7 +231,7 @@ static COMMAND_FUNC( do_create_seq )
 
 	s=NAMEOF("name for Seq");
 	ocv_seq_p = create_ocv_seq(QSP_ARG  s);
-	/*sprintf(ERROR_STRING, "do_create_seq: Address of new seq: %p", ocv_seq_p->ocv_seq);
+	/*snprintf(ERROR_STRING,LLEN, "do_create_seq: Address of new seq: %p", ocv_seq_p->ocv_seq);
 	WARN(ERROR_STRING);*/
 
 	if( ocv_seq_p == NULL ) WARN("Error creating openCV sequence!?");
@@ -321,16 +321,16 @@ static COMMAND_FUNC( do_aspect_ratio )
 	ocv_seq_p=pick_ocv_seq("sequence");
 	if( ocv_seq_p == NULL ) return;
 	if( ocv_seq_p->ocv_seq == NULL ) {
-		sprintf(ERROR_STRING, "do_aspect_ratio: sequence is NULL.\n");
+		snprintf(ERROR_STRING,LLEN, "do_aspect_ratio: sequence is NULL.\n");
 		//WARN(ERROR_STRING);
 		return;
 	}
 	CvRect r = cvBoundingRect(ocv_seq_p->ocv_seq, 1);
 	float aspectRatio = (float)(r.width)/(float)(r.height);
 	char aspect[30];
-	sprintf(aspect, "%f", aspectRatio);
+	snprintf(aspect,30, "%f", aspectRatio);
 	assign_var("contour_aspect", aspect);
-	/*sprintf(ERROR_STRING,"Aspect ratio = %f", aspectRatio);
+	/*snprintf(ERROR_STRING,LLEN,"Aspect ratio = %f", aspectRatio);
 	WARN(ERROR_STRING);*/
 }
 
@@ -340,7 +340,7 @@ static COMMAND_FUNC( do_ocv_area )
 	ocv_seq_p=pick_ocv_seq("sequence");
 	if( ocv_seq_p == NULL ) return;
 	if( ocv_seq_p->ocv_seq == NULL ) {
-		sprintf(ERROR_STRING, "do_ocv_area: sequence is NULL.\n");
+		snprintf(ERROR_STRING,LLEN, "do_ocv_area: sequence is NULL.\n");
 		WARN(ERROR_STRING);
 		return;
 	}
@@ -354,7 +354,7 @@ static COMMAND_FUNC( do_ocv_area )
 #endif
 
 	char area_string[30];
-	sprintf(area_string, "%f", area);
+	snprintf(area_string,30, "%f", area);
 	assign_var("contour_area", area_string);
 }
 
@@ -364,7 +364,7 @@ static COMMAND_FUNC( do_centroid )
 	ocv_seq_p=pick_ocv_seq("sequence");
 	if( ocv_seq_p == NULL ) return;
 	if( ocv_seq_p->ocv_seq == NULL ) {
-		sprintf(ERROR_STRING, "do_centroid: sequence is NULL.\n");
+		snprintf(ERROR_STRING,LLEN, "do_centroid: sequence is NULL.\n");
 		//WARN(ERROR_STRING);
 		return;
 	}
@@ -378,13 +378,13 @@ static COMMAND_FUNC( do_centroid )
 	x = (int)(M10/M00);
 	y = (int)(M01/M00);
 	/* char msg[30];
-	sprintf(msg, "M00 = %f, M10 = %f, M01 = %f", M00, M10, M01);
+	snprintf(msg,30, "M00 = %f, M10 = %f, M01 = %f", M00, M10, M01);
 	WARN(msg); */
 
 	char number[30];
-	sprintf(number, "%f", x);
+	snprintf(number,30, "%f", x);
 	assign_var("centroid_x", number);
-	sprintf(number, "%f", y);
+	snprintf(number,30, "%f", y);
 	assign_var("centroid_y", number);
 
 
@@ -396,32 +396,32 @@ static COMMAND_FUNC( do_image_info )
 	ocvi_p=pick_ocvi("openCV image");
 	if( ocvi_p == NULL ) return;
 
-	sprintf(ERROR_STRING,"Image Info for \"%s\":",ocvi_p->ocv_name);
+	snprintf(ERROR_STRING,LLEN,"Image Info for \"%s\":",ocvi_p->ocv_name);
 	prt_msg(ERROR_STRING);
 
 	IplImage* img = ocvi_p->ocv_image;
 
-	sprintf(ERROR_STRING, "\tSize: (%d, %d)",img->width, img->height);
+	snprintf(ERROR_STRING,LLEN, "\tSize: (%d, %d)",img->width, img->height);
 	prt_msg(ERROR_STRING);
-	sprintf(ERROR_STRING, "\tnSize: %d",img->nSize);
+	snprintf(ERROR_STRING,LLEN, "\tnSize: %d",img->nSize);
 	prt_msg(ERROR_STRING);
-	sprintf(ERROR_STRING, "\tID: %d",img->ID);
+	snprintf(ERROR_STRING,LLEN, "\tID: %d",img->ID);
 	prt_msg(ERROR_STRING);
-	sprintf(ERROR_STRING, "\tnChannels: %d",img->nChannels);
+	snprintf(ERROR_STRING,LLEN, "\tnChannels: %d",img->nChannels);
 	prt_msg(ERROR_STRING);
-	sprintf(ERROR_STRING, "\tdepth: %d",img->depth);
+	snprintf(ERROR_STRING,LLEN, "\tdepth: %d",img->depth);
 	prt_msg(ERROR_STRING);
-	sprintf(ERROR_STRING, "\tdataOrder: %d",img->dataOrder);
+	snprintf(ERROR_STRING,LLEN, "\tdataOrder: %d",img->dataOrder);
 	prt_msg(ERROR_STRING);
-	sprintf(ERROR_STRING, "\torigin: %d",img->origin);
+	snprintf(ERROR_STRING,LLEN, "\torigin: %d",img->origin);
 	prt_msg(ERROR_STRING);
-	sprintf(ERROR_STRING, "\timageSize: %d",img->imageSize);
+	snprintf(ERROR_STRING,LLEN, "\timageSize: %d",img->imageSize);
 	prt_msg(ERROR_STRING);
-	sprintf(ERROR_STRING, "\timageData: 0x%lx",(u_long)img->imageData);
+	snprintf(ERROR_STRING,LLEN, "\timageData: 0x%lx",(u_long)img->imageData);
 	prt_msg(ERROR_STRING);
-	sprintf(ERROR_STRING, "\twidthStep: %d",img->widthStep);
+	snprintf(ERROR_STRING,LLEN, "\twidthStep: %d",img->widthStep);
 	prt_msg(ERROR_STRING);
-	sprintf(ERROR_STRING, "\timageDataOrigin: 0x%lx",(u_long)img->imageDataOrigin);
+	snprintf(ERROR_STRING,LLEN, "\timageDataOrigin: 0x%lx",(u_long)img->imageDataOrigin);
 	prt_msg(ERROR_STRING);
 }
 
@@ -435,7 +435,7 @@ static COMMAND_FUNC( do_import_img )
 	/* Possibly do some tests here */
 
 	if( (ocvi_p = creat_ocvi_from_dp(QSP_ARG  dp) ) == NULL ){
-		sprintf(ERROR_STRING,"Error creating OpenCV image from QuIP image %s",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"Error creating OpenCV image from QuIP image %s",OBJ_NAME(dp));
 		WARN(ERROR_STRING);
 	}
 }
@@ -451,21 +451,21 @@ static COMMAND_FUNC( do_new_cascade )
 
 	casc_p = ocv_ccasc_of(s);
 	if( casc_p != NULL ){
-		sprintf(ERROR_STRING,"Classifier cascade %s already exists!?",s);
+		snprintf(ERROR_STRING,LLEN,"Classifier cascade %s already exists!?",s);
 		WARN(ERROR_STRING);
 		return;
 	}
 
 	casc_p = new_ocv_ccasc(s);
 	if( casc_p == NULL ){
-		sprintf(ERROR_STRING,"Error creating classifier cascade %s",s);
+		snprintf(ERROR_STRING,LLEN,"Error creating classifier cascade %s",s);
 		WARN(ERROR_STRING);
 		return;
 	}
 
 	casc_p->ocv_cascade = (CvHaarClassifierCascade*)cvLoad(cascade_name, 0,0,0);
 	if(casc_p->ocv_cascade == NULL) {
-		sprintf(ERROR_STRING,"Error loading cascade from file %s",cascade_name);
+		snprintf(ERROR_STRING,LLEN,"Error loading cascade from file %s",cascade_name);
 		WARN(ERROR_STRING);
 		return;
 		/* BUG release struct here */
@@ -531,42 +531,42 @@ CVAPI(CvSeq*) cvHaarDetectObjects( const CvArr* image,
 #endif
 		if (faces != NULL) {
 			if( verbose ){
-				sprintf(ERROR_STRING,"%d faces found in frame %d.",faces->total, frame_number);
+				snprintf(ERROR_STRING,LLEN,"%d faces found in frame %d.",faces->total, frame_number);
 				advise(ERROR_STRING);
 			}
 		} else {
 			/* is this a CAUTIOUS check? */
-			sprintf(ERROR_STRING,"faces is NULL.");
+			snprintf(ERROR_STRING,LLEN,"faces is NULL.");
 			advise(ERROR_STRING);
 		}
 		char msg[60];
 
-		sprintf(msg,"%d",faces->total);
+		snprintf(msg,60,"%d",faces->total);
 		assign_var("n_faces",msg);
 
-		sprintf(ERROR_STRING, "faces %d %d ", frame_number, faces->total);
+		snprintf(ERROR_STRING,LLEN, "faces %d %d ", frame_number, faces->total);
 
 		for (i=0; i<(faces ? faces->total:0); ++i) {
 			char vname[64], vval[64];
 
 			CvRect* r = (CvRect*)cvGetSeqElem(faces, i);
-			sprintf(msg, "%d %d %d %d ", r->x, r->y, r->width, r->height);
+			snprintf(msg,60, "%d %d %d %d ", r->x, r->y, r->width, r->height);
 			strcat(ERROR_STRING, msg);
 
-			sprintf(vname,"face%d_x",i+1);
-			sprintf(vval,"%d",r->x);
+			snprintf(vname,64,"face%d_x",i+1);
+			snprintf(vval,64,"%d",r->x);
 			assign_var(vname,vval);
 
-			sprintf(vname,"face%d_y",i+1);
-			sprintf(vval,"%d",r->y);
+			snprintf(vname,64,"face%d_y",i+1);
+			snprintf(vval,64,"%d",r->y);
 			assign_var(vname,vval);
 
-			sprintf(vname,"face%d_w",i+1);
-			sprintf(vval,"%d",r->width);
+			snprintf(vname,64,"face%d_w",i+1);
+			snprintf(vval,64,"%d",r->width);
 			assign_var(vname,vval);
 
-			sprintf(vname,"face%d_h",i+1);
-			sprintf(vval,"%d",r->height);
+			snprintf(vname,64,"face%d_h",i+1);
+			snprintf(vval,64,"%d",r->height);
 			assign_var(vname,vval);
 
 #ifdef FOOBAR
@@ -584,7 +584,7 @@ CVAPI(CvSeq*) cvHaarDetectObjects( const CvArr* image,
 			// Append zeros to make the output always have a fixed
 			// number of columns.
 			for (k=0; k< (max_faces - faces->total); ++k) {
-				sprintf(msg, "0 0 0 0 ");
+				snprintf(msg,60, "0 0 0 0 ");
 				strcat(ERROR_STRING, msg);
 			}
 		}

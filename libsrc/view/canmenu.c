@@ -20,7 +20,7 @@ static int viewer_name_in_use(QSP_ARG_DECL const char *s)
 
 	vp = vwr_of(s);
 	if( vp != NULL){
-		sprintf(ERROR_STRING,"viewer name \"%s\" in use",s);
+		snprintf(ERROR_STRING,LLEN,"viewer name \"%s\" in use",s);
 		warn(ERROR_STRING);
 		return(1);
 	}

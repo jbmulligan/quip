@@ -95,7 +95,7 @@ void show_panel_children(Panel_Obj *po)
 	while(np!=NULL){
 		sop=(Screen_Obj *)np->n_data;
 		if( sop != NULL ){
-			sprintf(ERROR_STRING,"\t%s",SOB_NAME(sop));
+			snprintf(ERROR_STRING,LLEN,"\t%s",SOB_NAME(sop));
 			advise(ERROR_STRING);
 		} else {
 			advise("\tnull screen_obj!?");
@@ -188,7 +188,7 @@ Screen_Obj *dup_so(QSP_ARG_DECL  Screen_Obj *sop)
 	Screen_Obj *dup;
 	char name[BUF_LEN];
 
-	sprintf(name,"%s.dup",SOB_NAME(sop));
+	snprintf(name,BUF_LEN,"%s.dup",SOB_NAME(sop));
 	dup = simple_object(name);
 	if( sop == NULL ) return(sop);
 	SET_SOB_PARENT(dup, SOB_PARENT(sop) );
@@ -243,9 +243,9 @@ COMMAND_FUNC( do_get_posn_object )
 
 	sop = pick_scrnobj("");
 	if( sop == NULL ) return;
-	sprintf(str, "%d", SOB_X(sop));
+	snprintf(str,BUF_LEN, "%d", SOB_X(sop));
 	assign_reserved_var("x_val",str);
-	sprintf(str, "%d", SOB_Y(sop));
+	snprintf(str,BUF_LEN, "%d", SOB_Y(sop));
 	assign_reserved_var("y_val",str);
 }
 
@@ -291,13 +291,13 @@ Gen_Win *dummy_panel(QSP_ARG_DECL  const char *name,int dx,int dy)
 static void make_scrnobj_ctx_for_panel(QSP_ARG_DECL  Panel_Obj *po)
 {
 	IOS_Item_Context *icp = create_scrnobj_context(PO_NAME(po));
-//sprintf(ERROR_STRING,"new_panel %s (0x%lx, qvc = 0x%lx), size is %d x %d,  setting context to 0x%lx",
+//snprintf(ERROR_STRING,LLEN,"new_panel %s (0x%lx, qvc = 0x%lx), size is %d x %d,  setting context to 0x%lx",
 //PO_NAME(po),(long)po,(long)PO_QVC(po),PO_WIDTH(po),PO_HEIGHT(po),(long)icp);
 //advise(ERROR_STRING);
 	SET_PO_CONTEXT(po, icp);
 }
 
-Panel_Obj *new_panel(QSP_ARG_DECL  const char *name,int dx,int dy)
+Panel_Obj *my_new_panel(QSP_ARG_DECL  const char *name,int dx,int dy)
 {
 	Panel_Obj *po;
 
@@ -330,7 +330,7 @@ Panel_Obj *new_panel(QSP_ARG_DECL  const char *name,int dx,int dy)
 	// to have a stripped down version of new_panel
 	// to set up an existing viewer for getting widgets.
 
-//sprintf(ERROR_STRING,"new_panel %s calling make_panel",PO_NAME(po));
+//snprintf(ERROR_STRING,LLEN,"new_panel %s calling make_panel",PO_NAME(po));
 //advise(ERROR_STRING);
 	make_panel(QSP_ARG  po,dx,dy);			/* Xlib calls */
 
@@ -368,7 +368,7 @@ COMMAND_FUNC( mk_panel )
 	s=nameof("name for panel");
 	dx=(int)how_many("panel width");
 	dy=(int)how_many("panel height");
-	/*po=*/ new_panel(QSP_ARG  s,dx,dy);
+	/*po=*/ my_new_panel(QSP_ARG  s,dx,dy);
 }
 
 COMMAND_FUNC( do_resize_panel )
@@ -408,7 +408,7 @@ static void _list_widgets(QSP_ARG_DECL  Panel_Obj *po)
 		//	printf("\t%s\n",SOB_NAME(sop));
 			so_info(sop);
 		} else {
-			sprintf(ERROR_STRING,"widget %s does not belong to panel %s!?",
+			snprintf(ERROR_STRING,LLEN,"widget %s does not belong to panel %s!?",
 				SOB_NAME(sop),PO_NAME(po));
 			warn(ERROR_STRING);
 		}
@@ -443,11 +443,11 @@ Screen_Obj *_get_parts(QSP_ARG_DECL  const char *class_str)
 	// Why are the label and text strings saved
 	// in these local buffers???
 
-	sprintf(pmpt,"%s label",class_str);
+	snprintf(pmpt,BUF_LEN,"%s label",class_str);
 	//strcpy( label, nameof(pmpt) );
 	label = nameof(pmpt) ;
 
-	sprintf(pmpt,"%s action text",class_str);
+	snprintf(pmpt,BUF_LEN,"%s action text",class_str);
 	text = nameof(pmpt) ;
 
 	if( curr_panel == NULL ) return NULL;
@@ -787,7 +787,7 @@ COMMAND_FUNC( assign_text )
 
 	/* Before we try to get the text, we should check which type of widget we have */
 	if( ! IS_TEXT(sop) ){
-		sprintf(ERROR_STRING,"assign_text:  widget %s is a %s, not a text object",
+		snprintf(ERROR_STRING,LLEN,"assign_text:  widget %s is a %s, not a text object",
 			SOB_NAME(sop),WIDGET_TYPE_NAME(sop));
 		WARN(ERROR_STRING);
 		return;
@@ -918,7 +918,7 @@ COMMAND_FUNC( set_new_pos )
 	else if( type == SOT_ADJUSTER )			\
 		make_adjuster(QSP_ARG  sop);		\
 	else {						\
-sprintf(ERROR_STRING,"FINISH_SLIDER:  bad slider type!?");	\
+snprintf(ERROR_STRING,LLEN,"FINISH_SLIDER:  bad slider type!?");	\
 		WARN(ERROR_STRING);			\
 		make_slider(sop);			\
 	}						\
@@ -1184,7 +1184,7 @@ COMMAND_FUNC( do_unshow )
 #define INSIST_GAUGE(gp,func)						\
 									\
 	if( ! IS_A_TYPE_OF_GAUGE(gp) ){					\
-		sprintf(ERROR_STRING,					\
+		snprintf(ERROR_STRING,LLEN,					\
 			"%s:  Widget %s is not a gauge/slider!?",	\
 			#func,SOB_NAME(gp));				\
 		WARN(ERROR_STRING);					\
@@ -1262,7 +1262,7 @@ COMMAND_FUNC( do_set_choice )
 			SOB_SELECTORS_AT_IDX(sop,0) );
 		if( i < 0 ) return;
 	} else {
-		sprintf(ERROR_STRING,"%s is not a chooser or a picker!?",
+		snprintf(ERROR_STRING,LLEN,"%s is not a chooser or a picker!?",
 			SOB_NAME(sop));
 		WARN(ERROR_STRING);
 		return;
@@ -1359,7 +1359,7 @@ COMMAND_FUNC( do_set_label )
 #else /* ! BUILD_FOR_IOS */
 	WARN_ONCE("Sorry, resetting labels not yet supported for unix/motif!?");
 	// Suppress compiler warnings
-	sprintf(ERROR_STRING,"Can't install \"%s\" to message 0x%lx",s,(long)mp);
+	snprintf(ERROR_STRING,LLEN,"Can't install \"%s\" to message 0x%lx",s,(long)mp);
 	advise(ERROR_STRING);
 #endif /* ! BUILD_FOR_IOS */
 }
@@ -1382,7 +1382,7 @@ COMMAND_FUNC( do_append_text )
 	SET_SOB_CONTENT(tb, savestr(s));
 	update_text_box(tb);
 #else /* ! BUILD_FOR_IOS */
-	sprintf(ERROR_STRING,"append_text:  not appending text \"%s\" to text box 0x%lx",
+	snprintf(ERROR_STRING,LLEN,"append_text:  not appending text \"%s\" to text box 0x%lx",
 		s,(long)tb);
 	advise(ERROR_STRING);
 #endif /* ! BUILD_FOR_IOS */
@@ -1405,7 +1405,7 @@ COMMAND_FUNC( do_set_active )
 #else /* ! BUILD_FOR_IOS */
 	advise("set_active:  Sorry, not implemented");
 	// suppress warnings
-	sprintf(ERROR_STRING,"yesno = %d, indicator = 0x%lx",yesno,(long)ai);
+	snprintf(ERROR_STRING,LLEN,"yesno = %d, indicator = 0x%lx",yesno,(long)ai);
 	advise(ERROR_STRING);
 #endif /* ! BUILD_FOR_IOS */
 }
@@ -1526,7 +1526,7 @@ int _get_strings(QSP_ARG_DECL Screen_Obj *sop,const char ***sss)
 	n=(int)how_many("number of items");
 	if( n < 0 ){
 		SET_SOB_N_SELECTORS(sop,0);
-		sprintf(ERROR_STRING,"get_strings:  number of selectors must be non-negative!?");
+		snprintf(ERROR_STRING,LLEN,"get_strings:  number of selectors must be non-negative!?");
 		WARN(ERROR_STRING);
 		return -1;
 	}
@@ -1772,7 +1772,7 @@ COMMAND_FUNC( do_picker )
 
 	n_cyl = (int)how_many("number of cylinders");
 	if( n_cyl < 1 || n_cyl > MAX_CYLINDERS ){
-		sprintf(ERROR_STRING,"Number of cylinders (%d) must be between 1 and %d!?",
+		snprintf(ERROR_STRING,LLEN,"Number of cylinders (%d) must be between 1 and %d!?",
 			n_cyl,MAX_CYLINDERS);
 		WARN(ERROR_STRING);
 		return;
@@ -1812,7 +1812,7 @@ static inline const char **new_selector_table_less_one(const char *choice_to_del
 
 	// Complain if match not found
 	if( j == old_n ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"new_selector_table_less_one:  string \"%s\" not found among %d choices",
 			choice_to_delete,old_n);
 		WARN(ERROR_STRING);
@@ -1838,7 +1838,7 @@ static const char *find_string_in_table( const char **tbl, int n, const char *s 
 static inline int insist_choice_not_present(const char **tbl, int n, const char *s, const char *name, const char *whence)
 {
 	if( find_string_in_table(tbl,n,s) != NULL ){
-		sprintf(ERROR_STRING,"%s:  choice \"%s\" is already present in chooser/picker \"%s\"!?\n",
+		snprintf(ERROR_STRING,LLEN,"%s:  choice \"%s\" is already present in chooser/picker \"%s\"!?\n",
 			whence,s,name);
 		WARN(ERROR_STRING);
 		return -1;
@@ -1849,7 +1849,7 @@ static inline int insist_choice_not_present(const char **tbl, int n, const char 
 static inline int insist_choice_present(const char **tbl, int n, const char *s, const char *name, const char *whence)
 {
 	if( find_string_in_table(tbl,n,s) == NULL ){
-		sprintf(ERROR_STRING,"%s:  choice \"%s\" is not present in chooser/picker \"%s\"!?\n",
+		snprintf(ERROR_STRING,LLEN,"%s:  choice \"%s\" is not present in chooser/picker \"%s\"!?\n",
 			whence,s,name);
 		WARN(ERROR_STRING);
 		return -1;
@@ -1889,7 +1889,7 @@ static inline void add_choice_to_chooser(QSP_ARG_DECL  Screen_Obj *sop, const ch
 static inline int insist_one_component(QSP_ARG_DECL  Screen_Obj *sop, const char *whence)
 {
 	if( SOB_N_CYLINDERS(sop) != 1 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s:  picker %s has more than one component (%d)",
 			whence,SOB_NAME(sop),SOB_N_CYLINDERS(sop));
 		WARN(ERROR_STRING);
@@ -1981,7 +1981,7 @@ static inline Screen_Obj *pick_chooser_or_picker(SINGLE_QSP_ARG_DECL)
 	if( SOB_TYPE(sop) == SOT_CHOOSER ) return sop;
 	if( SOB_TYPE(sop) == SOT_PICKER ) return sop;
 
-	sprintf(ERROR_STRING,"Object %s is not a chooser or picker!?",SOB_NAME(sop));
+	snprintf(ERROR_STRING,LLEN,"Object %s is not a chooser or picker!?",SOB_NAME(sop));
 	WARN(ERROR_STRING);
 
 	return NULL;
@@ -2024,7 +2024,7 @@ COMMAND_FUNC( do_add_choice )
 
 	WARN("Sorry, can't add choices in the X11 implementation.");
 	// suppress warnings
-	sprintf(ERROR_STRING,"Not adding \"%s\" to 0x%lx",s,(long)sop);
+	snprintf(ERROR_STRING,LLEN,"Not adding \"%s\" to 0x%lx",s,(long)sop);
 	advise(ERROR_STRING);
 
 #endif /* ! BUILD_FOR_IOS */
@@ -2057,7 +2057,7 @@ COMMAND_FUNC( do_del_choice )
 
 	WARN("Sorry, can't delete choices in the X11 implementation");
 	// suppress warnings
-	sprintf(ERROR_STRING,"Not deleting \"%s\" from 0x%lx",s,(long)sop);
+	snprintf(ERROR_STRING,LLEN,"Not deleting \"%s\" from 0x%lx",s,(long)sop);
 	advise(ERROR_STRING);
 
 
@@ -2087,7 +2087,7 @@ COMMAND_FUNC( do_set_picks )
 	n_cyl = (int) how_many("number of cylinders");
 
 	if( n_cyl < 1 || n_cyl > MAX_CYLINDERS ){
-		sprintf(ERROR_STRING,"Number of cylinders (%d) should be between %d and %d!?",n_cyl,1,MAX_CYLINDERS);
+		snprintf(ERROR_STRING,LLEN,"Number of cylinders (%d) should be between %d and %d!?",n_cyl,1,MAX_CYLINDERS);
 		WARN(ERROR_STRING);
 		return;
 	}
@@ -2098,7 +2098,7 @@ COMMAND_FUNC( do_set_picks )
 	// BUG this should work for "scrollers" too!
 	// BUG need to implement for pickers too...
 	if( SOB_TYPE(sop) != SOT_PICKER ){
-		sprintf(ERROR_STRING,"set_picks:  object %s is not a picker!?",SOB_NAME(sop));
+		snprintf(ERROR_STRING,LLEN,"set_picks:  object %s is not a picker!?",SOB_NAME(sop));
 		WARN(ERROR_STRING);
 		return;
 	}

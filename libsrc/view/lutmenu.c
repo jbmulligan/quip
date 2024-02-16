@@ -55,7 +55,7 @@ static COMMAND_FUNC( show_current_lb )
 	if( DPA_CMAP_OBJ(current_dpyp) == NULL )
 		advise("no current colormap");
 	else {
-		sprintf(ERROR_STRING,"current colormap is \"%s\"",
+		snprintf(ERROR_STRING,LLEN,"current colormap is \"%s\"",
 			OBJ_NAME(DPA_CMAP_OBJ(current_dpyp)));
 		advise(ERROR_STRING);
 	}

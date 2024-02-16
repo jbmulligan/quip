@@ -393,6 +393,7 @@ extern int string_is_printable(const char *s);
 extern void _tty_warn(QSP_ARG_DECL  const char *s);
 extern void _set_max_warnings(QSP_ARG_DECL  int n);
 extern char *_show_printable(QSP_ARG_DECL  const char* s);
+extern void suppress_compiler_warning(void *p);
 
 #define tty_warn(s) _tty_warn(QSP_ARG  s)
 #define set_max_warnings(n) _set_max_warnings(QSP_ARG  n)

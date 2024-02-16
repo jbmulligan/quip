@@ -55,13 +55,13 @@ void _set_n_linear(QSP_ARG_DECL  int n)
 		return;
 	}
 	if( n >= MAX_LIN_LVLS ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Number of linearization levels resetricted to a max of %d",
 			MAX_LIN_LVLS);
 		warn(ERROR_STRING);
 		n = MAX_LIN_LVLS;
 	}
-	sprintf(ERROR_STRING,
+	snprintf(ERROR_STRING,LLEN,
 		"Previous number of linearization levels was %d",n_lin_lvls);
 	advise(ERROR_STRING);
 	n_lin_lvls = n;
@@ -77,11 +77,11 @@ void _lin_setup(QSP_ARG_DECL  Data_Obj *lt_dp,double gam,double vz)
     u_short d;
 
 	if( verbose ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Setting up linearization table with %d entries",
 			n_lin_lvls);
 		advise(ERROR_STRING);
-		sprintf(ERROR_STRING,"gamma = %g,   vzero = %g",gam,vz);
+		snprintf(ERROR_STRING,LLEN,"gamma = %g,   vzero = %g",gam,vz);
 		advise(ERROR_STRING);
 	}
 
@@ -103,7 +103,7 @@ void _lin_setup(QSP_ARG_DECL  Data_Obj *lt_dp,double gam,double vz)
 		d = (u_short)(x + (double)vz);
 		/* used to check for positive, but now d is unsigned */
 		if( d > DACMAX ){
-			sprintf(ERROR_STRING,"lin_setup value out of range:  i=%d  tbl=%d",i,d);
+			snprintf(ERROR_STRING,LLEN,"lin_setup value out of range:  i=%d  tbl=%d",i,d);
 			warn(ERROR_STRING);
 			stat=0;
 		}
@@ -152,21 +152,21 @@ char *name;
 	for(j=0;j< 3 /* N_COMPS */ ;j++) {
 		char filename[256];
 
-		sprintf(filename, "%s.%c", name, '0' + j);
+		snprintf(filename,256, "%s.%c", name, '0' + j);
 
 		if(!(fp = tryopen(filename, "r"))) {
 			stat=0;
 			continue;
 		}
 
-		sprintf(ERROR_STRING,"Reading linearization data from %s",
+		snprintf(ERROR_STRING,LLEN,"Reading linearization data from %s",
 			filename);
 		advise(ERROR_STRING);
 
 		n=0;
 		while( fscanf(fp,"%d",&value) == 1 ){
 			if( value < 0 || value > DACMAX ) {
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"linearization value out of range:  i=%d  tbl=%d",
 					n,value);
 				warn (ERROR_STRING);
@@ -202,13 +202,13 @@ char *name;
 	for(j=0;j<N_COMPS;j++) {
 		char filename[256];
 
-		sprintf(filename, "%s.%c", name, '0' + j);
+		snprintf(filename,256, "%s.%c", name, '0' + j);
 
 		if(!(fp = try_nice(filename, "w"))) {
 			continue;
 		}
 
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Writing linearization data to %s",filename);
 		advise(ERROR_STRING);
 
@@ -229,7 +229,7 @@ u_int start, n;
 		lin_setup( DPA_LINTBL_OBJ(current_dpyp),DEF_GAM,DEF_VZ);
 
 	if( start < 0 || start >= n_lin_lvls ){
-		sprintf(ERROR_STRING,"Start value %d must be in the range 0-%d",
+		snprintf(ERROR_STRING,LLEN,"Start value %d must be in the range 0-%d",
 			start,n_lin_lvls-1);
 		warn(ERROR_STRING);
 		return;
@@ -245,7 +245,7 @@ u_int start, n;
 
 	for(i=start;i<n_lin_lvls && i<=start+n;i++){
 
-		sprintf(msg_str,"%d:\t\t%d\t%d\t%d",
+		snprintf(msg_str,LLEN,"%d:\t\t%d\t%d\t%d",
 			i,CURR_LIN_DATA(0,i),CURR_LIN_DATA(1,i),CURR_LIN_DATA(2,i));
 		prt_msg(msg_str);
 	}

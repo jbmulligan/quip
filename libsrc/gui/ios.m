@@ -271,7 +271,7 @@ void check_first(Panel_Obj *po)
 	UIView *uiv;
 
 	uiv = find_first_responder( PO_QV(po).superview.superview );
-	sprintf(DEFAULT_ERROR_STRING,"check_first:  found 0x%lx",(long)uiv);
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"check_first:  found 0x%lx",(long)uiv);
 	NADVISE(DEFAULT_ERROR_STRING);
 }
 
@@ -454,7 +454,7 @@ void make_message(QSP_ARG_DECL  Screen_Obj *sop)
 	int w;
 	char s[LLEN];
 
-	sprintf(s,"%s:  %s",SOB_NAME(sop),SOB_CONTENT(sop));
+	snprintf(s,LLEN,"%s:  %s",SOB_NAME(sop),SOB_CONTENT(sop));
 	//w=PIXELS_PER_CHAR*strlen(s)+EXTRA_WIDTH;
 	w=globalAppDelegate.dev_size.width;
 	f=CGRectMake(PO_CURR_X(curr_panel),PO_CURR_Y(curr_panel),w,BUTTON_HEIGHT);
@@ -504,7 +504,7 @@ void _get_choice(QSP_ARG_DECL  Screen_Obj *sop)
 		assign_var(DEFAULT_QSP_ARG "choice", SOB_SELECTOR_AT_IDX(sop,0,idx) );
 		return;
 	} else {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "get_choice:  object %s is neither a picker nor a chooser!?",SOB_NAME(sop));
 		warn(ERROR_STRING);
 	}
@@ -532,7 +532,7 @@ void _set_choice(QSP_ARG_DECL  Screen_Obj *sop, int which)
 		p=(UIPickerView *)SOB_CONTROL(sop);
 		[p selectRow:which inComponent:0 animated:NO];
 	} else {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "set_choice:  object %s is neither a picker nor a chooser!?",SOB_NAME(sop));
 		warn(ERROR_STRING);
 	}
@@ -545,7 +545,7 @@ void _set_pick(QSP_ARG_DECL  Screen_Obj *sop, int cyl, int which)
 		p=(UIPickerView *)SOB_CONTROL(sop);
 
 		if( cyl < 0 || cyl >= SOB_N_CYLINDERS(sop) ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"set_pick:  cylinder %d is out of range for picker %s (0-%d)",
 				cyl,SOB_NAME(sop),SOB_N_CYLINDERS(sop));
 			warn(ERROR_STRING);
@@ -554,7 +554,7 @@ void _set_pick(QSP_ARG_DECL  Screen_Obj *sop, int cyl, int which)
 
 		[p selectRow:which inComponent:cyl animated:NO];
 	} else {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "set_pick:  object %s is not a chooser!?",SOB_NAME(sop));
 		warn(ERROR_STRING);
 	}
@@ -838,7 +838,7 @@ void update_gauge_label(Screen_Obj *gp )
 	// but this should be done before calling?
 
 	l=(UILabel *) SOB_LABEL(gp);
-	sprintf(valstr,":  %d",SOB_VAL(gp));
+	snprintf(valstr,64,":  %d",SOB_VAL(gp));
 	l.text = [STRINGOBJ( SOB_NAME(gp) ) stringByAppendingString: STRINGOBJ(valstr) ];
 }
 
@@ -939,7 +939,7 @@ void _make_slider(QSP_ARG_DECL  Screen_Obj *sop)
 	l.backgroundColor = [UIColor clearColor];
 	l.textColor = [UIColor DEFAULT_UI_COLOR];
 	l.textAlignment = NSTextAlignmentCenter;
-	sprintf(numstr,"%d",SOB_MIN(sop));
+	snprintf(numstr,32,"%d",SOB_MIN(sop));
 	l.text = STRINGOBJ( numstr );
 	[qv addSubview:l];
 
@@ -953,7 +953,7 @@ void _make_slider(QSP_ARG_DECL  Screen_Obj *sop)
 	l.backgroundColor = [UIColor clearColor];
 	l.textColor = [UIColor DEFAULT_UI_COLOR];
 	l.textAlignment = NSTextAlignmentCenter;
-	sprintf(numstr,"%d",SOB_MAX(sop));
+	snprintf(numstr,32,"%d",SOB_MAX(sop));
 	l.text = STRINGOBJ( numstr );
 	[qv addSubview:l];
 
@@ -1023,7 +1023,7 @@ void update_message(Screen_Obj *sop)
 	UILabel *l;
 	char s[LLEN];
 
-	sprintf(s,"%s:  %s",SOB_NAME(sop),SOB_CONTENT(sop));
+	snprintf(s,LLEN,"%s:  %s",SOB_NAME(sop),SOB_CONTENT(sop));
 	// BUG check widget type
 	l = (UILabel *) SOB_CONTROL(sop);
 	l.text = STRINGOBJ( s );
@@ -1083,7 +1083,7 @@ void _update_text_field(QSP_ARG_DECL  Screen_Obj *sop, const char *string)
 			break;
 
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"update_text_field:  unhandled object type, screen object %s",SOB_NAME(sop));
 			warn(ERROR_STRING);
 			break;
@@ -1282,7 +1282,7 @@ void push_nav(QSP_ARG_DECL  Gen_Win *gwp)
 
 	// Make sure that this has not been pushed already by scanning the stack
 	if( controller_already_pushed(gwp) ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 			"push_nav %s:  panel already pushed!?",GW_NAME(gwp));
 		advise(DEFAULT_ERROR_STRING);
 		return;
@@ -1442,7 +1442,7 @@ void pop_nav(QSP_ARG_DECL int n_levels)
 
 void make_console_panel(QSP_ARG_DECL  const char *name)
 {
-	Panel_Obj *po = new_panel(QSP_ARG  name,	/* make_console_panel */
+	Panel_Obj *po = my_new_panel(QSP_ARG  name,	/* make_console_panel */
 			globalAppDelegate.dev_size.width,
 			globalAppDelegate.dev_size.height);
 
@@ -1834,7 +1834,7 @@ static int multiple_deferred_alerts(SINGLE_QSP_ARG_DECL)
 	QUIP_ALERT_OBJ_TYPE *alert_p;
 
 	// give the user the option of dismissing all of these alerts...
-	sprintf(MSG_STR,"%d queued alerts!",eltcount(deferred_alert_queue));
+	snprintf(MSG_STR,LLEN,"%d queued alerts!",eltcount(deferred_alert_queue));
 	alert_p = create_alert_with_two_buttons(MSG_STR,"Show all?");
 	show_alert(alert_p);
 	return 0;

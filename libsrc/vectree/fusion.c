@@ -110,7 +110,7 @@ static void _emit_symbol_for_func(QSP_ARG_DECL  String_Buf *sbp, Vec_Func_Code c
 		case FVSSUB:
 			s=" - "; break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"emit_symbol_for_func:  unhandled function %s!?",
 	VF_NAME(FIND_VEC_FUNC(code)));
 			warn(ERROR_STRING);
@@ -230,7 +230,7 @@ static void _emit_bool_op(QSP_ARG_DECL  String_Buf *sbp, Vec_Expr_Node *enp)
 		case FSS_VS_NE:
 			cat_string(sbp," != "); break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"emit_bool_op:  unhandled bitmap code %d!?",VN_BM_CODE(enp));
 			warn(ERROR_STRING);
 			break;
@@ -288,11 +288,11 @@ static void _emit_kern_body_node(QSP_ARG_DECL  String_Buf *sbp, Vec_Expr_Node *e
 			cat_string(sbp, ")");
 			break;
 		case T_LIT_INT:
-			sprintf(msg_str,"%"PRId64,VN_INTVAL(enp));
+			snprintf(msg_str,LLEN,"%"PRId64,VN_INTVAL(enp));
 			cat_string(sbp,msg_str);
 			break;
 		case T_LIT_DBL:
-			sprintf(msg_str," %g",VN_DBLVAL(enp));
+			snprintf(msg_str,LLEN," %g",VN_DBLVAL(enp));
 			cat_string(sbp,msg_str);
 			break;
 		case T_DECL_STAT:
@@ -461,7 +461,7 @@ void _fuse_subrt(QSP_ARG_DECL  Subrt *srp)
 	// Make sure that this one hasn't already been fused...
 	kp = find_fused_kernel(srp, curr_pdp);
 	if( kp != NULL ){
-		sprintf(ERROR_STRING,"fuse_subrt:  Subroutine %s has already been fused!?",SR_NAME(srp));
+		snprintf(ERROR_STRING,LLEN,"fuse_subrt:  Subroutine %s has already been fused!?",SR_NAME(srp));
 		warn(ERROR_STRING);
 		return;
 	}
@@ -546,7 +546,7 @@ long _set_fused_kernel_args(QSP_ARG_DECL  void *kp, int *idx_p, Vec_Expr_Node *e
 
 		default:
 			ret_val = -1;
-			sprintf(ERROR_STRING,"set_fused_kernel_args:  unhandled case %s !?",node_desc(enp));
+			snprintf(ERROR_STRING,LLEN,"set_fused_kernel_args:  unhandled case %s !?",node_desc(enp));
 			error1(ERROR_STRING);
 	}
 //fprintf(stderr,"set_fused_kernel_args will return %ld\n",ret_val);

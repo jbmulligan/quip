@@ -51,7 +51,7 @@ static void init_camera_subsystem(SINGLE_QSP_ARG_DECL)
 
 		cam = new_camera(QSP_ARG  avcd.localizedName.UTF8String );
 		if( cam == NULL ){
-			sprintf(ERROR_STRING,"Error creating camera %s!?",
+			snprintf(ERROR_STRING,LLEN,"Error creating camera %s!?",
 				avcd.localizedName.UTF8String);
 			WARN(ERROR_STRING);
 			return;

@@ -108,7 +108,7 @@ const char *gl_cap_string(GLenum cap)
 			return(cap_tbl[i].nc_name);
 		}
 	}
-	sprintf(cap_name,"unnamed capability (%d)",cap);
+	snprintf(cap_name,100,"unnamed capability (%d)",cap);
 	return(cap_name);
 }
 

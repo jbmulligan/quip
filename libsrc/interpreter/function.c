@@ -218,7 +218,7 @@ static double ascii_val(QSP_ARG_DECL  const char *s)
 		return 0;
 	}
 	if( l > 1 ){
-		sprintf(ERROR_STRING,"ascii() passed a string of length %lu, returning value of 1st char.",l);
+		snprintf(ERROR_STRING,LLEN,"ascii() passed a string of length %lu, returning value of 1st char.",l);
 		warn(ERROR_STRING);
 	}
 	return (double) s[0];
@@ -399,7 +399,7 @@ static void set_year(struct tm *tm_p, const char *date_string)
 	y *= 100;
 	y += two_digit_number(&date_string[2]);
 	if( y < 1970 || y > 2038 ){
-		sprintf(DEFAULT_ERROR_STRING,"Bad year %d!? (date_string = \"%s\"",y,date_string);
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"Bad year %d!? (date_string = \"%s\"",y,date_string);
 		NWARN(DEFAULT_ERROR_STRING);
 		return;
 	}
@@ -491,7 +491,7 @@ static Item_Class *subscriptable_icp=NULL;
 static void init_##type_stem##_class(SINGLE_QSP_ARG_DECL)		\
 {									\
 	if( type_stem##_icp != NULL ){				\
-		sprintf(ERROR_STRING,					\
+		snprintf(ERROR_STRING,LLEN,					\
 	"Redundant call to %s class initializer",#type_stem);		\
 		warn(ERROR_STRING);					\
 		return;							\
@@ -714,7 +714,7 @@ Item *sub_sizable(QSP_ARG_DECL  Item *ip,index_t index)
 	sfp = (Subscript_Functions *) mip->mi_data;
 
 	if( sfp->subscript == NULL ){
-		sprintf(ERROR_STRING,"Can't subscript object %s!?",
+		snprintf(ERROR_STRING,LLEN,"Can't subscript object %s!?",
 			ip->item_name);
 		warn(ERROR_STRING);
 		return NULL;
@@ -742,7 +742,7 @@ Item *csub_sizable(QSP_ARG_DECL  Item *ip,index_t index)
 	sfp = (Subscript_Functions *) mip->mi_data;
 
 	if( sfp->csubscript == NULL ){
-		sprintf(ERROR_STRING,"Can't subscript object %s",
+		snprintf(ERROR_STRING,LLEN,"Can't subscript object %s",
 			ip->item_name);
 		warn(ERROR_STRING);
 		return NULL;

@@ -36,10 +36,10 @@ extern Keyword ml_native_func_tbl[];
 #define VERIFY_DATA_TYPE( enp , type , where )				\
 									\
 if( VN_DATA_TYPE(enp) != type ){					\
-	sprintf(ERROR_STRING,						\
+	snprintf(ERROR_STRING,LLEN,					\
 "CAUTIOUS:  %s:  %s has data type code %d (%s), expected %d (%s)",	\
 	where, node_desc(enp),VN_DATA_TYPE(enp),			\
-	node_data_type_desc(VN_DATA_TYPE(enp)),	\
+	node_data_type_desc(VN_DATA_TYPE(enp)),				\
 				type,node_data_type_desc(type));	\
 	error1(ERROR_STRING);						\
 }

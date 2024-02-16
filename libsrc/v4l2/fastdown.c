@@ -61,7 +61,7 @@ void _fast_downsample(QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src_dp)
 	u_long i,j;
 
 	if( OBJ_PREC(dst_dp) != PREC_IN ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"fast_downsample:  destination object %s has type %s, should be %s",
 			OBJ_NAME(dst_dp),PREC_NAME(OBJ_PREC_PTR(dst_dp)),
 			NAME_FOR_PREC_CODE(PREC_IN));
@@ -69,7 +69,7 @@ void _fast_downsample(QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src_dp)
 		return;
 	}
 	if( OBJ_PREC(src_dp) != PREC_IN && OBJ_PREC(src_dp) != PREC_UBY ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"fast_downsample:  source object %s has type %s, should be %s or %s",
 			OBJ_NAME(src_dp),PREC_NAME(OBJ_PREC_PTR(src_dp)),
 			NAME_FOR_PREC_CODE(PREC_IN), NAME_FOR_PREC_CODE(PREC_UBY));
@@ -78,7 +78,7 @@ void _fast_downsample(QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src_dp)
 	}
 
 	if( OBJ_COMPS(dst_dp) != OBJ_COMPS(src_dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "fast_subsample:  component count mismatch between destination %s (%d) and %s (%d)",
 			OBJ_NAME(dst_dp),OBJ_COMPS(dst_dp),OBJ_NAME(src_dp),
 			OBJ_COMPS(src_dp));
@@ -88,7 +88,7 @@ void _fast_downsample(QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src_dp)
 	}
 	if( 2*OBJ_COLS(dst_dp) != OBJ_COLS(src_dp) ||
 		2*OBJ_ROWS(dst_dp) != OBJ_ROWS(src_dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "fast_downsample:  source object %s (%d x %d) should be twice the size of destination object %s (%d x %d)",
 			OBJ_NAME(src_dp),OBJ_ROWS(src_dp),OBJ_COLS(src_dp),
 			OBJ_NAME(dst_dp),OBJ_ROWS(dst_dp),OBJ_COLS(dst_dp));

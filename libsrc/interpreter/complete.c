@@ -418,7 +418,7 @@ static int fetch_termcap_entry(SINGLE_QSP_ARG_DECL)
 		if( stat==(-1) ){
 			warn("init_tty_chars:  can't open termcap file");
 		} else if( stat==0 ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 			"no termcap entry for terminal \"%s\"",s);
 			warn(ERROR_STRING);
 		} else {
@@ -435,7 +435,7 @@ static void init_tty_chars(SINGLE_QSP_ARG_DECL)
 {
 #ifdef HAVE_TERMCAP
 	char *tptr;
-	extern char *tgetstr();
+	/*extern char *tgetstr();*/
 	static char tbuf[32];
 
 	if( fetch_termcap_entry(SINGLE_QSP_ARG) < 0 )
@@ -644,11 +644,11 @@ static int handle_escape_sequence(QSP_ARG_DECL  Completion_Data *cdp)
 		else if( c == 'D' )
 			c = LF_ARROW;
 		else {
-	sprintf(ERROR_STRING,"Unexpected arrow key char seen:  0%o !?",c);
+	snprintf(ERROR_STRING,LLEN,"Unexpected arrow key char seen:  0%o !?",c);
 	warn(ERROR_STRING);
 		}
 	} else {
-		sprintf(ERROR_STRING,"Unexpected char 0%o seenm after escape",c);
+		snprintf(ERROR_STRING,LLEN,"Unexpected char 0%o seenm after escape",c);
 		warn(ERROR_STRING);
 		return -1;
 	}

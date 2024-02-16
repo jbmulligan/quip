@@ -24,32 +24,35 @@ Precision * get_precision(SINGLE_QSP_ARG_DECL);
 
 
 
-#define INSIST_POSITIVE_DIM( var, dim_name, subrt_name )					\
-												\
-	if( var <= 0 ){										\
-		sprintf(ERROR_STRING,"%s %s:  number of %ss (%ld) must be positive",		\
-			subrt_name,obj_name,dim_name,var);					\
-		warn(ERROR_STRING);								\
-		return;										\
+#define INSIST_POSITIVE_DIM( var, dim_name, subrt_name )		\
+									\
+	if( var <= 0 ){							\
+		snprintf(ERROR_STRING,LLEN,				\
+			"%s %s:  number of %ss (%ld) must be positive",	\
+			subrt_name,obj_name,dim_name,var);		\
+		warn(ERROR_STRING);					\
+		return;							\
 	}
 
-#define INSIST_POSITIVE_NUM( var, desc_str, subrt_name )					\
-												\
-	if( var <= 0 ){										\
-		sprintf(ERROR_STRING,"%s:  %s (%ld) must be positive",				\
-			subrt_name,desc_str,var);						\
-		warn(ERROR_STRING);								\
-		return;										\
+#define INSIST_POSITIVE_NUM( var, desc_str, subrt_name )		\
+									\
+	if( var <= 0 ){							\
+		snprintf(ERROR_STRING,LLEN,				\
+				"%s:  %s (%ld) must be positive",	\
+			subrt_name,desc_str,var);			\
+		warn(ERROR_STRING);					\
+		return;							\
 	}
 
 
-#define INSIST_NONNEGATIVE( var, var_string, subrt_name )					\
-												\
-	if( var < 0 ){										\
-		sprintf(ERROR_STRING,"%s %s:  %s (%ld) must be positive",			\
-			subrt_name,obj_name,var_string,var);					\
-		warn(ERROR_STRING);								\
-		return;										\
+#define INSIST_NONNEGATIVE( var, var_string, subrt_name )		\
+									\
+	if( var < 0 ){							\
+		snprintf(ERROR_STRING,LLEN,				\
+				"%s %s:  %s (%ld) must be positive",	\
+			subrt_name,obj_name,var_string,var);		\
+		warn(ERROR_STRING);					\
+		return;							\
 	}
 
 static COMMAND_FUNC( do_create_area )
@@ -76,7 +79,7 @@ static COMMAND_FUNC( do_select_area )
 	if( ap != NULL )
 		curr_ap=ap;
 	else if( curr_ap != NULL ){
-		sprintf(ERROR_STRING,"Unable to change data area, current area remains %s.",
+		snprintf(ERROR_STRING,LLEN,"Unable to change data area, current area remains %s.",
 			AREA_NAME(curr_ap));
 		advise(ERROR_STRING);
 	}
@@ -195,7 +198,7 @@ static void _finish_obj(QSP_ARG_DECL  const char *obj_name, Dimension_Set *dsp, 
 
 	if( COLOR_PRECISION(PREC_CODE(prec_p)) ){
 		if( DIMENSION(dsp,0) != 1 ){
-			sprintf(ERROR_STRING,"object %s, number of rgb triples per pixel should be 1",obj_name);
+			snprintf(ERROR_STRING,LLEN,"object %s, number of rgb triples per pixel should be 1",obj_name);
 			warn(ERROR_STRING);
 		}
 		SET_DIMENSION(dsp,0,3);
@@ -203,7 +206,7 @@ static void _finish_obj(QSP_ARG_DECL  const char *obj_name, Dimension_Set *dsp, 
 	}
 
 	if( make_dobj_with_shape(obj_name,dsp,prec_p,type_flag) == NULL ) {
-		sprintf(ERROR_STRING,"couldn't create data object \"%s\"", obj_name);
+		snprintf(ERROR_STRING,LLEN,"couldn't create data object \"%s\"", obj_name);
 		warn(ERROR_STRING);
 	}
 }
@@ -360,7 +363,7 @@ static COMMAND_FUNC( new_obj_list )
 	}
 
 	if( make_obj_list(s,lp) == NULL ){
-		sprintf(ERROR_STRING,"error making object list %s");
+		snprintf(ERROR_STRING,LLEN,"error making object list %s");
 		warn(ERROR_STRING);
 	}
 }
@@ -774,15 +777,15 @@ static COMMAND_FUNC( mk_subsample )
 		if( OBJ_TYPE_DIM(dp,i) > 1 ){
 			if( i < (N_DIMENSIONS-1) )
 				// BUG check length
-				sprintf(pmpt,"number of %ss per %s",dimension_name[i], dimension_name[i+1]);
+				snprintf(pmpt,MAX_PMPT_LEN,"number of %ss per %s",dimension_name[i], dimension_name[i+1]);
 			else
-				sprintf(pmpt,"number of %ss",dimension_name[i]);
+				snprintf(pmpt,MAX_PMPT_LEN,"number of %ss",dimension_name[i]);
 
 			size[i]=(long) how_many(pmpt);
 
-			sprintf(pmpt,"%s offset",dimension_name[i]);
+			snprintf(pmpt,MAX_PMPT_LEN,"%s offset",dimension_name[i]);
 			l_offset[i] = (long) how_many(pmpt);
-			sprintf(pmpt,"%s increment",dimension_name[i]);
+			snprintf(pmpt,MAX_PMPT_LEN,"%s increment",dimension_name[i]);
 			incrs[i] =(incr_t)how_many(pmpt);	// this can be negative...
 		} else {
 			size[i] = 1;
@@ -793,7 +796,7 @@ static COMMAND_FUNC( mk_subsample )
 	for(i=0;i<N_DIMENSIONS;i++){
 		char offset_descr[LLEN];
 		INSIST_POSITIVE_DIM(size[i],dimension_name[i],"mk_subsample");
-		sprintf(offset_descr,"%s offset",dimension_name[i]);
+		snprintf(offset_descr,LLEN,"%s offset",dimension_name[i]);
 		INSIST_NONNEGATIVE(l_offset[i],offset_descr,"mk_subsample");
 	}
 	for(i=0;i<N_DIMENSIONS;i++){
@@ -825,7 +828,7 @@ static COMMAND_FUNC( do_relocate )
 	INSIST_NONNEGATIVE(t,"t offset","relocate");
 
 	if( OBJ_PARENT(dp) == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"relocate:  object \"%s\" is not a subimage",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
@@ -866,10 +869,10 @@ static Data_Obj *get_obj_or_file(QSP_ARG_DECL const char *name)
 	ifp = img_file_of(name);
 	if( ifp!=NULL ) return(ifp->if_dp);
 
-	sprintf(ERROR_STRING,"No object or open file \"%s\"",name);
+	snprintf(ERROR_STRING,LLEN,"No object or open file \"%s\"",name);
 	warn(ERROR_STRING);
 #else /* PC */
-	sprintf(ERROR_STRING,
+	snprintf(ERROR_STRING,LLEN,
 		"No object \"%s\" (not checking for files!?)",name);
 	warn(ERROR_STRING);
 #endif /* ! PC */
@@ -908,7 +911,7 @@ static COMMAND_FUNC( do_protect )
 	dp=pick_obj("");
 	if( dp == NULL ) return;
 	if( IS_STATIC(dp) ){
-		sprintf(ERROR_STRING,"do_protect:  Object %s is already static!?",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"do_protect:  Object %s is already static!?",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}

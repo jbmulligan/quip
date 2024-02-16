@@ -116,7 +116,7 @@ static COMMAND_FUNC( do_unexport )
 
 	idp = id_of(OBJ_NAME(dp));
 	if( idp == NULL ){
-		sprintf(ERROR_STRING,"do_unexport:  object %s has not been exported",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"do_unexport:  object %s has not been exported",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}
@@ -169,7 +169,7 @@ static COMMAND_FUNC( do_export )
 
 	idp = id_of(OBJ_NAME(dp));
 	if( idp != NULL ){
-		sprintf(ERROR_STRING,"do_export:  identifier %s already exists!?",ID_NAME(idp));
+		snprintf(ERROR_STRING,LLEN,"do_export:  identifier %s already exists!?",ID_NAME(idp));
 		warn(ERROR_STRING);
 		return;
 	}

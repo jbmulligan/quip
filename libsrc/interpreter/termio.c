@@ -45,9 +45,9 @@ void _show_term_flags(QSP_ARG_DECL  u_long flag,Termio_Option *tbl)
 {
 	while(tbl->to_name != NULL ){
 		if( flag & tbl->to_bit ){
-			sprintf(msg_str,"  %s",tbl->to_name);
+			snprintf(msg_str,LLEN,"  %s",tbl->to_name);
 		} else {
-			sprintf(msg_str," -%s",tbl->to_name);
+			snprintf(msg_str,LLEN," -%s",tbl->to_name);
 		}
 		prt_msg_frag(msg_str);
 
@@ -62,9 +62,9 @@ void _dump_term_flags(QSP_ARG_DECL  u_long flag, Termio_Option *tbl)
 {
 	while(tbl->to_name != NULL ){
 		if( flag & tbl->to_bit ){
-			sprintf(msg_str,"%s %s yes",SETFLAG_CMD_WORD,tbl->to_name);
+			snprintf(msg_str,LLEN,"%s %s yes",SETFLAG_CMD_WORD,tbl->to_name);
 		} else {
-			sprintf(msg_str,"%s %s no",SETFLAG_CMD_WORD,tbl->to_name);
+			snprintf(msg_str,LLEN,"%s %s no",SETFLAG_CMD_WORD,tbl->to_name);
 		}
 		prt_msg(msg_str);
 
@@ -86,7 +86,7 @@ void _set_n_data_bits(QSP_ARG_DECL  int fd,int n)
 			tiobuf.c_cflag |= CS7;
 			break;
 		default:
-			sprintf(DEFAULT_ERROR_STRING,
+			snprintf(DEFAULT_ERROR_STRING,LLEN,
 				"bad number of bits requested:  %d",n);
 			warn(DEFAULT_ERROR_STRING);
 			break;

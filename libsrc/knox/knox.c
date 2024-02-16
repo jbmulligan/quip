@@ -25,7 +25,7 @@ static int doing_command_set = 0;	/* flag for sending set of commands */
 {								\
 	range_ok=1;						\
 	if( number < min || number > max ) {			\
-		sprintf(ERROR_STRING,				\
+		snprintf(ERROR_STRING,LLEN,			\
 "%s (%d) must be between %d and %d", name, number, min, max);	\
 		WARN(ERROR_STRING);				\
 		range_ok=0;					\
@@ -59,7 +59,7 @@ static int doing_command_set = 0;	/* flag for sending set of commands */
 
 #define NO_KNOX_MSG2(p,v)									\
 												\
-	sprintf(ERROR_STRING,"Sorry, no knox support in this build, can't set %s to %s!?",p,v);	\
+	snprintf(ERROR_STRING,LLEN,"Sorry, no knox support in this build, can't set %s to %s!?",p,v);	\
 	WARN(ERROR_STRING);
 
 #define USES_NEWER_FIRMWARE(kdp)		0
@@ -169,7 +169,7 @@ static void show_routing_map(SINGLE_QSP_ARG_DECL)
 	prt_msg("");
 	prt_msg("\toutput\tvideo\taudio");
 	for(i=0;i<8;i++){
-		sprintf(msg_str,"\t%d\t%d\t%d",i+1,
+		snprintf(msg_str,LLEN,"\t%d\t%d\t%d",i+1,
 			knox_state.ks_video[i],knox_state.ks_audio[i]);
 		prt_msg(msg_str);
 	}
@@ -183,7 +183,7 @@ static void _get_map_response(QSP_ARG_DECL  int i_output)
 	char str[32];
 	int n;
 
-	sprintf(str,"  OUTPUT  %d     VIDEO  ",i_output);
+	snprintf(str,32,"  OUTPUT  %d     VIDEO  ",i_output);
 	expected_response(curr_kdp->kd_sbp,str);
 	n=get_number(curr_kdp->kd_sbp);
 	knox_state.ks_video[i_output-1] = n;
@@ -202,7 +202,7 @@ static void _get_condensed_map_response(QSP_ARG_DECL  int i_output)
 
 	expected_response(curr_kdp->kd_sbp,str);
 
-	sprintf(str,"%dV",i_output);
+	snprintf(str,32,"%dV",i_output);
 	expected_response(curr_kdp->kd_sbp,str);
 	n=get_number(curr_kdp->kd_sbp);
 	knox_state.ks_video[i_output-1] = n;
@@ -225,7 +225,7 @@ static void _send_knox_cmd(QSP_ARG_DECL  const char* buf)
 	char rstr[2];
 
 /*
-sprintf(ERROR_STRING,"send_knox_cmd:  sending \"%s\"",buf);
+snprintf(ERROR_STRING,LLEN,"send_knox_cmd:  sending \"%s\"",buf);
 advise(ERROR_STRING);
 */
 	n=strlen(buf);
@@ -359,7 +359,7 @@ static int _process_knox_reply(QSP_ARG_DECL  Knox_Cmd_Code code)
 			break;
 
 		default:
-			sprintf(ERROR_STRING,"process_knox_reply:  unhandled code %d (%s)",
+			snprintf(ERROR_STRING,LLEN,"process_knox_reply:  unhandled code %d (%s)",
 				code,knox_tbl[code].kc_desc);
 			WARN(ERROR_STRING);
 			sleep(2);
@@ -373,9 +373,9 @@ static int _process_knox_reply(QSP_ARG_DECL  Knox_Cmd_Code code)
 
 #endif // HAVE_KNOX
 
-#define get_knox_args(arg_buf) _get_knox_args(QSP_ARG   arg_buf)
+#define get_knox_args(arg_buf,buflen) _get_knox_args(QSP_ARG   arg_buf,buflen)
 
-static int _get_knox_args(QSP_ARG_DECL   char* arg_buf)
+static int _get_knox_args(QSP_ARG_DECL   char* arg_buf, int arg_buf_len)
 {
 	int input, first_output;
 	int ret_stat=0;
@@ -387,12 +387,12 @@ static int _get_knox_args(QSP_ARG_DECL   char* arg_buf)
 		GET_SIGNAL(first_output,"first output number");
 		GET_SIGNAL(last_output,"last output number");
 
-		sprintf(arg_buf, "%d%d%d", first_output, last_output, input);
+		snprintf(arg_buf,arg_buf_len, "%d%d%d", first_output, last_output, input);
 	} else {
 	*/
 		GET_SIGNAL(first_output,"output number");
 
-		sprintf(arg_buf, "%d%d", first_output, input);
+		snprintf(arg_buf,arg_buf_len, "%d%d", first_output, input);
 	/*
 	}
 	*/
@@ -408,7 +408,7 @@ static int _do_knox_cmd(QSP_ARG_DECL  Knox_Cmd_Code code, char* args)
 	char buf[MAX_ARGS_LEN];
 	int stat;
 	
-	sprintf(buf, "%s", knox_tbl[code].kc_str);	// BUG check for overrun
+	snprintf(buf,MAX_ARGS_LEN, "%s", knox_tbl[code].kc_str);	// BUG check for overrun
 	if( args ) strcat(buf, args);
 	reset_buffer(curr_kdp->kd_sbp);
 	send_knox_cmd(buf);
@@ -429,7 +429,7 @@ static COMMAND_FUNC( do_route_both )
 {
 	char knox_args[MAX_ARGS_LEN];
 
-	if( get_knox_args(knox_args) < 0 ) return;
+	if( get_knox_args(knox_args,MAX_ARGS_LEN) < 0 ) return;
 
 	DO_KNOX_CMD(KNOX_SET_BOTH,knox_args,"Unable to route audio and video!")
 }
@@ -446,7 +446,7 @@ static COMMAND_FUNC( do_route_diff )
 
 	if( ret_stat < 0 ) return;
 
-	sprintf(knox_args, "%d%d%d", output, video_input, audio_input);
+	snprintf(knox_args,MAX_ARGS_LEN, "%d%d%d", output, video_input, audio_input);
 
 	DO_KNOX_CMD( KNOX_SET_DIFF,knox_args,"Unable to route audio and video from different inputs!")
 }
@@ -455,7 +455,7 @@ static COMMAND_FUNC( do_route_video )
 {
 	char knox_args[MAX_ARGS_LEN];
 
-	if( get_knox_args(knox_args) < 0 ) return;
+	if( get_knox_args(knox_args,MAX_ARGS_LEN) < 0 ) return;
 
 	DO_KNOX_CMD(KNOX_SET_VIDEO,knox_args,"Unable to route video alone!")
 }
@@ -464,7 +464,7 @@ static COMMAND_FUNC( do_route_audio )
 {
 	char knox_args[MAX_ARGS_LEN];
 
-	if( get_knox_args(knox_args) < 0 ) return;
+	if( get_knox_args(knox_args,MAX_ARGS_LEN) < 0 ) return;
 
 	DO_KNOX_CMD( KNOX_SET_AUDIO, knox_args,"Unable to route audio!?")
 }
@@ -571,7 +571,7 @@ static COMMAND_FUNC( do_knox_recall )
 		return;
 	}
 
-	sprintf(args, "%d", pattern);
+	snprintf(args,MAX_ARGS_LEN, "%d", pattern);
 	DO_KNOX_CMD(KNOX_RECALL_CROSSPOINT, args, "Unable to load crosspoint pattern!")
 }
 
@@ -587,7 +587,7 @@ static COMMAND_FUNC( do_knox_store )
 	GET_PATTERN(pattern_index,"switcher pattern index");
 	if( ret_stat < 0 ) return;
 
-	sprintf(args, "%d", pattern_index);
+	snprintf(args,MAX_ARGS_LEN, "%d", pattern_index);
 	DO_KNOX_CMD(KNOX_STORE_CROSSPOINT, args, "Unable to store crosspoint pattern!")
 }
 
@@ -616,8 +616,8 @@ static COMMAND_FUNC( do_knox_timer_start )
 	CHECK_RANGE("time cycle",time_cycle, MIN_TIME_CYCLE, MAX_TIME_CYCLE)
 	if( ! range_ok ) return;
 
-	/*sprintf(args, "%03d", time_cycle); */
-	sprintf(args, "%02d", time_cycle);
+	/*snprintf(args,MAX_ARGS_LEN, "%03d", time_cycle); */
+	snprintf(args,MAX_ARGS_LEN, "%02d", time_cycle);
 	DO_KNOX_CMD(  KNOX_SET_TIMER, args, "Unable to set timed sequencer!")
 }
 
@@ -650,21 +650,21 @@ static COMMAND_FUNC( do_fetch_map )
 	if( dp == NULL ) return;
 
 	if( OBJ_COLS(dp) != 8 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Object %s should have 8 columns for knox report",
 			OBJ_NAME(dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_COMPS(dp) != 2 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Object %s should have 2 components for knox report",
 			OBJ_NAME(dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_PREC(dp) != PREC_UBY ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Object %s should have %s precision for knox report",
 			OBJ_NAME(dp),PREC_NAME(PREC_FOR_CODE(PREC_UBY)));
 		WARN(ERROR_STRING);
@@ -733,7 +733,7 @@ static COMMAND_FUNC( do_knox_status_cmds )
 static COMMAND_FUNC( do_lamp_test )
 {
 	/* Lamp test command has no args! */
-	/*if( get_knox_args(args) < 0 ) return; */
+	/*if( get_knox_args(args,MAX_ARGS_LEN) < 0 ) return; */
 
 	DO_KNOX_CMD(  KNOX_LAMP_TEST, NULL, "Unable to do lamp test!")
 }
@@ -749,14 +749,14 @@ static void _open_knox_device(QSP_ARG_DECL  const char *s)
 
 	kdp = knox_dev_of(s);
 	if( kdp != NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"open_knox_device:  knox device %s is already open",s);
 		WARN(ERROR_STRING);
 		return;
 	}
 
 	if( (fd = open_serial_device(s)) < 0 ){ 
-		sprintf(ERROR_STRING,"Unable to open knox device %s",s);
+		snprintf(ERROR_STRING,LLEN,"Unable to open knox device %s",s);
 		WARN(ERROR_STRING);
 		return;
 	}
@@ -791,7 +791,7 @@ static void _open_knox_device(QSP_ARG_DECL  const char *s)
 		advise("Assuming newer firmware with /dev/knox");
 	} else {
 		kdp->kd_fwp = &older_fw;
-		sprintf(ERROR_STRING,"Assuming older firmware with %s",kdp->kd_name);
+		snprintf(ERROR_STRING,LLEN,"Assuming older firmware with %s",kdp->kd_name);
 		advise(ERROR_STRING);
 	}
 */

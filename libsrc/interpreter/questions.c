@@ -34,7 +34,7 @@ int64_t _how_many(QSP_ARG_DECL  const char *prompt)
 	tsp=pexpr(s);
 
 	if( SCALAR_PREC_CODE(tsp) == PREC_STR ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"how_many:  can't convert string \"%s\" to an integer!?",s);
 		warn(ERROR_STRING);
 		n = 0;
@@ -261,7 +261,7 @@ const char *_format_prompt(QSP_ARG_DECL  const char *fmt, const char *prompt)
 	pline = sb_buffer(QS_QRY_PROMPT_SB(THIS_QSP));
 
 	if( QS_FLAGS(THIS_QSP) & QS_FORMAT_PROMPT ){
-		sprintf(pline,fmt,prompt);
+		snprintf(pline,LLEN,fmt,prompt);
 	} else {
 		strcpy(pline,prompt);
 	}

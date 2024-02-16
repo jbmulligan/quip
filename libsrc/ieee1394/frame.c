@@ -432,7 +432,7 @@ int GetFrameSize(Frame *frmp)
 
 bool IsComplete(Frame *frmp)
 {
-//sprintf(error_string,"IsComplete:  bytesInFrame = %d, frame size = %d",
+//snprintf(error_string,LLEN,"IsComplete:  bytesInFrame = %d, frame size = %d",
 //frmp->frm_bytesInFrame,GetFrameSize(frmp));
 //advise(error_string);
 	return frmp->frm_bytesInFrame == GetFrameSize(frmp);

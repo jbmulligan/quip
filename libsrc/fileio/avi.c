@@ -45,7 +45,7 @@ static long skewed_frame_index(long index, Image_File *ifp);
 
 FIO_INFO_FUNC(avi)
 {
-	sprintf(msg_str,"File %s:",ifp->if_name);
+	snprintf(msg_str,LLEN,"File %s:",ifp->if_name);
 	prt_msg(msg_str);
 }
 
@@ -56,7 +56,7 @@ void SaveFrame(AVFrame *pFrame, int width, int height, int iFrame) {
 	int y;
 
 	// Open file
-	sprintf(szFilename, "frame%d.ppm", iFrame);
+	snprintf(szFilename,32, "frame%d.ppm", iFrame);
 	pFile=fopen(szFilename, "wb");
 	if(pFile==NULL)
 		return;
@@ -75,7 +75,7 @@ void SaveFrame(AVFrame *pFrame, int width, int height, int iFrame) {
 
 static void print_fps(double r, const char *s)
 {
-	sprintf(DEFAULT_ERROR_STRING,"\t%s:  %g",s,r);
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"\t%s:  %g",s,r);
 	NADVISE(DEFAULT_ERROR_STRING);
 }
 
@@ -119,7 +119,7 @@ int _avi_to_dp(QSP_ARG_DECL  Data_Obj *dp,AVCodec_Hdr *hd_p)
 #endif // THIS_IS_DEPRECATED
 
 
-sprintf(DEFAULT_ERROR_STRING,"duration = %ld, AV_TIME_BASE = %d, fps? = %g, time base = %g",
+snprintf(DEFAULT_ERROR_STRING,LLEN,"duration = %ld, AV_TIME_BASE = %d, fps? = %g, time base = %g",
 (long)hd_p->avch_format_ctx_p->duration,
 AV_TIME_BASE,
 1/av_q2d(hd_p->avch_video_stream_p->time_base),
@@ -151,7 +151,7 @@ NADVISE(DEFAULT_ERROR_STRING);
  * 30 for fps there, then we get good frame serial numbers.
  */
 	hd_p->avch_fps = round( 1/av_q2d(hd_p->avch_video_stream_p->time_base) );
-//sprintf(DEFAULT_ERROR_STRING,"avi_to_dp:  fps = %ld",hd_p->avch_fps);
+//snprintf(DEFAULT_ERROR_STRING,LLEN,"avi_to_dp:  fps = %ld",hd_p->avch_fps);
 //NADVISE(DEFAULT_ERROR_STRING);
 
 	/* We compute fps above, to avoid a numerical difference on 32bit and 64bit machines. */
@@ -161,9 +161,9 @@ NADVISE(DEFAULT_ERROR_STRING);
 	 */
 
 #ifdef LONG_64_BIT
-sprintf(DEFAULT_ERROR_STRING,"avi_to_dp:  unscaled duration is %ld",(long)hd_p->avch_format_ctx_p->duration);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"avi_to_dp:  unscaled duration is %ld",(long)hd_p->avch_format_ctx_p->duration);
 #else
-sprintf(DEFAULT_ERROR_STRING,"avi_to_dp:  unscaled duration is %lld",hd_p->avch_format_ctx_p->duration);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"avi_to_dp:  unscaled duration is %lld",hd_p->avch_format_ctx_p->duration);
 #endif
 NADVISE(DEFAULT_ERROR_STRING);
 
@@ -171,7 +171,7 @@ NADVISE(DEFAULT_ERROR_STRING);
 				* hd_p->avch_fps );
 				//* (1/av_q2d(hd_p->avch_video_stream_p->time_base));	/* fps */
 
-sprintf(DEFAULT_ERROR_STRING,"nf = %d",OBJ_FRAMES(dp));
+snprintf(DEFAULT_ERROR_STRING,LLEN,"nf = %d",OBJ_FRAMES(dp));
 NADVISE(DEFAULT_ERROR_STRING);
 
 	SET_OBJ_SEQS(dp, 1);
@@ -250,7 +250,7 @@ FIO_OPEN_FUNC( avi )
 				ifp->if_pathname,
 				NULL,
 				NULL) != 0 ){
-		sprintf(ERROR_STRING,"libavformat error opening file %s",ifp->if_pathname);
+		snprintf(ERROR_STRING,LLEN,"libavformat error opening file %s",ifp->if_pathname);
 		WARN(ERROR_STRING);
 		return(NULL);
 	}
@@ -260,7 +260,7 @@ FIO_OPEN_FUNC( avi )
 //#else // ! OLD
 	if( avformat_find_stream_info(HDR_P->avch_format_ctx_p,NULL)<0 ){
 //#endif // ! OLD
-		sprintf(ERROR_STRING,"Couldn't find stream info for file %s",name);
+		snprintf(ERROR_STRING,LLEN,"Couldn't find stream info for file %s",name);
 		WARN(ERROR_STRING);
 		return(NULL);
 	}
@@ -275,7 +275,7 @@ FIO_OPEN_FUNC( avi )
 		if(
 	HDR_P->avch_format_ctx_p->streams[i]->codec->codec_type ==
 			EXPECTED_VIDEO_TYPE ) {
-//sprintf(ERROR_STRING,"Found video at stream #%d",i);
+//snprintf(ERROR_STRING,LLEN,"Found video at stream #%d",i);
 //NADVISE(ERROR_STRING);
 			HDR_P->avch_video_stream_index=i;
 			HDR_P->avch_video_stream_p =
@@ -499,7 +499,7 @@ static void _convert_video_frame(QSP_ARG_DECL  Image_File *ifp)
 		int w = HDR_P->avch_codec_ctx_p->width;
 		int h = HDR_P->avch_codec_ctx_p->height;
 
-//sprintf(ERROR_STRING,"source format is %d (0x%x)",
+//snprintf(ERROR_STRING,LLEN,"source format is %d (0x%x)",
 //HDR_P->avch_codec_ctx_p->pix_fmt,
 //HDR_P->avch_codec_ctx_p->pix_fmt );
 //advise(ERROR_STRING);
@@ -619,10 +619,10 @@ static int get_next_avi_frame(QSP_ARG_DECL  Image_File *ifp)
 			}
 
 			HDR_P->avch_pts *= av_q2d(HDR_P->avch_video_stream_p->time_base);
-//sprintf(ERROR_STRING,"after avcodec_decode_video, pts = %g",HDR_P->avch_pts);
+//snprintf(ERROR_STRING,LLEN,"after avcodec_decode_video, pts = %g",HDR_P->avch_pts);
 //advise(ERROR_STRING);
 			/* Not sure how much this slows us down... */
-			sprintf(ERROR_STRING,"%g",HDR_P->avch_pts);
+			snprintf(ERROR_STRING,LLEN,"%g",HDR_P->avch_pts);
 			assign_var("pts",ERROR_STRING);
 		}
 
@@ -717,7 +717,7 @@ int avi_seek_frame( QSP_ARG_DECL  Image_File *ifp, uint32_t n )
 
 	seek_result = (-1);	// quiet compiler
 
-//sprintf(ERROR_STRING,"avi_seek %ld, current posn = %ld",
+//snprintf(ERROR_STRING,LLEN,"avi_seek %ld, current posn = %ld",
 //n,ifp->if_nfrms);
 //advise(ERROR_STRING);
 	if( n == ifp->if_nfrms ) return(0);	/* we're already there */
@@ -799,7 +799,7 @@ int avi_seek_frame( QSP_ARG_DECL  Image_File *ifp, uint32_t n )
 
 	if(av_seek_frame(HDR_P->avch_format_ctx_p,
 		HDR_P->avch_video_stream_index, seek_target, 0 /* or AVSEEK_FLAG_BACKWARD */) < 0) {
-		sprintf(ERROR_STRING, "%s: error while seeking\n", ifp->if_name);
+		snprintf(ERROR_STRING,LLEN, "%s: error while seeking\n", ifp->if_name);
 		WARN(ERROR_STRING);
 		return(-1);
 	}
@@ -839,7 +839,7 @@ long check_seek_offset(QSP_ARG_DECL  Image_File *ifp, int64_t pos)
 
 	if(av_seek_frame(HDR_P->avch_format_ctx_p,
 		HDR_P->avch_video_stream_index, pos, 0 /* or AVSEEK_FLAG_BACKWARD */) < 0) {
-		sprintf(ERROR_STRING, "check_for_dropped_frames %s: error while seeking\n", ifp->if_name);
+		snprintf(ERROR_STRING,LLEN, "check_for_dropped_frames %s: error while seeking\n", ifp->if_name);
 		WARN(ERROR_STRING);
 		return(0);
 	}
@@ -874,7 +874,7 @@ static void scan_file(QSP_ARG_DECL  Image_File *ifp)
 	offset = (-1);		// quiet compiler
 	n_to_check = OBJ_FRAMES(ifp->if_dp);	/* if there are no dropped frames, this is correct */
 
-sprintf(ERROR_STRING,"scan_file %s, checking %d frames",ifp->if_name,n_to_check);
+snprintf(ERROR_STRING,LLEN,"scan_file %s, checking %d frames",ifp->if_name,n_to_check);
 advise(ERROR_STRING);
 
 #define MAX_VALID_FPS		100
@@ -883,7 +883,7 @@ advise(ERROR_STRING);
 	fps = HDR_P->avch_fps;
 	/* don't know where this comes from, this is a total hack to deal w/ jsc videos... */
 	if( fps > MAX_VALID_FPS ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"frames-per-second (%d) exceeds threshold (%d), resetting to default (%d)",
 			HDR_P->avch_fps,MAX_VALID_FPS,DEFAULT_VALID_FPS);
 		advise(ERROR_STRING);
@@ -893,9 +893,9 @@ advise(ERROR_STRING);
 	for(i=0;i<n_to_check;i++){
 		double serial;
 		if( get_next_avi_frame(QSP_ARG  ifp) < 0 ){
-			sprintf(ERROR_STRING,"scan_file:  Error reading frame %d",i);
+			snprintf(ERROR_STRING,LLEN,"scan_file:  Error reading frame %d",i);
 			WARN(ERROR_STRING);
-			sprintf(ERROR_STRING,"offset = %d    n_to_check = %d",
+			snprintf(ERROR_STRING,LLEN,"offset = %d    n_to_check = %d",
 				offset,n_to_check);
 			advise(ERROR_STRING);
 			n_to_check = i;		/* terminate loop */
@@ -905,7 +905,7 @@ advise(ERROR_STRING);
 			offset = serial - i;
 			if( offset != previous ){
 				if( n_stored >= MAX_STORED_OFFSETS ){
-					sprintf(ERROR_STRING,"scan_file:  need to increase MAX_STORED_OFFSETS");
+					snprintf(ERROR_STRING,LLEN,"scan_file:  need to increase MAX_STORED_OFFSETS");
 					WARN(ERROR_STRING);
 				} else {
 					skew_tbl[n_stored].frame_index = i;
@@ -921,7 +921,7 @@ advise(ERROR_STRING);
 		}
 	}
 
-sprintf(msg_str,"%d offsets stored",n_stored);
+snprintf(msg_str,LLEN,"%d offsets stored",n_stored);
 prt_msg(msg_str);
 
 	HDR_P->avch_n_skew_tbl_entries = n_stored;
@@ -929,7 +929,7 @@ prt_msg(msg_str);
 	memcpy( HDR_P->avch_skew_tbl, skew_tbl, n_stored * sizeof(Frame_Skew) );
 
 	if( n_to_check != OBJ_FRAMES(ifp->if_dp) ){
-		sprintf(ERROR_STRING,"Resetting number of frames from %d to %d",
+		snprintf(ERROR_STRING,LLEN,"Resetting number of frames from %d to %d",
 			OBJ_FRAMES(ifp->if_dp), n_to_check);
 		advise(ERROR_STRING);
 		SET_OBJ_FRAMES(ifp->if_dp, n_to_check );
@@ -993,7 +993,7 @@ static void scan_seek(QSP_ARG_DECL  Image_File *ifp)
 		if(av_seek_frame(HDR_P->avch_format_ctx_p,
 			HDR_P->avch_video_stream_index, seek_target, 0 /* or AVSEEK_FLAG_BACKWARD */) < 0) {
 			/*
-			sprintf(ERROR_STRING, "scan_seek %s: error while seeking to offset %d\n", ifp->if_name,i);
+			snprintf(ERROR_STRING,LLEN, "scan_seek %s: error while seeking to offset %d\n", ifp->if_name,i);
 			WARN(ERROR_STRING);
 			return;
 			*/
@@ -1012,7 +1012,7 @@ static void scan_seek(QSP_ARG_DECL  Image_File *ifp)
 
 		if( result != previous ){
 			if( n_stored >= MAX_AVI_SEEK_TBL_SIZE ){
-				sprintf(ERROR_STRING,"scan_seek:  Need to increase MAX_AVI_SEEK_TBL_SIZE");
+				snprintf(ERROR_STRING,LLEN,"scan_seek:  Need to increase MAX_AVI_SEEK_TBL_SIZE");
 				WARN(ERROR_STRING);
 			} else {
 				seek_tbl[n_stored].seek_target = i;

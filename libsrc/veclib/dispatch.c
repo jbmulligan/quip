@@ -76,7 +76,7 @@ static void mpnadvise(int index, const char *msg)
 	if( strlen("thread :  ")+MAX_DIGITS+strlen(msg) >= MAX_MSG_LEN )
 		NERROR1("mpnadvise:  need to increase MAX_MSG_LEN!?");
 
-	sprintf(str,"thread %d:  %s",index,msg);
+	snprintf(str,MAX_MSG_LEN+1,"thread %d:  %s",index,msg);
 	NADVISE(str);
 }
 	
@@ -106,7 +106,7 @@ COMMAND_FUNC( set_n_processors )
 	if( n >=1 && n <= N_PROCESSORS ){
 		n_processors = n;
 	} else {
-		sprintf(ERROR_STRING,"%d processors requested, %d max on this machine",
+		snprintf(ERROR_STRING,LLEN,"%d processors requested, %d max on this machine",
 			n,N_PROCESSORS);
 		warn(ERROR_STRING);
 	}
@@ -170,7 +170,7 @@ static void *data_processor(void *argp)
 			 */
 			YIELD_PROC
 		}
-//sprintf(mystring,"dataproc READY  pip = 0x%"PRIxPTR", pip->pi_oap = 0x%"PRIxPTR,
+//snprintf(mystring,BUF_LEN,"dataproc READY  pip = 0x%"PRIxPTR", pip->pi_oap = 0x%"PRIxPTR,
 //(uintptr_t)pip,(uintptr_t)pip->pi_oap);
 //mpnadvise(myindex,mystring);
 
@@ -182,7 +182,7 @@ static void *data_processor(void *argp)
 		else {
 #ifdef QUIP_DEBUG
 if( debug & veclib_debug ){
-sprintf(mystring,"thread[%d]:  func = 0x%"PRIxPTR,pip->pi_index,(uintptr_t)pip->pi_func);
+snprintf(mystring,BUF_LEN,"thread[%d]:  func = 0x%"PRIxPTR,pip->pi_index,(uintptr_t)pip->pi_func);
 mpnadvise(myindex,mystring);
 /* show_obj_args is not thread safe */
 private_show_obj_args(mystring,pip->pi_oap,_advise);
@@ -192,7 +192,7 @@ private_show_obj_args(mystring,pip->pi_oap,_advise);
 //mpnadvise(myindex,"BACK from function call");
 		}
 
-//sprintf(mystring,"dataproc FINISHED working  pip = 0x%"PRIxPTR", pip->pi_oap = 0x%"PRIxPTR,
+//snprintf(mystring,BUF_LEN,"dataproc FINISHED working  pip = 0x%"PRIxPTR", pip->pi_oap = 0x%"PRIxPTR,
 //(uintptr_t)pip,(uintptr_t)pip->pi_oap);
 //mpnadvise(myindex,mystring);
 		/* indicate work finished */
@@ -212,7 +212,7 @@ static void start_dataproc_threads(SINGLE_QSP_ARG_DECL)
 	pthread_attr_setinheritsched(&attr1,PTHREAD_INHERIT_SCHED);
 
 	for(i=n_threads_started;i<(n_processors-1);i++){
-sprintf(DEFAULT_ERROR_STRING,"creating new data processing thread %d",i);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"creating new data processing thread %d",i);
 NADVISE(DEFAULT_ERROR_STRING);
 		pi[i].pi_oap = NULL;
 		pi[i].pi_func = NULL;
@@ -220,7 +220,7 @@ NADVISE(DEFAULT_ERROR_STRING);
 		pi[i].pi_level = (-1);
 		pi[i].pi_index = i;
 		// should each thread have its own qsp?
-		sprintf(thread_name,"compute_thread_%d",i);
+		snprintf(thread_name,32,"compute_thread_%d",i);
 		pi[i].pi_qsp = new_query_stack(thread_name);
 		pthread_create(&dp_thr[i],&attr1,data_processor,&pi[i]);
 	}
@@ -246,14 +246,14 @@ advise("waiting for data processing thread");
 */
 			if( pi[i].pi_oap != NULL ){
 //if( v_oap[i] != pi[i].pi_oap ){
-//sprintf(DEFAULT_ERROR_STRING,"waiting for thread %d, oap = 0x%"PRIxPTR,i,(uintptr_t)pi[i].pi_oap);
+//snprintf(DEFAULT_ERROR_STRING,LLEN,"waiting for thread %d, oap = 0x%"PRIxPTR,i,(uintptr_t)pi[i].pi_oap);
 //advise(DEFAULT_ERROR_STRING);
 //v_oap[i] = pi[i].pi_oap;
 //}
 				busy=1;
 			}
 //else {
-//sprintf(DEFAULT_ERROR_STRING,"wait_for_threads: %d, oap = 0x%"PRIxPTR,i,(uintptr_t)pi[i].pi_oap);
+//snprintf(DEFAULT_ERROR_STRING,LLEN,"wait_for_threads: %d, oap = 0x%"PRIxPTR,i,(uintptr_t)pi[i].pi_oap);
 //advise(DEFAULT_ERROR_STRING);
 //}
 	}
@@ -286,11 +286,11 @@ static void init_tmp_obj_names(void)
 	char name[32];	// 32 is overkill
 
 	for(i_proc=0;i_proc<N_PROCESSORS;i_proc++){
-		sprintf(name,"_tmp_pdst_%d",i_proc);
+		snprintf(name,32,"_tmp_pdst_%d",i_proc);
 		tmp_obj_name[0][i_proc] = savestr(name);
 		tmp_obj[0][i_proc]=NULL;
 		for(i_src=0;i_src<MAX_SRC_OBJECTS;i_src++){
-			sprintf(name,"_tmp_psrc%d_%d",i_src+1,i_proc);
+			snprintf(name,32,"_tmp_psrc%d_%d",i_src+1,i_proc);
 			tmp_obj_name[i_src+1][i_proc] = savestr(name);
 			tmp_obj[i_src+1][i_proc]=NULL;
 		}
@@ -314,7 +314,7 @@ void _launch_threads(QSP_ARG_DECL
 		pi[i].pi_vf_code = vf_code;
 #ifdef QUIP_DEBUG
 if( debug & veclib_debug ){
-sprintf(ERROR_STRING,"launch_threads: enabling data processing thread %d, pi_oap = 0x%"PRIxPTR,
+snprintf(ERROR_STRING,LLEN,"launch_threads: enabling data processing thread %d, pi_oap = 0x%"PRIxPTR,
 i,(uintptr_t)pi[i].pi_oap);
 advise(ERROR_STRING);
 //show_obj_args(&oa[i]);
@@ -495,7 +495,7 @@ warn("Arghh - probably botching vramp scalar args for multiple processors...");
 	 */
 #ifdef QUIP_DEBUG
 	if( debug & veclib_debug ) {
-		sprintf(ERROR_STRING,"\n\nvec_dispatch %s, using %d processors\n",
+		snprintf(ERROR_STRING,LLEN,"\n\nvec_dispatch %s, using %d processors\n",
 			VF_NAME(vfp),n_processors);
 		advise(DEFAULT_ERROR_STRING);
 	}
@@ -508,7 +508,7 @@ warn("Arghh - probably botching vramp scalar args for multiple processors...");
 	 * The last thread is the control one?
 	 * i.e. this one?
 	 */
-//sprintf(DEFAULT_ERROR_STRING,"calling launch_threads, vf_code = %d, functype = %d, func = 0x%"PRIxPTR,
+//snprintf(DEFAULT_ERROR_STRING,LLEN,"calling launch_threads, vf_code = %d, functype = %d, func = 0x%"PRIxPTR,
 //VF_CODE(vfp),OA_FUNCTYPE(oap),(uintptr_t)vl2_vfa_tbl[VF_CODE(vfp)].vfa_func[OA_FUNCTYPE(oap)]);
 //NADVISE(DEFAULT_ERROR_STRING);
 	// We can use vl2_vfa_tbl here because we know we are on
@@ -540,7 +540,7 @@ int _platform_dispatch( QSP_ARG_DECL  const Compute_Platform *cpp,
 
 #ifdef QUIP_DEBUG
 	if( debug & veclib_debug ) {
-		sprintf(ERROR_STRING,"\nvec_dispatch:  Function %s",
+		snprintf(ERROR_STRING,LLEN,"\nvec_dispatch:  Function %s",
 			VF_NAME(vfp));
 		advise(ERROR_STRING);
 
@@ -564,12 +564,12 @@ int _platform_dispatch( QSP_ARG_DECL  const Compute_Platform *cpp,
 
 #ifdef CAUTIOUS
 	if( VF_CODE(vfp) != PF_FUNC_TBL(cpp)[VF_CODE(vfp)].vfa_code ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "CAUTIOUS:  platform_dispatch:  table entry %d has code %d - expected %s",
 			VF_CODE(vfp),
 			PF_FUNC_TBL(cpp)[VF_CODE(vfp)].vfa_code,VF_NAME(vfp));
 		warn(ERROR_STRING);
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "platform_dispatch:  vfa table for platform %s may not be sorted?",
 			PLATFORM_NAME(cpp));
 		warn(ERROR_STRING);
@@ -584,7 +584,7 @@ int _platform_dispatch( QSP_ARG_DECL  const Compute_Platform *cpp,
 
 #ifdef QUIP_DEBUG
 if( debug & veclib_debug ){
-sprintf(ERROR_STRING,"vec_dispatch:  calling tabled function, code = %d, functype = %d",
+snprintf(ERROR_STRING,LLEN,"vec_dispatch:  calling tabled function, code = %d, functype = %d",
 VF_CODE(vfp),OA_FUNCTYPE(oap));
 advise(ERROR_STRING);
 show_obj_args(oap);
@@ -613,7 +613,7 @@ fprintf(stderr,"Calling function at 0x%"PRIxPTR"\n",
 			pdp = OBJ_PFDEV(dp);			\
 		} else {					\
 			if( OBJ_PFDEV(dp) != pdp ){		\
-	sprintf(ERROR_STRING,"Object %s has wrong device (%s) - expected %s",	\
+	snprintf(ERROR_STRING,LLEN,"Object %s has wrong device (%s) - expected %s",	\
 	OBJ_NAME(dp),PFDEV_NAME(OBJ_PFDEV(dp)),PFDEV_NAME(pdp));	\
 				warn(ERROR_STRING);		\
 				return NULL;			\
@@ -675,7 +675,7 @@ void _dp_convert(QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src_dp )
 		case PREC_SP: code=FVCONV2SP; break;
 		case PREC_DP: code=FVCONV2DP; break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 "dp_convert:  destination object %s has unexpected precision (%s)!?",
 				OBJ_NAME(dst_dp),
 				NAME_FOR_PREC_CODE(OBJ_MACH_PREC(dst_dp)) );

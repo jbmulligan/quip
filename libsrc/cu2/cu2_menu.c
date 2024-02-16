@@ -383,7 +383,7 @@ static PF_COMMAND_FUNC( centroid )
 	src_dp = PICK_OBJ("source image");
 
 	if( OBJ_MACH_PREC(src_dp) != PREC_SP && OBJ_MACH_PREC(src_dp) != PREC_DP ){
-		sprintf(ERROR_STRING,"Object %s (%s) must have %s or %s precision for centroid helper",
+		snprintf(ERROR_STRING,LLEN,"Object %s (%s) must have %s or %s precision for centroid helper",
 			OBJ_NAME(src_dp),PREC_NAME(OBJ_PREC_PTR(src_dp)),PREC_NAME(PREC_FOR_CODE(PREC_SP)),
 			PREC_NAME(PREC_FOR_CODE(PREC_DP)));
 		WARN(ERROR_STRING);
@@ -511,13 +511,13 @@ static PF_COMMAND_FUNC( prt_cap )
 {
 #ifdef HAVE_OpenCL
 #ifdef OpenCL_COMP_CAP
-	sprintf(MSG_STR,"Compiled for compute capability %d.%d",
+	snprintf(MSG_STR,LLEN,"Compiled for compute capability %d.%d",
 		OpenCL_COMP_CAP/10,OpenCL_COMP_CAP%10);
 #else	// ! OpenCL_COMP_CAP
 	ERROR1("CAUTIOUS:  HAVE_OpenCL is defined, but OpenCL_COMP_CAP is not!?!?");
 #endif	// ! OpenCL_COMP_CAP
 #else	// ! HAVE_OpenCL
-	sprintf(MSG_STR,"No OpenCL support in this build");
+	snprintf(MSG_STR,LLEN,"No OpenCL support in this build");
 #endif	// ! HAVE_OpenCL
 
 	prt_msg(MSG_STR);
@@ -526,7 +526,7 @@ static PF_COMMAND_FUNC( prt_cap )
 static PF_COMMAND_FUNC( about_platform )
 {
 #ifdef HAVE_OpenCL
-	sprintf(MSG_STR,"OpenCL version:  %d.%d",
+	snprintf(MSG_STR,LLEN,"OpenCL version:  %d.%d",
 		OpenCL_VERSION/1000,(OpenCL_VERSION%100)/10);
 	prt_msg(MSG_STR);
 #else // ! HAVE_OpenCL

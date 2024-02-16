@@ -134,7 +134,7 @@ static COMMAND_FUNC( do_meteor_set_num_frames )
 
 	n=HOW_MANY("number of frames");
 	if( n<1 || n>max_frames ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Number of frames must be positive and less than or equal to %ld",
 			(long)max_frames);
 		WARN(ERROR_STRING);
@@ -166,7 +166,7 @@ int get_ofmt_index(QSP_ARG_DECL  int fmt)
 	int ofmt_index=(-1);
 
 /*
-sprintf(ERROR_STRING,"get_ofmt_index:  fmt = %d",fmt);
+snprintf(ERROR_STRING,LLEN,"get_ofmt_index:  fmt = %d",fmt);
 advise(ERROR_STRING);
 */
 	switch(fmt&METEOR_GEO_OUTPUT_MASK){
@@ -176,7 +176,7 @@ advise(ERROR_STRING);
 		case METEOR_GEO_YUV_PACKED:  ofmt_index=3; meteor_bytes_per_pixel=2; break;
 		case METEOR_GEO_YUV_422:  ofmt_index=4; meteor_bytes_per_pixel=2; break;
 		default:
-			sprintf(ERROR_STRING,"get_ofmt_index:  bad format 0x%x",
+			snprintf(ERROR_STRING,LLEN,"get_ofmt_index:  bad format 0x%x",
 				fmt&METEOR_GEO_OUTPUT_MASK);
 			WARN(ERROR_STRING);
 			break;
@@ -194,13 +194,13 @@ static void show_meteor_geometry(QSP_ARG_DECL  struct meteor_geomet *gp)
 
 	depth = meteor_bytes_per_pixel*8;
 
-	sprintf(msg_str,"Meteor geometry:\n\t%d rows x %d columns",
+	snprintf(msg_str,LLEN,"Meteor geometry:\n\t%d rows x %d columns",
 		gp->rows, gp->columns);
 	prt_msg(msg_str);
-	sprintf(msg_str,"\t%d frames, depth = %d",
+	snprintf(msg_str,LLEN,"\t%d frames, depth = %d",
 		gp->frames, depth);
 	prt_msg(msg_str);
-	sprintf(msg_str,"\toutput format %s", ofmt_names[ofmt_index]);
+	snprintf(msg_str,LLEN,"\toutput format %s", ofmt_names[ofmt_index]);
 	prt_msg(msg_str);
 }
 

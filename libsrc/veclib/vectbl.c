@@ -286,7 +286,7 @@ void _check_vfa_tbl(QSP_ARG_DECL  Vec_Func_Array *vfa_tbl, size_t size)
 {
 	int i;
 	if( size != N_VEC_FUNCS ){
-		sprintf(ERROR_STRING,"check_vfa_tbl:  size (%ld) not equal to N_VEC_FUNCS (%d)!?",
+		snprintf(ERROR_STRING,LLEN,"check_vfa_tbl:  size (%ld) not equal to N_VEC_FUNCS (%d)!?",
 			size,N_VEC_FUNCS);
 		warn(ERROR_STRING);
 	}
@@ -299,7 +299,7 @@ void _check_vfa_tbl(QSP_ARG_DECL  Vec_Func_Array *vfa_tbl, size_t size)
 
 /*
 if( verbose ){
-sprintf(ERROR_STRING,"check_vfa_tbl:  vfa_tbl[%d] (%s):  code = %d (%s)",
+snprintf(ERROR_STRING,LLEN,"check_vfa_tbl:  vfa_tbl[%d] (%s):  code = %d (%s)",
 i, VF_NAME(&vec_func_tbl[i]),
 vfa_tbl[i].vfa_code,
 VF_NAME(&vec_func_tbl[ vfa_tbl[i].vfa_code ])
@@ -309,7 +309,7 @@ advise(ERROR_STRING);
 */
 
 		if( vfa_tbl[i].vfa_code != i ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"CAUTIOUS:  check_vfa_tbl:  Vec_Func_Array table entry %d (%s) has code %d (%s)!?",
 		i,VF_NAME(&vec_func_tbl[i]),
 		vfa_tbl[i].vfa_code,VF_NAME(&vec_func_tbl[ vfa_tbl[i].vfa_code ]) );
@@ -340,7 +340,7 @@ void vl_init(SINGLE_QSP_ARG_DECL)
 	/* sort the table to insure that each entry is at the location of its code */
 #ifdef CAUTIOUS
 	if( N_VEC_FUNCS != N_NVFS ){
-		sprintf(ERROR_STRING,"CAUTIOUS:  vl_init:  Vector function table is missing %zd entries!?",
+		snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  vl_init:  Vector function table is missing %zd entries!?",
 			N_VEC_FUNCS-N_NVFS);
 		error1(ERROR_STRING);
 	}
@@ -355,7 +355,7 @@ void vl_init(SINGLE_QSP_ARG_DECL)
 	for(i=0;i<N_NVFS;i++){
 
 if( verbose ){
-sprintf(ERROR_STRING,"vl_init:  vec_func_tbl[%d] (%s):  code %d (%s)",
+snprintf(ERROR_STRING,LLEN,"vl_init:  vec_func_tbl[%d] (%s):  code %d (%s)",
 i, VF_NAME(&vec_func_tbl[i]),
 VF_CODE(&vec_func_tbl[i]), VF_NAME(&vec_func_tbl[ VF_CODE(&vec_func_tbl[i]) ])
 );

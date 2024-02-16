@@ -490,10 +490,10 @@ static int print_node_value(spinNodeHandle hNode )
 	if( get_display_name(displayName,&displayNameLength,hNode) < 0 ) return -1;
 
 	if( type == CategoryNode ){
-		sprintf(out_string,"%s", displayName);
+		snprintf(out_string,256,"%s", displayName);
 	} else {
 		if( get_node_value_string(value,&valueLength,hNode) < 0 ) return -1;
-		sprintf(out_string,"%s:  %s", displayName,value);
+		snprintf(out_string,256,"%s:  %s", displayName,value);
 	}
 	printf("%s\n",out_string);
 

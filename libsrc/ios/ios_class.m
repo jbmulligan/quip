@@ -137,7 +137,7 @@ IOS_Member_Info *get_ios_member_info(QSP_ARG_DECL  IOS_Item_Class *icp,const cha
 		np = IOS_NODE_NEXT(np);
 	}
 
-	sprintf(ERROR_STRING,"No member %s in item class %s",name,IOS_CL_NAME(icp));
+	snprintf(ERROR_STRING,LLEN,"No member %s in item class %s",name,IOS_CL_NAME(icp));
 	WARN(ERROR_STRING);
 
 	return(NULL);
@@ -177,7 +177,7 @@ IOS_Item * get_ios_member(QSP_ARG_DECL  IOS_Item_Class *icp,const char *name)
 
 	ip = check_ios_member(QSP_ARG  icp, name);
 	if( ip == NULL ){
-		sprintf(ERROR_STRING,"No member %s found in %s class (iOS)",
+		snprintf(ERROR_STRING,LLEN,"No member %s found in %s class (iOS)",
 				name,IOS_CL_NAME(icp));
 		WARN(ERROR_STRING);
 	}
