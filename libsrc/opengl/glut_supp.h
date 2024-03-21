@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include "quip_prot.h"
 
+// silence deprecation warnings on mac
+#define GL_SILENCE_DEPRECATION
 
 // This file is called glut_supp.h, but if we comment this out
 // then we get no warnings, whereas if we include it we load

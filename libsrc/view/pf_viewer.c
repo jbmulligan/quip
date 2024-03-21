@@ -88,9 +88,9 @@ static void _update_pf_viewer(QSP_ARG_DECL  Platform_Viewer *pvp, Data_Obj *dp)
 
 	glBindTexture(GL_TEXTURE_2D, OBJ_TEX_ID(dp));
 	// is glBindBuffer REALLY part of libGLEW???
-//#ifdef HAVE_LIBGLEW
+#ifdef HAVE_LIBGLEW
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, OBJ_BUF_ID(dp));
-//#endif // HAVE_LIBGLEW
+#endif // HAVE_LIBGLEW
 
 	t=gl_pixel_type(dp);
 	glTexSubImage2D(GL_TEXTURE_2D, 0,	// target, level
@@ -100,9 +100,9 @@ static void _update_pf_viewer(QSP_ARG_DECL  Platform_Viewer *pvp, Data_Obj *dp)
 		GL_UNSIGNED_BYTE,		// type
 		OFFSET(0));			// offset into PIXEL_UNPACK_BUFFER
 
-//#ifdef HAVE_LIBGLEW
+#ifdef HAVE_LIBGLEW
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-//#endif // HAVE_LIBGLEW
+#endif // HAVE_LIBGLEW
 
 	glBegin(GL_QUADS);
 	glTexCoord2f(0, 1); glVertex2f(-1.0, -1.0);

@@ -5,6 +5,7 @@
 // This needs to come first, but on the mac it complains!?
 #ifndef BUILD_FOR_OBJC
 #ifdef HAVE_GL_GLEW_H
+#define GL_SILENCE_DEPRECATION
 #include <GL/glew.h>
 #endif	// HAVE_GL_GLEW_H
 #endif // BUILD_FOR_OBJC
@@ -50,6 +51,21 @@ debug_flag_t gl_debug=0;
 #define check_gl_error(s)	_check_gl_error(QSP_ARG  s)
 
 #define GL_DEBUG_MSG(msg)	DEBUG_MSG(gl_debug,msg)
+
+#define ready_for_gl()		_ready_for_gl(SINGLE_QSP_ARG)
+
+static int _ready_for_gl(SINGLE_QSP_ARG_DECL){
+	static int warned = 0;
+	if( gl_viewer_is_selected() ){
+		return 1;
+	} else {
+		if( ! warned ){
+	warn("Please select a GL viewer before issuing commands");
+			warned = 1;
+		}
+		return 0;
+	}
+}
 
 static void _check_gl_error(QSP_ARG_DECL  char *s)
 {
@@ -185,7 +201,9 @@ static COMMAND_FUNC( do_gl_begin )
 	}
 
 	GL_DEBUG_MSG("glBegin");
-	glBegin(p);
+	if( ready_for_gl() ){
+		glBegin(p);
+	}
 	current_primitive = p;
 }
 

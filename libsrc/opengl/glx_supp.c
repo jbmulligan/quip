@@ -2,6 +2,8 @@
 
 #ifdef HAVE_OPENGL
 
+#define GL_SILENCE_DEPRECATION		// for Mac
+
 #define GLX_GLXEXT_PROTOTYPES
 
 #ifdef HAVE_GL_GLX_H
@@ -40,6 +42,8 @@ typedef struct renderer_info {
 } Renderer_Info;
 
 static Renderer_Info *curr_renderer_info_p=NULL;
+
+int gl_viewer_is_selected(void){ return gl_vp != NULL; }
 
 void _swap_buffers(SINGLE_QSP_ARG_DECL)
 {
