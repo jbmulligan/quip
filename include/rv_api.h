@@ -25,7 +25,7 @@ extern int	legal_rv_filename(const char *);
 extern void	_traverse_rv_inodes( QSP_ARG_DECL  void (*f)(QSP_ARG_DECL  RV_Inode *) );
 #define traverse_rv_inodes(f) _traverse_rv_inodes( QSP_ARG  f)
 
-extern int	insure_default_rv(SINGLE_QSP_ARG_DECL);
+extern int	ensure_default_rv(SINGLE_QSP_ARG_DECL);
 extern int	rv_get_ndisks(void);
 extern void	rv_sync(SINGLE_QSP_ARG_DECL);
 

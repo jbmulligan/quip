@@ -51,7 +51,7 @@ void _enable_image_events(QSP_ARG_DECL  Spink_Cam *skc_p, void (*func)(spinImage
 	if( IS_EVENTFUL(skc_p) ) return;
 
 fprintf(stderr,"enable_image_events:  enabling events for %s\n",skc_p->skc_name);
-	insure_current_camera(skc_p);
+	ensure_current_camera(skc_p);
 	assert( skc_p->skc_current_handle != NULL );
 
 #ifdef THREAD_SAFE_QUERY
@@ -365,7 +365,7 @@ int _next_spink_image(QSP_ARG_DECL  spinImage *img_p, Spink_Cam *skc_p)
 	spinCamera hCam;
 	bool8_t isIncomplete = False;
 
-	insure_current_camera(skc_p);
+	ensure_current_camera(skc_p);
 	hCam = skc_p->skc_current_handle;
 
 	if( get_next_image(hCam,img_p) < 0 ) return -1;
@@ -462,7 +462,7 @@ fprintf(stderr,"spink_start_capture %s BEGIN\n",skc_p->skc_name);
 	}
 
 fprintf(stderr,"spink_start_capture %s insuring current camera...\n",skc_p->skc_name);
-	insure_current_camera(skc_p);
+	ensure_current_camera(skc_p);
 fprintf(stderr,"spink_start_capture %s initializing oldest and newest...\n",skc_p->skc_name);
 	skc_p->skc_newest = -1;
 	skc_p->skc_oldest = -1;
@@ -508,7 +508,7 @@ int _spink_stop_capture(QSP_ARG_DECL  Spink_Cam *skc_p)
 		return 0;
 	}
 
-	insure_current_camera(skc_p);
+	ensure_current_camera(skc_p);
 	hCam = skc_p->skc_current_handle;
 	skc_p->skc_flags &= ~(SPINK_CAM_CAPTURING|SPINK_CAM_CAPT_REQUESTED);
 

@@ -59,7 +59,7 @@ define(`DECLARE_KERN_ARGS_SLEN_DBM',`DECLARE_KERN_ARGS_DBM')
 
 define(`KERN_ARGS_FAST_NOCC_HELPER',`dst_extrema, dst_counts, src_vals, src_counts, dst_indices, len1, len2, stride')
 
-// BUG - how can we insure that the declarations are consistent!?
+// BUG - how can we ensure that the declarations are consistent!?
 
 define(`DECLARE_KERN_ARGS_FAST_NOCC_HELPER',`			\
 								\
@@ -298,7 +298,7 @@ define(`DECLARE_KERN_ARGS_EQSP_LEN',`int len')
 // Now use szarr!
 //#define DECLARE_KERN_ARGS_SLOW_LEN',`GPU_INDEX_TYPE vwxyz_len')
 
-dnl	How do we insure that the args match up?
+dnl	How do we ensure that the args match up?
 
 dnl	SBM
 

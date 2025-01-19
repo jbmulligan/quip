@@ -88,7 +88,7 @@ extern float _get_opt_param_value(QSP_ARG_DECL  const char *);
 
 /* pkg.c */
 
-extern void insure_opt_pkg(SINGLE_QSP_ARG_DECL);
+extern void ensure_opt_pkg(SINGLE_QSP_ARG_DECL);
 ITEM_INTERFACE_PROTOTYPES(Opt_Pkg,opt_pkg)
 
 #define pick_opt_pkg(p)		_pick_opt_pkg(QSP_ARG  p)

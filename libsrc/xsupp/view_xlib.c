@@ -1087,7 +1087,7 @@ void _unembed_image(QSP_ARG_DECL  Viewer *vp,Data_Obj *dp,int x,int y)
 	}
 
 	/* XGetImage will fail if the viewer is not mapped -
-	 * how do we insure this?
+	 * how do we ensure this?
 	 *
 	 * here we test if mapped (open), but really also need to make sure in front!
 	 *

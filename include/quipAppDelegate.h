@@ -64,7 +64,7 @@ typedef enum {
 
 -(void) genericButtonAction:(id) obj;
 -(void) genericSwitchAction:(id) obj;
--(void) insure_wakeup;
+-(void) ensure_wakeup;
 
 #endif // BUILD_FOR_IOS
 

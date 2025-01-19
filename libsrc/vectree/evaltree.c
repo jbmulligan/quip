@@ -50,8 +50,8 @@ static inline void _push_cpair(QSP_ARG_DECL  Context_Pair *cpp)
 
 static void _delete_local_objs(SINGLE_QSP_ARG_DECL);
 
-static void _insure_object_size(QSP_ARG_DECL  Data_Obj *dp,index_t index);
-#define insure_object_size(dp,index) _insure_object_size(QSP_ARG  dp,index)
+static void _ensure_object_size(QSP_ARG_DECL  Data_Obj *dp,index_t index);
+#define ensure_object_size(dp,index) _ensure_object_size(QSP_ARG  dp,index)
 
 // BUG TOO MANY GLOBALS, NOT THREAD-SAFE!?
 // NEED TO ADD TO QS PARSER DATA STRUCT!!!
@@ -4705,7 +4705,7 @@ static Data_Obj *_eval_subscript1(QSP_ARG_DECL Data_Obj *dp, Vec_Expr_Node *enp)
 	/* d_subscript fails if the index is too large,
 	 * but in matlab we want to automagically make the array larger
 	 */
-	insure_object_size(dp,index);
+	ensure_object_size(dp,index);
 
 	dp2 = d_subscript(dp,index);
 	return( dp2 );
@@ -5931,7 +5931,7 @@ Data_Obj *_eval_obj_exp(QSP_ARG_DECL Vec_Expr_Node *enp,Data_Obj *dst_dp)
 		case T_TYPECAST:			/* eval_obj_exp */
 			/* The requested type should match the destination,
 			 * and not match the child node...  this is supposed
-			 * to be insured by the compilation process.
+			 * to be ensured by the compilation process.
 			 */
 			return( eval_typecast(enp,dst_dp) );
 
@@ -6245,7 +6245,7 @@ dump_tree(enp);
 
 /* for matlab support */
 
-static void _insure_object_size(QSP_ARG_DECL  Data_Obj *dp,index_t index)
+static void _ensure_object_size(QSP_ARG_DECL  Data_Obj *dp,index_t index)
 {
 	int which_dim;
 

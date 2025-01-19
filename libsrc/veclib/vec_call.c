@@ -660,7 +660,7 @@ static int _chkprec(QSP_ARG_DECL  Vector_Function *vfp,Vec_Obj_Args *oap)
 		// e.g. vconv2by, and have sub-functions for all possible source precs
 		// QUESTION:  does that include the SAME precision???
 
-		// We should have a check here to insure that the destination prec
+		// We should have a check here to ensure that the destination prec
 		// is appropriate for each function code.
 
 		// No support for bitmaps yet

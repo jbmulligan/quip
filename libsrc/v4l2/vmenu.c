@@ -1992,7 +1992,7 @@ fprintf(stderr,"v4l2_init performing one-time initializations\n");
 #endif // QUIP_DEBUG
 
 #ifdef HAVE_RAWVOL
-	if( insure_default_rv(SINGLE_QSP_ARG) < 0 ){
+	if( ensure_default_rv(SINGLE_QSP_ARG) < 0 ){
 		warn("error opening default raw volume");
 	} else {
 		/* create movie structs for any existing rv files */

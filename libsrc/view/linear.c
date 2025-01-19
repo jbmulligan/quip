@@ -85,7 +85,7 @@ void _lin_setup(QSP_ARG_DECL  Data_Obj *lt_dp,double gam,double vz)
 		advise(ERROR_STRING);
 	}
 
-	/* insure that an input of phosmax results in something slightly
+	/* ensure that an input of phosmax results in something slightly
 	 * less than DACMAX */
 
 	k = (double)(phosmax+1) ;
@@ -258,7 +258,7 @@ u_int start, n;
  * Install the default linearization if none has been read in or set
  */
 
-void insure_linearization()
+void ensure_linearization()
 {
 	if( CM_FLAG_IS_CLR( LININIT ) ){
 		if( verbose )

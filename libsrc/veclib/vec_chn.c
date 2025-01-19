@@ -154,7 +154,7 @@ int _chain_breaks(QSP_ARG_DECL  const char *routine_name)
 		}					\
 	}
 
-int _insure_static(QSP_ARG_DECL  const Vec_Obj_Args *oap)
+int _ensure_static(QSP_ARG_DECL  const Vec_Obj_Args *oap)
 {
 	int i;
 

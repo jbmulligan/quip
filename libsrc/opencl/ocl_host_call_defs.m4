@@ -20,14 +20,14 @@ define(`SET_BLOCK_COUNT',`')			// nop?
 
 define(`SET_MAX_THREADS_FROM_OBJ',`')	// nop
 
-dnl PORT - insure_gpu_device ???
+dnl PORT - ensure_gpu_device ???
 
 dnl GET_MAX_THREADS(dp)
 
 define(`GET_MAX_THREADS',`
 
-	/* insure_cuda_device( $1 ); */
-	insure_ocl_device( $1 );
+	/* ensure_cuda_device( $1 ); */
+	ensure_ocl_device( $1 );
 	max_threads_per_block = get_max_threads_per_block($1);
 	// BUG OpenCL does not use max_threads_per_block!?
 ')

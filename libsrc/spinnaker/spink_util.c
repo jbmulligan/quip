@@ -1015,7 +1015,7 @@ static Spink_Map * _register_one_map(QSP_ARG_DECL  Spink_Cam *skc_p, Node_Map_Ty
 	Spink_Map *skm_p;
 	spinNodeMapHandle hMap = NULL;
 
-	insure_current_camera(skc_p);
+	ensure_current_camera(skc_p);
 	assert( skc_p->skc_current_handle != NULL );
 //fprintf(stderr,"register_one_map:  %s has current handle 0x%lx\n", skc_p->skc_name,(u_long)skc_p->skc_current_handle);
 
@@ -1188,7 +1188,7 @@ static int _init_one_spink_cam(QSP_ARG_DECL  int idx)
 	get_cam_dimensions(skc_p);
 
 	// We have to explicitly release here, as we weren't able to call
-	// insure_current_camera at the beginning...
+	// ensure_current_camera at the beginning...
 	//spink_release_cam(skc_p);
 
 	release_current_camera(1);

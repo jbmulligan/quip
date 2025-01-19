@@ -390,7 +390,7 @@ extern void		_early_calltime_resolve(QSP_ARG_DECL  Subrt *srp, Vec_Expr_Node *ar
 #define early_calltime_resolve(srp,enp,dst_dp)	_early_calltime_resolve(QSP_ARG srp,enp,dst_dp)
 
 /* ml_supp.c */
-void insure_object_size(QSP_ARG_DECL  Data_Obj *dp,index_t index);
+void ensure_object_size(QSP_ARG_DECL  Data_Obj *dp,index_t index);
 
 /* evaltree.c */
 

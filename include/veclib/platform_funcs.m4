@@ -23,7 +23,7 @@ extern PF_COMMAND_FUNC(show_ckpts);
 extern void PF_FUNC_NAME(shutdown)(void);
 extern void PF_FUNC_NAME(sync)(SINGLE_QSP_ARG_DECL);
 extern void PF_FUNC_NAME(init_dev_memory)(QSP_ARG_DECL  Platform_Device *pdp);
-extern void PF_FUNC_NAME(insure_device)(QSP_ARG_DECL  Data_Obj *dp);
+extern void PF_FUNC_NAME(ensure_device)(QSP_ARG_DECL  Data_Obj *dp);
 
 ')	dnl	#endif // BUILD_FOR_GPU
 

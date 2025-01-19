@@ -44,7 +44,7 @@ static COMMAND_FUNC( modify )
 	(* EXPT_MOD_FUNC(&expt1) )(QSP_ARG tc_p);
 }
 
-static int insure_exp_is_ready(SINGLE_QSP_ARG_DECL)	/* make sure there is something to run */
+static int ensure_exp_is_ready(SINGLE_QSP_ARG_DECL)	/* make sure there is something to run */
 {
 	if( eltcount(trial_class_list()) <= 0 ){
 		warn("no conditions defined");
@@ -65,7 +65,7 @@ static int _present_stim(QSP_ARG_DECL Staircase *stc_p)
 	tc_p = STAIR_CLASS(stc_p);
 	assert(tc_p!=NULL);
 
-	if( insure_exp_is_ready(SINGLE_QSP_ARG) == -1 ) return(-1);
+	if( ensure_exp_is_ready(SINGLE_QSP_ARG) == -1 ) return(-1);
 
 	assert( CLASS_XVAL_OBJ(tc_p) != NULL );
 
@@ -79,7 +79,7 @@ static int _present_stim(QSP_ARG_DECL Staircase *stc_p)
 
 static void _present_stim_for_stair(QSP_ARG_DECL  Staircase *stc_p)
 {
-	if( insure_exp_is_ready(SINGLE_QSP_ARG) == -1 ) return;
+	if( ensure_exp_is_ready(SINGLE_QSP_ARG) == -1 ) return;
 
 	(* EXPT_STIM_FUNC( STAIR_EXPT(stc_p) ) )(QSP_ARG stc_p);
 }
@@ -195,7 +195,7 @@ static COMMAND_FUNC( do_test_stim )		/** demo a stimulus for this experiment */
 
 static COMMAND_FUNC( do_run_exp )
 {
-	if( insure_exp_is_ready(SINGLE_QSP_ARG) == -1 ) return;
+	if( ensure_exp_is_ready(SINGLE_QSP_ARG) == -1 ) return;
 
 	run_stairs(&expt1);
 }

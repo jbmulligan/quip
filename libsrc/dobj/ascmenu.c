@@ -36,11 +36,11 @@ static int expect_exact_count=1;
 
 #define INSURE_OK_FOR_READING(dp)					\
 									\
-	ram_dp = insure_ram_obj_for_reading(dp);			\
+	ram_dp = ensure_ram_obj_for_reading(dp);			\
 	assert( ram_dp != NULL );
 
 #define INSURE_OK_FOR_WRITING(dp)					\
-	ram_dp = insure_ram_obj_for_writing(dp);			\
+	ram_dp = ensure_ram_obj_for_writing(dp);			\
 	assert(ram_dp!=NULL);
 
 #define RELEASE_RAM_OBJ_FOR_READING_IF(dp)				\
@@ -218,7 +218,7 @@ static void _upload_platform_data(QSP_ARG_DECL  Data_Obj *pf_dp, Data_Obj *ram_d
 // that we then transfer en-mass.  The copy must have the correct shape,
 // but doesn't need to contain the data, as we will be over-writing it anyway.
 
-Data_Obj *_insure_ram_obj_for_writing(QSP_ARG_DECL  Data_Obj *dp)
+Data_Obj *_ensure_ram_obj_for_writing(QSP_ARG_DECL  Data_Obj *dp)
 {
 	if( OBJ_IS_RAM(dp) ) return dp;
 	return create_ram_copy(dp);
@@ -226,7 +226,7 @@ Data_Obj *_insure_ram_obj_for_writing(QSP_ARG_DECL  Data_Obj *dp)
 
 // To read a platform object, the copies need to have the data copied along!
 
-Data_Obj *_insure_ram_obj_for_reading(QSP_ARG_DECL  Data_Obj *dp)
+Data_Obj *_ensure_ram_obj_for_reading(QSP_ARG_DECL  Data_Obj *dp)
 {
 	Data_Obj *ram_dp;
 

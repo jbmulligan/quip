@@ -393,8 +393,8 @@ extern void _report_spink_error(QSP_ARG_DECL  spinError error, const char *whenc
 
 // spink_node_map.c
 
-extern void _insure_current_camera(QSP_ARG_DECL  Spink_Cam *skc_p);
-#define insure_current_camera(skc_p) _insure_current_camera(QSP_ARG  skc_p)
+extern void _ensure_current_camera(QSP_ARG_DECL  Spink_Cam *skc_p);
+#define ensure_current_camera(skc_p) _ensure_current_camera(QSP_ARG  skc_p)
 
 extern int _release_current_camera(QSP_ARG_DECL  int verbose);
 #define release_current_camera(v) _release_current_camera(QSP_ARG  v)

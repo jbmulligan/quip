@@ -191,7 +191,7 @@ static void add_tmpobjs(List *lp, int n)
 	}
 }
 
-static void insure_tmpobj_free_list(void)
+static void ensure_tmpobj_free_list(void)
 {
 	if( free_tmpobj_lp == NULL ){
 		free_tmpobj_lp = new_list();
@@ -203,7 +203,7 @@ static Data_Obj *check_tmpobj_free_list(void)
 {
 	Node *np;
 
-	insure_tmpobj_free_list();
+	ensure_tmpobj_free_list();
 
 	if( eltcount(free_tmpobj_lp) == 0 ) return NULL;
 

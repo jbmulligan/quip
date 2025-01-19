@@ -234,7 +234,7 @@ static Data_Area * _set_arg_data_area(QSP_ARG_DECL  Vec_Obj_Args *oap)
  * the object.  We only need to do that to return a scalar value.
  *
  * Now that we are supporting CUDA (multiple data areas), we have to
- * insure that the newly created scalar is in the correct data area.
+ * ensure that the newly created scalar is in the correct data area.
  * We assume that oa_dest has already been set...
  *
  * It looks like now we use scalar values for passing to, and only
@@ -582,7 +582,7 @@ static int check_one_obj_loc( Data_Obj *dp )
 // We used to have just two possible locations (ram/gpu)
 // That was a little brain-damaged, because with CUDA there
 // is the possibility of more than one GPU.  But now we can also
-// have OpenCL devices - more than one.  We really need to insure
+// have OpenCL devices - more than one.  We really need to ensure
 // that all objects are on the same device.
 
 #ifdef FOOBAR

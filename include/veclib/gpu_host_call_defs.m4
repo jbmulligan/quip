@@ -747,7 +747,7 @@ dnl	Data_Obj *disp_dp;	// for debugging
 	SET_OA_DEST(prod_oap,prod_dp);
 	HOST_TYPED_CALL_NAME($4,type_code)(QSP_ARG  FVMUL,prod_oap);
 
-dnl	disp_dp = insure_ram_obj(prod_dp);
+dnl	disp_dp = ensure_ram_obj(prod_dp);
 dnl	assert(disp_dp!=NULL);
 dnl	fprintf(stderr,"displaying intermediate result:\n");
 dnl	pntvec(QSP_ARG  disp_dp,stderr);

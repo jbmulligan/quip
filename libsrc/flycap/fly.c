@@ -709,7 +709,7 @@ void set_prop_auto(QSP_ARG_DECL  Fly_Cam *fcp, Fly_Cam_Property_Type *pgpt, BOOL
 	}
 }
 
-static void insure_stopped(QSP_ARG_DECL  Fly_Cam *fcp, const char *op_desc)
+static void ensure_stopped(QSP_ARG_DECL  Fly_Cam *fcp, const char *op_desc)
 {
 	if( (fcp->fc_flags & FLY_CAM_IS_RUNNING) == 0 ) return;
 
@@ -1099,7 +1099,7 @@ int set_std_mode(QSP_ARG_DECL  Fly_Cam *fcp, int idx )
 //	CHECK_IDX(set_std_mode)
 	assert( idx >= 0 && idx < fcp->fc_n_video_modes );
 
-	insure_stopped(QSP_ARG  fcp,"setting video mode");
+	ensure_stopped(QSP_ARG  fcp,"setting video mode");
 
 	m = all_video_modes[ fcp->fc_video_mode_indices[idx] ].nvm_value;
 	if( m == FC2_VIDEOMODE_FORMAT7 ){
@@ -1273,7 +1273,7 @@ int set_fmt7_mode(QSP_ARG_DECL  Fly_Cam *fcp, int idx )
 {
 	fc2Format7ImageSettings settings;
 
-	insure_stopped(QSP_ARG  fcp,"setting format7 mode");
+	ensure_stopped(QSP_ARG  fcp,"setting format7 mode");
 
 	if( idx < 0 || idx >= fcp->fc_n_fmt7_modes ){
 		warn("Format 7 index out of range!?");
@@ -1368,7 +1368,7 @@ int set_framerate(QSP_ARG_DECL  Fly_Cam *fcp, int framerate_index)
 
 	if( fcp == NULL ) return -1;
 
-	insure_stopped(QSP_ARG  fcp,"setting frame rate");
+	ensure_stopped(QSP_ARG  fcp,"setting frame rate");
 
 	rate = all_framerates[framerate_index].nfr_value;
 	err = fc2SetVideoModeAndFrameRate(fcp->fc_context,

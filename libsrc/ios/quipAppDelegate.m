@@ -1219,7 +1219,7 @@ static double accel[3]={0,0,0};
 }
 #endif // THREAD_SAFE_QUERY
 
--(void) insure_wakeup
+-(void) ensure_wakeup
 {
 	if( wakeup_timer == NULL ){
 		wakeup_timer = [CADisplayLink

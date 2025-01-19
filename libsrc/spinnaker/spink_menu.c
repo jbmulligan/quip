@@ -57,7 +57,7 @@ void _select_spink_map(QSP_ARG_DECL  Spink_Map *skm_p)
 
 	if( skm_p != NULL ){
 		push_map_contexts(skm_p);
-		insure_current_camera(skm_p->skm_skc_p);
+		ensure_current_camera(skm_p->skm_skc_p);
 	}
 }
 
@@ -391,7 +391,7 @@ static COMMAND_FUNC(do_set_n_capture)
 
 	n = HOW_MANY("Number of frames to capture");
 
-	CHECK_CAM(set_n_capture)	// insure the_cam_p is valid...
+	CHECK_CAM(set_n_capture)	// ensure the_cam_p is valid...
 
 	if( n <= 0 ){
 		snprintf(ERROR_STRING,LLEN,"set_n_capture:  count must be positive!?");

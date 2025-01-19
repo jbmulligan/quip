@@ -337,7 +337,7 @@ void vl_init(SINGLE_QSP_ARG_DECL)
 		veclib_debug = add_debug_module("veclib");
 #endif // QUIP_DEBUG
 
-	/* sort the table to insure that each entry is at the location of its code */
+	/* sort the table to ensure that each entry is at the location of its code */
 #ifdef CAUTIOUS
 	if( N_VEC_FUNCS != N_NVFS ){
 		snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  vl_init:  Vector function table is missing %zd entries!?",

@@ -274,7 +274,7 @@ Set param_vec_name ${nospacename}_params
 .
 
 Define Init_New_Plotter 1 name
-#advise "Init_New_Plotter $1"
+advise "Init_New_Plotter $1"
 If strcmp('$the_plotter','no_plotter')
   "Remember_Plotter_Params"
 # Here we need to forget everything about the old plotter...
@@ -299,8 +299,10 @@ Erase_Plot
 #advise "Init_New_Plotter:  '$1'"
 # This causes trouble if we allow spaces in the plotter name
 Get_Param_Vec_Name $1
+Print param_vec_name
 If !obj_exists('$param_vec_name')
   "Vector $param_vec_name $n_plotter_params 1 float"
+Info $param_vec_name
 data ascii
   input_fmt ' '
 	read $param_vec_name -
@@ -463,6 +465,7 @@ view xsync $1 quit
 .
 
 Define Select_Plotter 1 plotter_name
+advise "Select_Plotter $1"
 # Should selecting a plotter bring it to the front???
 view show "$1" quit		# raise viewer
 Set recall 0

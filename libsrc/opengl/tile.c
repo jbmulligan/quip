@@ -583,7 +583,7 @@ advise(ERROR_STRING);
 	 *
 	 * Another difficulty arises in the choice of which DEM resolution to use -
 	 * in general, we would like to use a resolution appropriate for the level
-	 * of tile subdivision (to avoid aliasing), but we also need to insure
+	 * of tile subdivision (to avoid aliasing), but we also need to ensure
 	 * continuity between adjacent tiles, as well as stability as resolution changes.
 	 * 
 	 * We also need to have a way to keep track of the position of this tile

@@ -420,7 +420,7 @@ Subrt *_create_script_subrt(QSP_ARG_DECL  const char *name,int nargs,const char 
 	return srp;
 }
 
-static void insure_subrt_ctx_stack(SINGLE_QSP_ARG_DECL)
+static void ensure_subrt_ctx_stack(SINGLE_QSP_ARG_DECL)
 {
 	assert(THIS_VPD!=NULL);
 	if( SUBRT_CTX_STACK == NULL ){
@@ -466,7 +466,7 @@ static const char *_get_subrt_id(QSP_ARG_DECL  const char *name)
 
 	assert(THIS_VPD != NULL);
 
-	insure_subrt_ctx_stack(SINGLE_QSP_ARG);
+	ensure_subrt_ctx_stack(SINGLE_QSP_ARG);
 	s=savestr(name);
 	np=mk_node((void *)s);
 	addTail(SUBRT_CTX_STACK,np);

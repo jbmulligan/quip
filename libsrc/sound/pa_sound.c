@@ -290,7 +290,7 @@ void set_samp_freq(QSP_ARG_DECL  unsigned int req_rate)
 {
 	CHECK_AUDIO(AUDIO_PLAY);
 
-	// BUG?  should we insure validity?
+	// BUG?  should we ensure validity?
 	the_sample_rate = req_rate;
 }
 
