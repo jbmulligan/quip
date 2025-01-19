@@ -8,7 +8,7 @@
  * Disclaimer:  No guarantees of performance accompany this software,
  * nor is any responsibility assumed on the part of the authors.  All the
  * software has been tested extensively and every effort has been made to
- * insure its reliability.
+ * ensure its reliability.
  */
 
 /*

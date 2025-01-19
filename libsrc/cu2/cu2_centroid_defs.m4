@@ -38,12 +38,12 @@ void $1`_cuda_centroid'(HOST_CALL_ARG_DECLS)
 
 	/*SET_VA_SPACING(vap,&spi1);*/
 	/*SET_VA_SIZE_INFO(vap,&szi1);*/
-	insure_cuda_device( oap->oa_dest );
+	ensure_cuda_device( oap->oa_dest );
 	XFER_SLOW_ARGS_3
 	SETUP_SLOW_LEN_3
 	CHAIN_CHECK( $1`_cent' )
 	if( is_chaining ){
-		if( insure_static(oap) < 0 ) return;
+		if( ensure_static(oap) < 0 ) return;
 		add_link( & $1`_cent' , LINK_FUNC_ARGS );
 		return;
 	} else {

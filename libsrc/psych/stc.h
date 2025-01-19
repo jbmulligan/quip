@@ -688,8 +688,8 @@ extern void _w_set_error_rate(QSP_ARG_DECL  double er);
 
 /* xvalmenu.c */
 
-extern int _insure_xval_array(SINGLE_QSP_ARG_DECL);
-#define insure_xval_array() _insure_xval_array(SINGLE_QSP_ARG)
+extern int _ensure_xval_array(SINGLE_QSP_ARG_DECL);
+#define ensure_xval_array() _ensure_xval_array(SINGLE_QSP_ARG)
 
 extern COMMAND_FUNC( xval_menu );
 

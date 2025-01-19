@@ -464,7 +464,7 @@ static void init_tty_chars(SINGLE_QSP_ARG_DECL)
 #endif /* ! HAVE_TERMCAP */
 }
 
-static void insure_tty_chars(SINGLE_QSP_ARG_DECL)
+static void ensure_tty_chars(SINGLE_QSP_ARG_DECL)
 {
 	static int have_tty_chars=0;
 
@@ -510,9 +510,9 @@ static char edit_string[LLEN];
 
 #define IS_PICKING_ITEM		QS_PICKING_ITEM_ITP(THIS_QSP) != NULL
 
-#define insure_special_chars(fp) _insure_special_chars(QSP_ARG  fp)
+#define ensure_special_chars(fp) _ensure_special_chars(QSP_ARG  fp)
 
-static void _insure_special_chars(QSP_ARG_DECL  FILE *fp)
+static void _ensure_special_chars(QSP_ARG_DECL  FILE *fp)
 {
 	if( ers_char == 0 ){
 		ers_char = get_erase_chr(fileno(fp));
@@ -875,7 +875,7 @@ if( comp_debug <= 0 ) comp_debug=add_debug_module("completion");
 	assert( tty_in != NULL );
 	assert( tty_out != NULL );
 
-	insure_tty_chars(SINGLE_QSP_ARG);
+	ensure_tty_chars(SINGLE_QSP_ARG);
 
 	init_completion_data(&_this_completion,prompt,tty_out,tty_in);
 
@@ -887,7 +887,7 @@ if( comp_debug <= 0 ) comp_debug=add_debug_module("completion");
 	ttycbrk(fileno(tty_in));
 	echooff(fileno(tty_in));
 
-	insure_special_chars(tty_in);
+	ensure_special_chars(tty_in);
 
 	while(1){
 		if( strlen(_this_completion.chars_typed) > 0 ){	/* if something typed */

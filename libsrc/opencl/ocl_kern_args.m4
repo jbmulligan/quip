@@ -193,7 +193,7 @@ define(`SET_KERNEL_ARGS_FAST_INDEX_HELPER',`
 
 
 
-dnl BUG - can we insure that the arg order matches VFUNC???
+dnl BUG - can we ensure that the arg order matches VFUNC???
 
 define(`SET_KERNEL_ARGS_FAST_SBM',`SET_KERNEL_ARG(void *,&(VA_SBM_PTR(vap)))
 					SET_KERNEL_ARG(int,&(VA_SBM_BIT0(vap)))

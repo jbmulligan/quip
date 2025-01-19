@@ -228,7 +228,7 @@ static COMMAND_FUNC( do_ckpt )
 	ptr += n_ckpts * MAX_MSG_LEN;
 
 	strncpy(ptr,s,MAX_MSG_LEN-1);
-	*(ptr+MAX_MSG_LEN-1) = 0;	// insure null-terminated
+	*(ptr+MAX_MSG_LEN-1) = 0;	// ensure null-terminated
 
 	n_ckpts++;
 #else // ! HAVE_GETTIMEOFDAY

@@ -1332,7 +1332,7 @@ static void clear_return_string_contents(String_Buf *sbp)
 	(*(sb_buffer(sbp))) = 0;	/* default is "" */
 }
 
-static void insure_adequate_size(QSP_ARG_DECL  String_Buf *sbp)
+static void ensure_adequate_size(QSP_ARG_DECL  String_Buf *sbp)
 {
 	u_int need_size;
 
@@ -1533,7 +1533,7 @@ static void transfer_input_characters(SINGLE_QSP_ARG_DECL)
 // BUG?  because next_word_from_input_line uses a dynamically growable string buffer,
 // it can return a string which is longer than LLEN...  This can happen
 // for instance when a closing quote is missing...
-// Need to insure we have no fixed-sized buffers any more!
+// Need to ensure we have no fixed-sized buffers any more!
 //
 // variable expansion is performed at the end of next_word_from_input_line,
 // by calling var_expand
@@ -1559,7 +1559,7 @@ static char * next_word_from_input_line(SINGLE_QSP_ARG_DECL)
 
 	sbp = query_return_string(SINGLE_QSP_ARG);
 
-	insure_adequate_size(QSP_ARG  sbp);
+	ensure_adequate_size(QSP_ARG  sbp);
 	clear_return_string_contents(sbp);
 
 	SET_QS_RET_STRBUF(THIS_QSP,sbp);
@@ -2965,7 +2965,7 @@ advise(ERROR_STRING);
 
 /* stuff for loops on input */
 
-static void insure_query_text_buf(Query *qp)
+static void ensure_query_text_buf(Query *qp)
 {
 	if( QRY_TEXT_BUF(qp) == NULL )
 		SET_QRY_TEXT_BUF(qp,new_stringbuf());
@@ -2990,7 +2990,7 @@ void _open_loop(QSP_ARG_DECL int n)
 	dup_input(SINGLE_QSP_ARG);
 
 	SET_QRY_COUNT(qp,n);
-	insure_query_text_buf(qp);
+	ensure_query_text_buf(qp);
 	SET_QRY_FLAG_BITS(qp,Q_SAVING);
 }
 
@@ -3018,7 +3018,7 @@ void _foreach_loop(QSP_ARG_DECL Foreach_Loop *frp)
 
 	SET_QRY_COUNT(qp, FOREACH_LOOP_COUNT_CODE);
 	SET_QRY_FORLOOP(qp, frp);
-	insure_query_text_buf(qp);
+	ensure_query_text_buf(qp);
 	SET_QRY_FLAG_BITS(qp,Q_SAVING);
 }
 

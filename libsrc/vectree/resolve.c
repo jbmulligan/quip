@@ -2221,7 +2221,7 @@ static int arg_sizes_known(Vec_Expr_Node *enp)
  * (Not sure WHY we would need to do this, because to pass by value,
  * we would want to have some data in there already!?)
  *
- * We assume that the counts have already been insured to match.
+ * We assume that the counts have already been ensured to match.
  *
  * We also install shapes for pointer nodes.
  *

@@ -48,7 +48,7 @@ static inline double _comp_func( QSP_ARG_DECL   Data_Obj *dp, index_t index )
 	assert(prec_p!=NULL);
 
 #ifdef HAVE_ANY_GPU
-	ram_dp = _insure_ram_obj_for_reading(DEFAULT_QSP_ARG dp);
+	ram_dp = _ensure_ram_obj_for_reading(DEFAULT_QSP_ARG dp);
 	assert(ram_dp!=NULL);
 #else /* ! HAVE_ANY_GPU */
 	ram_dp = dp;

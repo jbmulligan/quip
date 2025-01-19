@@ -7,28 +7,28 @@
 Spink_Cam *current_skc_p = NULL;
 int max_display_name_len=0;
 
-void _insure_current_camera(QSP_ARG_DECL  Spink_Cam *skc_p)
+void _ensure_current_camera(QSP_ARG_DECL  Spink_Cam *skc_p)
 {
-//fprintf(stderr,"insure_current_camera %s BEGIN\n",skc_p->skc_name);
+//fprintf(stderr,"ensure_current_camera %s BEGIN\n",skc_p->skc_name);
 	if( skc_p == current_skc_p ) {
-//fprintf(stderr,"insure_current_camera:  %s is already current\n",skc_p->skc_name);
+//fprintf(stderr,"ensure_current_camera:  %s is already current\n",skc_p->skc_name);
 		return;
 	}
 
 	if( current_skc_p != NULL ){
-//fprintf(stderr,"insure_current_camera %s will release old camera %s\n", skc_p->skc_name,current_skc_p->skc_name);
+//fprintf(stderr,"ensure_current_camera %s will release old camera %s\n", skc_p->skc_name,current_skc_p->skc_name);
 		if( release_current_camera(1) < 0 )
-			error1("insure_current_camera:  failed to release previous camera!?");
+			error1("ensure_current_camera:  failed to release previous camera!?");
 	}
 
 #ifdef HAVE_LIBSPINNAKER
 	if( skc_p->skc_current_handle == NULL ){
 		spinCamera hCam;
-//fprintf(stderr,"insure_current_camera %s needs to refresh the camera handle\n", skc_p->skc_name);
+//fprintf(stderr,"ensure_current_camera %s needs to refresh the camera handle\n", skc_p->skc_name);
 		if( get_cam_from_list(hCameraList,skc_p->skc_sys_idx,&hCam) < 0 )
-			error1("insure_current_camera:  error getting camera from list!?");
+			error1("ensure_current_camera:  error getting camera from list!?");
 		skc_p->skc_current_handle = hCam;
-//fprintf(stderr,"insure_current_camera %s:  new handle = 0x%lx\n", skc_p->skc_name,(u_long)hCam);
+//fprintf(stderr,"ensure_current_camera %s:  new handle = 0x%lx\n", skc_p->skc_name,(u_long)hCam);
 	}
 #endif // HAVE_LIBSPINNAKER
 	current_skc_p = skc_p;
@@ -257,7 +257,7 @@ int _get_node_map_handle(QSP_ARG_DECL  spinNodeMapHandle *hMap_p, Spink_Map *skm
 	skc_p = skm_p->skm_skc_p;
 
 	assert(skc_p!=NULL);
-	insure_current_camera(skc_p);
+	ensure_current_camera(skc_p);
 
 	assert(skc_p->skc_current_handle!=NULL);
 //fprintf(stderr,"get_node_map_handle:  %s has current handle 0x%lx\n",skc_p->skc_name, (u_long)skc_p->skc_current_handle);

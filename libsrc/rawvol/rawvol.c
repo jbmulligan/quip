@@ -306,7 +306,7 @@ advise(ERROR_STRING);
 	return(0);
 }
 
-int insure_default_rv(SINGLE_QSP_ARG_DECL)
+int ensure_default_rv(SINGLE_QSP_ARG_DECL)
 {
 	const char *default_name;
 
@@ -314,7 +314,7 @@ int insure_default_rv(SINGLE_QSP_ARG_DECL)
 		rawvol_debug =  add_debug_module("rawvol");
 
 	if( curr_rv_sbp != NULL ){
-		snprintf(ERROR_STRING,LLEN,"insure_default_rv:  raw volume already open");
+		snprintf(ERROR_STRING,LLEN,"ensure_default_rv:  raw volume already open");
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -547,7 +547,7 @@ static void alloc_frame_infos(RV_Inode *dk_inp)
 		if( FRAME_INFO_N_SAVED(fi_p) > 0 ){
 			long len;
 			len = FRAME_INFO_N_SAVED( fi_p ) * sizeof(uint32_t);
-			/* round up to insure alignment */
+			/* round up to ensure alignment */
 			len += LONG_ALIGN_SLOP;
 #ifdef STRING_DEBUG
 snprintf(ERROR_STRING,LLEN,"reserving %d frame string bytes at offset %d",
@@ -1146,7 +1146,7 @@ static void release_frame_infos( RV_Inode *inp )
 		fi_p = &(inp->rvi_frame_info[i]);
 		if( FRAME_INFO_N_SAVED(fi_p) > 0 ){
 			len = FRAME_INFO_N_SAVED(fi_p) * sizeof(uint32_t);
-			/* round up to insure alignment */
+			/* round up to ensure alignment */
 			len += LONG_ALIGN_SLOP;
 			givspace(&rv_st_freelist,len,FRAME_INFO_STR_IDX(fi_p));
 		}
@@ -1680,7 +1680,7 @@ int _remember_frame_info(QSP_ARG_DECL  RV_Inode *inp,int index,USHORT_ARG n,uint
 	/* find space for the frames in the string table */
 
 	len = n*sizeof(uint32_t);
-	/* round up to insure alignment */
+	/* round up to ensure alignment */
 	len += LONG_ALIGN_SLOP;
 	i_addr = getspace(&rv_st_freelist,len);
 	if( i_addr < 0 ){
@@ -3283,8 +3283,8 @@ MISSING_VOID_FUNC(rawvol_get_usage)
 void rv_close(SINGLE_QSP_ARG_DECL)
 MISSING_VOID_FUNC(rv_close)
 
-int insure_default_rv(SINGLE_QSP_ARG_DECL)
-MISSING_VOID_FUNC(insure_default_rv)
+int ensure_default_rv(SINGLE_QSP_ARG_DECL)
+MISSING_VOID_FUNC(ensure_default_rv)
 
 void rv_mkfs(QSP_ARG_DECL  int ndisks,const char **disknames,uint32_t nib,uint32_t nsb)
 MISSING_VOID_FUNC(rv_mkfs)

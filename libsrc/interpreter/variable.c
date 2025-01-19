@@ -75,9 +75,9 @@ Variable *_force_reserved_var(QSP_ARG_DECL  const char *var_name, const char *va
 	return vp;
 }
 
-#define insure_variable(name,creat_flags) _insure_variable(QSP_ARG  name,creat_flags)
+#define ensure_variable(name,creat_flags) _ensure_variable(QSP_ARG  name,creat_flags)
 
-static Variable *_insure_variable(QSP_ARG_DECL  const char *name, int creat_flags )
+static Variable *_ensure_variable(QSP_ARG_DECL  const char *name, int creat_flags )
 {
 	Variable *vp;
 	const char *val_str;
@@ -98,7 +98,7 @@ static Variable *_insure_variable(QSP_ARG_DECL  const char *name, int creat_flag
 		SET_VAR_FLAGS(vp, VAR_RESERVED );
 		if( creat_flags != VAR_RESERVED ){
 			snprintf(ERROR_STRING,LLEN,
-	"insure_variable:  %s exists in environment, but reserved flag not passed!?",
+	"ensure_variable:  %s exists in environment, but reserved flag not passed!?",
 				name);
 			warn(ERROR_STRING);
 		}
@@ -113,7 +113,7 @@ Variable *_assign_var(QSP_ARG_DECL  const char *var_name, const char *var_val)
 {
 	Variable *vp;
 
-	vp = insure_variable(var_name, VAR_SIMPLE );
+	vp = ensure_variable(var_name, VAR_SIMPLE );
 
 	if( vp == NULL ) return vp;
 
@@ -146,7 +146,7 @@ Variable *_assign_reserved_var(QSP_ARG_DECL  const char *var_name, const char *v
 {
 	Variable *vp;
 
-	vp = insure_variable(var_name, VAR_RESERVED );
+	vp = ensure_variable(var_name, VAR_RESERVED );
 
 	if( vp == NULL ) return vp;
 
@@ -389,7 +389,7 @@ void _reserve_variable(QSP_ARG_DECL  const char *name)
 {
 	Variable *vp;
 
-	vp = insure_variable(name,VAR_RESERVED);
+	vp = ensure_variable(name,VAR_RESERVED);
 	if( IS_DYNAMIC_VAR(vp) ){
 		snprintf(ERROR_STRING,LLEN,
 	"reserve_variable:  no need to reserve dynamic variable %s",

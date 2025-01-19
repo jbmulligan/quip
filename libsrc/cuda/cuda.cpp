@@ -181,7 +181,7 @@ COMMAND_FUNC( do_gpu_fwdfft )
 	CHECK_CONTIGUITY(dst_dp);
 	CHECK_CONTIGUITY(src1_dp);
 
-	insure_cuda_device(dst_dp);
+	ensure_cuda_device(dst_dp);
 
 	//INSERT: Code that calls the fft function
 	g_fwdfft(QSP_ARG  dst_dp, src1_dp);
@@ -410,13 +410,13 @@ void _set_cuda_device(QSP_ARG_DECL   Cuda_Device *cdp )
 #endif //  HAVE_CUDA
 }
 
-void _insure_cuda_device(QSP_ARG_DECL  Data_Obj *dp )
+void _ensure_cuda_device(QSP_ARG_DECL  Data_Obj *dp )
 {
 	Cuda_Device *cdp;
 
 	if( AREA_FLAGS(OBJ_AREA(dp)) & DA_RAM ){
 		snprintf(ERROR_STRING,LLEN,
-	"insure_cuda_device:  Object %s is a host RAM object!?",OBJ_NAME(dp));
+	"ensure_cuda_device:  Object %s is a host RAM object!?",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}
@@ -425,11 +425,11 @@ void _insure_cuda_device(QSP_ARG_DECL  Data_Obj *dp )
 	assert( cdp != NULL );
 
 	if( curr_cdp != cdp ){
-snprintf(ERROR_STRING,LLEN,"insure_cuda_device:  curr_cdp = 0x%" PRIxPTR "  cdp = 0x%" PRIxPTR,
+snprintf(ERROR_STRING,LLEN,"ensure_cuda_device:  curr_cdp = 0x%" PRIxPTR "  cdp = 0x%" PRIxPTR,
 (uintptr_t)curr_cdp,(uintptr_t)cdp);
 advise(ERROR_STRING);
 
-snprintf(ERROR_STRING,LLEN,"insure_cuda_device:  current device is %s, want %s",
+snprintf(ERROR_STRING,LLEN,"ensure_cuda_device:  current device is %s, want %s",
 curr_cdp->cudev_name,cdp->cudev_name);
 advise(ERROR_STRING);
 		set_cuda_device(cdp);

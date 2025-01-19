@@ -99,7 +99,7 @@ void update_if(void)
 
 void _setcolor(QSP_ARG_DECL  int c,int r,int g,int b)
 {
-	/*insure_linearization(); */
+	/*ensure_linearization(); */
 
 	if( color_index_out_of_range(c) )
 		return;
@@ -193,7 +193,7 @@ void _make_grayscale(QSP_ARG_DECL  int base,int n_colors)
 	int i;
 	int inc,v;
 
-	/*insure_linearization(); */
+	/*ensure_linearization(); */
 
 	inc = phosmax/(n_colors-1);
 	v=0;

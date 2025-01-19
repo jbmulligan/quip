@@ -19,7 +19,7 @@ char *display_name=NULL;
 #include "get_viewer.h"
 
 #ifdef HAVE_X11
-void insure_x11_server(SINGLE_QSP_ARG_DECL)
+void ensure_x11_server(SINGLE_QSP_ARG_DECL)
 {
 	static int have_server=0;
 	if( have_server ) return;

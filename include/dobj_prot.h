@@ -376,13 +376,13 @@ extern void verdata(SINGLE_QSP_ARG_DECL);
 
 /* ascmenu.c */
 #ifdef HAVE_ANY_GPU
-extern Data_Obj *_insure_ram_obj_for_reading(QSP_ARG_DECL  Data_Obj *dp);
+extern Data_Obj *_ensure_ram_obj_for_reading(QSP_ARG_DECL  Data_Obj *dp);
 extern void _release_ram_obj_for_reading(QSP_ARG_DECL  Data_Obj *ram_dp, Data_Obj *dp);
-extern Data_Obj *_insure_ram_obj_for_writing(QSP_ARG_DECL  Data_Obj *dp);
+extern Data_Obj *_ensure_ram_obj_for_writing(QSP_ARG_DECL  Data_Obj *dp);
 
-#define insure_ram_obj_for_reading(dp) _insure_ram_obj_for_reading(QSP_ARG  dp)
+#define ensure_ram_obj_for_reading(dp) _ensure_ram_obj_for_reading(QSP_ARG  dp)
 #define release_ram_obj_for_reading(ram_dp, dp) _release_ram_obj_for_reading(QSP_ARG  ram_dp, dp)
-#define insure_ram_obj_for_writing(dp) _insure_ram_obj_for_writing(QSP_ARG  dp)
+#define ensure_ram_obj_for_writing(dp) _ensure_ram_obj_for_writing(QSP_ARG  dp)
 #endif // HAVE_ANY_GPU
 
 /* ascii.c */

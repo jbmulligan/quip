@@ -831,7 +831,7 @@ MENU_END(fb)
 
 COMMAND_FUNC( do_fb_menu )
 {
-	/* insure_x11_server(); */	/* not clear we really need this for *this* menu!? BUG? */
+	/* ensure_x11_server(); */	/* not clear we really need this for *this* menu!? BUG? */
 	CHECK_AND_PUSH_MENU(fb);
 }
 

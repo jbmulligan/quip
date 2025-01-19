@@ -162,7 +162,7 @@ extern COMMAND_FUNC( do_set_checkpoint );
 extern COMMAND_FUNC( do_clear_checkpoints );
 extern COMMAND_FUNC( do_show_checkpoints );
 
-extern void insure_cuda_device( Data_Obj *dp );
+extern void ensure_cuda_device( Data_Obj *dp );
 
 extern void h_sp_ifl(Data_Obj *dp, int x, int y, float tol, float v );
 extern void h_sp_ifl2(Data_Obj *dp, int x, int y, float tol, float v );

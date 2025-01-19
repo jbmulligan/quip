@@ -606,7 +606,7 @@ static COMMAND_FUNC( do_del_mvi )
 void close_movie(QSP_ARG_DECL  Movie *mvip)
 {
 	/* First must destroy all sequences that reference this movie.
-	 * The fact that this flag is set does not insure that there
+	 * The fact that this flag is set does not ensure that there
 	 * are actually any seqs to delete, since they could have been
 	 * deleted already by someone else...
 	 */
@@ -699,7 +699,7 @@ static COMMAND_FUNC( do_list_mvis ){ list_mvis(tell_msgfile()); }
 MENU_BEGIN(playback)
 ADD_CMD( directory,	do_set_mvidir,		set movie directory )
 ADD_CMD( open,		do_open_mvi,		open a movie file )
-ADD_CMD( insure,	do_openif_mvi,		open a (possibly opened) movie file )
+ADD_CMD( ensure,	do_openif_mvi,		open a (possibly opened) movie file )
 ADD_CMD( play,		do_play_movie,		play a movie to external video device )
 ADD_CMD( shuttle,	do_shuttle,		play a movie frame to external video )
 ADD_CMD( close,		do_del_mvi,		close an open movie file )

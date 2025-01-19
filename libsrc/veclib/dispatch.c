@@ -136,7 +136,7 @@ static void *data_processor(void *argp)
 	Proc_Info *pip;
 #ifdef QUIP_DEBUG
 #define BUF_LEN	256
-	char mystring[BUF_LEN];	// BUG need to insure no overrun
+	char mystring[BUF_LEN];	// BUG need to ensure no overrun
 	int myindex;
 #endif /* QUIP_DEBUG */
 	Query_Stack *qsp;

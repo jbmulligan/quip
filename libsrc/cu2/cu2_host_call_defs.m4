@@ -255,7 +255,7 @@ define(`SVAL_BM',`($1)->bitmap_scalar')
 define(`NN_GPU',`n_blocks, n_threads_per_block')
 
 
-// PORT - insure_gpu_device ???
+// PORT - ensure_gpu_device ???
 
 // We should have an intelligent way of designing blocks...
 // On wheatstone, the card can have a maximum of 512 threads/block.

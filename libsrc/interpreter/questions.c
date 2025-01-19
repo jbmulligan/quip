@@ -146,7 +146,7 @@ const char * _nameof(QSP_ARG_DECL  const char *prompt)
 	return(buf);
 }
 
-static const char *insure_item_prompt(Item_Type *itp, const char *prompt)
+static const char *ensure_item_prompt(Item_Type *itp, const char *prompt)
 {
 	if( prompt == NULL || *prompt==0 )
 		return IT_NAME(itp);
@@ -185,7 +185,7 @@ Item *_pick_item(QSP_ARG_DECL  Item_Type *itp,const char *prompt)
 		return get_item(itp, s);
 	}
 
-	prompt = insure_item_prompt(itp,prompt);
+	prompt = ensure_item_prompt(itp,prompt);
 
 	assert( QS_PICKING_ITEM_ITP(THIS_QSP) == NULL );
 
@@ -229,7 +229,7 @@ void _init_item_hist( QSP_ARG_DECL  Item_Type *itp, const char* prompt )
 }
 #endif /* HAVE_HISTORY */
 
-static inline void insure_prompt_buf(QSP_ARG_DECL  const char *fmt, const char *pmpt)
+static inline void ensure_prompt_buf(QSP_ARG_DECL  const char *fmt, const char *pmpt)
 {
 	int n_need;
 
@@ -257,7 +257,7 @@ const char *_format_prompt(QSP_ARG_DECL  const char *fmt, const char *prompt)
 		return prompt;
 	}
 
-	insure_prompt_buf(QSP_ARG  fmt,prompt);
+	ensure_prompt_buf(QSP_ARG  fmt,prompt);
 	pline = sb_buffer(QS_QRY_PROMPT_SB(THIS_QSP));
 
 	if( QS_FLAGS(THIS_QSP) & QS_FORMAT_PROMPT ){

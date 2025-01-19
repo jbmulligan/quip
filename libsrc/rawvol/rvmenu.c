@@ -309,7 +309,7 @@ static COMMAND_FUNC( do_cd )
 
 static COMMAND_FUNC( do_default_rv )
 {
-	if( insure_default_rv(SINGLE_QSP_ARG) < 0 )
+	if( ensure_default_rv(SINGLE_QSP_ARG) < 0 )
 		warn("Unable to mount default raw volume");
 }
 
@@ -379,7 +379,7 @@ COMMAND_FUNC( do_rv_menu )
 
 	if( ! inited ){
 		dataobj_init();	/* initialize prec_name[] */
-		/* insure_default_rv(); */
+		/* ensure_default_rv(); */
 #ifdef DEBUG
 		if( rawvol_debug == 0 )
 			rawvol_debug = add_debug_module("rawvol");

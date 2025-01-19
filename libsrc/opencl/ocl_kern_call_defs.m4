@@ -8,7 +8,7 @@
 // So we take them out and include only when needed...
 
 // BUG the structure definitions have to be kept in sync with the definitions in the header files...
-// How could we write this in a way that would insure this?
+// How could we write this in a way that would ensure this?
 // See shape_info.h
 
 define(`KERNEL_FUNC_PRELUDE',`					\

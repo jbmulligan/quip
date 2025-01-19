@@ -114,7 +114,7 @@ MENU_END(displays)
 COMMAND_FUNC( dpymenu )
 {
 #ifdef HAVE_X11
-	insure_x11_server(SINGLE_QSP_ARG);
+	ensure_x11_server(SINGLE_QSP_ARG);
 #endif /* HAVE_X11 */
 
 	CHECK_AND_PUSH_MENU(displays);

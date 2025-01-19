@@ -242,7 +242,7 @@ extern void init_viewer_images(Viewer *vp);
 #define add_ios_sizable add_sizable
 
 #ifdef HAVE_X11
-#define INSURE_X11_SERVER  insure_x11_server(SINGLE_QSP_ARG);
+#define INSURE_X11_SERVER  ensure_x11_server(SINGLE_QSP_ARG);
 #else
 #define INSURE_X11_SERVER
 #endif /* ! HAVE_X11 */

@@ -3497,7 +3497,7 @@ static void _check_xx_xx_condass_code(QSP_ARG_DECL  Vec_Expr_Node *enp)
 				// Does it exist, and should we release it?
 				FIX_CONDASS_CHILDREN_1
 				SET_VN_BM_CODE(enp, vv_vv_test_code(VN_CODE(test_enp)));
-				// check to insure typecase if needed
+				// check to ensure typecase if needed
 				CHECK_SHAPES(1,2)
 				RELEASE_BOOL(test_enp)
 			} else {

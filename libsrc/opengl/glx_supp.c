@@ -316,9 +316,9 @@ COMMAND_FUNC( do_render_to )
 
 static int glut_inited=0;
 
-#define insure_glut() _insure_glut(SINGLE_QSP_ARG)
+#define ensure_glut() _ensure_glut(SINGLE_QSP_ARG)
 
-static int _insure_glut(SINGLE_QSP_ARG_DECL)
+static int _ensure_glut(SINGLE_QSP_ARG_DECL)
 {
 #ifdef HAVE_GLUT
 	int argc=0;
@@ -329,7 +329,7 @@ static int _insure_glut(SINGLE_QSP_ARG_DECL)
 #ifdef HAVE_GLUT
 	glutInit(&argc,argv);
 #else // ! HAVE_GLUT
-	warn("insure_glut:  No GLUT support in this build!?");
+	warn("ensure_glut:  No GLUT support in this build!?");
 	return -1;
 #endif // ! HAVE_GLUT
 	glut_inited=1;
@@ -342,7 +342,7 @@ COMMAND_FUNC( do_set_fullscreen )
 
 	yesno = ASKIF("fullscreen mode");
 
-	if( insure_glut() < 0 ) return;
+	if( ensure_glut() < 0 ) return;
 
 #ifdef HAVE_GLUT
 	if( yesno )

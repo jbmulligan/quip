@@ -83,13 +83,13 @@ PF_COMMAND_FUNC( list_devs )
 	list_pfdevs(QSP_ARG  tell_msgfile(SINGLE_QSP_ARG));
 }
 
-void insure_cu2_device(QSP_ARG_DECL  Data_Obj *dp )
+void ensure_cu2_device(QSP_ARG_DECL  Data_Obj *dp )
 {
 	Platform_Device *pdp;
 
 	if( AREA_FLAGS(OBJ_AREA(dp)) & DA_RAM ){
 		snprintf(ERROR_STRING,LLEN,
-	"insure_cu2_device:  Object %s is a host RAM object!?",OBJ_NAME(dp));
+	"ensure_cu2_device:  Object %s is a host RAM object!?",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}
@@ -102,11 +102,11 @@ void insure_cu2_device(QSP_ARG_DECL  Data_Obj *dp )
 #endif /* CAUTIOUS */
 
 	if( curr_pdp != pdp ){
-snprintf(ERROR_STRING,LLEN,"insure_cu2_device:  curr_pdp = 0x%"PRIxPTR"  pdp = 0x%"PRIxPTR,
+snprintf(ERROR_STRING,LLEN,"ensure_cu2_device:  curr_pdp = 0x%"PRIxPTR"  pdp = 0x%"PRIxPTR,
 (uintptr_t)curr_pdp,(uintptr_t)pdp);
 advise(ERROR_STRING);
 
-snprintf(ERROR_STRING,LLEN,"insure_cu2_device:  current device is %s, want %s",
+snprintf(ERROR_STRING,LLEN,"ensure_cu2_device:  current device is %s, want %s",
 PFDEV_NAME(curr_pdp),PFDEV_NAME(pdp));
 advise(ERROR_STRING);
 		PF_FUNC_NAME(set_device)(QSP_ARG  pdp);

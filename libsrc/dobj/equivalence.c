@@ -263,7 +263,7 @@ static incr_t parent_inc_at_level(Equivalence_Data *eqd_p)
  */
 
 /* When we bring in more parent elements
- * to fill in a child dimension, we have to insure that
+ * to fill in a child dimension, we have to ensure that
  * the spacing remains even.
  *
  * This test is like the contiguity test - but we only care

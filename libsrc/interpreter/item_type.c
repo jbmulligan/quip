@@ -369,7 +369,7 @@ int _add_item( QSP_ARG_DECL  Item_Type *itp, void *ip )
 	return 0;
 }
 
-static int insure_item_name_available(QSP_ARG_DECL  Item_Type *itp, const char *name)
+static int ensure_item_name_available(QSP_ARG_DECL  Item_Type *itp, const char *name)
 {
 	const Item *ip;
 
@@ -466,7 +466,7 @@ Item *_new_item( QSP_ARG_DECL  Item_Type *itp, const char* name, size_t size )
 
 	LOCK_ITEM_TYPE(itp)
 
-	if( insure_item_name_available(QSP_ARG  itp, name) < 0 ){
+	if( ensure_item_name_available(QSP_ARG  itp, name) < 0 ){
 		UNLOCK_ITEM_TYPE(itp);
 		return NULL;
 	}
@@ -1599,7 +1599,7 @@ static void apply_to_context_stack(QSP_ARG_DECL  Item_Type *itp,
 	}
 }
 
-static void insure_cycle_ready(QSP_ARG_DECL  Match_Cycle *mc_p)
+static void ensure_cycle_ready(QSP_ARG_DECL  Match_Cycle *mc_p)
 {
 	Node *first_np;
 	Node *np;
@@ -1634,7 +1634,7 @@ static Match_Cycle * get_partial_match_cycle(QSP_ARG_DECL  Item_Type *itp, const
 	SET_MC_STACK_SERIAL(mc_p, ITCI_STACK_SERIAL( THIS_ITCI(MATCH_CYCLE_IT(mc_p)) ) );
 
 	// Make sure that the cycle points to a node with something...
-	insure_cycle_ready(QSP_ARG  mc_p);
+	ensure_cycle_ready(QSP_ARG  mc_p);
 
 	return mc_p;
 } // get_partial_match_cycle
@@ -1748,7 +1748,7 @@ const char *_find_partial_match( QSP_ARG_DECL  Item_Type *itp, const char *s )
 }
 
 // These used to be accessed directly from the struct, but now we provide accessor functions
-// to insure proper initialization (necessary when multi-threading)
+// to ensure proper initialization (necessary when multi-threading)
 
 List *_context_stack(QSP_ARG_DECL  Item_Type *itp)
 {

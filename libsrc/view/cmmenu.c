@@ -248,7 +248,7 @@ COMMAND_FUNC( do_lut_menu )
 #endif /* BUILD_FOR_OBJC */
 	}
 
-	/* We may not have called insure_x11_server() at this point -
+	/* We may not have called ensure_x11_server() at this point -
 	 * but in that case, we cannot have a viewer,
 	 * although we could have a panel...
 	 * Let's try it without and hope for the best...

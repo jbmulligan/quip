@@ -151,7 +151,7 @@ GENERIC_HOST_FAST_SWITCH($1,$2,$3,$4,$5)
 define(`CHAIN_CHECK',`
 
 	if( is_chaining ){
-		if( insure_static(oap) < 0 ) return;
+		if( ensure_static(oap) < 0 ) return;
 		add_link( & $1, LINK_FUNC_ARGS );
 		return;
 	} else {

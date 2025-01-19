@@ -1218,7 +1218,7 @@ void push_nav(QSP_ARG_DECL  Gen_Win *gwp)
 	// panel does not - why not?  (New bug w/ ios 6)
 	// Maybe viewDidLoad has not been called?
 
-	// The next section is a total hack, to insure that the back
+	// The next section is a total hack, to ensure that the back
 	// button doesn't display when we don't want it to.
 	// It is possible that there is a correct, clean way
 	// to make this work properly.  Alternatively, there may

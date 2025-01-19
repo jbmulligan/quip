@@ -510,7 +510,7 @@ COMMAND_FUNC( do_meteor_menu )
 
 	if( ! inited ){
 advise("setting up default rawvol");
-		if( insure_default_rv(SINGLE_QSP_ARG) >= 0 ){
+		if( ensure_default_rv(SINGLE_QSP_ARG) >= 0 ){
 			/* create movie structs for any existing rv files */
 advise("initializing rawvol movies");
 			init_rv_movies();

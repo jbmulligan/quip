@@ -31,7 +31,7 @@ void enlarge_buffer(String_Buf *sbp,size_t size)
 	} else {
 		assert(sbp->sb_buf==NULL);
 		/* if this is a new buffer, initialize w/ null string.
-		 * This insures that cat_string will work to a null stringbuf.
+		 * This ensures that cat_string will work to a null stringbuf.
 		 */
 		*newbuf=0;
 	}

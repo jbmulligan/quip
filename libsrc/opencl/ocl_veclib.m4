@@ -16,9 +16,9 @@ undefine(`BUILDING_KERNELS')
 
 // That declares the kernels - now the host-side functions
 
-void _insure_ocl_device(QSP_ARG_DECL  Data_Obj *dp)
+void _ensure_ocl_device(QSP_ARG_DECL  Data_Obj *dp)
 {
-	warn("insure_ocl_device:  not implemented!?");
+	warn("ensure_ocl_device:  not implemented!?");
 }
 
 my_include(`ocl_host_funcs.m4')
