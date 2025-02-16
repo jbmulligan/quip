@@ -654,7 +654,7 @@ Subvector outsertion foutput ncols(feye_vel{0}) 0
 VSet finput 0
 VMov insertion eye_vel{0}
 
-advise "Filter_Velocities applying filter $the_filter"
+#advise "Filter_Velocities applying filter $the_filter"
 Apply_Filter foutput finput $the_filter
 VMov feye_vel{0} outsertion
 #Plot_If 'FVPlot finput foutput'

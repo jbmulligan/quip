@@ -269,6 +269,7 @@ int keyhit(int fd)
 		exit(1);
 		return -1;
 	}
+fprintf(stderr,"keyhit: returning %ld\n",l);
 	return( (int) l );
 }
 
