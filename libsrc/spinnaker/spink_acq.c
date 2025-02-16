@@ -159,6 +159,7 @@ Data_Obj * _grab_spink_cam_frame(QSP_ARG_DECL  Spink_Cam * skc_p )
 		warn(ERROR_STRING);
 		return NULL;
 	}
+fprintf(stderr,"status = 0x%x\n",status);
 	if( status != IMAGE_NO_ERROR ){
 		if( report_image_status(status) < 0 ) return NULL;
 	}
