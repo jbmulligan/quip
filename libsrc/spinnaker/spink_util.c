@@ -1126,8 +1126,8 @@ static void _get_cam_dimensions(QSP_ARG_DECL  Spink_Cam *skc_p)
 	skc_p->skc_depth = 1;	// BUG should determine based on pixel mode!
 	skc_p->skc_bytes_per_image = skc_p->skc_cols * skc_p->skc_rows * skc_p->skc_depth;
 	select_spink_map(NULL);
-fprintf(stderr,"get_cam_dimensions:  %s has %d rows and %d columns\n",
-skc_p->skc_name,skc_p->skc_rows,skc_p->skc_cols);
+//fprintf(stderr,"get_cam_dimensions:  %s has %d rows and %d columns\n",
+//skc_p->skc_name,skc_p->skc_rows,skc_p->skc_cols);
 }
 
 #define init_one_spink_cam(idx) _init_one_spink_cam(QSP_ARG  idx)

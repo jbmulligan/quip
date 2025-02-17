@@ -134,11 +134,29 @@ static void _set_script_var(QSP_ARG_DECL  const char *varname, int value)
 	assign_reserved_var(varname,buf);
 }
 
+#define SECTOR_SIZE	1024	// BUG check?
+static void *check_alignment(QSP_ARG_DECL  void *ptr)
+{
+	void *aligned_ptr;
+	long diff;
+	aligned_ptr = (void *) ((((uint64_t)ptr) + SECTOR_SIZE-1)
+							& ~(SECTOR_SIZE-1));
+	diff = aligned_ptr - ptr;
+	if( diff != 0 ){
+		snprintf(ERROR_STRING,LLEN,
+	"check_alignment:  Aligned ptr at 0x%lx, %ld bytes discarded\n",
+			(long)aligned_ptr,diff);
+		warn(ERROR_STRING);
+	}
+	return aligned_ptr;
+}
+
 Data_Obj * _grab_spink_cam_frame(QSP_ARG_DECL  Spink_Cam * skc_p )
 {
 	spinImage hImage;
 	spinImageStatus status;
 	void *data_ptr;
+	void *aligned_ptr;
 	int index;
 	Data_Obj *dp;
 
@@ -159,7 +177,7 @@ Data_Obj * _grab_spink_cam_frame(QSP_ARG_DECL  Spink_Cam * skc_p )
 		warn(ERROR_STRING);
 		return NULL;
 	}
-fprintf(stderr,"status = 0x%x\n",status);
+//fprintf(stderr,"status = 0x%x\n",status);
 	if( status != IMAGE_NO_ERROR ){
 		if( report_image_status(status) < 0 ) return NULL;
 	}
@@ -184,25 +202,15 @@ fprintf(stderr,"status = 0x%x\n",status);
 		dp = NULL;
 	}
 
-fprintf(stderr,"Frame %d data ptr at 0x%lx\n",index,(long)data_ptr);
-{
-void *aligned_ptr;
-long diff;
-#define SECTOR_SIZE	1024	// BUG check?
-aligned_ptr = (void *) ((((uint64_t)data_ptr) + SECTOR_SIZE-1) & ~(SECTOR_SIZE-1));
-diff = aligned_ptr - data_ptr;
-fprintf(stderr,"Aligned ptr at 0x%lx, %ld bytes discarded\n",(long)aligned_ptr,diff);
+//fprintf(stderr,"Frame %d data ptr at 0x%lx\n",index,(long)data_ptr);
 
+	aligned_ptr = check_alignment(QSP_ARG  data_ptr);
+	point_obj_to_ext_data(dp,aligned_ptr);
+	if( aligned_ptr != data_ptr ){
+		SET_OBJ_UNALIGNED_PTR(dp,data_ptr);
+	}
 
-
-	point_obj_to_ext_data(dp,aligned_ptr /* data_ptr */ );
-	SET_OBJ_UNALIGNED_PTR(dp,data_ptr);
-
-fprintf(stderr,"object %s has %d rows and %d columns\n",OBJ_NAME(dp),OBJ_ROWS(dp),OBJ_COLS(dp));
-	// BUG need to take off a few rows???
-}
-
-fprintf(stderr,"TRACE grab_spink_cam_frame buffer %d hImage at 0x%lx\n",index,(long)hImage);
+//fprintf(stderr,"TRACE grab_spink_cam_frame buffer %d hImage at 0x%lx\n",index,(long)hImage);
 	SET_OBJ_EXTRA(dp,hImage);
 	skc_p->skc_newest = index;
 	if( skc_p->skc_oldest < 0 ) skc_p->skc_oldest = index;
@@ -247,7 +255,7 @@ void _release_spink_frame(QSP_ARG_DECL  Spink_Cam *skc_p, int index)
 	//hImage = OBJ_EXTRA(dp);
 	hImage = gfi_p->gfi_hImage;
 
-fprintf(stderr,"TRACE release_spink_frame buffer %d hImage at 0x%lx\n",index,(long)hImage);
+//fprintf(stderr,"TRACE release_spink_frame buffer %d hImage at 0x%lx\n",index,(long)hImage);
 	if( release_spink_image(hImage) < 0 ){
 		snprintf(ERROR_STRING,LLEN,"release_oldest_spink_frame %s:  Error releasing image %d",skc_p->skc_name,index);
 		warn(ERROR_STRING);
