@@ -530,12 +530,14 @@ static COMMAND_FUNC(do_list_chunks)
 	list_chunk_datas( tell_msgfile() );
 }
 
+#define CHUNK_N_BYTES	64
+
 static COMMAND_FUNC(do_fetch_chunk)
 {
 	Chunk_Data *cd_p;
 	Data_Obj *dp;
 	const char *s;
-	char buf[64];
+	char buf[CHUNK_N_BYTES];
 
 	s = nameof("variable name");
 
@@ -546,7 +548,7 @@ static COMMAND_FUNC(do_fetch_chunk)
 
 	fetch_chunk_data(cd_p,dp);
 	//display_chunk_data(cd_p);
-	format_chunk_data(buf,cd_p);
+	format_chunk_data(buf,CHUNK_N_BYTES,cd_p);	// BUG - sym const
 	assign_var(s,buf);
 }
 
@@ -554,7 +556,7 @@ static COMMAND_FUNC(do_disp_chunk)
 {
 	Chunk_Data *cd_p;
 	Data_Obj *dp;
-	char buf[64];
+	char buf[CHUNK_N_BYTES];
 
 	cd_p = pick_chunk_data("");
 	dp = pick_obj("camera buffer");
@@ -562,7 +564,7 @@ static COMMAND_FUNC(do_disp_chunk)
 	if( cd_p == NULL || dp == NULL ) return;
 
 	fetch_chunk_data(cd_p,dp);
-	format_chunk_data(buf,cd_p);
+	format_chunk_data(buf,CHUNK_N_BYTES,cd_p);
 
 	snprintf(MSG_STR,LLEN,"\t%s:  ",cd_p->cd_name);
 	prt_msg_frag(MSG_STR);

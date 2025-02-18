@@ -14,7 +14,9 @@ EXTRA_DIST =	quip_test.sh
 quip_SOURCES = quip_main.c
 quip_CPPFLAGS = -I$(top_srcdir)/include
 
-quip_LDFLAGS = -L../libs -Wl,-rpath,/usr/local/cuda/lib
+# hacked for Spinnaker:
+quip_LDFLAGS = -L../libs -Wl,-rpath,/usr/local/lib
+#quip_LDFLAGS = -L../libs -Wl,-rpath,/usr/local/cuda/lib
 #quip_LDFLAGS = -rpath /usr/local/cuda/lib
 
 #math_drill_SOURCES = math.c

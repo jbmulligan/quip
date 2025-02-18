@@ -497,11 +497,22 @@ if test "x${use_motif_gui}" = xyes; then
   AC_CHECK_FILE([/opt/homebrew/include],[CPPFLAGS="$CPPFLAGS -I/opt/homebrew/include"])
 fi
 
+# Spinnaker has a dependency on libomp...
+# From homebrew on Mac:
+#
+# libomp is keg-only, which means it was not symlinked into /opt/homebrew,
+# because it can override GCC headers and result in broken builds.
+# 
+# For compilers to find libomp you may need to set:
+#   export LDFLAGS="-L/opt/homebrew/opt/libomp/lib"
+#   export CPPFLAGS="-I/opt/homebrew/opt/libomp/include"
+
 if test "x${use_spinnaker}" = xyes; then
   # linux:  /usr/include/spinnaker
   # mac:  /usr/local/include/spinnaker
   AC_CHECK_FILE([/usr/include/spinnaker/spinc],[CPPFLAGS="$CPPFLAGS -I/usr/include/spinnaker/spinc"])
   AC_CHECK_FILE([/usr/local/include/spinnaker/spinc],[CPPFLAGS="$CPPFLAGS -I/usr/local/include/spinnaker/spinc"])
+  AC_CHECK_FILE([/opt/homebrew/opt/libomp/include],[CPPFLAGS="$CPPFLAGS -I/opt/homebrew/opt/libomp/include"])
 fi
 
 # must come before compiler stuff
@@ -567,6 +578,11 @@ AC_CHECK_FILE([/usr/include/ffmpeg],[CPPFLAGS="$CPPFLAGS -I/usr/include/ffmpeg"]
 # OR - /opt/brew!?
 AC_CHECK_FILE([/opt/brew/include/ffmpeg],[CPPFLAGS="$CPPFLAGS -I/opt/brew/include/ffmpeg"])
 AC_CHECK_FILE([/opt/homebrew/include/ffmpeg],[CPPFLAGS="$CPPFLAGS -I/opt/homebrew/include/ffmpeg"])
+
+if test "x${use_spinnaker}" = xyes; then
+  AC_CHECK_FILE([/opt/homebrew/opt/libomp/lib],[LDFLAGS="$LDFLAGS -L/opt/homebrew/opt/libomp/lib"])
+  AC_CHECK_FILE([/Applications/Spinnaker/lib],[LDFLAGS="$LDFLAGS -L/Applications/Spinnaker/lib"])
+fi
 
 if test "x${use_x11}" = xyes; then
   AC_CHECK_FILE([/usr/X11/lib],[LDFLAGS="$LDFLAGS -L/usr/X11/lib"])
@@ -1319,6 +1335,9 @@ if test "x${use_spinnaker}" = xyes; then
   AC_SEARCH_LIBS([spinSystemGetInstance],[Spinnaker_C],[have_libspinnaker=yes],[have_libspinnaker=no])
   if test "x${have_libspinnaker}" = xyes; then
     AC_SEARCH_LIBS([spinVideoClose],[SpinVideo_C],[have_libspinvideo=yes],[have_libspinvideo=no])
+  fi
+  if test "x${have_libspinnaker}" = xyes; then
+    AC_SEARCH_LIBS([XXH32_digest],[GenApi_clang140_v3_0],[have_libgenapi=yes],[have_libgenapi=no])
   fi
 fi
 

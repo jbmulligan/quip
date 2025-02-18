@@ -279,9 +279,9 @@ static void _set_integer_node_from_script(QSP_ARG_DECL  Spink_Node *skn_p)
 
 	get_int_range(skn_p,&minv,&maxv);
 	if( maxv > 0x10000 ){
-		snprintf(pmpt,LLEN,"%s (0x%lx-0x%lx)",skn_p->skn_name,minv,maxv);
+		snprintf(pmpt,LLEN,"%s (0x%llx-0x%llx)",skn_p->skn_name,minv,maxv);
 	} else {
-		snprintf(pmpt,LLEN,"%s (%ld-%ld)",skn_p->skn_name,minv,maxv);
+		snprintf(pmpt,LLEN,"%s (%lld-%lld)",skn_p->skn_name,minv,maxv);
 	}
 	ival = how_many(pmpt);
 
@@ -1126,8 +1126,8 @@ static void _get_cam_dimensions(QSP_ARG_DECL  Spink_Cam *skc_p)
 	skc_p->skc_depth = 1;	// BUG should determine based on pixel mode!
 	skc_p->skc_bytes_per_image = skc_p->skc_cols * skc_p->skc_rows * skc_p->skc_depth;
 	select_spink_map(NULL);
-fprintf(stderr,"get_cam_dimensions:  %s has %d rows and %d columns\n",
-skc_p->skc_name,skc_p->skc_rows,skc_p->skc_cols);
+//fprintf(stderr,"get_cam_dimensions:  %s has %d rows and %d columns\n",
+//skc_p->skc_name,skc_p->skc_rows,skc_p->skc_cols);
 }
 
 #define init_one_spink_cam(idx) _init_one_spink_cam(QSP_ARG  idx)
@@ -1377,6 +1377,8 @@ int _init_spink_cam_system(SINGLE_QSP_ARG_DECL)
 
 	// support for camera functions in script expressions...
 	init_cam_expr_funcs();
+
+	if( spink_cam_itp == NULL ) init_spink_cams();
 	add_camera(spink_cam_itp,&spink_cf,NULL);
 
 #endif // HAVE_LIBSPINNAKER
@@ -1528,9 +1530,9 @@ void _fetch_chunk_data(QSP_ARG_DECL  Chunk_Data *cd_p, Data_Obj *dp)
 void _format_chunk_data(QSP_ARG_DECL  char *buf, int bufsize, Chunk_Data *cd_p)
 {
 	if(cd_p->cd_type == INT_CHUNK_DATA ){
-		snprintf(buf,bufsize,"%ld",cd_p->cd_u.u_intval);
+		snprintf(buf,bufsize,"%lld",cd_p->cd_u.u_intval);
 	} else if( cd_p->cd_type == FLOAT_CHUNK_DATA ){
-		snprintf(buf,bufsize"%g",cd_p->cd_u.u_fltval);
+		snprintf(buf,bufsize,"%g",cd_p->cd_u.u_fltval);
 	} else error1("format_chunk_data:  bad chunk data type code!?");
 }
 

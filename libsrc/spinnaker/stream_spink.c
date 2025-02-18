@@ -900,9 +900,9 @@ n_frames_read,dw_idx,ppi[dw_idx].ppi_n_enqueued,ppi[dw_idx].ppi_n_dequeued);
 
 	// make sure the disk_writer is ready to enqueue
 
+	queue_idx = ( (n_frames_read-1) / n_disk_writer_threads ) % DW_QUEUE_LEN;
 fprintf(stderr,"video_reader:  will enqueue frame %d with disk_writer %d, queue position %d\n",
 newest,dw_idx,queue_idx);
-	queue_idx = ( (n_frames_read-1) / n_disk_writer_threads ) % DW_QUEUE_LEN;
 	ppi[dw_idx].ppi_queue[queue_idx] = newest;
 	ppi[dw_idx].ppi_queue_wt_idx = queue_idx;
 	ppi[dw_idx].ppi_n_enqueued ++;

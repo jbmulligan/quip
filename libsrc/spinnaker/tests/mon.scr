@@ -19,9 +19,17 @@ spinnaker
 #  select Flea3_FL3-U3-13Y3M
 #  test
   quit
+Pause
 
 Viewer v 1280 1024
-view viewers shm_setup v quit quit
+#Viewer v 640 512
+Pause
+
+# On the mac laptop, there seems to be a limit of 2MB for shared memory segments
+# With 4bpp, at 1280x1024 window requires 5MB!?
+# Don't use shared memory for now...
+#view viewers shm_setup v quit quit
+#Pause
 
 Define Release_Oldest 0
 spinnaker capture release quit quit
@@ -54,8 +62,8 @@ Define GrabNShow 1 n
 spinnaker capture start quit quit
 repeat $1
   Grab_Next
-  #Show_Bytes cam$cam_idx.frame$newest v
-  view viewers shm_update v cam$cam_idx.frame$newest 0 0 quit quit
+  Show_Bytes cam$cam_idx.frame$newest v
+  #view viewers shm_update v cam$cam_idx.frame$newest 0 0 quit quit
   Release_Oldest
   end
 spinnaker capture stop quit quit
@@ -70,15 +78,16 @@ advise "$total_ms milliseconds elapsed"
 advise "Time_It DONE"
 .
 
-Define Show_Underrun_Count 0
-spinnaker
-  nodes
-    select_map $$cam_name.stream_TL
-    #info_all
-    info StreamBufferUnderrunCount
-    quit
-  quit
-.
+# StreamBufferUnderrunCount is no longer a thing in v4???
+#Define Show_Underrun_Count 0
+#spinnaker
+#  nodes
+#    select_map $$cam_name.stream_TL
+#    #info_all
+#    info StreamBufferUnderrunCount
+#    quit
+#  quit
+#.
 
 Set cam_idx 0
 Set cam_name cam$cam_idx
@@ -106,11 +115,11 @@ spinnaker
 Set frm_idx 0
 Set n_test 300
 Time_It GrabNShow $n_test
-Show_Underrun_Count
+#Show_Underrun_Count
 Time_It GrabNShow $n_test
-Show_Underrun_Count
+#Show_Underrun_Count
 Time_It GrabNShow $n_test
-Show_Underrun_Count
+#Show_Underrun_Count
 
 exit
 

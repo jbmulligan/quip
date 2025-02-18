@@ -157,7 +157,9 @@ static COMMAND_FUNC( do_shm_setup )
 	GET_VIEWER("do_shm_setup")
 	if( vp==NULL ) return;
 
-	shm_setup(vp);
+	if( shm_setup(vp) < 0 ){
+		error1("failed to setup shared memory viewer");
+	}
 }
 
 static COMMAND_FUNC( do_shm_update )
