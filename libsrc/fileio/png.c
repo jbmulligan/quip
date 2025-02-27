@@ -357,7 +357,8 @@ static void _init_frame_count(QSP_ARG_DECL  Image_File *ifp)
 
 static int init_png_for_reading(QSP_ARG_DECL  Image_File *ifp /* , png_infop info_ptr */ )
 {
-	assert( ! PNG_FRAMES_COUNTED(ifp) );	// flag that we've read the header once...
+	// check flag indicating that the header has been read already...
+	assert( ! PNG_FRAMES_COUNTED(ifp) );
 
 	// header already zeroed in the open func...
 
@@ -365,7 +366,10 @@ static int init_png_for_reading(QSP_ARG_DECL  Image_File *ifp /* , png_infop inf
 
 	init_frame_count(ifp);
 
-	fill_hdr(HDR_P);		// fill the header struct using png_ptr and info_ptr
+	fill_hdr(HDR_P);		// fill the header struct
+					// using png_ptr and info_ptr
+					// BUT THOSE ARGS ARE NOW
+					// COMMENTED OUT???
 
 	// rewind
 	if( fseek(ifp->if_fp,0L,SEEK_SET) < 0 )
@@ -594,7 +598,8 @@ static int get_bgcolor(QSP_ARG_DECL  Image_File *ifp, u_char *red, u_char *green
 	return 0;
 }
 
-#define PXL_TYPE u_short
+// WHY WAS THIS u_short???
+#define PXL_TYPE u_char
 
 static u_char *get_image( QSP_ARG_DECL  Image_File *ifp, u_long *pRowbytes )
 {

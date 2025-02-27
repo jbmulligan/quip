@@ -1,0 +1,39 @@
+Set filename test_movie.png
+Set filetype pngfio
+Set n_frames 10
+Set w 256
+Set h 256
+Image rgb $h $w 3 u_byte
+
+Define Create_Test_Movie 0
+Assign delta floor(255/$n_frames)
+Set level 0
+VSet rgb $level
+Open_Write_File $filename $filetype $n_frames
+Set idx 1
+repeat $n_frames
+  advise "writing frame $idx..."
+  Put_Next rgb $filename
+  Add_Var level $delta
+  VSet rgb $level
+  Increment idx
+  end
+.
+
+
+If !file_exists('$filename') "Create_Test_Movie"
+
+Read_File_Header $filename
+
+Assign nf nframes('$filename')
+advise "File $filename has $nf frames"
+
+Set idx 1
+repeat $nf
+  Get_Next rgb $filename
+  advise "Frame $idx read."
+  Increment idx
+  end
+
+
+exit
