@@ -1899,8 +1899,19 @@ void refresh_shm_window(Viewer *vp)
 }
 #endif /* NOT_USED */
 
+// Note that shared memory segments are not destroyed when the process
+// exits!?  Therefore we have to be careful to clean up before exiting.
+// This is not currently done...  We can list the current shared memory
+// segments with the command "ipcs -a" and remove segments with ipcrm.
+// But that should not be needed if we code things correctly here...
+
 int shm_setup(Viewer *vp)
 {
+	//int permission_bits = 0777;	// like file system
+	int permission_bits = 0666;	// like file system
+	int id;
+
+fprintf(stderr,"shm_setup BEGIN\n");
 	/* SHARED MEMORY PORTION */
 
 	shminfo = (XShmSegmentInfo*) getbuf (sizeof(XShmSegmentInfo));
@@ -1923,9 +1934,27 @@ int shm_setup(Viewer *vp)
 
 	shm_bpp = shmimage->bytes_per_line / shmimage->width;
 
+fprintf(stderr,"shm_setup: bytes_per_line = %d\n",shmimage->bytes_per_line);
+fprintf(stderr,"shm_setup: height = %d\n",shmimage->height);
+fprintf(stderr,"shm_setup: n_bytes = %d (0x%x)\n",
+shmimage->bytes_per_line*shmimage->height,
+shmimage->bytes_per_line*shmimage->height);
+fprintf(stderr,"shm_setup: 1MB = %d (0x%x)\n",1024*1024,1024*1024);
+
+fprintf(stderr,"IPC_PRIVATE = 0x%x\n",IPC_PRIVATE);
+fprintf(stderr,"IPC_CREAT = 0x%x\n",IPC_CREAT);
+
+	// DEBUG: check for an existing segment
+	id = shmget(IPC_PRIVATE,0,0);
+	if( id == -1 ){
+		perror("No preexisting segment (shmget)");
+	} else {
+		fprintf(stderr,"Preexisting segment found\n");
+	}
+
 	if ((shminfo->shmid = shmget(IPC_PRIVATE,  /*ftok(DevName, 'v'),*/
 				shmimage->bytes_per_line * shmimage->height,
-				IPC_CREAT | 0777)) == -1) {
+				IPC_CREAT | permission_bits)) == -1) {
 		perror("Shared memory error (shmget)");
 		return(-1);
 	}
@@ -1937,6 +1966,7 @@ int shm_setup(Viewer *vp)
 	shmimage->data = shminfo->shmaddr;
 
 	XShmAttach(VW_DPY(vp), shminfo);	/* check return val?? */
+fprintf(stderr,"Setting have_shmimage flag\n");
 	have_shmimage=1;
 	return(0);
 }
