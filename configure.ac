@@ -634,6 +634,10 @@ if test "x${use_rawvol}" = xyes; then
   if test "x${have_rawvol}" = xno; then
     AC_CHECK_FILE([/dev/rawvol-disk1],[have_rawvol=yes],[have_rawvol=no])
   fi
+  # a hack for Lucia
+  if test "x${have_rawvol}" = xno; then
+    AC_CHECK_FILE([/Volumes/FCL drive/lucia/movie_file],[have_rawvol=yes],[have_rawvol=no])
+  fi
 fi
 
 # check for knox video switcher

@@ -108,6 +108,7 @@ static int _report_image_status(QSP_ARG_DECL  spinImageStatus status)
 		warn(ERROR_STRING);
 		return -1;
 	}
+fprintf(stderr,"report_image_status: len = %ld\n",len);
 	if( len >= LLEN ){
 		snprintf(ERROR_STRING,LLEN,"report_image_status:  status description needs %ld chars, but only %d provided!?",
 			len,LLEN);
@@ -121,7 +122,7 @@ static int _report_image_status(QSP_ARG_DECL  spinImageStatus status)
 		warn(ERROR_STRING);
 		return -1;
 	}
-//fprintf(stderr,"image_status: %s\n",buf);
+fprintf(stderr,"image_status: %s\n",buf);
 	return 0;
 }
 
@@ -172,6 +173,9 @@ Data_Obj * _grab_spink_cam_frame(QSP_ARG_DECL  Spink_Cam * skc_p )
 		return NULL;
 	}
 
+fprintf(stderr,"After next_spink_image, have image handle?\n");
+
+fprintf(stderr,"Getting image status...\n");
 	if( get_image_status(hImage,&status) < 0 ){
 		snprintf(ERROR_STRING,LLEN,"grab_spink_cam_frame:  Error getting image status!?");
 		warn(ERROR_STRING);
@@ -356,6 +360,67 @@ void _show_n_buffers(QSP_ARG_DECL  Spink_Cam *skc_p)
 	prt_msg(MSG_STR);
 }
 
+// From system include file:
+/* Image has missing packets. Potential fixes include enabling
+ * jumbo packets and adjusting packet size/delay. For more information see
+ * https://www.flir.com/support-center/iis/machine-vision/application-note/troubleshooting-image-consistency-errors/
+ */
+
+static char * describe_image_status(spinImageStatus imageStatus)
+{
+	char *m;
+
+	switch( imageStatus ){
+		case SPINNAKER_IMAGE_STATUS_UNKNOWN_ERROR:
+			m = "unknown error";
+			break;
+		case SPINNAKER_IMAGE_STATUS_NO_ERROR:
+			m = "no error";
+			break;
+		case SPINNAKER_IMAGE_STATUS_CRC_CHECK_FAILED:
+			m = "image CRC check failed";
+			break;
+		case SPINNAKER_IMAGE_STATUS_DATA_OVERFLOW:
+			m = "image data overflow";
+			break;
+		case SPINNAKER_IMAGE_STATUS_MISSING_PACKETS:
+			m = "missing packets";
+			break;
+		case SPINNAKER_IMAGE_STATUS_LEADER_BUFFER_SIZE_INCONSISTENT:
+			m = "inconsistent leader buffer size";
+			break;
+		case SPINNAKER_IMAGE_STATUS_TRAILER_BUFFER_SIZE_INCONSISTENT:
+			m = "inconsistent trailer buffer size";
+			break;
+		case SPINNAKER_IMAGE_STATUS_PACKETID_INCONSISTENT:
+			m = "inconsistent packet ID";
+			break;
+		case SPINNAKER_IMAGE_STATUS_MISSING_LEADER:
+			m = "image status missing leader (missing packets?)";
+			break;
+		case SPINNAKER_IMAGE_STATUS_MISSING_TRAILER:
+			m = "image status missing trailer (missing packets?)";
+			break;
+		case SPINNAKER_IMAGE_STATUS_DATA_INCOMPLETE:
+			m = "image status data incomplete (missing packets?)";
+			break;
+		case SPINNAKER_IMAGE_STATUS_INFO_INCONSISTENT:
+			m = "corrupted image info (missing packets?)";
+			break;
+		case SPINNAKER_IMAGE_STATUS_CHUNK_DATA_INVALID:
+			m = "invalid chunk data";
+			break;
+		case SPINNAKER_IMAGE_STATUS_NO_SYSTEM_RESOURCES:
+			m = "no system resources";
+			break;
+		default:
+			m = "unexpected status case";
+			break;
+	}
+
+	return m;
+}
+
 //
 // Retrieve next received image
 //
@@ -373,10 +438,12 @@ int _next_spink_image(QSP_ARG_DECL  spinImage *img_p, Spink_Cam *skc_p)
 {
 	spinCamera hCam;
 	bool8_t isIncomplete = False;
+	char *m;
 
 	ensure_current_camera(skc_p);
 	hCam = skc_p->skc_current_handle;
 
+fprintf(stderr,"calling get_next_image...\n");
 	if( get_next_image(hCam,img_p) < 0 ) return -1;
 
 	//
@@ -390,23 +457,29 @@ int _next_spink_image(QSP_ARG_DECL  spinImage *img_p, Spink_Cam *skc_p)
 	//
 	if( image_is_incomplete(*img_p,&isIncomplete) < 0 ){
 		// non-fatal error
+fprintf(stderr,"Releasing image after failure to check completeness!\n");
 		if( release_spink_image(*img_p) < 0 ) return -1;
 		return 0;
 	}
 
 	// Check image for completion
 	if (isIncomplete) {
+fprintf(stderr,"Getting status of incomplete image...\n");
 		spinImageStatus imageStatus = IMAGE_NO_ERROR;
 		if( get_image_status(*img_p,&imageStatus) < 0 ){
 			// non-fatal error
+fprintf(stderr,"Releasing incomplete image after failing to get status!?\n");
 			if( release_spink_image(*img_p) < 0 ) return -1;
 			return 0;
 		}
 		printf("Image incomplete with image status %d...\n", imageStatus);
+		m = describe_image_status(imageStatus);
+		printf("%s\n",m);
 		if( release_spink_image(*img_p) < 0 ) return -1;
 		return 0;
 	}
 
+fprintf(stderr,"next_spink_image returning normally\n");
 	return 0;
 }
 
