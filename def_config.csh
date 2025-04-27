@@ -13,7 +13,7 @@
 
 #./configure --enable-thread-safe-query --enable-n-processors=16
 #./configure --disable-avi --enable-thread-safe-query --enable-n-processors=16 --disable-spinnaker
-./configure --disable-avi --enable-thread-safe-query --enable-n-processors=16
+./configure --disable-avi --enable-thread-safe-query --enable-n-processors=16 --enable-rawvol=force
 
 #endif
 
