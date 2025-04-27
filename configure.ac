@@ -73,43 +73,44 @@ AC_ARG_ENABLE([n-processors],
 # Devices
 
 # Enable raw volume by default:
-AC_ARG_ENABLE([use-rawvol],
+AC_ARG_ENABLE([rawvol],
 	[AS_HELP_STRING([--disable-rawvol],[disable raw disk volume subsystem @<:@default: no@:>@])],
+	# BUG - need help string for --enable-rawvol=force
 	[ use_rawvol=${enableval}], [use_rawvol=yes])
 
 # Enable v4l2 by default:
-AC_ARG_ENABLE([use-v4l2],
+AC_ARG_ENABLE([v4l2],
 	[AS_HELP_STRING([--disable-v4l2],[disable V4L2 video subsystem @<:@default: no@:>@])],
 	[ use_v4l2=${enableval}], [use_v4l2=yes])
 
 # Enable parport by default:
-AC_ARG_ENABLE([use-parport],
+AC_ARG_ENABLE([parport],
 	[AS_HELP_STRING([--disable-parport],[disable parallel port support @<:@default: no@:>@])],
 	[ use_parport=${enableval}], [use_parport=yes])
 
 # Enable meteor by default:
-AC_ARG_ENABLE([use-meteor],
+AC_ARG_ENABLE([meteor],
 	[AS_HELP_STRING([--disable-meteor],[disable Matrox meteor video subsystem @<:@default: no@:>@])],
 	[ use_meteor=${enableval}], [use_meteor=yes])
 
 # Enable aio by default:
-AC_ARG_ENABLE([use-das1602],
+AC_ARG_ENABLE([das1602],
 	[AS_HELP_STRING([--disable-das1602],[disable Measurement Computing analog I/O subsystem @<:@default: no@:>@])],
 	[ use_das1602=${enableval}], [use_das1602=yes])
 
 # Enable visca by default:
-AC_ARG_ENABLE([use-visca],
+AC_ARG_ENABLE([visca],
 	[AS_HELP_STRING([--disable-visca],[disable Sony VISCA protocol support @<:@default: no@:>@])],
 	[ use_visca=${enableval}], [use_visca=yes])
 
 # Enable optik by default:
-AC_ARG_ENABLE([use-optik],
+AC_ARG_ENABLE([optik],
 	[AS_HELP_STRING([--disable-optik],[disable optics ray-tracing support @<:@default: no@:>@])],
 	[ use_optik=${enableval}], [use_optik=yes])
 
 
 # Enable fb_dev by default:
-AC_ARG_ENABLE([use-fb-dev],
+AC_ARG_ENABLE([fb-dev],
 	[AS_HELP_STRING([--disable-fb-dev],[disable /dev/fb subsystem @<:@default: no@:>@])],
 	[ use_fb_dev=${enableval}], [use_fb_dev=yes])
 
@@ -136,7 +137,7 @@ AC_ARG_ENABLE([tty-ctl],
 	[ use_tty_ctl=${enableval}], [use_tty_ctl=yes])
 
 # Enable script interrupt handler by default:
-AC_ARG_ENABLE([use-my-intr],
+AC_ARG_ENABLE([my-intr],
 	[AS_HELP_STRING([--disable-my-intr],[disable scriptable interrupt handler @<:@default: no@:>@])],
 	[ use_my_intr=${enableval}], [use_my_intr=yes])
 
@@ -146,7 +147,7 @@ AC_ARG_ENABLE([use-viewers],
 	[ use_viewers=${enableval}], [use_viewers=yes])
 
 # Enable history by default:
-AC_ARG_ENABLE([use-history],
+AC_ARG_ENABLE([history],
 	[AS_HELP_STRING([--disable-history],[disable history features @<:@default: no@:>@])],
 	[ use_history=${enableval}], [use_history=yes])
 
@@ -161,32 +162,32 @@ AC_ARG_ENABLE([rt-sched],
 #	[ use_rt_sched=${enableval}], [use_rt_sched=yes])
 
 # Enable gui stuff by default:
-AC_ARG_ENABLE([use-motif-gui],
+AC_ARG_ENABLE([gui],
 	[AS_HELP_STRING([--disable-gui],[disable GUI features @<:@default: no@:>@])],
 	[ use_motif_gui=${enableval}], [use_motif_gui=yes])
 
 # Enable cstepit stuff by default:
-AC_ARG_ENABLE([use-stepit],
+AC_ARG_ENABLE([stepit],
 	[AS_HELP_STRING([--disable-stepit],[disable STEPIT optimization @<:@default: no@:>@])],
 	[ use_stepit=${enableval}], [use_stepit=yes])
 
 # Enable numrec support by default:
-AC_ARG_ENABLE([use-numrec],
+AC_ARG_ENABLE([numrec],
 	[AS_HELP_STRING([--disable-numrec],[disable Numerical Recipes support@<:@default: no@:>@])],
 	[ use_numrec=${enableval}], [use_numrec=yes])
 
 # Enable sparselm support by default:
-AC_ARG_ENABLE([use-sparselm],
+AC_ARG_ENABLE([sparselm],
 	[AS_HELP_STRING([--disable-sparselm],[disable Sparse L-M support@<:@default: no@:>@])],
 	[ use_sparselm=${enableval}], [use_sparselm=yes])
 
 # Enable sound support by default:
-AC_ARG_ENABLE([use-sound],
+AC_ARG_ENABLE([sound],
 	[AS_HELP_STRING([--disable-sound],[disable sound support@<:@default: no@:>@])],
 	[ use_sound=${enableval}], [use_sound=yes])
 
 # Enable debug by default:
-AC_ARG_ENABLE([use-debug],
+AC_ARG_ENABLE([debug],
 	[AS_HELP_STRING([--disable-debug],[disable debug features @<:@default: no@:>@])],
 	[ use_debug=${enableval}], [use_debug=yes])
 
@@ -201,12 +202,12 @@ AC_ARG_ENABLE([use-debug],
 #	[ async_exec=${enableval}], [async_exec=no])
 
 # Disable getbuf by default:
-AC_ARG_ENABLE([use-getbuf],
+AC_ARG_ENABLE([getbuf],
 	[AS_HELP_STRING([--enable-getbuf],[enable internal memory manager @<:@default: yes@:>@])],
 	[ use_getbuf=${enableval}], [use_getbuf=no])
 
 # Enable cautious checks by default:
-AC_ARG_ENABLE([use-cautious],
+AC_ARG_ENABLE([cautious],
 	[AS_HELP_STRING([--disable-cautious],[disable cautious checks @<:@default: no@:>@])],
 	[ use_cautious=${enableval}], [use_cautious=yes])
 
@@ -216,12 +217,12 @@ AC_ARG_ENABLE([avi],
 	[ use_avi=${enableval}], [use_avi=yes])
 
 # Enable cuda by default:
-AC_ARG_ENABLE([use-cuda],
+AC_ARG_ENABLE([cuda],
 	[AS_HELP_STRING([--disable-cuda],[disable GPU operations with CUDA @<:@default: no@:>@])],
 	[ use_cuda=${enableval}], [use_cuda=yes])
 
 # Enable opencl by default - but only for Mac!:
-AC_ARG_ENABLE([use-opencl],
+AC_ARG_ENABLE([opencl],
 	[AS_HELP_STRING([--disable-opencl],[disable GPU operations with OpenCL @<:@default: no@:>@])],
 	[ use_opencl=${enableval}], [use_opencl=yes])
 if test "x$os_is_darwin" == xno; then
@@ -230,7 +231,7 @@ fi
 
 
 # Enable metal by default - but only for Mac!:
-AC_ARG_ENABLE([use-metal],
+AC_ARG_ENABLE([metal],
 	[AS_HELP_STRING([--disable-metal],[disable GPU operations with Metal @<:@default: no@:>@])],
 	[ use_metal=${enableval}], [use_metal=yes])
 if test "x$os_is_darwin" == xno; then
@@ -246,27 +247,27 @@ fi
 #	[ use_metal=${enableval}], [use_metal=yes])
 
 # Enable X11 by default:
-AC_ARG_ENABLE([use-x11],
+AC_ARG_ENABLE([x11],
 	[AS_HELP_STRING([--disable-x11],[disable X11 @<:@default: no@:>@])],
 	[ use_x11=${enableval}], [use_x11=yes])
 
 # Enable GSL by default:
-AC_ARG_ENABLE([use-gsl],
+AC_ARG_ENABLE([gsl],
 	[AS_HELP_STRING([--disable-gsl],[disable GNU Scientific Library @<:@default: no@:>@])],
 	[ use_gsl=${enableval}], [use_gsl=yes])
 
 # Enable pthreads by default:
-AC_ARG_ENABLE([use-pthreads],
+AC_ARG_ENABLE([pthreads],
 	[AS_HELP_STRING([--disable-pthreads],[disable pthread support@<:@default: no@:>@])],
 	[ use_pthreads=${enableval}], [use_pthreads=yes])
 
 # Enable curl by default:
-AC_ARG_ENABLE([use-curl],
+AC_ARG_ENABLE([curl],
 	[AS_HELP_STRING([--disable-curl],[disable curl support@<:@default: no@:>@])],
 	[ use_curl=${enableval}], [use_curl=yes])
 
 # Enable matio by default:
-AC_ARG_ENABLE([use-matio],
+AC_ARG_ENABLE([matio],
 	[AS_HELP_STRING([--disable-matio],[disable Matlab I/O support@<:@default: no@:>@])],
 	[ use_matio=${enableval}], [use_matio=yes])
 
@@ -276,7 +277,7 @@ AC_ARG_ENABLE([opencv],
 	[ use_opencv=${enableval}], [use_opencv=yes])
 
 # Enable FANN by default:
-AC_ARG_ENABLE([use-fann],
+AC_ARG_ENABLE([fann],
 	[AS_HELP_STRING([--disable-fann],[disable support for neural networks w/ libfann@<:@default: no@:>@])],
 	[ use_fann=${enableval}], [use_fann=yes])
 
@@ -286,12 +287,12 @@ AC_ARG_ENABLE([fileio],
 	[ use_fileio=${enableval}], [use_fileio=yes])
 
 # Enable ncurses by default:
-AC_ARG_ENABLE([use-ncurses],
+AC_ARG_ENABLE([ncurses],
 	[AS_HELP_STRING([--disable-ncurses],[disable support terminal control w/ ncurses@<:@default: no@:>@])],
 	[ use_ncurses=${enableval}], [use_ncurses=yes])
 
 # Enable flycap by default:
-AC_ARG_ENABLE([use-flycap],
+AC_ARG_ENABLE([flycap],
 	[AS_HELP_STRING([--disable-flycap],[disable support for PGR cameras with libflycap@<:@default: no@:>@])],
 	[ use_flycap=${enableval}], [use_flycap=yes])
 
@@ -613,11 +614,17 @@ else
 fi
 
 # check for raw volume
+# This is problematic on the mac, where we don't seem to be able
+# to create files in /dev, even with sudo!?
 if test "x${use_rawvol}" = xyes; then
   AC_CHECK_FILE([/dev/rawvol],[have_rawvol=yes],[have_rawvol=no])
   if test "x${have_rawvol}" = xno; then
     AC_CHECK_FILE([/dev/rawvol-disk1],[have_rawvol=yes],[have_rawvol=no])
   fi
+elif test "x${use_rawvol}" = xforce; then
+  # This is a hack for Mac where we can't create /dev/rawvol - we must call
+  # configure with --enable-rawvol=force
+  have_rawvol=yes
 fi
 
 # check for knox video switcher
