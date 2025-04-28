@@ -632,7 +632,9 @@ fi
 # check for raw volume
 # This is problematic on the mac, where we don't seem to be able
 # to create files in /dev, even with sudo!?
+echo "use_rawvol = $use_rawvol"
 if test "x${use_rawvol}" = xyes; then
+  AC_MSG_CHECKING([for /dev/rawvol])
   AC_CHECK_FILE([/dev/rawvol],[have_rawvol=yes],[have_rawvol=no])
   if test "x${have_rawvol}" = xno; then
     AC_CHECK_FILE([/dev/rawvol-disk1],[have_rawvol=yes],[have_rawvol=no])
@@ -641,6 +643,8 @@ elif test "x${use_rawvol}" = xforce; then
   # This is a hack for Mac where we can't create /dev/rawvol - we must call
   # configure with --enable-rawvol=force
   have_rawvol=yes
+  use_rawvol=yes
+  echo "Forcing inclusion of rawvol module"
 fi
 
 # check for knox video switcher

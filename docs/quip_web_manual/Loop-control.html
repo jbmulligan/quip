@@ -1,74 +1,65 @@
-<!DOCTYPE html>
-<html>
-<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<html lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Loop control (QuIP Manual)</title>
-
-<meta name="description" content="Loop control (QuIP Manual)">
-<meta name="keywords" content="Loop control (QuIP Manual)">
-<meta name="resource-type" content="document">
-<meta name="distribution" content="global">
-<meta name="Generator" content="makeinfo">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<link href="index.html" rel="start" title="Top">
-<link href="QuIPindex.html" rel="index" title="QuIPindex">
-<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
-<link href="Builtin-commands.html" rel="up" title="Builtin commands">
-<link href="Generating-output.html" rel="next" title="Generating output">
-<style type="text/css">
-<!--
-a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
-span:hover a.copiable-link {visibility: visible}
--->
-</style>
-
-
+<title>Loop control - QuIP Manual</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="QuIP Manual">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Builtin-commands.html#Builtin-commands" title="Builtin commands">
+<link rel="next" href="Generating-output.html#Generating-output" title="Generating output">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
 </head>
-
-<body lang="en">
-<div class="subsubsection-level-extent" id="Loop-control">
-<div class="nav-panel">
+<body>
+<div class="node">
 <p>
-Next: <a href="Generating-output.html" accesskey="n" rel="next">Generating output</a>, Up: <a href="Builtin-commands.html" accesskey="u" rel="up">Builtin commands</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="QuIPindex.html" title="Index" rel="index">Index</a>]</p>
-</div>
+<a name="Loop-control"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Generating-output.html#Generating-output">Generating output</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Builtin-commands.html#Builtin-commands">Builtin commands</a>
 <hr>
-<h4 class="subsubsection" id="Loop-control-1"><span>2.2.2.1 Loop control<a class="copiable-link" href="#Loop-control-1"> &para;</a></span></h4>
+</div>
+
+<h5 class="subsubsection">2.2.2.1 Loop control</h5>
 
 <p>These commands are useful for creating control structures.
-</p>
+
 <p>If &lt;condition&gt; &lt;command&gt; <br>
 If &lt;condition&gt; Then &lt;command&gt; Else &lt;command&gt;
-</p>
-<p>When an <code class="code">If</code> is encountered, the next word is read and interpreted as a boolean
+
+<p>When an <code>If</code> is encountered, the next word is read and interpreted as a boolean
 condition using the scalar expression parser.  If the word following the condition is
-the reserved word <code class="code">Then</code>, then three words are read, the second of which must be
-the reserved word <code class="code">Else</code>.
-</p>
+the reserved word <code>Then</code>, then three words are read, the second of which must be
+the reserved word <code>Else</code>.
+
 <p>Multi-word commands (or multiple commands) may be executed following
-an <code class="code">If</code> by enclosing the entire group in single or double quotes.
-<code class="code">If</code> commands can be nested, but because the command language does
+an <code>If</code> by enclosing the entire group in single or double quotes. 
+<code>If</code> commands can be nested, but because the command language does
 not use braces for grouping, it is often better to write a macro to encapsulate
-the predicate of an <code class="code">If</code> statement.
-</p>
+the predicate of an <code>If</code> statement.
 
 <p>do &lt;commands&gt; while &lt;condition&gt;
-</p>
+
 <p>repeat &lt;count&gt; &lt;commands&gt; end
-</p>
+
 <p>foreach &lt;varname&gt; ( &lt;wordlist&gt; ) &lt;commands&gt; end
-</p>
+
 <p>These three forms provide for looping.  After the loop is opened, commands
 are read until the closing word is encountered.  Unlike command shells such
 as (t)csh, the commands are immediately executed as they are read.  When the loop
 is scanned for the first time, the commands are saved to a buffer before each
 one is executed.  When the end of the loop is reached, the condition is evaluated,
 and when appropriate the stored loop body is pushed back onto the input.
-</p>
-</div>
 
+</body></html>
 
-
-</body>
-</html>

@@ -1,67 +1,59 @@
-<!DOCTYPE html>
-<html>
-<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<html lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Writing new macros (QuIP Manual)</title>
-
-<meta name="description" content="Writing new macros (QuIP Manual)">
-<meta name="keywords" content="Writing new macros (QuIP Manual)">
-<meta name="resource-type" content="document">
-<meta name="distribution" content="global">
-<meta name="Generator" content="makeinfo">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<link href="index.html" rel="start" title="Top">
-<link href="QuIPindex.html" rel="index" title="QuIPindex">
-<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
-<link href="Macros.html" rel="up" title="Macros">
-<link href="Predefined-macros.html" rel="prev" title="Predefined macros">
-<style type="text/css">
-<!--
-a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
-span:hover a.copiable-link {visibility: visible}
--->
-</style>
-
-
+<title>Writing new macros - QuIP Manual</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="QuIP Manual">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Macros.html#Macros" title="Macros">
+<link rel="prev" href="Predefined-macros.html#Predefined-macros" title="Predefined macros">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
 </head>
-
-<body lang="en">
-<div class="subsection-level-extent" id="Writing-new-macros">
-<div class="nav-panel">
+<body>
+<div class="node">
 <p>
-Previous: <a href="Predefined-macros.html" accesskey="p" rel="prev">Predefined macros</a>, Up: <a href="Macros.html" accesskey="u" rel="up">Macros</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="QuIPindex.html" title="Index" rel="index">Index</a>]</p>
-</div>
+<a name="Writing-new-macros"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Predefined-macros.html#Predefined-macros">Predefined macros</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Macros.html#Macros">Macros</a>
 <hr>
-<h4 class="subsection" id="Writing-new-macros-1"><span>2.5.2 Writing new macros<a class="copiable-link" href="#Writing-new-macros-1"> &para;</a></span></h4>
+</div>
+
+<h4 class="subsection">2.5.2 Writing new macros</h4>
 
 <p>While the predefined macros may access to the functionality desired
 by a user, most everyone will want to combine these building blocks
 to accomplish specific things.  Any group of commands which is repeated
 more than once is a candidate for inclusion in a macro.
-</p>
-<p>Macro definitions are begun the the command <code class="code">Define</code> (which is itself a macro, albeit
+
+<p>Macro definitions are begun the the command <code>Define</code> (which is itself a macro, albeit
 a very simple one).  The syntax is as follows:
-</p>
+
 <p>Define &lt;macro_name&gt; &lt;n_args&gt; [ &lt;prompt_specifications&gt; ] <br>
 &lt;macro_body&gt; <br>
 .
-</p>
-<p>The macro body is terminated by a line containing a single period <code class="code">.</code>.  This is the one case where
+
+<p>The macro body is terminated by a line containing a single period <code>.</code>.  This is the one case where
 white space (or the lack of it) is important:  this period must be on a line by itself with no leading
 white space.
-</p>
-<p>The number of prompt specifications must match the number of arguments specified.
+
+<p>The number of prompt specifications must match the number of arguments specified. 
 Each prompt specification consists of a prompt string (quoted if it contains spaces),
-which may be preceded by an optional object type specifier enclosed in brackets <code class="code">&lt;</code>
-and <code class="code">&gt;</code>.  The purpose of object type specifiers is to enable reponse completion
+which may be preceded by an optional object type specifier enclosed in brackets <code>&lt;</code>
+and <code>&gt;</code>.  The purpose of object type specifiers is to enable reponse completion
 when a macro is invoked interactively.
-</p>
 
-</div>
+<!-- CHAPTER 3 - DATA OBJECTS -->
+</body></html>
 
-
-
-</body>
-</html>

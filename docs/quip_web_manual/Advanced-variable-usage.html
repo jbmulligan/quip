@@ -1,61 +1,53 @@
-<!DOCTYPE html>
-<html>
-<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<html lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Advanced variable usage (QuIP Manual)</title>
-
-<meta name="description" content="Advanced variable usage (QuIP Manual)">
-<meta name="keywords" content="Advanced variable usage (QuIP Manual)">
-<meta name="resource-type" content="document">
-<meta name="distribution" content="global">
-<meta name="Generator" content="makeinfo">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<link href="index.html" rel="start" title="Top">
-<link href="QuIPindex.html" rel="index" title="QuIPindex">
-<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
-<link href="Variables.html" rel="up" title="Variables">
-<link href="Numeric-variables.html" rel="prev" title="Numeric variables">
-<style type="text/css">
-<!--
-a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
-span:hover a.copiable-link {visibility: visible}
--->
-</style>
-
-
+<title>Advanced variable usage - QuIP Manual</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="QuIP Manual">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Variables.html#Variables" title="Variables">
+<link rel="prev" href="Numeric-variables.html#Numeric-variables" title="Numeric variables">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
 </head>
-
-<body lang="en">
-<div class="subsection-level-extent" id="Advanced-variable-usage">
-<div class="nav-panel">
+<body>
+<div class="node">
 <p>
-Previous: <a href="Numeric-variables.html" accesskey="p" rel="prev">Numeric variables</a>, Up: <a href="Variables.html" accesskey="u" rel="up">Variables</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="QuIPindex.html" title="Index" rel="index">Index</a>]</p>
-</div>
+<a name="Advanced-variable-usage"></a>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Numeric-variables.html#Numeric-variables">Numeric variables</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Variables.html#Variables">Variables</a>
 <hr>
-<h4 class="subsection" id="Advanced-variable-usage-1"><span>2.4.6 Advanced variable usage<a class="copiable-link" href="#Advanced-variable-usage-1"> &para;</a></span></h4>
+</div>
+
+<h4 class="subsection">2.4.6 Advanced variable usage</h4>
 
 <p>Unlike the UNIX command shells, QuIP does not provide for indexing
 of variables.  In part, that is because QuIP uses braces for subscripting
 data objects, and variables are commonly used to hold the names of
 data objects.
-</p>
+
 <p>QuIP does provide, however, a slightly cumbersome way to do indexing via double indirection:
-</p>
+
 <p>Set person1 Larry <br>
 Set person2 Moe <br>
 Set person3 Curly <br>
 Set i 1 <br>
 repeat 3 <br>
   Set var_name person$i <br>
-  echo &quot;Person $i is $$var_name&quot; <br>
+  echo "Person $i is $$var_name" <br>
   Increment i <br>
   end <br>
-</p>
-</div>
 
+</body></html>
 
-
-</body>
-</html>

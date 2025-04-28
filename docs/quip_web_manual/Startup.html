@@ -1,64 +1,57 @@
-<!DOCTYPE html>
-<html>
-<!-- Created by GNU Texinfo 7.1, https://www.gnu.org/software/texinfo/ -->
+<html lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Startup (QuIP Manual)</title>
-
-<meta name="description" content="Startup (QuIP Manual)">
-<meta name="keywords" content="Startup (QuIP Manual)">
-<meta name="resource-type" content="document">
-<meta name="distribution" content="global">
-<meta name="Generator" content="makeinfo">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<link href="index.html" rel="start" title="Top">
-<link href="QuIPindex.html" rel="index" title="QuIPindex">
-<link href="index.html#SEC_Contents" rel="contents" title="Table of Contents">
-<link href="Command-Language.html" rel="up" title="Command Language">
-<link href="Variables.html" rel="next" title="Variables">
-<link href="Menus.html" rel="prev" title="Menus">
-<style type="text/css">
-<!--
-a.copiable-link {visibility: hidden; text-decoration: none; line-height: 0em}
-span:hover a.copiable-link {visibility: visible}
--->
-</style>
-
-
+<title>Startup - QuIP Manual</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="QuIP Manual">
+<meta name="generator" content="makeinfo 4.8">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Command-Language.html#Command-Language" title="Command Language">
+<link rel="prev" href="Menus.html#Menus" title="Menus">
+<link rel="next" href="Variables.html#Variables" title="Variables">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
 </head>
-
-<body lang="en">
-<div class="section-level-extent" id="Startup">
-<div class="nav-panel">
+<body>
+<div class="node">
 <p>
-Next: <a href="Variables.html" accesskey="n" rel="next">Variables</a>, Previous: <a href="Menus.html" accesskey="p" rel="prev">Menus</a>, Up: <a href="Command-Language.html" accesskey="u" rel="up">Command Language</a> &nbsp; [<a href="index.html#SEC_Contents" title="Table of contents" rel="contents">Contents</a>][<a href="QuIPindex.html" title="Index" rel="index">Index</a>]</p>
-</div>
+<a name="Startup"></a>
+Next:&nbsp;<a rel="next" accesskey="n" href="Variables.html#Variables">Variables</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Menus.html#Menus">Menus</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Command-Language.html#Command-Language">Command Language</a>
 <hr>
-<h3 class="section" id="Startup-1"><span>2.3 Startup<a class="copiable-link" href="#Startup-1"> &para;</a></span></h3>
+</div>
+
+<h3 class="section">2.3 Startup</h3>
+
 <p>QuIP initialization
-</p>
-<p>Before interpreting user input, QuIP attempts to read a startup file.
+
+<p>Before interpreting user input, QuIP attempts to read a startup file. 
 QuIP looks for a startup file with the same name as by which the program
 was invoked, with the .scr (script) extension added.  Thus, the default
 startup file is named quip.scr.  Creating links to the QuIP executable
 with different names provides a way to produce different behavior on startup
 through the use of specialized startup scripts.
-</p>
+
 <p>QuIP searches for a startup script in the following series of directories:
 1)  the current directory;
 2)  $QUIPSTARTUPDIR (if defined in the environment);
 3)  $HOME/.quip/startup (if it exists);
 4)  the macro installation directory (/usr/local/share/quip/macros/startup).
-</p>
+
 <p>Options 2 and 3 happen only when the user customizes his or her environment
 appropriately.  The installation directory used in the last case can
 be modified during the configuration process (XREF building).
-</p>
 
-</div>
+</body></html>
 
-
-
-</body>
-</html>
