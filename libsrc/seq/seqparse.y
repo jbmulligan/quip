@@ -315,7 +315,7 @@ int yylex( YYSTYPE *yylval_p, Query_Stack *qsp )
 {
 	char *numptr, *wrdptr;
 	int n;
-	char str[128];
+	char str[LLEN];
 
 	if( ended ) return(0);
 	while( isspace(*ipptr) ) ipptr++;
@@ -352,7 +352,7 @@ int yylex( YYSTYPE *yylval_p, Query_Stack *qsp )
 		if( yylval_p->yyvp != NULL ) return( MY_MOVIE_NAME );
 
 		/* error */
-		sprintf(str,"%s is not a sequence or a movie name", wrdbuf);
+		snprintf(str,LLEN,"%s is not a sequence or a movie name", wrdbuf);
 		yyerror(qsp,str);
 		return(0);
 	} else {
@@ -367,7 +367,7 @@ static Seq *seqparse(QSP_ARG_DECL  const char *strbuf)		/* compile sequence in s
 	ended=0;
 	if( yyparse(THIS_QSP)==0 ) return(final_mviseq);
 	else {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Error parsing sequence definition \"%s\"", strbuf);
 		WARN(ERROR_STRING);
 		return(NULL);
@@ -376,7 +376,7 @@ static Seq *seqparse(QSP_ARG_DECL  const char *strbuf)		/* compile sequence in s
 
 int yyerror(Query_Stack *qsp,  const char *s)
 {
-	sprintf(ERROR_STRING,"seqparse (yyerror): %s",s);
+	snprintf(ERROR_STRING,LLEN,"seqparse (yyerror): %s",s);
 	WARN(ERROR_STRING);
 	return(0);
 }

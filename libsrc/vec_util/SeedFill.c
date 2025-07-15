@@ -84,7 +84,7 @@ void ggem_fill(QSP_ARG_DECL  int x, int y, int width, int height, Pixel nv, int 
 	/* why is this a problem??? */
 
 	if( abs(nv-ov) <= tolerance ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"ggem_fill:  Value %d at seed point %d, %d is within tolerance %d of new value %d",
 			ov,x,y,tolerance,nv);
 		WARN(ERROR_STRING);
@@ -155,7 +155,7 @@ void gen_fill(incr_t x, incr_t y, Data_Obj *dp, int (*inside_func)(long,long), v
 	while (sp>stack) {
 		/* pop segment off stack and fill a neighboring scan line */
 		POP(y, x1, x2, dy);
-//sprintf(ERROR_STRING,"Popped y = %ld   x1 = %ld   x2 = %ld    dy = %ld",y,x1,x2,dy);
+//snprintf(ERROR_STRING,LLEN,"Popped y = %ld   x1 = %ld   x2 = %ld    dy = %ld",y,x1,x2,dy);
 //advise(ERROR_STRING);
 
 		/*
@@ -165,20 +165,20 @@ void gen_fill(incr_t x, incr_t y, Data_Obj *dp, int (*inside_func)(long,long), v
 
 		/* fill to the left */
 		for (x=x1; (x>=0) && inside_func(x,y) ; x--){
-//sprintf(ERROR_STRING,"Filling to the left, x = %ld   y = %ld",x,y);
+//snprintf(ERROR_STRING,LLEN,"Filling to the left, x = %ld   y = %ld",x,y);
 //advise(ERROR_STRING);
 			fill_func(x, y);
 		}
 
 		if (x>=x1){		/* did anything happen? */
-//sprintf(ERROR_STRING,"nothing happened, skipping, x = %ld   x1 = %ld...",x,x1);
+//snprintf(ERROR_STRING,LLEN,"nothing happened, skipping, x = %ld   x1 = %ld...",x,x1);
 //advise(ERROR_STRING);
 			goto skip;	/* no */
 		}
 
 		l = x+1;
 		if (l<x1){				/* leak on left? */
-//sprintf(ERROR_STRING,"Leak on left, Pushing y = %ld   l = %ld   x1-1 = %ld    -dy = %ld",y,l,x1-1,-dy);
+//snprintf(ERROR_STRING,LLEN,"Leak on left, Pushing y = %ld   l = %ld   x1-1 = %ld    -dy = %ld",y,l,x1-1,-dy);
 //advise(ERROR_STRING);
 			PUSH(y, l, x1-1, -dy);		/* reverse y direction */
 		}
@@ -187,26 +187,26 @@ void gen_fill(incr_t x, incr_t y, Data_Obj *dp, int (*inside_func)(long,long), v
 		do {
 			/* fill to the right */
 			for (; x<width && inside_func(x,y) ; x++){
-//sprintf(ERROR_STRING,"Filling to the right, x = %ld   y = %ld",x,y);
+//snprintf(ERROR_STRING,LLEN,"Filling to the right, x = %ld   y = %ld",x,y);
 //advise(ERROR_STRING);
 				fill_func(x, y);
 			}
 	
-//sprintf(ERROR_STRING,"Pushing y = %ld   l = %ld   x-1 = %ld    dy = %ld",y,l,x-1,dy);
+//snprintf(ERROR_STRING,LLEN,"Pushing y = %ld   l = %ld   x-1 = %ld    dy = %ld",y,l,x-1,dy);
 //advise(ERROR_STRING);
 			PUSH(y, l, x-1, dy);	/* continue */
 
 			if (x>x2+1){		/* leak on right? */
-//sprintf(ERROR_STRING,"Leak on right, Pushing y = %ld   x2+1 = %ld   x-1 = %ld    -dy = %ld",y,x2+1,x-1,-dy);
+//snprintf(ERROR_STRING,LLEN,"Leak on right, Pushing y = %ld   x2+1 = %ld   x-1 = %ld    -dy = %ld",y,x2+1,x-1,-dy);
 //advise(ERROR_STRING);
 				PUSH(y, x2+1, x-1, -dy);
 			}
 skip:			
-//sprintf(ERROR_STRING,"after skip label, x = %ld, x2 = %ld",x,x2);
+//snprintf(ERROR_STRING,LLEN,"after skip label, x = %ld, x2 = %ld",x,x2);
 //advise(ERROR_STRING);
 			for (x++; x<=x2 && (!inside_func(x,y)) ; x++)
 				;
-//sprintf(ERROR_STRING,"x advanced to %ld, x2 = %ld",x,x2);
+//snprintf(ERROR_STRING,LLEN,"x advanced to %ld, x2 = %ld",x,x2);
 //advise(ERROR_STRING);
 			l = x;
 		} while (x<=x2);

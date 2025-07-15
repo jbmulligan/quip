@@ -196,7 +196,7 @@ static long read_expected_bytes(QSP_ARG_DECL  Port *mpp,void *buf,ssize_t n_want
 			 * deallocated?  In that case, we might be
 			 * in trouble referencing the former port's name.
 			 */
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"read_expected_bytes: problem reading port \"%s\"",
 				mpp->mp_name);
 			warn(ERROR_STRING);
@@ -465,7 +465,7 @@ static char *get_file_contents(QSP_ARG_DECL  const char *filename, struct stat *
 	buf = getbuf( (long)stb_p->st_size + 1 );
 
 	if( fread(buf,1,(long)stb_p->st_size,fp) != stb_p->st_size ){
-		sprintf(ERROR_STRING,"xmit_plain_file:  error reading file %s",
+		snprintf(ERROR_STRING,LLEN,"xmit_plain_file:  error reading file %s",
 			filename);
 		warn(ERROR_STRING);
 		fclose(fp);
@@ -523,7 +523,7 @@ void xmit_plain_file(QSP_ARG_DECL  Port *mpp,const void *_filename,int flag)
 	// directory structure on the receiver.
 
 	if( mpp->mp_output_filename == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Remote filename not specified, not transmitting file %s.",
 			filename);
 		warn(ERROR_STRING);
@@ -680,7 +680,7 @@ ssize_t _write_port(QSP_ARG_DECL  Port *mpp,const void *buf,u_long  n)
 		tell_sys_error("(write_port) write:");
 		// We get SIGPIPE when the other end is shut down...
 		if( last_err == EPIPE ){
-			sprintf(ERROR_STRING,"Write error on port %s",
+			snprintf(ERROR_STRING,LLEN,"Write error on port %s",
 				mpp->mp_name);
 			warn(ERROR_STRING);
 			// Close the port
@@ -746,7 +746,7 @@ advise("read_port:  errno is zero after read failed - should this happen?????");
 	if( n2 == 0 ){		/* EOF */
 eof_encountered:
 		if( verbose ){
-			sprintf(ERROR_STRING,"EOF encountered on port \"%s\"",
+			snprintf(ERROR_STRING,LLEN,"EOF encountered on port \"%s\"",
 				mpp->mp_name);
 			advise(ERROR_STRING);
 		}

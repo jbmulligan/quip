@@ -117,7 +117,7 @@ static void _clean_undo_response( QSP_ARG_DECL  Node *np )
 		// Should two undo's cancel each other out???
 		warn("clean_undo_response:  'undo' response following 'undo' response!?");
 	} else {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"clean_undo_response:  'undo' response following unexpected response code %d!?",
 			SEQ_DATUM_RESPONSE(qd_p));
 		warn(ERROR_STRING);
@@ -150,7 +150,7 @@ static List *_cleaned_list( QSP_ARG_DECL  List *lp )
 			// There shouldn't be any trials following an abort response!
 			assert( QLIST_HEAD(lp) == NULL );
 		} else {
-			sprintf(ERROR_STRING,"CAUTIOUS:  unexpected response code (%d)!?",
+			snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  unexpected response code (%d)!?",
 				SEQ_DATUM_RESPONSE(qd_p) );
 			warn(ERROR_STRING);
 		}
@@ -361,7 +361,7 @@ static void _update_remaining_trials( QSP_ARG_DECL  Experiment *exp_p )
 	if( IS_ABORTING( exp_p ) ){
 		strcpy(MSG_STR,"0");
 	} else {
-		sprintf(MSG_STR,"%d",EXPT_N_TOTAL_TRIALS(exp_p)-EXPT_CURR_TRIAL_IDX(exp_p));
+		snprintf(MSG_STR,LLEN,"%d",EXPT_N_TOTAL_TRIALS(exp_p)-EXPT_CURR_TRIAL_IDX(exp_p));
 	}
 	assign_reserved_var("n_trials_remaining",MSG_STR);
 }
@@ -397,7 +397,7 @@ void _process_response(QSP_ARG_DECL  int rsp,Staircase *st_p)
 	}
 
 	if( IS_ABORTING( STAIR_EXPT(st_p) ) ){
-		sprintf(ERROR_STRING,"process_response:  aborting run");
+		snprintf(ERROR_STRING,LLEN,"process_response:  aborting run");
 		advise(ERROR_STRING);
 	}
 
@@ -412,7 +412,7 @@ static int _step(QSP_ARG_DECL Staircase *st_p, Experiment *exp_p)
 
 	if( st_p->stair_val == (-1) ) return(0);	/* discarded */
 
-	sprintf(ERROR_STRING,"trial number %d",1+EXPT_CURR_TRIAL_IDX(exp_p));
+	snprintf(ERROR_STRING,LLEN,"trial number %d",1+EXPT_CURR_TRIAL_IDX(exp_p));
 	advise(ERROR_STRING);
 
 	/* stimulus routines MUST call response() for proper abort & redo */
@@ -532,7 +532,7 @@ void _make_staircase( QSP_ARG_DECL  int st,	/* staircase type */
 		int ir		/* increment response */
 		)
 {
-	char str[128];
+	char str[LLEN];
 	Staircase *st_p;
 	//Summary_Data_Tbl *sdt_p;
 	int n;
@@ -543,7 +543,7 @@ void _make_staircase( QSP_ARG_DECL  int st,	/* staircase type */
 	n = eltcount( CLASS_STAIRCASES(tc_p) );
 
 	// BUG possible buffer overflow
-	sprintf(str,"staircase.%s.%d",CLASS_NAME(tc_p), n );
+	snprintf(str,LLEN,"staircase.%s.%d",CLASS_NAME(tc_p), n );
 	st_p = new_stair(str);
 	assert(st_p!=NULL);
 
@@ -670,13 +670,13 @@ static int _init_trial_tbl(QSP_ARG_DECL  Experiment *exp_p)
 	n_staircases = EXPT_N_STAIRCASES(exp_p);
 
 	if( n_rounds <= 0 ){
-		sprintf(ERROR_STRING,"init_trial_tbl:  number of recorded trials per staircase (%d) must be positive!?",
+		snprintf(ERROR_STRING,LLEN,"init_trial_tbl:  number of recorded trials per staircase (%d) must be positive!?",
 			n_rounds);
 		warn(ERROR_STRING);
 		return -1;
 	}
 	if( n_staircases <= 0 ){
-		sprintf(ERROR_STRING,"init_trial_tbl:  number of staircases (%d) must be positive!?",
+		snprintf(ERROR_STRING,LLEN,"init_trial_tbl:  number of staircases (%d) must be positive!?",
 			n_staircases);
 		warn(ERROR_STRING);
 		return -1;
@@ -730,7 +730,7 @@ void _init_trial_block( QSP_ARG_DECL  Experiment *exp_p )
 	SET_EXPT_N_TOTAL_TRIALS(exp_p,n_staircases*n_rounds);
 	SET_EXPT_CURR_TRIAL_IDX(exp_p,0);
 
-	sprintf(MSG_STR,"%d",EXPT_N_TOTAL_TRIALS(exp_p));
+	snprintf(MSG_STR,LLEN,"%d",EXPT_N_TOTAL_TRIALS(exp_p));
 	assign_reserved_var("n_trials_remaining",MSG_STR);
 fprintf(stderr,"init_trial_block:  n_trials_remaining set to %s\n",MSG_STR);
 
@@ -751,7 +751,7 @@ static void stair_trials(QSP_ARG_DECL  Experiment *exp_p)
 		st_p = EXPT_TRIAL_TBL(exp_p)[ EXPT_CURR_TRIAL_IDX(exp_p) ];
 		assert(st_p!=NULL);
 
-		sprintf(MSG_STR,"%d",n_trials_remaining);
+		snprintf(MSG_STR,LLEN,"%d",n_trials_remaining);
 		assign_reserved_var("n_trials_remaining",MSG_STR);
 
 		// BUG?  need to check that redo and undo do the right thing???
@@ -807,7 +807,7 @@ Trial_Class *_find_class_from_index(QSP_ARG_DECL  int index)
 		if( CLASS_INDEX(tc_p) == index ) return(tc_p);
 		np=np->n_next;
 	}
-	sprintf(ERROR_STRING,
+	snprintf(ERROR_STRING,LLEN,
 		"find_class_from_index:  no class with index %d",index);
 	warn(ERROR_STRING);
 
@@ -829,7 +829,7 @@ Staircase *_find_stair_from_index(QSP_ARG_DECL  int index)
 		if( STAIR_INDEX(st_p) == index ) return(st_p);
 		np=np->n_next;
 	}
-	sprintf(ERROR_STRING,
+	snprintf(ERROR_STRING,LLEN,
 		"find_stair_from_index:  no staircase with index %d",index);
 	warn(ERROR_STRING);
 
@@ -926,7 +926,7 @@ Trial_Class *_create_named_class(QSP_ARG_DECL  const char *name)
 	// Make sure not in use
 	tc_p = trial_class_of(name);
 	if( tc_p != NULL ){
-		sprintf(ERROR_STRING,"Class name \"%s\" is already in use!?",
+		snprintf(ERROR_STRING,LLEN,"Class name \"%s\" is already in use!?",
 			name);
 		warn(ERROR_STRING);
 		return NULL;
@@ -944,7 +944,7 @@ Trial_Class *_create_named_class(QSP_ARG_DECL  const char *name)
 	SET_CLASS_SUMM_DTBL(tc_p,NULL);
 
 	/*
-	sprintf(MSG_STR,"create_named_class:  created new class '%s' with index %d",CLASS_NAME(tc_p),CLASS_INDEX(tc_p));
+	snprintf(MSG_STR,LLEN,"create_named_class:  created new class '%s' with index %d",CLASS_NAME(tc_p),CLASS_INDEX(tc_p));
 	prt_msg(MSG_STR);
 	*/
 
@@ -961,16 +961,16 @@ void set_response_cmd( Trial_Class *tc_p, const char *s )
 
 // new_class_for_index creates a new class...
 
-Trial_Class *_new_class_for_index( QSP_ARG_DECL  int class_index )
+Trial_Class *_new_class_for_index( QSP_ARG_DECL  int class_idx )
 {
 	char newname[32];
 	Trial_Class *tc_p;
 
-	sprintf(newname,"class%d",class_index);
+	snprintf(newname,32,"class%d",class_idx);
 
 	tc_p = trial_class_of(newname);
 	if( tc_p != NULL ){
-		sprintf(ERROR_STRING,"new_class_for_index:  class %s already exists!?",newname);
+		snprintf(ERROR_STRING,LLEN,"new_class_for_index:  class %s already exists!?",newname);
 		warn(ERROR_STRING);
 		return NULL;
 	}
@@ -1043,37 +1043,37 @@ static const char *name_for_last_trial(Transition_Code trans)
 
 void _print_stair_info( QSP_ARG_DECL  Staircase *stc_p )
 {
-	sprintf(MSG_STR,"Staircase %s:",STAIR_NAME(stc_p));
+	snprintf(MSG_STR,LLEN,"Staircase %s:",STAIR_NAME(stc_p));
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"\tClass: %s",CLASS_NAME(STAIR_CLASS(stc_p)));
+	snprintf(MSG_STR,LLEN,"\tClass: %s",CLASS_NAME(STAIR_CLASS(stc_p)));
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"\tIndex: %d",STAIR_INDEX(stc_p));
+	snprintf(MSG_STR,LLEN,"\tIndex: %d",STAIR_INDEX(stc_p));
 	prt_msg(MSG_STR);
 
 	prt_msg("\n\tType parameters:");
-	sprintf(MSG_STR,"\t\tType: %d (%s)",STAIR_TYPE(stc_p),name_for_stair_type(STAIR_TYPE(stc_p)));
+	snprintf(MSG_STR,LLEN,"\t\tType: %d (%s)",STAIR_TYPE(stc_p),name_for_stair_type(STAIR_TYPE(stc_p)));
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"\t\tMin inc: %d",STAIR_MIN_INC(stc_p));
+	snprintf(MSG_STR,LLEN,"\t\tMin inc: %d",STAIR_MIN_INC(stc_p));
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"\t\tInc resp: %d",STAIR_INC_RSP(stc_p));
+	snprintf(MSG_STR,LLEN,"\t\tInc resp: %d",STAIR_INC_RSP(stc_p));
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"\t\tCorrect resp: %d",STAIR_CRCT_RSP(stc_p));
+	snprintf(MSG_STR,LLEN,"\t\tCorrect resp: %d",STAIR_CRCT_RSP(stc_p));
 	prt_msg(MSG_STR);
 
 	prt_msg("\n\tState parameters:");
-	sprintf(MSG_STR,"\t\tValue: %d",STAIR_VAL(stc_p));
+	snprintf(MSG_STR,LLEN,"\t\tValue: %d",STAIR_VAL(stc_p));
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"\t\tIncrement: %d",STAIR_INC(stc_p));
+	snprintf(MSG_STR,LLEN,"\t\tIncrement: %d",STAIR_INC(stc_p));
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"\t\tLast rsp: %d",STAIR_LAST_RSP(stc_p));
+	snprintf(MSG_STR,LLEN,"\t\tLast rsp: %d",STAIR_LAST_RSP(stc_p));
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"\t\tLast rsp2: %d",STAIR_LAST_RSP3(stc_p));
+	snprintf(MSG_STR,LLEN,"\t\tLast rsp2: %d",STAIR_LAST_RSP3(stc_p));
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"\t\tLast trial: %d (%s)",STAIR_LAST_TRIAL(stc_p),name_for_last_trial(STAIR_LAST_TRIAL(stc_p)));
+	snprintf(MSG_STR,LLEN,"\t\tLast trial: %d (%s)",STAIR_LAST_TRIAL(stc_p),name_for_last_trial(STAIR_LAST_TRIAL(stc_p)));
 	prt_msg(MSG_STR);
 
 	if( STAIR_SUMM_DTBL(stc_p) != NULL ){
-		sprintf(MSG_STR,"\n\tSummary data:\n");
+		snprintf(MSG_STR,LLEN,"\n\tSummary data:\n");
 		prt_msg(MSG_STR);
 		write_summary_data( STAIR_SUMM_DTBL(stc_p), tell_msgfile() );
 	}
@@ -1086,34 +1086,34 @@ void _print_class_info(QSP_ARG_DECL  Trial_Class *tc_p)
 	Node *np;
 	int n;
 
-	sprintf(MSG_STR,"\nClass %s:\n",CLASS_NAME(tc_p));
+	snprintf(MSG_STR,LLEN,"\nClass %s:\n",CLASS_NAME(tc_p));
 	prt_msg(MSG_STR);
 
-	sprintf(MSG_STR,"\tIndex: %d",CLASS_INDEX(tc_p));
+	snprintf(MSG_STR,LLEN,"\tIndex: %d",CLASS_INDEX(tc_p));
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"\tStimulus command: '%s'",CLASS_STIM_CMD(tc_p));
+	snprintf(MSG_STR,LLEN,"\tStimulus command: '%s'",CLASS_STIM_CMD(tc_p));
 	prt_msg(MSG_STR);
-	sprintf(MSG_STR,"\tResponse command: '%s'",CLASS_RESP_CMD(tc_p));
+	snprintf(MSG_STR,LLEN,"\tResponse command: '%s'",CLASS_RESP_CMD(tc_p));
 	prt_msg(MSG_STR);
 
 	assert( CLASS_XVAL_OBJ(tc_p) != NULL );
-	sprintf(MSG_STR,"\tX-value object: %s",OBJ_NAME(CLASS_XVAL_OBJ(tc_p)) );
+	snprintf(MSG_STR,LLEN,"\tX-value object: %s",OBJ_NAME(CLASS_XVAL_OBJ(tc_p)) );
 	prt_msg(MSG_STR);
 
 	n = eltcount( CLASS_STAIRCASES(tc_p) );
-	sprintf(MSG_STR,"\n\tStaircases (%d):", n );
+	snprintf(MSG_STR,LLEN,"\n\tStaircases (%d):", n );
 	prt_msg(MSG_STR);
 	np = QLIST_HEAD( CLASS_STAIRCASES(tc_p) );
 	while(np!=NULL){
 		Staircase *stc_p;
 		stc_p = NODE_DATA(np);
-		sprintf(MSG_STR,"\t\t%s",STAIR_NAME(stc_p) );
+		snprintf(MSG_STR,LLEN,"\t\t%s",STAIR_NAME(stc_p) );
 		prt_msg(MSG_STR);
 		np = NODE_NEXT(np);
 	}
 
 	if( CLASS_SUMM_DTBL(tc_p) != NULL ){
-		sprintf(MSG_STR,"\n\tSummary data:\n");
+		snprintf(MSG_STR,LLEN,"\n\tSummary data:\n");
 		prt_msg(MSG_STR);
 		write_summary_data( CLASS_SUMM_DTBL(tc_p), tell_msgfile() );
 	}

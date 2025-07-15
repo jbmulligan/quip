@@ -167,7 +167,7 @@ typedef struct pt_arg {
 
 #define CHECK_COLOR_INDEX(funcname,color)		\
 	if( color > 255 ){				\
-		sprintf(ERROR_STRING,		\
+		snprintf(ERROR_STRING,LLEN,		\
 "%s:  color (%ld) must be in the range 0-255",		\
 			#funcname,color);		\
 		warn(ERROR_STRING);		\
@@ -521,7 +521,7 @@ CGSize drawn_size =
 				CGContextShowTextAtPoint (VW_GFX_CTX(vp),
 					x-pt.x, y-pt.y, DOA_STR(do_p), strlen(DOA_STR(do_p)) );
 			} else {
-				sprintf(ERROR_STRING,"Unexpected text justification mode 0x%x!?",VW_FLAGS(vp)&VW_JUSTIFY_MASK);
+				snprintf(ERROR_STRING,LLEN,"Unexpected text justification mode 0x%x!?",VW_FLAGS(vp)&VW_JUSTIFY_MASK);
 				warn(ERROR_STRING);
 			}
 			break;
@@ -837,14 +837,14 @@ static QUIP_IMAGE_TYPE *objc_img_for_dp(Data_Obj *dp, int little_endian_flag)
 	CGImageRef myimg;
 
 	if( OBJ_PREC(dp) != PREC_UBY ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 			"objc_img_for_dp:  object %s (%s) must be u_byte",
 			OBJ_NAME(dp),OBJ_PREC_NAME(dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return NULL;
 	}
 	if( OBJ_COMPS(dp) != 4 ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 			"objc_img_for_dp:  object %s (%d) must have 4 components",
 			OBJ_NAME(dp),OBJ_COMPS(dp));
 		NWARN(DEFAULT_ERROR_STRING);
@@ -904,7 +904,7 @@ static QUIP_IMAGE_TYPE *objc_img_for_dp(Data_Obj *dp, int little_endian_flag)
  * problem if we later display the image in a differently-sized viewer!?
  */
 
-static void insure_viewer_images(Viewer *vp)
+static void ensure_viewer_images(Viewer *vp)
 {
 	quipImages *qip;
 	CGSize size;
@@ -918,7 +918,7 @@ static void insure_viewer_images(Viewer *vp)
 	size.width = VW_WIDTH(vp);
 	size.height = VW_HEIGHT(vp);
 
-//fprintf(stderr,"insure_viewer_images %s:  will create quipImages with width %d and height %d\n",
+//fprintf(stderr,"ensure_viewer_images %s:  will create quipImages with width %d and height %d\n",
 //VW_NAME(vp),VW_WIDTH(vp),VW_HEIGHT(vp));
 
 	qip=[[quipImages alloc]initWithSize:size];
@@ -943,7 +943,7 @@ static void insure_viewer_images(Viewer *vp)
 	qip.backgroundColor = [UIColor clearColor];
 #endif // BUILD_FOR_IOS
 
-} // insure_viewer_images
+} // ensure_viewer_images
 
 #ifdef FOOBAR
 
@@ -963,7 +963,7 @@ static void make_ready_for_images(Viewer *vp)
 	[ VW_QV(vp) addSubview: qis_p ];
 }
 
-static quipImageView * insure_viewer_has_image( Viewer *vp, Data_Obj *dp, int x, int y )
+static quipImageView * ensure_viewer_has_image( Viewer *vp, Data_Obj *dp, int x, int y )
 {
 	quipImageView *qiv_p;
 	CGRect rect;
@@ -975,7 +975,7 @@ static quipImageView * insure_viewer_has_image( Viewer *vp, Data_Obj *dp, int x,
 
 	// We add the new imageView as a subview of the viewer view...
 	if( VW_IMAGES(vp) == NULL ){
-		insure_viewer_images(vp);
+		ensure_viewer_images(vp);
 	}
 
 	if( ! [VW_IMAGES(vp) hasSubview:qiv_p] ){
@@ -983,7 +983,7 @@ static quipImageView * insure_viewer_has_image( Viewer *vp, Data_Obj *dp, int x,
 		// so the above check doesn't really do much...
 		// are new subviews added at the back or front??
 
-//fprintf(stderr,"insure_viewer_has_image:  %s has %d subviews before adding %s\n",
+//fprintf(stderr,"ensure_viewer_has_image:  %s has %d subviews before adding %s\n",
 //VW_NAME(vp),[VW_IMAGES(vp) subviewCount],OBJ_NAME(dp));
 
 		[VW_IMAGES(vp) addSubview:qiv_p];
@@ -994,7 +994,7 @@ static quipImageView * insure_viewer_has_image( Viewer *vp, Data_Obj *dp, int x,
 
 static NSMutableArray * uii_list = NULL;
 
-static UIImage * insure_object_has_uiimage(Data_Obj *dp)
+static UIImage * ensure_object_has_uiimage(Data_Obj *dp)
 {
 	UIImage *uii_p;
 	if( OBJ_UI_IMG(dp) == NULL ){
@@ -1008,7 +1008,7 @@ static UIImage * insure_object_has_uiimage(Data_Obj *dp)
 		if( uii_list == NULL ){
 			uii_list = [[NSMutableArray alloc] init];
 		}
-//fprintf(stderr,"insure_object_has_uiimage will insert uii_p to list\n");
+//fprintf(stderr,"ensure_object_has_uiimage will insert uii_p to list\n");
 		[ uii_list addObject:uii_p];	// adds at end of array
 
 	} else {
@@ -1048,7 +1048,7 @@ void embed_image(QSP_ARG_DECL Viewer *vp, Data_Obj *dp,int x,int y)
 	UIImage *uii_p;		// BUG really only for iOS...
 
 	INSIST_IMAGE_VIEWER(embed_image)
-	////qiv_p = insure_viewer_has_image(vp,dp,x,y);
+	////qiv_p = ensure_viewer_has_image(vp,dp,x,y);
 
 	// We may use the same object over and over again with different data...
 	// So we forget it here...
@@ -1056,10 +1056,10 @@ void embed_image(QSP_ARG_DECL Viewer *vp, Data_Obj *dp,int x,int y)
 		forget_uiimage( OBJ_UI_IMG(dp) );
 		INIT_OBJ_UI_IMG(dp,NULL);
 	}
-	uii_p = insure_object_has_uiimage(dp);
+	uii_p = ensure_object_has_uiimage(dp);
 
 #ifdef BUILD_FOR_IOS
-	insure_viewer_images(vp);
+	ensure_viewer_images(vp);
 	assert(VW_IMAGES(vp)!=NULL);
 
 	[VW_IMAGES(vp) setImage:uii_p];
@@ -1074,10 +1074,10 @@ void _queue_frame( QSP_ARG_DECL  Viewer *vp, Data_Obj *dp )
 {
 	UIImage *uii_p;
 
-	uii_p = insure_object_has_uiimage(dp);
+	uii_p = ensure_object_has_uiimage(dp);
 	assert(uii_p!=NULL);
 
-	insure_viewer_images(vp);
+	ensure_viewer_images(vp);
 	assert(VW_IMAGES(vp)!=NULL);
 	[VW_IMAGES(vp) queueFrame:uii_p];
 }
@@ -1088,13 +1088,13 @@ void _forget_frame( QSP_ARG_DECL  Viewer *vp, Data_Obj *dp )
 
 	uii_p = OBJ_UI_IMG(dp);
 	if( uii_p == NULL ){
-		sprintf(ERROR_STRING,"forget_frame %s:  object %s does not have an associated UIImage!?",
+		snprintf(ERROR_STRING,LLEN,"forget_frame %s:  object %s does not have an associated UIImage!?",
 			VW_NAME(vp),OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}
 	if( VW_IMAGES(vp) == NULL ){
-		sprintf(ERROR_STRING,"forget_frame:  viewer %s does not have an associated UIImageView!?",
+		snprintf(ERROR_STRING,LLEN,"forget_frame:  viewer %s does not have an associated UIImageView!?",
 			VW_NAME(vp));
 		warn(ERROR_STRING);
 		return;
@@ -1137,7 +1137,7 @@ quipImageView *image_view_for_viewer(Viewer *vp)
 
 	// We add the new imageView as a subview of the viewer view...
 	if( VW_IMAGES(vp) == NULL ){
-		insure_viewer_images(vp);
+		ensure_viewer_images(vp);
 	}
 
 //fprintf(stderr,"adding subview 0x%lx to images 0x%lx, viewer = 0x%lx...\n",
@@ -1473,7 +1473,7 @@ int get_string_width(Viewer *vp, const char *s)
 {
 	// Do we really initialize here???
 	if( VW_GFX_CTX(vp) == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"get_string_width '%s':  drawing context for viewer %s is NULL!?",
 			s,VW_NAME(vp));
 		NADVISE(ERROR_STRING);
@@ -1568,7 +1568,7 @@ void exec_after_animation(Viewer *vp, const char *s)
 
 void set_viewer_animation(Viewer *vp, int frame_duration, int repeat_count)
 {
-	insure_viewer_images(vp);
+	ensure_viewer_images(vp);
 	NSMutableArray *frame_queue;
 	NSTimeInterval dur;
 	float nf;

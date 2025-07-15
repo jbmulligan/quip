@@ -100,7 +100,7 @@ void qs_do_cmd( Query_Stack *qsp )
 		}
 #endif /* HAVE_HISTORY */
 
-		sprintf(ERROR_STRING,"Command \"%s\" not found!?",cmd);
+		snprintf(ERROR_STRING,LLEN,"Command \"%s\" not found!?",cmd);
 		warn(ERROR_STRING);
 		// Show the menu here
 		list_menu( TOP_OF_STACK( QS_MENU_STACK(THIS_QSP) ) );

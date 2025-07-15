@@ -120,7 +120,7 @@ int recv_a_byte(SINGLE_QSP_ARG_DECL)
 	}
 
 	if( n_waits >= MAX_WAITS && n_received == 0 ) {
-		sprintf(ERROR_STRING,"No value received after waiting %d n_waits?", n_waits);
+		snprintf(ERROR_STRING,LLEN,"No value received after waiting %d n_waits?", n_waits);
 		WARN(ERROR_STRING);
 		return -1;
 	}
@@ -129,7 +129,7 @@ int recv_a_byte(SINGLE_QSP_ARG_DECL)
 
 #ifdef DEBUG
 if( debug & usb2000_debug ){
-sprintf(ERROR_STRING,"byte recvd: 0x%.2x", value_recvd);
+snprintf(ERROR_STRING,LLEN,"byte recvd: 0x%.2x", value_recvd);
 advise(ERROR_STRING);
 }
 #endif /* DEBUG */
@@ -173,7 +173,7 @@ advise("recv_a_value:  not ascii mode");
 			}
 
 			if( n_waits >= MAX_WAITS && n_received == 0 ) {
-				sprintf(ERROR_STRING,"No value received after waiting %d n_waits?", n_waits);
+				snprintf(ERROR_STRING,LLEN,"No value received after waiting %d n_waits?", n_waits);
 				WARN(ERROR_STRING);
 				return -1;
 			}
@@ -184,7 +184,7 @@ advise("recv_a_value:  not ascii mode");
 			value[n_words_received] = recv_buf[0];
 		}
 
-		sprintf(value, "%.2x%.2x", value[0], value[1]);
+		snprintf(value,MAX_SIZEOF_VALUE, "%.2x%.2x", value[0], value[1]);
 
 		n_value = strtol(value, NULL, 16);
 
@@ -201,14 +201,14 @@ advise("recv_a_value:  not ascii mode");
 			}
 
 			if( n_waits >= MAX_WAITS && n_received == 0 ) {
-				sprintf(ERROR_STRING,"No value received after waiting %d n_waits?", n_waits);
+				snprintf(ERROR_STRING,LLEN,"No value received after waiting %d n_waits?", n_waits);
 				WARN(ERROR_STRING);
-				sprintf(ERROR_STRING,"%d characters already received",i);
+				snprintf(ERROR_STRING,LLEN,"%d characters already received",i);
 				advise(ERROR_STRING);
 
 				if( i > 0 ){
 					value[i]=0;	/* terminate string */
-					sprintf(ERROR_STRING,"string \"%s\" received so far",value);
+					snprintf(ERROR_STRING,LLEN,"string \"%s\" received so far",value);
 					advise(ERROR_STRING);
 				}
 				return -1;
@@ -220,7 +220,7 @@ advise("recv_a_value:  not ascii mode");
 			#ifdef CAUTIOUS
 			if( i > MAX_SIZEOF_VALUE-1 ) {
 				value[MAX_SIZEOF_VALUE-1]=0;	/* terminate string */
-				sprintf(ERROR_STRING, "CAUTIOUS:  recv_a_value:  Impossiblely large value (%s) is being received, Reception ABORTED.", value);
+				snprintf(ERROR_STRING,LLEN, "CAUTIOUS:  recv_a_value:  Impossiblely large value (%s) is being received, Reception ABORTED.", value);
 				WARN(ERROR_STRING);
 			}
 			#endif /* CAUTIOUS */
@@ -235,7 +235,7 @@ advise("recv_a_value:  not ascii mode");
 
 #ifdef DEBUG
 if( debug & usb2000_debug ){
-sprintf(ERROR_STRING, "n_value: %d", n_value );
+snprintf(ERROR_STRING,LLEN, "n_value: %d", n_value );
 advise(ERROR_STRING);
 }
 #endif /* DEBUG */
@@ -378,7 +378,7 @@ static int get_echo(QSP_ARG_DECL  char *pkt)
 				return -1;
 
 			if( *(echo_bufp+i) != *(pkt+i) ) {
-				sprintf(ERROR_STRING, "Unexpected 0x%x instead of 0x%x received .... please restart the usb2000",
+				snprintf(ERROR_STRING,LLEN, "Unexpected 0x%x instead of 0x%x received .... please restart the usb2000",
 					*(echo_bufp+i), *(pkt+i) );
 				WARN(ERROR_STRING);
 
@@ -442,7 +442,7 @@ int set_baud_rate(QSP_ARG_DECL  int data_word)
 	}
 
 	if( reply != ACK ){
-		sprintf(ERROR_STRING,"set_baud_rate: reply (0x%x) != ACK (0x%x)", reply,ACK);
+		snprintf(ERROR_STRING,LLEN,"set_baud_rate: reply (0x%x) != ACK (0x%x)", reply,ACK);
 		advise(ERROR_STRING);
 	}
 

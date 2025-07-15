@@ -26,7 +26,7 @@ const char *_check_display(SINGLE_QSP_ARG_DECL)
 
 	if( display_name != NULL && *display_name != 0 ){
 		if( verbose ) {
-			sprintf(ERROR_STRING,"Using display %s\n",display_name);
+			snprintf(ERROR_STRING,LLEN,"Using display %s\n",display_name);
 			advise(ERROR_STRING);
 		}
 		return(display_name);

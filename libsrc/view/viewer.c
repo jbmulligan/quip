@@ -168,7 +168,7 @@ void _select_viewer(QSP_ARG_DECL  Viewer *vp)
 		select_cmap_display( VW_DPYABLE(vp) );
 		set_colormap(VW_CMAP_OBJ(vp));
 	} else {
-sprintf(ERROR_STRING,"select_viewer %s:  no colormap",VW_NAME(vp));
+snprintf(ERROR_STRING,LLEN,"select_viewer %s:  no colormap",VW_NAME(vp));
 advise(ERROR_STRING);
 	}
 #endif /* HAVE_X11 */
@@ -182,7 +182,7 @@ advise(ERROR_STRING);
 void _release_image(QSP_ARG_DECL  Data_Obj *dp)
 {
 	dp->dt_refcount --;
-//sprintf(ERROR_STRING,"release_image %s:  refcount = %d",OBJ_NAME(dp),dp->dt_refcount);
+//snprintf(ERROR_STRING,LLEN,"release_image %s:  refcount = %d",OBJ_NAME(dp),dp->dt_refcount);
 //advise(ERROR_STRING);
 	if( dp->dt_refcount <= 0 /* && IS_ZOMBIE(dp) */ )
 		delvec(dp);
@@ -260,12 +260,12 @@ Viewer *_viewer_init(QSP_ARG_DECL  const char *name,int dx,int dy,int flags)
 {
 	Viewer *vp;
 #ifdef HAVE_X11
-	char str[256];
+	char str[LLEN];
 #endif /* HAVE_X11 */
 	int stat;
 
 	if( dx <= 0 || dy <= 0 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Dimensions for viewer %s (%d,%d) must be positive",
 			name,dx,dy);
 		warn(ERROR_STRING);
@@ -329,7 +329,7 @@ Viewer *_viewer_init(QSP_ARG_DECL  const char *name,int dx,int dy,int flags)
 	cmap_setup(vp);		/* refers to vw_dop, but that's not set until later? */
 
 	install_default_lintbl(VW_DPYABLE(vp) );
-	sprintf(str,"colormap.%s",name);
+	snprintf(str,LLEN,"colormap.%s",name);
 
 	VW_CMAP_OBJ(vp) = new_colormap(str);
 
@@ -420,12 +420,12 @@ void _info_viewer(QSP_ARG_DECL  Viewer *vp)
 	else if( IS_BUTTON_ARENA(vp) ) vtyp="Click_Viewer";
 	else vtyp="Viewer";
 
-	sprintf(msg_str,"%s \"%s\", %d rows, %d columns, at %d %d",vtyp,VW_NAME(vp),
+	snprintf(msg_str,LLEN,"%s \"%s\", %d rows, %d columns, at %d %d",vtyp,VW_NAME(vp),
 		VW_HEIGHT(vp),VW_WIDTH(vp),VW_X(vp),VW_Y(vp));
 	prt_msg(msg_str);
 
 	if( VW_OBJ(vp) != NULL ){
-		sprintf(msg_str,
+		snprintf(msg_str,LLEN,
 			"\tassociated data object:  %s",OBJ_NAME(VW_OBJ(vp)));
 		prt_msg(msg_str);
 	} else prt_msg("\tNo associated image");
@@ -433,10 +433,10 @@ void _info_viewer(QSP_ARG_DECL  Viewer *vp)
 #ifdef HAVE_X11
 	if( SIMULATING_LUTS(vp) ){
 		prt_msg("\tSimulating LUT color mapping");
-		sprintf(msg_str,"\t\tcolormap object:  %s",OBJ_NAME(VW_CMAP_OBJ(vp)));
+		snprintf(msg_str,LLEN,"\t\tcolormap object:  %s",OBJ_NAME(VW_CMAP_OBJ(vp)));
 		prt_msg(msg_str);
 		if( VW_LINTBL_OBJ(vp) != NULL ){
-			sprintf(msg_str,"\t\tlinearization table object:  %s",OBJ_NAME(VW_LINTBL_OBJ(vp)));
+			snprintf(msg_str,LLEN,"\t\tlinearization table object:  %s",OBJ_NAME(VW_LINTBL_OBJ(vp)));
 			prt_msg(msg_str);
 		}
 	}

@@ -57,7 +57,7 @@ Variable *_create_reserved_var(QSP_ARG_DECL  const char *var_name, const char *v
 
 	vp=var_of(var_name);
 	if( vp != NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "create_reserved_var:  variable %s already exists!?",var_name);
 		warn(ERROR_STRING);
 		return NULL;
@@ -75,9 +75,9 @@ Variable *_force_reserved_var(QSP_ARG_DECL  const char *var_name, const char *va
 	return vp;
 }
 
-#define insure_variable(name,creat_flags) _insure_variable(QSP_ARG  name,creat_flags)
+#define ensure_variable(name,creat_flags) _ensure_variable(QSP_ARG  name,creat_flags)
 
-static Variable *_insure_variable(QSP_ARG_DECL  const char *name, int creat_flags )
+static Variable *_ensure_variable(QSP_ARG_DECL  const char *name, int creat_flags )
 {
 	Variable *vp;
 	const char *val_str;
@@ -97,8 +97,8 @@ static Variable *_insure_variable(QSP_ARG_DECL  const char *name, int creat_flag
 		SET_VAR_VALUE(vp, save_possibly_empty_str(val_str) );
 		SET_VAR_FLAGS(vp, VAR_RESERVED );
 		if( creat_flags != VAR_RESERVED ){
-			sprintf(ERROR_STRING,
-	"insure_variable:  %s exists in environment, but reserved flag not passed!?",
+			snprintf(ERROR_STRING,LLEN,
+	"ensure_variable:  %s exists in environment, but reserved flag not passed!?",
 				name);
 			warn(ERROR_STRING);
 		}
@@ -113,7 +113,7 @@ Variable *_assign_var(QSP_ARG_DECL  const char *var_name, const char *var_val)
 {
 	Variable *vp;
 
-	vp = insure_variable(var_name, VAR_SIMPLE );
+	vp = ensure_variable(var_name, VAR_SIMPLE );
 
 	if( vp == NULL ) return vp;
 
@@ -121,12 +121,12 @@ Variable *_assign_var(QSP_ARG_DECL  const char *var_name, const char *var_val)
 	// are assigned programmatically from code using assign_var
 
 	if( IS_DYNAMIC_VAR(vp) ){
-		sprintf(ERROR_STRING,"assign_var:  dynamic variable %s is not assignable!?",
+		snprintf(ERROR_STRING,LLEN,"assign_var:  dynamic variable %s is not assignable!?",
 			VAR_NAME(vp));
 		warn(ERROR_STRING);
 		return NULL;
 	} else if( IS_RESERVED_VAR(vp) ){
-		sprintf(ERROR_STRING,"assign_var:  reserved variable %s is not assignable!?",
+		snprintf(ERROR_STRING,LLEN,"assign_var:  reserved variable %s is not assignable!?",
 			VAR_NAME(vp));
 		warn(ERROR_STRING);
 		return NULL;
@@ -146,18 +146,18 @@ Variable *_assign_reserved_var(QSP_ARG_DECL  const char *var_name, const char *v
 {
 	Variable *vp;
 
-	vp = insure_variable(var_name, VAR_RESERVED );
+	vp = ensure_variable(var_name, VAR_RESERVED );
 
 	if( vp == NULL ) return vp;
 
 	if( IS_DYNAMIC_VAR(vp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "assign_reserved_var:  dynamic variable %s is not assignable!?",
 			VAR_NAME(vp));
 		warn(ERROR_STRING);
 		return NULL;
 	} else if( ! IS_RESERVED_VAR(vp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "assign_reserved_var:  variable %s already exists but is not reserved!?",
 			VAR_NAME(vp));
 		advise(ERROR_STRING);
@@ -178,7 +178,7 @@ Variable *_get_var(QSP_ARG_DECL  const char *name)
 
 	vp=var_of(name);
 	if( vp == NULL ){
-		sprintf(ERROR_STRING,"No variable \"%s\"!?",name);
+		snprintf(ERROR_STRING,LLEN,"No variable \"%s\"!?",name);
 		warn(ERROR_STRING);
 	}
 	return vp;
@@ -376,7 +376,7 @@ void _search_vars(QSP_ARG_DECL  const char *frag)
 		/* make the match case insensitive */
 		decap(str1,VAR_VALUE(vp));
 		if( strstr(str1,lc_frag) != NULL ){
-			sprintf(msg_str,"%s:\t%s",VAR_NAME(vp),VAR_VALUE(vp));
+			snprintf(msg_str,LLEN,"%s:\t%s",VAR_NAME(vp),VAR_VALUE(vp));
 			prt_msg(msg_str);
 		}
 		np=NODE_NEXT(np);
@@ -389,16 +389,16 @@ void _reserve_variable(QSP_ARG_DECL  const char *name)
 {
 	Variable *vp;
 
-	vp = insure_variable(name,VAR_RESERVED);
+	vp = ensure_variable(name,VAR_RESERVED);
 	if( IS_DYNAMIC_VAR(vp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"reserve_variable:  no need to reserve dynamic variable %s",
 			name);
 		warn(ERROR_STRING);
 		return;
 	}
 	if( IS_RESERVED_VAR(vp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"reserve_variable:  redundant call to reserve variable %s",
 			name);
 		warn(ERROR_STRING);
@@ -447,12 +447,12 @@ void _replace_var_string(QSP_ARG_DECL  Variable *vp, const char *find,
 void _show_var(QSP_ARG_DECL  Variable *vp)
 {
 	if( IS_SIMPLE_VAR(vp) ){
-		sprintf(MSG_STR,"$%s = %s",VAR_NAME(vp),VAR_VALUE(vp));
+		snprintf(MSG_STR,LLEN,"$%s = %s",VAR_NAME(vp),VAR_VALUE(vp));
 	} else if( IS_DYNAMIC_VAR(vp) ){
-		sprintf(MSG_STR,"$%s = %s (dynamic value, function at 0x%lx)",
+		snprintf(MSG_STR,LLEN,"$%s = %s (dynamic value, function at 0x%lx)",
 			VAR_NAME(vp),var_p_value(vp), (long)VAR_FUNC(vp));
 	} else if( IS_RESERVED_VAR(vp) ){
-		sprintf(MSG_STR,"$%s = %s (reserved)",VAR_NAME(vp),VAR_VALUE(vp));
+		snprintf(MSG_STR,LLEN,"$%s = %s (reserved)",VAR_NAME(vp),VAR_VALUE(vp));
 	}
 	prt_msg(MSG_STR);
 }
@@ -463,7 +463,7 @@ void _set_script_var_from_int(QSP_ARG_DECL  const char *varname, long val )
 {
 	char str[MAX_INT_STRING_LEN];
 
-	sprintf(str,"%ld",val);	// BUG possible buffer overrun???
+	snprintf(str,MAX_INT_STRING_LEN,"%ld",val);	// BUG possible buffer overrun???
 
 	// BUG should make this a reserved var?
 	assign_var(varname,str);

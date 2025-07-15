@@ -81,7 +81,7 @@ extern void query_cuda_device(QSP_ARG_DECL  int dev);
 extern void init_cuda_devices(SINGLE_QSP_ARG_DECL);
 
 // cu2.c
-extern void insure_cu2_device( QSP_ARG_DECL   Data_Obj *dp );
+extern void ensure_cu2_device( QSP_ARG_DECL   Data_Obj *dp );
 
 // whence?
 #ifdef HAVE_CUDA
@@ -89,7 +89,7 @@ extern const char* _getCUFFTError(QSP_ARG_DECL  cufftResult status);
 #define getCUFFTError(status) _getCUFFTError(QSP_ARG  status)
 #endif // HAVE_CUDA
 
-extern void insure_cuda_device( Data_Obj *dp );
+extern void ensure_cuda_device( Data_Obj *dp );
 
 #ifdef __cplusplus
 }
@@ -130,9 +130,10 @@ extern bitmap_word *gpu_bit_val_array;	/* BUG should have one per device */
 
 #undef BUILD_FOR_OPENCL
 
-#define NO_CUDA_MSG(whence)				\
-							\
-	sprintf(ERROR_STRING,"%s:  Sorry, no CUDA support in this build.",#whence); \
+#define NO_CUDA_MSG(whence)						\
+									\
+	snprintf(ERROR_STRING,LLEN,					\
+		"%s:  Sorry, no CUDA support in this build.",#whence);	\
 	advise(ERROR_STRING);
 
 #define index_type	int32_t	// for vmaxi etc

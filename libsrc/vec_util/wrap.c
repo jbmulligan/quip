@@ -21,7 +21,7 @@ void _wrap(QSP_ARG_DECL  Data_Obj *dst_dp,Data_Obj *src_dp)
 	if( (status=old_cksiz(VF_FLAGS(vfp),dst_dp,src_dp))==(-1)) return;
 #ifdef CAUTIOUS
 	if( status!=0){
-		sprintf(ERROR_STRING,"CAUTIOUS:  wrap:  old_cksiz() error...");
+		snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  wrap:  old_cksiz() error...");
 		WARN(ERROR_STRING);
 	}
 #endif /* CAUTIOUS */
@@ -53,7 +53,7 @@ Data_Obj *dst_dp, *src_dp;
 	if( (status=old_cksiz(vec_func_tbl[FVMOV].vf_flags,dst_dp,src_dp))==(-1)) return;
 #ifdef CAUTIOUS
 	if( status!=0){
-		sprintf(ERROR_STRING,"CAUTIOUS:  wrap:  old_cksiz() error...");
+		snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  wrap:  old_cksiz() error...");
 		WARN(ERROR_STRING);
 	}
 #endif /* CAUTIOUS */
@@ -155,7 +155,7 @@ void _dp_scroll(QSP_ARG_DECL  Data_Obj *dst_dp,Data_Obj *src_dp,incr_t dx,incr_t
 	if( (status=old_cksiz(VF_FLAGS( FIND_VEC_FUNC(FVMOV) ), dst_dp,src_dp))==(-1)) return;
 #ifdef CAUTIOUS
 	if( status!=0){
-		sprintf(ERROR_STRING,"CAUTIOUS:  dp_scroll:  old_cksiz() error...");
+		snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  dp_scroll:  old_cksiz() error...");
 		WARN(ERROR_STRING);
 	}
 #endif /* CAUTIOUS */
@@ -167,10 +167,10 @@ void _dp_scroll(QSP_ARG_DECL  Data_Obj *dst_dp,Data_Obj *src_dp,incr_t dx,incr_t
 
 #ifdef DEBUG
 //if( debug & veclib_debug ){
-sprintf(ERROR_STRING,"scrolling %s by %d %d into %s",
+snprintf(ERROR_STRING,LLEN,"scrolling %s by %d %d into %s",
 OBJ_NAME(src_dp),dx,dy,OBJ_NAME(dst_dp));
 advise(ERROR_STRING);
-sprintf(ERROR_STRING,"destination area:  0x%"PRIxPTR",  source area:  0x%"PRIxPTR,
+snprintf(ERROR_STRING,LLEN,"destination area:  0x%"PRIxPTR",  source area:  0x%"PRIxPTR,
 (uintptr_t)OBJ_DATA_PTR(dst_dp),(uintptr_t)OBJ_DATA_PTR(src_dp));
 advise(ERROR_STRING);
 //}

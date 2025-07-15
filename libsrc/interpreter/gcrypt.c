@@ -55,7 +55,7 @@ static int the_hash_len=32;
 
 static void _report_gcrypt_error(QSP_ARG_DECL  const char *whence, const char *call, gcry_error_t status)
 {
-	sprintf(ERROR_STRING,
+	snprintf(ERROR_STRING,LLEN,
 		"%s:  %s:  %s", whence,call, gcry_strerror(status));
 	warn(ERROR_STRING);
 }
@@ -72,14 +72,14 @@ static void _init_gcrypt_subsystem(SINGLE_QSP_ARG_DECL)
 
 	s=gcry_check_version(GCRYPT_VERSION);	
 	if( !s ){	// mismatch means wrong dynamic library
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Expected libgcrypt version %s!?", GCRYPT_VERSION);
 		warn(ERROR_STRING);
 		NERROR1("libgcrypt version mismatch!?");
 	}
 
 	if( verbose ){
-		sprintf(ERROR_STRING,"libgcrypt version %s",s);
+		snprintf(ERROR_STRING,LLEN,"libgcrypt version %s",s);
 		advise(ERROR_STRING);
 	}
 
@@ -179,7 +179,7 @@ size_t _decrypt_char_buf(QSP_ARG_DECL  const uint8_t *in_buf, size_t in_len, cha
 	if( bs <= 0 ) return 0;	// when lib not present?
 
 	if( (in_len % bs) != 0 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "decrypt_char_buf:  input size (%ld) is not an integral number of blocks (bs = %d)!?",
 			(long)in_len,bs);
 		warn(ERROR_STRING);

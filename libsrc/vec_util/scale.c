@@ -55,7 +55,7 @@ static float exclip(QSP_ARG_DECL  Data_Obj *dp,Data_Obj *val_sp,
 		fltp=(float *)OBJ_DATA_PTR(dp);
 		newex = fltp[i];
 		if( newex != extremum ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"new extremum %g, old extremum %g",
 				newex,extremum);
 			advise(ERROR_STRING);
@@ -114,14 +114,14 @@ void _scale(QSP_ARG_DECL  Data_Obj *dp,double desmin,double desmax)		/* scale an
 
 	if( omx == omn ){
 		if( verbose ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"scale:  object %s has constant value %g",OBJ_NAME(dp),omn);
 			advise(ERROR_STRING);
 		}
 		rf = 1;
 	} else {
 		if( verbose ) {
-			sprintf(msg_str,"scale:  Range of %s before scaling:  %g - %g",OBJ_NAME(dp),omn,omx);
+			snprintf(msg_str,LLEN,"scale:  Range of %s before scaling:  %g - %g",OBJ_NAME(dp),omn,omx);
 			prt_msg(msg_str);
 		}
 		rf = (desmax-desmin)/(omx-omn);

@@ -36,11 +36,11 @@ static int expect_exact_count=1;
 
 #define INSURE_OK_FOR_READING(dp)					\
 									\
-	ram_dp = insure_ram_obj_for_reading(dp);			\
+	ram_dp = ensure_ram_obj_for_reading(dp);			\
 	assert( ram_dp != NULL );
 
 #define INSURE_OK_FOR_WRITING(dp)					\
-	ram_dp = insure_ram_obj_for_writing(dp);			\
+	ram_dp = ensure_ram_obj_for_writing(dp);			\
 	assert(ram_dp!=NULL);
 
 #define RELEASE_RAM_OBJ_FOR_READING_IF(dp)				\
@@ -58,8 +58,9 @@ static char *get_temp_name(const char *prefix, const char *name )
 {
 	char *s, *buf;
 
-	buf = getbuf( strlen(name) + strlen(prefix) + 1 );
-	sprintf(buf,"%s%s",prefix,name);
+	int l = strlen(name) + strlen(prefix) + 1 ;
+	buf = getbuf(l);
+	snprintf(buf,l,"%s%s",prefix,name);
 
 	// replace index delimiters with underscores...
 	s=buf;
@@ -217,7 +218,7 @@ static void _upload_platform_data(QSP_ARG_DECL  Data_Obj *pf_dp, Data_Obj *ram_d
 // that we then transfer en-mass.  The copy must have the correct shape,
 // but doesn't need to contain the data, as we will be over-writing it anyway.
 
-Data_Obj *_insure_ram_obj_for_writing(QSP_ARG_DECL  Data_Obj *dp)
+Data_Obj *_ensure_ram_obj_for_writing(QSP_ARG_DECL  Data_Obj *dp)
 {
 	if( OBJ_IS_RAM(dp) ) return dp;
 	return create_ram_copy(dp);
@@ -225,7 +226,7 @@ Data_Obj *_insure_ram_obj_for_writing(QSP_ARG_DECL  Data_Obj *dp)
 
 // To read a platform object, the copies need to have the data copied along!
 
-Data_Obj *_insure_ram_obj_for_reading(QSP_ARG_DECL  Data_Obj *dp)
+Data_Obj *_ensure_ram_obj_for_reading(QSP_ARG_DECL  Data_Obj *dp)
 {
 	Data_Obj *ram_dp;
 
@@ -350,7 +351,7 @@ static COMMAND_FUNC( do_pipe_obj )
 	// BUG  a symbolic constant should be used here - this has to match
 	// test string in read_ascii_data!!!
 
-	sprintf(cmdbuf,"%s:  %s",PIPE_PREFIX_STRING,pp->p_cmd);
+	snprintf(cmdbuf,LLEN,"%s:  %s",PIPE_PREFIX_STRING,pp->p_cmd);
 	read_ascii_data_from_pipe(ram_dp,pp,cmdbuf,expect_exact_count);
 	/* If there was just enough data, then the pipe
 	 * will have been closed already... */
@@ -359,7 +360,7 @@ static COMMAND_FUNC( do_pipe_obj )
 
 	/* check qlevel to make sure that the pipe was popped... */
 	if( ASCII_LEVEL != QLEVEL + 1 ){	// expected
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"do_pipe_obj:  final level %d is not one less than ascii level %d!?",
 			QLEVEL,ASCII_LEVEL);
 		warn(ERROR_STRING);
@@ -384,7 +385,7 @@ static COMMAND_FUNC( do_set_var_from_obj )
 	if( dp == NULL ) return;
 
 	if( ! IS_STRING(dp) ){
-		sprintf(ERROR_STRING,"do_set_var_from_obj:  object %s (%s) does not have string precision",
+		snprintf(ERROR_STRING,LLEN,"do_set_var_from_obj:  object %s (%s) does not have string precision",
 			OBJ_NAME(dp),OBJ_PREC_NAME(dp));
 		warn(ERROR_STRING);
 		return;
@@ -428,7 +429,7 @@ static COMMAND_FUNC( do_set_obj_from_var )
 #endif /* QUIP_DEBUG */
 
 	if( ! IS_STRING(dp) ){
-		sprintf(ERROR_STRING,"do_set_obj_from_var:  object %s (%s) does not have string precision",
+		snprintf(ERROR_STRING,LLEN,"do_set_obj_from_var:  object %s (%s) does not have string precision",
 			OBJ_NAME(dp),OBJ_PREC_NAME(dp));
 		warn(ERROR_STRING);
 		return;
@@ -437,7 +438,7 @@ static COMMAND_FUNC( do_set_obj_from_var )
 	dst_size = OBJ_COMPS(dp);
 
 	if( strlen(src_str) >= dst_size ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Truncating string of length %d to fit string object %s (%d)...",
 			(int)strlen(src_str), OBJ_NAME(dp), dst_size );
 		warn(ERROR_STRING);
@@ -446,7 +447,7 @@ static COMMAND_FUNC( do_set_obj_from_var )
 	INSURE_OK_FOR_WRITING(dp)
 
 	if( ! IS_CONTIGUOUS(ram_dp) ){
-		sprintf(ERROR_STRING,"Sorry, object %s must be contiguous for string reading",
+		snprintf(ERROR_STRING,LLEN,"Sorry, object %s must be contiguous for string reading",
 			OBJ_NAME(ram_dp));
 		warn(ERROR_STRING);
 		assert(ram_dp==dp);
@@ -535,7 +536,7 @@ static COMMAND_FUNC( do_wrt_obj )
 	pntvec(ram_dp,fp);
 	if( fp != stdout && QS_MSG_FILE(THIS_QSP)!=NULL && fp != QS_MSG_FILE(THIS_QSP) ) {
 		if( verbose ){
-			sprintf(MSG_STR,"closing file %s",filename);
+			snprintf(MSG_STR,LLEN,"closing file %s",filename);
 			prt_msg(MSG_STR);
 		}
 		fclose(fp);

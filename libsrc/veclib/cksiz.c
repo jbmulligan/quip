@@ -61,7 +61,7 @@ int _cksiz(QSP_ARG_DECL  int argtyp,Data_Obj *src_dp,Data_Obj *dst_dp)
 				continue;
 			} else {
 				/* if we get to here, we're not happy... */
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 					"cksiz:  %s count mismatch, %s (%d) & %s (%d)",
 					dimension_name[i],
 					OBJ_NAME(src_dp),OBJ_TYPE_DIM(src_dp,i),
@@ -79,7 +79,7 @@ int _cksiz(QSP_ARG_DECL  int argtyp,Data_Obj *src_dp,Data_Obj *dst_dp)
 			if( i==1 ){
 				if( (argtyp & FWD_FT) && IS_REAL(src_dp) && IS_COMPLEX(dst_dp) ){
 					if( OBJ_COLS(dst_dp) != (1+OBJ_COLS(src_dp)/2) ){
-						sprintf(ERROR_STRING,
+						snprintf(ERROR_STRING,LLEN,
 "For FFT, number of columns of transform %s (%d) should 1 plus the half number of columns of the destination %s (%d)",
 OBJ_NAME(dst_dp),OBJ_COLS(dst_dp),OBJ_NAME(src_dp),OBJ_COLS(src_dp));
 						warn(ERROR_STRING);
@@ -87,7 +87,7 @@ OBJ_NAME(dst_dp),OBJ_COLS(dst_dp),OBJ_NAME(src_dp),OBJ_COLS(src_dp));
 					}
 				} else if( (argtyp & INV_FT) && IS_COMPLEX(src_dp) && IS_REAL(dst_dp) ){
 					if( OBJ_COLS(src_dp) == (1+OBJ_COLS(dst_dp)/2) ){
-						sprintf(ERROR_STRING,
+						snprintf(ERROR_STRING,LLEN,
 "For inverse FFT, number of columns of transform %s (%d) should 1 plus the half number of columns of the destination %s (%d)",
 OBJ_NAME(src_dp),OBJ_COLS(src_dp),OBJ_NAME(dst_dp),OBJ_COLS(dst_dp));
 						warn(ERROR_STRING);
@@ -117,7 +117,7 @@ int _old_cksiz(QSP_ARG_DECL  int argtyp,Data_Obj *src_dp,Data_Obj *dst_dp)
 	for(i=0;i<N_DIMENSIONS;i++){
 		if( OBJ_TYPE_DIM(src_dp,i) != OBJ_TYPE_DIM(dst_dp,i) ){
 			/* if we get to here, we're not happy... */
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"old_cksiz:  %s count mismatch, %s (%d) & %s (%d)",
 				dimension_name[i],
 				OBJ_NAME(src_dp),OBJ_TYPE_DIM(src_dp,i),

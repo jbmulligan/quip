@@ -66,7 +66,7 @@ static void getkpt( u_long a, u_short *px, u_short *py )
 	*px = (u_short)(( a2 & ~sigma ) ^ ( a32 & sigma ) ^ eta);
 	*py = (u_short)(( a2 & sigma ) ^ ( a32 & ~sigma ) ^ eta);
 /*
-sprintf(ERROR_STRING,
+snprintf(ERROR_STRING,LLEN,
 "a = 0x%x, a2 = 0x%x, a32 = 0x%x, a2a = 0x%x, sigma = 0x%x, eta = 0x%x, x = 0x%x, y = 0x%x",
 a,a2,a32,a2a,sigma,eta,*px,*py);
 advise(ERROR_STRING);
@@ -96,27 +96,27 @@ void _mk_krast(QSP_ARG_DECL  Data_Obj *dp)
 	INSIST_RAM_OBJ(dp,mk_krast);
 
 	if( OBJ_PREC(dp) != PREC_UIN ){
-		sprintf(ERROR_STRING,"mk_krast:  object %s (%s) should have precision %s",
+		snprintf(ERROR_STRING,LLEN,"mk_krast:  object %s (%s) should have precision %s",
 			OBJ_NAME(dp),OBJ_PREC_NAME(dp),NAME_FOR_PREC_CODE(PREC_UIN));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_COMPS(dp) != 2 ){
-		sprintf(ERROR_STRING,"mk_krast:  object %s (%d) should have depth 2",
+		snprintf(ERROR_STRING,LLEN,"mk_krast:  object %s (%d) should have depth 2",
 			OBJ_NAME(dp),OBJ_COMPS(dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	l = my_log2( OBJ_COLS(dp) ) ;
 	if( 1<<l != (int) OBJ_COLS(dp) ){
-		sprintf(ERROR_STRING,"mk_krast:  %s length (%d) is not a power of two",
+		snprintf(ERROR_STRING,LLEN,"mk_krast:  %s length (%d) is not a power of two",
 			OBJ_NAME(dp),OBJ_COLS(dp));
 		WARN(ERROR_STRING);
 		l++;
 	}
 
 	if( l & 1 ){
-		sprintf(ERROR_STRING,"mk_krast:  %s length (%d) is not the square of a power of two",
+		snprintf(ERROR_STRING,LLEN,"mk_krast:  %s length (%d) is not the square of a power of two",
 			OBJ_NAME(dp),OBJ_COLS(dp));
 		WARN(ERROR_STRING);
 		l++;

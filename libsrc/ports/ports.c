@@ -27,28 +27,28 @@ void delport(QSP_ARG_DECL  Port *mpp)
 
 void portinfo(QSP_ARG_DECL  Port *mpp)
 {
-	sprintf(msg_str,"Port \"%s\":",mpp->mp_name);
+	snprintf(msg_str,LLEN,"Port \"%s\":",mpp->mp_name);
 	prt_msg(msg_str);
-	sprintf(msg_str,"\tsock = %d, o_sock = %d",mpp->mp_sock,mpp->mp_o_sock);
+	snprintf(msg_str,LLEN,"\tsock = %d, o_sock = %d",mpp->mp_sock,mpp->mp_o_sock);
 	prt_msg(msg_str);
-	sprintf(msg_str,"\taddrp = 0x%lx",(u_long)mpp->mp_addrp);
+	snprintf(msg_str,LLEN,"\taddrp = 0x%lx",(u_long)mpp->mp_addrp);
 	prt_msg(msg_str);
 
-	sprintf(msg_str,"\tflags =  0x%x",mpp->mp_flags);
+	snprintf(msg_str,LLEN,"\tflags =  0x%x",mpp->mp_flags);
 	prt_msg(msg_str);
-	sprintf(msg_str,"\tsleeptime =  %ld",(long)mpp->mp_sleeptime);
+	snprintf(msg_str,LLEN,"\tsleeptime =  %ld",(long)mpp->mp_sleeptime);
 	prt_msg(msg_str);
 
 	if( mpp->mp_flags & PORT_SERVER ){
-		sprintf(msg_str,"\tSERVER\t\t0x%x",PORT_SERVER);
+		snprintf(msg_str,LLEN,"\tSERVER\t\t0x%x",PORT_SERVER);
 		prt_msg(msg_str);
 	}
 	if( mpp->mp_flags & PORT_CLIENT ){
-		sprintf(msg_str,"\tCLIENT\t\t0x%x",PORT_CLIENT);
+		snprintf(msg_str,LLEN,"\tCLIENT\t\t0x%x",PORT_CLIENT);
 		prt_msg(msg_str);
 	}
 	if( mpp->mp_flags & PORT_CONNECTED ){
-		sprintf(msg_str,"\tCONNECTED\t0x%x",PORT_CONNECTED);
+		snprintf(msg_str,LLEN,"\tCONNECTED\t0x%x",PORT_CONNECTED);
 		prt_msg(msg_str);
 	}
 }

@@ -148,14 +148,14 @@ void _report_spink_error(QSP_ARG_DECL  spinError error, const char *whence )
 //		case SPINNAKER_ERR_CUSTOM_ID = -10000
 
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"report_spink_error (%s):  unhandled error code %d!?\n",
 				whence,error);
 			warn(ERROR_STRING);
 			msg = "unhandled error code";
 			break;
 	}
-	sprintf(ERROR_STRING,"spin%s:  %s",whence,msg);
+	snprintf(ERROR_STRING,LLEN,"spin%s:  %s",whence,msg);
 	//warn(ERROR_STRING);
 	error1(ERROR_STRING);
 }

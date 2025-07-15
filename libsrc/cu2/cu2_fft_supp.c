@@ -60,7 +60,7 @@ const char* _getCUFFTError(QSP_ARG_DECL  cufftResult status)
 			return "License error";
 #endif
 	}
-	sprintf(ERROR_STRING,"Unexpected CUFFT return value:  %d",status);
+	snprintf(ERROR_STRING,LLEN,"Unexpected CUFFT return value:  %d",status);
 	return(ERROR_STRING);
 }
 #endif // HAVE_CUDA
@@ -102,7 +102,7 @@ void g_cu2_vfft(QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src1_dp)
 	//Create plan for FFT
 	status = cufftPlan1d(&plan, NX, CUFFT_C2C, BATCH);
 	if (status != CUFFT_SUCCESS) {
-		sprintf(ERROR_STRING, "Error in cufftPlan1d: %s\n", getCUFFTError(status));
+		snprintf(ERROR_STRING,LLEN, "Error in cufftPlan1d: %s\n", getCUFFTError(status));
 		warn(ERROR_STRING);
 	}
 
@@ -110,7 +110,7 @@ void g_cu2_vfft(QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src1_dp)
 	status = cufftExecC2C(plan, (cufftComplex *)data,
 			(cufftComplex *)result, CUFFT_FORWARD);
 	if (status != CUFFT_SUCCESS) {
-		sprintf(ERROR_STRING, "Error in cufftExecC2C: %s\n", getCUFFTError(status));
+		snprintf(ERROR_STRING,LLEN, "Error in cufftExecC2C: %s\n", getCUFFTError(status));
 		warn(ERROR_STRING);
 	}
 
@@ -118,7 +118,7 @@ void g_cu2_vfft(QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src1_dp)
 	/*status = cufftExecC2C(plan, data, result, CUFFT_INVERSE);
 	if (status != CUFFT_SUCCESS)
 	{
-		sprintf(ERROR_STRING, "Error in cufftExecC2C: %s\n", getCUFFTError(status));
+		snprintf(ERROR_STRING,LLEN, "Error in cufftExecC2C: %s\n", getCUFFTError(status));
 		warn(ERROR_STRING);
 	}*/
 

@@ -3,7 +3,7 @@
 									\
 	vp=pick_vwr("");						\
 	if( vp == NULL ) {						\
-		sprintf(ERROR_STRING,"%s:  invalid viewer selection",	\
+		snprintf(ERROR_STRING,LLEN,"%s:  invalid viewer selection",	\
 						funcname);		\
 		WARN(ERROR_STRING);					\
 	}

@@ -94,21 +94,21 @@ void _set_seed(QSP_ARG_DECL  u_long seed)
 #ifdef HAVE_SRAND48
 
 	if( verbose ){
-		sprintf(ERROR_STRING,"set_seed:  srand48(%ld)",seed);
+		snprintf(ERROR_STRING,LLEN,"set_seed:  srand48(%ld)",seed);
 		advise(ERROR_STRING);
 	}
 
 	srand48( seed );
 #elif HAVE_SRANDOM
 	if( verbose ){
-		sprintf(ERROR_STRING,"set_seed:  srandom(%ld)",seed);
+		snprintf(ERROR_STRING,LLEN,"set_seed:  srandom(%ld)",seed);
 		advise(ERROR_STRING);
 	}
 
 	srandom( seed );
 #elif HAVE_SRAND
 	if( verbose ){
-		sprintf(ERROR_STRING,"set_seed:  srand(%d)",(int)seed);
+		snprintf(ERROR_STRING,LLEN,"set_seed:  srand(%d)",(int)seed);
 		advise(ERROR_STRING);
 	}
 
@@ -167,7 +167,7 @@ void _rninit(SINGLE_QSP_ARG_DECL)        /** randomly seed the generator */
 #endif
 
 	if( verbose ){
-		sprintf(ERROR_STRING,"rninit: seed is %d",seed);
+		snprintf(ERROR_STRING,LLEN,"rninit: seed is %d",seed);
 		advise(ERROR_STRING);
 	}
 
@@ -208,7 +208,7 @@ void _permute(QSP_ARG_DECL  SCRAMBLE_TYPE *buf,int n)
         SCRAMBLE_TYPE i;
 
 	if( n <= 0 ){
-		sprintf(ERROR_STRING,"permute:  number of elements (%d) must be positive!?",n);
+		snprintf(ERROR_STRING,LLEN,"permute:  number of elements (%d) must be positive!?",n);
 		warn(ERROR_STRING);
 		return;
 	}

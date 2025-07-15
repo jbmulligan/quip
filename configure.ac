@@ -102,6 +102,11 @@ AC_ARG_ENABLE([use-visca],
 	[AS_HELP_STRING([--disable-visca],[disable Sony VISCA protocol support @<:@default: no@:>@])],
 	[ use_visca=${enableval}], [use_visca=yes])
 
+# Enable optik by default:
+AC_ARG_ENABLE([use-optik],
+	[AS_HELP_STRING([--disable-optik],[disable optics ray-tracing support @<:@default: no@:>@])],
+	[ use_optik=${enableval}], [use_optik=yes])
+
 
 # Enable fb_dev by default:
 AC_ARG_ENABLE([use-fb-dev],
@@ -206,7 +211,7 @@ AC_ARG_ENABLE([use-cautious],
 	[ use_cautious=${enableval}], [use_cautious=yes])
 
 # Enable avi support by default:
-AC_ARG_ENABLE([use-avi],
+AC_ARG_ENABLE([avi],
 	[AS_HELP_STRING([--disable-avi],[disable ffmpeg avi support @<:@default: no@:>@])],
 	[ use_avi=${enableval}], [use_avi=yes])
 
@@ -276,7 +281,7 @@ AC_ARG_ENABLE([use-fann],
 	[ use_fann=${enableval}], [use_fann=yes])
 
 # Enable fileio by default:
-AC_ARG_ENABLE([use-fileio],
+AC_ARG_ENABLE([fileio],
 	[AS_HELP_STRING([--disable-fileio],[disable support for image file I/O@<:@default: no@:>@])],
 	[ use_fileio=${enableval}], [use_fileio=yes])
 
@@ -332,6 +337,7 @@ if test "x${minimal_build}" = xyes; then
 	use_meteor=no
 	use_das1602=no
 	use_visca=no
+	use_optik=no
 	use_fb_dev=no
 	use_knox=no
 	use_pic=no
@@ -367,16 +373,6 @@ if test "x${minimal_build}" = xyes; then
 	use_dv=no
 fi
 
-# a hack to get around the fact that jbm is not allowed to administer his own machines...
-AC_CHECK_FILE([/home/ardent/jbm/inst/usr/local/lib],[LDFLAGS="$LDFLAGS -L/home/ardent/jbm/inst/usr/local/lib"],[])
-AC_CHECK_FILE([/home/ardent/jbm/inst/usr/local/include],[CFLAGS="$CFLAGS -I/home/ardent/jbm/inst/usr/local/include"],[])
-
-AC_CHECK_FILE([/home/craik/jbm/inst/usr/local/lib],[LDFLAGS="$LDFLAGS -L/home/craik/jbm/inst/usr/local/lib"],[])
-AC_CHECK_FILE([/home/craik/jbm/inst/usr/local/include],[CFLAGS="$CFLAGS -I/home/craik/jbm/inst/usr/local/include"],[])
-
-
-AC_CHECK_FILE([/Users/jmulliga/inst/usr/local/lib],[LDFLAGS="$LDFLAGS -L/Users/jmulliga/inst/usr/local/lib"],[])
-AC_CHECK_FILE([/Users/jmulliga/inst/usr/local/include],[CFLAGS="$CFLAGS -I/Users/jmulliga/inst/usr/local/include"],[])
 
 #################################################
 #
@@ -496,11 +492,27 @@ if test "x${use_x11}" = xyes; then
   AC_CHECK_FILE([/opt/X11/include],[CPPFLAGS="$CPPFLAGS -I/opt/X11/include"])
 fi
 
+if test "x${use_motif_gui}" = xyes; then
+  AC_CHECK_FILE([/opt/brew/include],[CPPFLAGS="$CPPFLAGS -I/opt/brew/include"])
+  AC_CHECK_FILE([/opt/homebrew/include],[CPPFLAGS="$CPPFLAGS -I/opt/homebrew/include"])
+fi
+
+# Spinnaker has a dependency on libomp...
+# From homebrew on Mac:
+#
+# libomp is keg-only, which means it was not symlinked into /opt/homebrew,
+# because it can override GCC headers and result in broken builds.
+# 
+# For compilers to find libomp you may need to set:
+#   export LDFLAGS="-L/opt/homebrew/opt/libomp/lib"
+#   export CPPFLAGS="-I/opt/homebrew/opt/libomp/include"
+
 if test "x${use_spinnaker}" = xyes; then
   # linux:  /usr/include/spinnaker
   # mac:  /usr/local/include/spinnaker
   AC_CHECK_FILE([/usr/include/spinnaker/spinc],[CPPFLAGS="$CPPFLAGS -I/usr/include/spinnaker/spinc"])
   AC_CHECK_FILE([/usr/local/include/spinnaker/spinc],[CPPFLAGS="$CPPFLAGS -I/usr/local/include/spinnaker/spinc"])
+  AC_CHECK_FILE([/opt/homebrew/opt/libomp/include],[CPPFLAGS="$CPPFLAGS -I/opt/homebrew/opt/libomp/include"])
 fi
 
 # must come before compiler stuff
@@ -549,22 +561,38 @@ fi
 #  AC_CHECK_FILE([/sw/lib/ffmpeg-2.0/lib],[LDFLAGS="$LDFLAGS -L/sw/lib/ffmpeg-2.0/lib"])
 #fi
 
+# hack for Silverhawk???
+AC_CHECK_FILE([/opt/brew/opt/mesa/lib],[LDFLAGS="$LDFLAGS -L/opt/brew/opt/mesa/lib"])
+AC_CHECK_FILE([/opt/homebrew/opt/mesa/lib],[LDFLAGS="$LDFLAGS -L/opt/homebrew/opt/mesa/lib"])
+
 # this is for Ubuntu...
 AC_CHECK_FILE([/usr/lib/x86_64-linux-gnu],[LDFLAGS="$LDFLAGS -L/usr/lib/x86_64-linux-gnu"])
 
 AC_CHECK_FILE([/usr/lib64],[LDFLAGS="$LDFLAGS -L/usr/lib64"])
 AC_CHECK_FILE([/usr/local/lib],[LDFLAGS="$LDFLAGS -L/usr/local/lib"])
 AC_CHECK_FILE([/usr/local/include],[CPPFLAGS="$CPPFLAGS -I/usr/local/include"])
-AC_CHECK_FILE([/usr/include/ffmpeg],[CPPFLAGS="$CPPFLAGS -I/usr/include/ffmpeg"])
 #AC_CHECK_FILE([/sw/lib/ffmpeg-1.2/include],[CPPFLAGS="$CPPFLAGS -I/sw/lib/ffmpeg-1.2/include"])
 
 # ffmpeg headers may be installed under /usr/include OR /usr/include/ffmpeg...
 AC_CHECK_FILE([/usr/include/ffmpeg],[CPPFLAGS="$CPPFLAGS -I/usr/include/ffmpeg"])
+# OR - /opt/brew!?
+AC_CHECK_FILE([/opt/brew/include/ffmpeg],[CPPFLAGS="$CPPFLAGS -I/opt/brew/include/ffmpeg"])
+AC_CHECK_FILE([/opt/homebrew/include/ffmpeg],[CPPFLAGS="$CPPFLAGS -I/opt/homebrew/include/ffmpeg"])
+
+if test "x${use_spinnaker}" = xyes; then
+  AC_CHECK_FILE([/opt/homebrew/opt/libomp/lib],[LDFLAGS="$LDFLAGS -L/opt/homebrew/opt/libomp/lib"])
+  AC_CHECK_FILE([/Applications/Spinnaker/lib],[LDFLAGS="$LDFLAGS -L/Applications/Spinnaker/lib"])
+fi
 
 if test "x${use_x11}" = xyes; then
   AC_CHECK_FILE([/usr/X11/lib],[LDFLAGS="$LDFLAGS -L/usr/X11/lib"])
   AC_CHECK_FILE([/usr/X11R6/lib],[LDFLAGS="$LDFLAGS -L/usr/X11R6/lib"])
   AC_CHECK_FILE([/opt/X11/lib],[LDFLAGS="$LDFLAGS -L/opt/X11/lib"])
+fi
+
+if test "x${use_motif_gui}" = xyes; then
+  AC_CHECK_FILE([/opt/brew/lib],[LDFLAGS="$LDFLAGS -L/opt/brew/lib"])
+  AC_CHECK_FILE([/opt/homebrew/lib],[LDFLAGS="$LDFLAGS -L/opt/homebrew/lib"])
 fi
 
 if test "x${use_cuda}" = xyes; then
@@ -1066,12 +1094,41 @@ fi
 # On ubuntu, including -lGLU seems to break loading from libm!?
 
 if test "x${use_opengl}" = xyes; then
-  AC_SEARCH_LIBS([glVertex2d],[GL],[have_libgl=yes],[have_libgl=no])
+  if [[ $os_is_darwin == "no" ]]; then
+    AC_MSG_CHECKING([for OpenGL (GL/libgl)])
+    AC_SEARCH_LIBS([glVertex2d],[GL],[have_libgl=yes],[have_libgl=no])
+  else
+    # are we on a mac?  try framework option...
+    AC_MSG_CHECKING([for OpenGL framework])
+    cat>ogl_test.c<<EOF
+#include <OpenGL/gl.h>
+ 
+int main(int ac,char **av)
+{
+}
+EOF
+    if $CC $CPPFLAGS $LDFLAGS -framework OpenGL ogl_test.c $LIBS 2> /dev/null
+      then
+        AC_MSG_RESULT([found OpenGL framework])
+        LDFLAGS="$LDFLAGS -framework OpenGL"
+        AC_SEARCH_LIBS([glVertex2d],[GL],[have_libgl=yes],[have_libgl=no])
+        have_libgl=yes
+      else
+        AC_MSG_RESULT([missing OpenGL framework])
+        have_libgl=no
+      fi
+      /bin/rm a.out
+  fi # $os_is_darwin == yes
+fi   # use_opengl
+
+if test "x${use_opengl}" = xyes; then
   ## # This function is provided by cuda!?
   ## AC_SEARCH_LIBS([glXGetVideoSyncSGI],[GL],[have_sgisync=yes],[have_sgisync=no])
   AC_SEARCH_LIBS([gluLookAt],[GLU],[have_libglu=yes],[have_libglu=no])
   AC_SEARCH_LIBS([glutInit],[glut],[have_libglut=yes],[have_libglut=no])
   AC_SEARCH_LIBS([glewInit],[GLEW],[have_libglew=yes],[have_libglew=no])
+  AC_SEARCH_LIBS([glXSwapBuffers],[GL],[have_libgl=yes],[have_libgl=no])
+  # ertex
 fi
 
 
@@ -1202,6 +1259,10 @@ if test "x${use_fileio}" = xyes; then
   AC_SEARCH_LIBS([jpeg_start_decompress],[jpeg],[have_libjpeg=yes],[have_libjpeg=no])
 
   AC_SEARCH_LIBS([qt_read_scanlines],[qt],[have_libqt=yes],[have_libqt=no])
+  AC_SEARCH_LIBS([BZ2_bzDecompressInit],[bz2],[have_libbz2=yes],[have_libbz2=no])
+fi
+
+if test "x${use_avi}" = xyes; then
   AC_SEARCH_LIBS([av_crc],[avutil],[have_libavutil=yes],[have_libavutil=no])
   AC_SEARCH_LIBS([sws_scale],[swscale],[have_libswscale=yes],[have_libswscale=no])
   # with fink, libavformat is installed separately from lbiavcodec,
@@ -1218,6 +1279,10 @@ if test "x${use_fileio}" = xyes; then
   #have_libavutil=no
   #AC_SEARCH_LIBS([av_open_input_file],[avutil],[have_libavutil=yes])
   AC_SEARCH_LIBS([BZ2_bzDecompressInit],[bz2],[have_libbz2=yes],[have_libbz2=no])
+fi
+
+if test "x${use_optik}" = xyes; then
+  AC_SEARCH_LIBS([do_optik_menu],[optik],[have_optik=yes],[have_optik=no])
 fi
 
 if test "x${use_ncurses}" = xyes; then
@@ -1270,6 +1335,9 @@ if test "x${use_spinnaker}" = xyes; then
   AC_SEARCH_LIBS([spinSystemGetInstance],[Spinnaker_C],[have_libspinnaker=yes],[have_libspinnaker=no])
   if test "x${have_libspinnaker}" = xyes; then
     AC_SEARCH_LIBS([spinVideoClose],[SpinVideo_C],[have_libspinvideo=yes],[have_libspinvideo=no])
+  fi
+  if test "x${have_libspinnaker}" = xyes; then
+    AC_SEARCH_LIBS([XXH32_digest],[GenApi_clang140_v3_0],[have_libgenapi=yes],[have_libgenapi=no])
   fi
 fi
 
@@ -1557,20 +1625,34 @@ fi
 
 # opengl, GLUT
 if test "x${use_opengl}" = xyes; then
-
-  # on Mac, these headers are in /usr/X11/include...
-  AC_CHECK_HEADERS([GL/gl.h])
-  AC_CHECK_HEADERS([GL/glext.h], [], [],
+  if [[ $os_is_darwin == "no" ]]; then
+    AC_MSG_CHECKING([for OpenGL headers (non-Mac)])
+    # not Mac
+    AC_CHECK_HEADERS([GL/gl.h])
+    AC_CHECK_HEADERS([GL/glext.h], [], [],
 [[#ifdef HAVE_GL_GL_H
 # include <GL/gl.h>
 #endif
-  ]])
-  AC_CHECK_HEADERS([GL/glx.h])
-  AC_CHECK_HEADERS([GL/glu.h])
-  AC_CHECK_HEADERS([GL/glut.h])
-  AC_CHECK_HEADERS([GL/freeglut.h])
-  # on wheatstone, this one is in the nvidia distribution...
-  AC_CHECK_HEADERS([GL/glew.h])
+    ]])
+    # on mac, glu.h needs OpenGL/glu.h, not GL/glu.h !?
+    AC_CHECK_HEADERS([GL/glx.h])
+    AC_CHECK_HEADERS([GL/glu.h])
+    AC_CHECK_HEADERS([GL/glut.h])
+    AC_CHECK_HEADERS([GL/freeglut.h])
+    # on wheatstone, this one is in the nvidia distribution...
+    AC_CHECK_HEADERS([GL/glew.h])
+  else			# Mac
+    AC_MSG_CHECKING([for OpenGL headers (Mac)])
+    AC_CHECK_HEADERS([OpenGL/gl.h])
+    AC_CHECK_HEADERS([OpenGL/glext.h])
+    AC_CHECK_HEADERS([GL/glx.h])	# from homebrew?
+    AC_CHECK_HEADERS([OpenGL/glu.h])
+    # what about these?
+    AC_CHECK_HEADERS([GL/glut.h])
+    AC_CHECK_HEADERS([GL/freeglut.h])
+    # on wheatstone, this one is in the nvidia distribution...
+    AC_CHECK_HEADERS([GL/glew.h])
+  fi
 fi
 
 if test "x${use_opencl}" = xyes; then
@@ -1759,6 +1841,8 @@ AC_CONFIG_FILES([Makefile
 		 libsrc/cu2/Makefile
 		 libsrc/usb2000/Makefile
 		 src/Makefile])
+
+#		 libsrc/metal/Makefile
 
 # These modules should really be external???
 #		 libsrc/usb2000/Makefile
@@ -2395,6 +2479,10 @@ if test "x${have_ncurses}" = xyes; then
   AC_DEFINE([HAVE_NCURSES], 1, [Screen drawing with ncurses])
 fi
 
+if test "x${have_optik}" = xyes; then
+  AC_DEFINE([HAVE_OPTIK], 1, [optics ray-tracing enabled])
+fi
+
 if test "x${have_pthreads}" = xyes; then
   AC_DEFINE([HAVE_PTHREADS], 1, [Multi-threading with pthreads])
 fi
@@ -2604,6 +2692,16 @@ if test "x${have_ncurses}" != xyes; then
 ------------------------------------------
 Unable to find ncurses library.
 Building without ncurses support.
+------------------------------------------])
+  fi
+fi
+
+if test "x${have_optik}" != xyes; then
+  if test "x${use_optik}" = xyes; then
+    AC_MSG_WARN([
+------------------------------------------
+Unable to find optik library.
+Building without optik support.
 ------------------------------------------])
   fi
 fi

@@ -24,7 +24,7 @@
 			valbuf, &vbsiz) != 0 ) \
 			tell_sys_error("getsockopt"); \
 			if( vbsiz!=sizeof(int) ){ \
-				sprintf(msg_str,"return value has size %d!!!",vbsiz); \
+				snprintf(msg_str,LLEN,"return value has size %d!!!",vbsiz); \
 				prt_msg(msg_str);}
 
 #define VBUFSIZ	128
@@ -36,52 +36,52 @@ void show_sockopts(QSP_ARG_DECL  Port *mpp)
 	socklen_t vbsiz=VBUFSIZ;
 	int *ival=(int *)valbuf;
 
-	sprintf(msg_str,"Options for socket \"%s\":",mpp->mp_name);
+	snprintf(msg_str,LLEN,"Options for socket \"%s\":",mpp->mp_name);
 	prt_msg(msg_str);
 
 	get_it( SO_DEBUG )
-	sprintf(msg_str,"\tDEBUG\t%d",*ival);
+	snprintf(msg_str,LLEN,"\tDEBUG\t%d",*ival);
 	prt_msg(msg_str);
 	get_it( SO_REUSEADDR )
-	sprintf(msg_str,"\tREUSEADDR\t%d",*ival);
+	snprintf(msg_str,LLEN,"\tREUSEADDR\t%d",*ival);
 	prt_msg(msg_str);
 	get_it( SO_KEEPALIVE )
-	sprintf(msg_str,"\tKEEPALIVE\t%d",*ival);
+	snprintf(msg_str,LLEN,"\tKEEPALIVE\t%d",*ival);
 	prt_msg(msg_str);
 	get_it( SO_DONTROUTE )
-	sprintf(msg_str,"\tDONTROUTE\t%d",*ival);
+	snprintf(msg_str,LLEN,"\tDONTROUTE\t%d",*ival);
 	prt_msg(msg_str);
 	get_it( SO_LINGER )
-	sprintf(msg_str,"\tLINGER\t%d",*ival);
+	snprintf(msg_str,LLEN,"\tLINGER\t%d",*ival);
 	prt_msg(msg_str);
 #ifdef SO_BROADCAST
 	get_it( SO_BROADCAST )
-	sprintf(msg_str,"\tBROADCAST\t%d",*ival);
+	snprintf(msg_str,LLEN,"\tBROADCAST\t%d",*ival);
 	prt_msg(msg_str);
 #endif
 #ifdef SO_OOBINLINE
 	get_it( SO_OOBINLINE )
-	sprintf(msg_str,"\tOOBINLINE\t%d",*ival);
+	snprintf(msg_str,LLEN,"\tOOBINLINE\t%d",*ival);
 	prt_msg(msg_str);
 #endif
 #ifdef SO_SNDBUF
 	get_it( SO_SNDBUF )
-	sprintf(msg_str,"\tSNDBUF\t%d",*ival);
+	snprintf(msg_str,LLEN,"\tSNDBUF\t%d",*ival);
 	prt_msg(msg_str);
 #endif
 #ifdef SO_RCVBUF
 	get_it( SO_RCVBUF )
-	sprintf(msg_str,"\tRCVBUF\t%d",*ival);
+	snprintf(msg_str,LLEN,"\tRCVBUF\t%d",*ival);
 	prt_msg(msg_str);
 #endif
 #ifdef SO_TYPE
 	get_it( SO_TYPE )
-	sprintf(msg_str,"\tTYPE\t%d",*ival);
+	snprintf(msg_str,LLEN,"\tTYPE\t%d",*ival);
 	prt_msg(msg_str);
 #endif
 #ifdef SO_ERROR
 	get_it( SO_ERROR )
-	sprintf(msg_str,"\tERROR\t%d",*ival);
+	snprintf(msg_str,LLEN,"\tERROR\t%d",*ival);
 	prt_msg(msg_str);
 #endif
 }

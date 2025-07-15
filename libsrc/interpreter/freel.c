@@ -60,7 +60,7 @@ void freeinit(FreeList *list, count_t n_elts, u_long ntotal)
 
 #ifdef QUIP_DEBUG
 if( debug & fldebug ){
-sprintf(DEFAULT_ERROR_STRING,"freeinit:  blkp= 0x%lx\tn_elts= %d\nntotal= 0x%lx",
+snprintf(DEFAULT_ERROR_STRING,LLEN,"freeinit:  blkp= 0x%lx\tn_elts= %d\nntotal= 0x%lx",
 (u_long)blkp,n_elts,ntotal);
 NADVISE(DEFAULT_ERROR_STRING);
 }
@@ -68,7 +68,7 @@ NADVISE(DEFAULT_ERROR_STRING);
 
 	/* so getspace() can return -1 on error... */
 	if( ntotal > MAX_SIGNED_LONG ){
-		sprintf(DEFAULT_ERROR_STRING,"requested arena size %ld too big for freeinit (max = %ld)",ntotal,MAX_SIGNED_LONG);
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"requested arena size %ld too big for freeinit (max = %ld)",ntotal,MAX_SIGNED_LONG);
 		NERROR1(DEFAULT_ERROR_STRING);
 		IOS_RETURN
 	}
@@ -123,7 +123,7 @@ long getspace(FreeList *list, u_long s)
 			}
 #ifdef QUIP_DEBUG
 if( debug & fldebug ){
-sprintf(DEFAULT_ERROR_STRING,"getspace returning 0x%lx blocks at 0x%lx",s,a);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"getspace returning 0x%lx blocks at 0x%lx",s,a);
 NADVISE(DEFAULT_ERROR_STRING);
 }
 #endif
@@ -132,7 +132,7 @@ NADVISE(DEFAULT_ERROR_STRING);
 	}
 #ifdef QUIP_DEBUG
 if( debug & fldebug ){
-sprintf(DEFAULT_ERROR_STRING,"getspace couldn't find space for 0x%lx",s);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"getspace couldn't find space for 0x%lx",s);
 NADVISE(DEFAULT_ERROR_STRING);
 }
 #endif
@@ -162,7 +162,7 @@ int givspace(FreeList *list, u_long size, u_long addr)
 
 #ifdef QUIP_DEBUG
 if( debug & fldebug ){
-sprintf(DEFAULT_ERROR_STRING,"givspace:  0x%lx blocks at 0x%lx",size,addr);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"givspace:  0x%lx blocks at 0x%lx",size,addr);
 NADVISE(DEFAULT_ERROR_STRING);
 }
 #endif
@@ -237,7 +237,7 @@ if( debug & fldebug ) NADVISE("restoring blocks");
 				size=t;
 #ifdef QUIP_DEBUG
 if( debug & fldebug ) {
-sprintf(DEFAULT_ERROR_STRING,"givspace:  frp= 0x%lx, s=%ld a=%ld",(u_long)frp,size,a);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"givspace:  frp= 0x%lx, s=%ld a=%ld",(u_long)frp,size,a);
 NADVISE(DEFAULT_ERROR_STRING);
 }
 #endif
@@ -274,7 +274,7 @@ int addspace(FreeList* list, u_long size, u_long addr)
 
 #ifdef QUIP_DEBUG
 if( debug & fldebug ){
-sprintf(DEFAULT_ERROR_STRING,"addspace:  0x%lx blocks at 0x%lx",size,addr);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"addspace:  0x%lx blocks at 0x%lx",size,addr);
 NADVISE(DEFAULT_ERROR_STRING);
 }
 #endif
@@ -342,7 +342,7 @@ if( debug & fldebug ) NADVISE("restoring blocks");
 				size=t;
 #ifdef QUIP_DEBUG
 if( debug & fldebug ) {
-sprintf(DEFAULT_ERROR_STRING,"givspace:  frp= 0x%lx, s=%ld a=%ld",(u_long)frp,size,a);
+snprintf(DEFAULT_ERROR_STRING,LLEN,"givspace:  frp= 0x%lx, s=%ld a=%ld",(u_long)frp,size,a);
 NADVISE(DEFAULT_ERROR_STRING);
 }
 #endif
@@ -378,12 +378,12 @@ void showmap(FreeList *list)
 		NADVISE("All memory allocated");
 		return;
 	}
-	sprintf(DEFAULT_ERROR_STRING,"\nAvailable memory (list = 0x%lx):",
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"\nAvailable memory (list = 0x%lx):",
 		(u_long)blkp);
 	NADVISE(DEFAULT_ERROR_STRING);
 
 	while( blkp->size != 0 ){
-		sprintf(DEFAULT_ERROR_STRING,"%ld\t0x%lx at 0x%lx",i++,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"%ld\t0x%lx at 0x%lx",i++,
 			blkp->size,blkp->blkno);
 		NADVISE(DEFAULT_ERROR_STRING);
 		blkp++;
@@ -423,7 +423,7 @@ int takespace(FreeList *list, u_long a, u_long s)
 		if( a >= frp->blkno && a < (frp->blkno+frp->size) ){
 			offset = a - frp->blkno;
 			if( s > (frp->size - offset) ){
-//				sprintf(ERROR_STRING,
+//				snprintf(ERROR_STRING,LLEN,
 //			"takespace:  can't allocate %ld blocks at %ld",s,a);
 //				warn(ERROR_STRING);
 				return(-1);

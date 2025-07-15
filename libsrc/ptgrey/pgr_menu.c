@@ -21,7 +21,7 @@ static dc1394video_mode_t the_fmt7_mode=DC1394_VIDEO_MODE_FORMAT7_0;
 
 #define NO_LIB_MSG(whence)						\
 									\
-	sprintf(ERROR_STRING,						\
+	snprintf(ERROR_STRING,LLEN,					\
 		"%s:  program built without dc1394 support!?",whence);	\
 	error1(ERROR_STRING);
 
@@ -88,7 +88,7 @@ static COMMAND_FUNC( do_cam_info )
 	int bpp=1; /* BUG determine this from video mode */
 
 	CHECK_CAM
-	sprintf(msg_str,"%s %s:  %dx%d, %d %s per pixel",
+	snprintf(msg_str,LLEN,"%s %s:  %dx%d, %d %s per pixel",
 		pgcp->pc_cam_p->vendor,
 		pgcp->pc_cam_p->model,
 		pgcp->pc_nRows,pgcp->pc_nCols, bpp,
@@ -129,7 +129,7 @@ static COMMAND_FUNC( do_start )
 		WARN("number of ring buffer frames must be positive");
 		return;
 	} else if( rb_size > 64 ){
-		sprintf(ERROR_STRING,"You have asked for %d ring buffer frames, which is more than 64",
+		snprintf(ERROR_STRING,LLEN,"You have asked for %d ring buffer frames, which is more than 64",
 			rb_size);
 		WARN(ERROR_STRING);
 		/* honor the request! */
@@ -333,17 +333,17 @@ static COMMAND_FUNC( do_get_frange )
 		return;
 	}
 
-	sprintf(s,"%d",curr_feat_p->value);
+	snprintf(s,32,"%d",curr_feat_p->value);
 	assign_var("fval",s);
-	sprintf(s,"%d",curr_feat_p->min);
+	snprintf(s,32,"%d",curr_feat_p->min);
 	assign_var("fmin",s);
-	sprintf(s,"%d",curr_feat_p->max);
+	snprintf(s,32,"%d",curr_feat_p->max);
 	assign_var("fmax",s);
 
 	//if( curr_feat_p->auto_capable ){
 	if( is_auto_capable( curr_feat_p ) ){
 		assign_var("f_auto_capable","1");
-		//sprintf(s,"%d",curr_feat_p->auto_active);
+		//snprintf(s,32,"%d",curr_feat_p->auto_active);
 		//assign_var("f_auto",s);
 	} else {
 		assign_var("f_auto_capable","0");
@@ -352,7 +352,7 @@ static COMMAND_FUNC( do_get_frange )
 
 	if( curr_feat_p->on_off_capable ){
 		assign_var("f_onoff_capable","1");
-		sprintf(s,"%d",curr_feat_p->is_on);
+		snprintf(s,32,"%d",curr_feat_p->is_on);
 		assign_var("f_is_on",s);
 	} else {
 		assign_var("f_onoff_capable","0");
@@ -372,7 +372,7 @@ static void _camera_feature_set_auto(QSP_ARG_DECL  PGR_Cam *pgcp, dc1394feature_
 	/* make sure this feature supports auto */
 	/*
 	if( ! f->auto_capable ){
-		sprintf(ERROR_STRING,"%s is not auto-capable",
+		snprintf(ERROR_STRING,LLEN,"%s is not auto-capable",
 			//dc1394_feature_desc[f->id - DC1394_FEATURE_MIN]
 			dc1394_feature_get_string(f->id) );
 		WARN(ERROR_STRING);
@@ -384,7 +384,7 @@ static void _camera_feature_set_auto(QSP_ARG_DECL  PGR_Cam *pgcp, dc1394feature_
 		yn ?  DC1394_FEATURE_MODE_AUTO : DC1394_FEATURE_MODE_MANUAL ) !=
 		DC1394_SUCCESS ){
 
-		sprintf(ERROR_STRING,"error setting %s mode for %s",
+		snprintf(ERROR_STRING,LLEN,"error setting %s mode for %s",
 			yn?"auto":"manual",
 			/*dc1394_feature_desc[f->id - DC1394_FEATURE_MIN]*/
 			dc1394_feature_get_string(f->id) );
@@ -398,7 +398,7 @@ static void _camera_feature_set_onoff(QSP_ARG_DECL  PGR_Cam *pgcp, dc1394feature
 {
 	/* make sure this feature supports auto */
 	if( ! f->on_off_capable ){
-		sprintf(ERROR_STRING,"%s is not on_off-capable",
+		snprintf(ERROR_STRING,LLEN,"%s is not on_off-capable",
 			/*dc1394_feature_desc[f->id - DC1394_FEATURE_MIN]*/
 			dc1394_feature_get_string(f->id) );
 		warn(ERROR_STRING);
@@ -408,7 +408,7 @@ static void _camera_feature_set_onoff(QSP_ARG_DECL  PGR_Cam *pgcp, dc1394feature
 	if( dc1394_feature_set_power( pgcp->pc_cam_p, f->id,
 		yn ?  DC1394_ON : DC1394_OFF ) != DC1394_SUCCESS ){
 
-		sprintf(ERROR_STRING,"error turning %s %s",
+		snprintf(ERROR_STRING,LLEN,"error turning %s %s",
 			yn?"on":"off",
 			/*dc1394_feature_desc[f->id - DC1394_FEATURE_MIN]*/
 			dc1394_feature_get_string(f->id) );
@@ -421,7 +421,7 @@ static void _camera_feature_set_onoff(QSP_ARG_DECL  PGR_Cam *pgcp, dc1394feature
 static int _camera_feature_set_value(QSP_ARG_DECL  PGR_Cam *pgcp, dc1394feature_info_t *f, int val)
 {
 	if( dc1394_feature_set_value( pgcp->pc_cam_p, f->id, val ) != DC1394_SUCCESS ){
-		sprintf(ERROR_STRING,"error setting value (%d) for %s",val,
+		snprintf(ERROR_STRING,LLEN,"error setting value (%d) for %s",val,
 			/* dc1394_feature_desc[f->id - DC1394_FEATURE_MIN]*/
 			dc1394_feature_get_string(f->id) );
 		warn(ERROR_STRING);
@@ -437,7 +437,7 @@ static COMMAND_FUNC( do_set_auto )
 	int yn;
 	char pmpt[LLEN];
 
-	sprintf(pmpt,"set %s automatically",
+	snprintf(pmpt,LLEN,"set %s automatically",
 			/* dc1394_feature_desc[curr_feat_p->id - DC1394_FEATURE_MIN]*/
 			dc1394_feature_get_string(curr_feat_p->id) );
 	yn=ASKIF(pmpt);
@@ -455,7 +455,7 @@ static COMMAND_FUNC( do_set_onoff )
 	int yn;
 	char pmpt[LLEN];
 
-	sprintf(pmpt,"turn %s on",
+	snprintf(pmpt,LLEN,"turn %s on",
 			/*dc1394_feature_desc[curr_feat_p->id - DC1394_FEATURE_MIN]*/
 			dc1394_feature_get_string(curr_feat_p->id) );
 	yn=ASKIF(pmpt);
@@ -472,14 +472,14 @@ static COMMAND_FUNC( do_set_fval )
 	char pmpt[LLEN];
 	unsigned int val;
 
-	sprintf(pmpt,"%s (%d-%d)",
+	snprintf(pmpt,LLEN,"%s (%d-%d)",
 		/*dc1394_feature_desc[curr_feat_p->id - DC1394_FEATURE_MIN]*/
 		dc1394_feature_get_string(curr_feat_p->id),
 		curr_feat_p->min,curr_feat_p->max);
 	val=HOW_MANY(pmpt);
 
 	if( val < curr_feat_p->min || val > curr_feat_p->max ){
-		sprintf(ERROR_STRING,"Value %d is out of range for %s (%d-%d)",
+		snprintf(ERROR_STRING,LLEN,"Value %d is out of range for %s (%d-%d)",
 			val,
 		/*dc1394_feature_desc[curr_feat_p->id - DC1394_FEATURE_MIN]*/
 		dc1394_feature_get_string(curr_feat_p->id),
@@ -703,7 +703,7 @@ static COMMAND_FUNC( do_get_video_modes )
 	CHECK_CAM
 
 	n = get_video_mode_strings( QSP_ARG  dp, the_cam_p );
-	sprintf(s,"%d",n);
+	snprintf(s,8,"%d",n);
 	// BUG should make this a reserved var...
 	assign_var("n_video_modes",s);
 }
@@ -720,7 +720,7 @@ static COMMAND_FUNC( do_get_framerates )
 	CHECK_CAM
 
 	n = get_framerate_strings( QSP_ARG  dp, the_cam_p );
-	sprintf(s,"%d",n);
+	snprintf(s,8,"%d",n);
 	// BUG should make this a reserved var...
 	assign_var("n_framerates",s);
 }
@@ -781,7 +781,7 @@ static COMMAND_FUNC( do_fmt7_list )
 		WARN("error getting max_image_size");
 		return;
 	}
-	sprintf(msg_str,"max image size:  %d x %d",w,h);
+	snprintf(msg_str,LLEN,"max image size:  %d x %d",w,h);
 	prt_msg(msg_str);
 
 	if( dc1394_format7_get_unit_size(CAM_P,the_fmt7_mode, &h, &v ) != DC1394_SUCCESS ){
@@ -789,7 +789,7 @@ static COMMAND_FUNC( do_fmt7_list )
 		return;
 	}
 
-	sprintf(msg_str,"unit size:  %d x %d",h,v);
+	snprintf(msg_str,LLEN,"unit size:  %d x %d",h,v);
 	prt_msg(msg_str);
 
 	if( dc1394_format7_get_image_size(CAM_P,the_fmt7_mode, &w, &h ) != DC1394_SUCCESS ){
@@ -797,7 +797,7 @@ static COMMAND_FUNC( do_fmt7_list )
 		return;
 	}
 
-	sprintf(msg_str,"image size:  %d x %d",w,h);
+	snprintf(msg_str,LLEN,"image size:  %d x %d",w,h);
 	prt_msg(msg_str);
 
 	if( dc1394_format7_get_image_position(CAM_P,the_fmt7_mode, &h, &v) != DC1394_SUCCESS ){
@@ -805,7 +805,7 @@ static COMMAND_FUNC( do_fmt7_list )
 		return;
 	}
 
-	sprintf(msg_str,"image position:  %d, %d",h,v);
+	snprintf(msg_str,LLEN,"image position:  %d, %d",h,v);
 	prt_msg(msg_str);
 
 	if( dc1394_format7_get_unit_position(CAM_P,the_fmt7_mode, &h, &v ) != DC1394_SUCCESS ){
@@ -813,7 +813,7 @@ static COMMAND_FUNC( do_fmt7_list )
 		return;
 	}
 
-	sprintf(msg_str,"unit position:  %d, %d",h,v);
+	snprintf(msg_str,LLEN,"unit position:  %d, %d",h,v);
 	prt_msg(msg_str);
 
 	if( dc1394_format7_get_packet_parameters(CAM_P,the_fmt7_mode, &unit_bytes, &max_bytes) != DC1394_SUCCESS ){
@@ -821,7 +821,7 @@ static COMMAND_FUNC( do_fmt7_list )
 		return;
 	}
 
-	sprintf(msg_str,"unit bytes:  %d\nmax bytes %d",unit_bytes,max_bytes);
+	snprintf(msg_str,LLEN,"unit bytes:  %d\nmax bytes %d",unit_bytes,max_bytes);
 	prt_msg(msg_str);
 
 	if( /*dc1394_format7_get_byte_per_packet*/
@@ -830,7 +830,7 @@ static COMMAND_FUNC( do_fmt7_list )
 		return;
 	}
 
-	sprintf(msg_str,"bytes per packet:  %d",packet_bytes);
+	snprintf(msg_str,LLEN,"bytes per packet:  %d",packet_bytes);
 	prt_msg(msg_str);
 
 	if( /*dc1394_format7_get_recommended_byte_per_packet*/
@@ -839,7 +839,7 @@ static COMMAND_FUNC( do_fmt7_list )
 		return;
 	}
 
-	sprintf(msg_str,"recommended bpp:  %d",bpp);
+	snprintf(msg_str,LLEN,"recommended bpp:  %d",bpp);
 	prt_msg(msg_str);
 
 	if( dc1394_format7_get_packets_per_frame(CAM_P,the_fmt7_mode, &ppf) != DC1394_SUCCESS ){
@@ -847,7 +847,7 @@ static COMMAND_FUNC( do_fmt7_list )
 		return;
 	}
 
-	sprintf(msg_str,"packets per frame:  %d",ppf);
+	snprintf(msg_str,LLEN,"packets per frame:  %d",ppf);
 	prt_msg(msg_str);
 
 #endif
@@ -894,13 +894,13 @@ static COMMAND_FUNC( do_fmt7_setposn )
 	// At least on the flea, the position has to be even...
 
 	if( h & 1 ){
-		sprintf(ERROR_STRING,"Horizontal position (%d) should be even, rounding down to %d.",h,h&(~1));
+		snprintf(ERROR_STRING,LLEN,"Horizontal position (%d) should be even, rounding down to %d.",h,h&(~1));
 		advise(ERROR_STRING);
 		h &= ~1;
 	}
 
 	if( v & 1 ){
-		sprintf(ERROR_STRING,"Vertical position (%d) should be even, rounding down to %d.",v,v&(~1));
+		snprintf(ERROR_STRING,LLEN,"Vertical position (%d) should be even, rounding down to %d.",v,v&(~1));
 		advise(ERROR_STRING);
 		v &= ~1;
 	}

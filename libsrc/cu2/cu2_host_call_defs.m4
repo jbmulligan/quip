@@ -255,7 +255,7 @@ define(`SVAL_BM',`($1)->bitmap_scalar')
 define(`NN_GPU',`n_blocks, n_threads_per_block')
 
 
-// PORT - insure_gpu_device ???
+// PORT - ensure_gpu_device ???
 
 // We should have an intelligent way of designing blocks...
 // On wheatstone, the card can have a maximum of 512 threads/block.
@@ -331,7 +331,7 @@ define(`SETUP_BLOCKS_XYZ_DBM_1SBM',`
 dnl	SETUP_BLOCKS_X(w)
 define(`SETUP_BLOCKS_X',`
 
-dnl /*sprintf(ERROR_STRING,"SETUP_BLOCKS_X:  len = %d",$1);
+dnl /*snprintf(ERROR_STRING,LLEN,"SETUP_BLOCKS_X:  len = %d",$1);
 dnl advise(ERROR_STRING);*/
 	if( ($1) < MAX_THREADS_PER_ROW ) {
 		n_threads_per_block.x = $1;
@@ -398,21 +398,21 @@ ifdef(`MORE_DEBUG',`
 
 define(`REPORT_THREAD_INFO',`
 
-sprintf(ERROR_STRING,"Blocks:  %d x %d x %d    Threads:  %d x %d x %d",
+snprintf(ERROR_STRING,LLEN,"Blocks:  %d x %d x %d    Threads:  %d x %d x %d",
 n_blocks.x,n_blocks.y,n_blocks.z,
 n_threads_per_block.x,n_threads_per_block.y,n_threads_per_block.z);
 advise(ERROR_STRING);
-sprintf(ERROR_STRING,"Length:  %d x %d x %d    Extra:  %d x %d x %d",
+snprintf(ERROR_STRING,LLEN,"Length:  %d x %d x %d    Extra:  %d x %d x %d",
 VA_ITERATION_TOTAL(vap),VA_LEN_Y(vap),VA_LEN_Z(vap),extra.x,extra.y,extra.z);
 advise(ERROR_STRING);
 ')
 
 define(`REPORT_THREAD_INFO2',`
 
-sprintf(ERROR_STRING,"Blocks:  %d x %d    Threads:  %d x %d",
+snprintf(ERROR_STRING,LLEN,"Blocks:  %d x %d    Threads:  %d x %d",
 n_blocks.x,n_blocks.y,n_threads_per_block.x,n_threads_per_block.y);
 advise(ERROR_STRING);
-sprintf(ERROR_STRING,"Len1:  %ld   Len2:  %ld   Extra:  %d x %d",
+snprintf(ERROR_STRING,LLEN,"Len1:  %ld   Len2:  %ld   Extra:  %d x %d",
 len1,len2,extra.x,extra.y);
 advise(ERROR_STRING);
 ')
@@ -541,7 +541,7 @@ dnl dnl	INSIST_LENGTH( n , msg , name )
 dnl define(`INSIST_LENGTH',`
 dnl 
 dnl 	if( ($1) == 1 ){
-dnl 		sprintf(ERROR_STRING,
+dnl 		snprintf(ERROR_STRING,LLEN,
 dnl 	"Oops, kind of silly to do %s of 1-len vector %s!?",$2,$3);
 dnl 		warn(ERROR_STRING);
 dnl 		return;
@@ -554,7 +554,7 @@ ifdef(`MORE_DEBUG',`
 dnl	REPORT_VECTORIZATION1( host_func_name )
 define(`REPORT_VECTORIZATION1',`
 
-	sprintf(ERROR_STRING,
+	snprintf(ERROR_STRING,LLEN,
 "%s:  ready to vectorize:\txyz_len.x = %ld, inc1.x = %ld, inc1.y = %ld",
 		"$1",VA_ITERATION_TOTAL(vap),inc1.x,inc1.y);
 	advise(ERROR_STRING);
@@ -564,7 +564,7 @@ dnl	REPORT_VECTORIZATION2( host_func_name )
 define(`REPORT_VECTORIZATION2',`
 
 	REPORT_VECTORIZATION1($1)
-	sprintf(ERROR_STRING, "\t\t\t\tinc2.x = %ld, inc2.y = %ld",
+	snprintf(ERROR_STRING,LLEN, "\t\t\t\tinc2.x = %ld, inc2.y = %ld",
 		inc2.x,inc2.y);
 	advise(ERROR_STRING);
 ')
@@ -573,7 +573,7 @@ dnl	REPORT_VECTORIZATION3( host_func_name )
 define(`REPORT_VECTORIZATION3',`
 
 	REPORT_VECTORIZATION2($1)
-	sprintf(ERROR_STRING, "\t\t\t\tinc3.x = %ld, inc3.y = %ld",
+	snprintf(ERROR_STRING,LLEN, "\t\t\t\tinc3.x = %ld, inc3.y = %ld",
 		inc3.x,inc3.y);
 	advise(ERROR_STRING);
 ')
@@ -582,7 +582,7 @@ dnl	REPORT_VECTORIZATION4( host_func_name )
 define(`REPORT_VECTORIZATION4',`
 
 	REPORT_VECTORIZATION3($1)
-	sprintf(ERROR_STRING, "\t\t\t\tinc4.x = %ld, inc4.y = %ld",
+	snprintf(ERROR_STRING,LLEN, "\t\t\t\tinc4.x = %ld, inc4.y = %ld",
 		inc4.x,inc4.y);
 	advise(ERROR_STRING);
 ')
@@ -591,7 +591,7 @@ dnl	REPORT_VECTORIZATION5( host_func_name )
 define(`REPORT_VECTORIZATION5',`
 
 	REPORT_VECTORIZATION4($1)
-	sprintf(ERROR_STRING, "\t\t\t\tinc5.x = %ld, inc5.y = %ld",
+	snprintf(ERROR_STRING,LLEN, "\t\t\t\tinc5.x = %ld, inc5.y = %ld",
 		inc5.x,inc5.y);
 	advise(ERROR_STRING);
 ')

@@ -110,7 +110,7 @@ IOS_ITEM_NEW_PROT(IOS_Item_Context,ios_ctx)
 
 -(void) show
 {
-	sprintf(DEFAULT_MSG_STR,"\t%s",[self name].UTF8String);
+	snprintf(DEFAULT_MSG_STR,LLEN,"\t%s",[self name].UTF8String);
 	prt_msg(DEFAULT_QSP_ARG  DEFAULT_MSG_STR);
 }
 
@@ -234,13 +234,13 @@ static IOS_Item_Type *ios_item_type_itp=NULL;
 	int i;
 	for(i=0;i<keys.count;i++){
 		NSString *s=(NSString *)[keys objectAtIndex : i];
-		//sprintf(DEFAULT_ERROR_STRING,"\t%s",s.UTF8String);
+		//snprintf(DEFAULT_ERROR_STRING,LLEN,"\t%s",s.UTF8String);
 		//_prt_msg(DEFAULT_QSP_ARG  DEFAULT_ERROR_STRING);
 		fprintf(fp,"\t%s\n",s.UTF8String);
 	}
 
 	if( keys.count == 0 ){
-		sprintf(DEFAULT_ERROR_STRING,"No %ss in existence.",IOS_ITEM_NAME(self));
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"No %ss in existence.",IOS_ITEM_NAME(self));
 		//_prt_msg(DEFAULT_QSP_ARG  DEFAULT_ERROR_STRING);
 		NWARN(DEFAULT_ERROR_STRING);
 	}
@@ -456,7 +456,7 @@ IOS_Item_Context * create_ios_item_context( QSP_ARG_DECL  IOS_Item_Type *itp, co
 
 	/* maybe we should have contexts for contexts!? */
 
-	sprintf(cname,"%s.%s",IOS_ITEM_NAME(itp),name);
+	snprintf(cname,LLEN,"%s.%s",IOS_ITEM_NAME(itp),name);
 
 	if( (!strcmp(IOS_ITEM_NAME(itp),IOS_CTX_IT_NAME)) && !strcmp(name,DEF_IOS_CTX_NAME) ){
 		//static IOS_Item_Context first_context;
@@ -485,7 +485,7 @@ IOS_Item_Context * create_ios_item_context( QSP_ARG_DECL  IOS_Item_Type *itp, co
 
 #ifdef QUIP_DEBUG
 if( debug & qldebug ){
-sprintf(ERROR_STRING,"%s - %s:  creating context %s",
+snprintf(ERROR_STRING,LLEN,"%s - %s:  creating context %s",
 WHENCE(create_ios_item_context),cname);
 advise(ERROR_STRING);
 }
@@ -562,7 +562,7 @@ void push_ios_item_context(QSP_ARG_DECL  IOS_Item_Type *itp, IOS_Item_Context *i
 void del_ios_item(QSP_ARG_DECL  IOS_Item_Type *itp, IOS_Item *ip)
 {
 	if( [itp delItem:ip] == NULL ){
-		sprintf(ERROR_STRING,"del_ios_item:  error deleting %s named %s",
+		snprintf(ERROR_STRING,LLEN,"del_ios_item:  error deleting %s named %s",
 			IOS_IT_NAME(itp),IOS_ITEM_NAME(ip));
 		WARN(ERROR_STRING);
 	}

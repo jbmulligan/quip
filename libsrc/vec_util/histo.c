@@ -67,7 +67,7 @@ void _compute_histo(QSP_ARG_DECL  Data_Obj *histo_dp,Data_Obj *data_dp,double bi
 	INSIST_RAM_OBJ(data_dp,compute_histo);
 
 	if( OBJ_PREC(histo_dp) != hist_prec ){
-		sprintf(ERROR_STRING,"histogram precision (%s) must be %s",
+		snprintf(ERROR_STRING,LLEN,"histogram precision (%s) must be %s",
 			OBJ_PREC_NAME(histo_dp),
 			NAME_FOR_PREC_CODE(hist_prec));
 		WARN(ERROR_STRING);
@@ -94,20 +94,20 @@ void _compute_histo(QSP_ARG_DECL  Data_Obj *histo_dp,Data_Obj *data_dp,double bi
 		case PREC_UDI: HISTOGRAM(hist_type,u_long) break;
 		case PREC_DI: HISTOGRAM(hist_type,long) break;
 		default:
-			sprintf(ERROR_STRING,"Sorry, precision %s not allowed for histogram source",PREC_NAME(OBJ_PREC_PTR(data_dp)));
+			snprintf(ERROR_STRING,LLEN,"Sorry, precision %s not allowed for histogram source",PREC_NAME(OBJ_PREC_PTR(data_dp)));
 			WARN(ERROR_STRING);
 			return;
 	}
 
 	if( (n_under > 0) || (n_over > 0) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Histogram for %s had %d underflows and %d overflows",
 			OBJ_NAME(data_dp),n_under,n_over);
 		advise(ERROR_STRING);
 	}
-	sprintf(MSG_STR,"%d",n_under);
+	snprintf(MSG_STR,LLEN,"%d",n_under);
 	assign_var("n_underflows",MSG_STR);
-	sprintf(MSG_STR,"%d",n_over);
+	snprintf(MSG_STR,LLEN,"%d",n_over);
 	assign_var("n_overflows",MSG_STR);
 }
 
@@ -142,7 +142,7 @@ void _multivariate_histo(QSP_ARG_DECL  Data_Obj *histo_dp,Data_Obj *data_dp,hist
 	INSIST_RAM_OBJ(data_dp,compute_histo);
 
 	if( OBJ_PREC(histo_dp) != PREC_SP ){
-		sprintf(ERROR_STRING,"2D histogram precision (%s) must be %s",
+		snprintf(ERROR_STRING,LLEN,"2D histogram precision (%s) must be %s",
 			OBJ_PREC_NAME(histo_dp),
 			NAME_FOR_PREC_CODE(hist_prec) );
 		warn(ERROR_STRING);
@@ -165,7 +165,7 @@ void _multivariate_histo(QSP_ARG_DECL  Data_Obj *histo_dp,Data_Obj *data_dp,hist
 	}
 
 	if( OBJ_PREC(data_dp) != PREC_SP ){
-		sprintf(ERROR_STRING,"2D data precision (%s) must be %s",
+		snprintf(ERROR_STRING,LLEN,"2D data precision (%s) must be %s",
 			OBJ_PREC_NAME(data_dp),
 			NAME_FOR_PREC_CODE(hist_prec) );
 		warn(ERROR_STRING);
@@ -222,7 +222,7 @@ void _multivariate_histo(QSP_ARG_DECL  Data_Obj *histo_dp,Data_Obj *data_dp,hist
 	}
 	for(l=0;l<n_dimensions;l++){
 		if( (n_under[l] > 0) || (n_over[l] > 0) ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"Histogram for %s had %d underflows and %d overflows in dimension %d",
 			OBJ_NAME(data_dp),n_under[l],n_over[l],l);
 			advise(ERROR_STRING);

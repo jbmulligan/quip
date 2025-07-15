@@ -46,7 +46,7 @@ void get_device_dims(Screen_Obj *sop)
 			SET_SOB_FONT_SIZE(sop, 15);
 			SET_SOB_HEIGHT(sop,600);
 			SET_SOB_WIDTH(sop,300);
-sprintf(DEFAULT_ERROR_STRING,
+snprintf(DEFAULT_ERROR_STRING,LLEN,
 	"get_device_dims:  unrecognized dev type %d!?",
 	globalAppDelegate.dev_type);
 NWARN(DEFAULT_ERROR_STRING);
@@ -168,10 +168,10 @@ static const char *add_prefix_to_msg(const char *prefix,const char *msg)
 	if( strlen(msg)+strlen(prefix) >= LLEN ){
 		fprintf(stderr,"add_prefix_to_msg:  message too long \"%s\"\n",msg);
 		// use snprintf?
-		sprintf(str,"%sWarning message too long for buffer!?",
+		snprintf(str,LLEN,"%sWarning message too long for buffer!?",
 							prefix);
 	} else {
-		sprintf(str,"%s%s",prefix,msg);
+		snprintf(str,LLEN,"%s%s",prefix,msg);
 	}
 	return str;
 }
@@ -198,7 +198,7 @@ static void ios_error(QSP_ARG_DECL  const char *msg)
 // and material destined for stdout and stderr goes to console
 // (when enabled)
 
-void init_ios_text_output()
+void init_ios_text_output(void)
 {
 	set_warn_func(ios_warn);
 	set_error_func(ios_error);

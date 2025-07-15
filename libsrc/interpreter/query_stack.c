@@ -154,7 +154,7 @@ void show_menu_stack(SINGLE_QSP_ARG_DECL)
 	prt_msg("Menu stack:");
 	while( np != NULL ){
 		mp = (Menu *) NODE_DATA(np);
-		sprintf(MSG_STR,"\tmenu %d: %s",i++,MENU_PROMPT(mp));
+		snprintf(MSG_STR,LLEN,"\tmenu %d: %s",i++,MENU_PROMPT(mp));
 		prt_msg(MSG_STR);
 
 		np = NODE_NEXT(np);
@@ -200,7 +200,7 @@ static void push_prompt(QSP_ARG_DECL  const char *pmpt)
 
 		//assert( n < LLEN );
 		if( n >= LLEN ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 "push_prompt:  Attempting to append prompt \"%s\" to previous prompt:\n\"%s\"",
 				pmpt,sb_buffer(sbp));
 			advise(ERROR_STRING);

@@ -181,7 +181,7 @@ COMMAND_FUNC( do_gpu_fwdfft )
 	CHECK_CONTIGUITY(dst_dp);
 	CHECK_CONTIGUITY(src1_dp);
 
-	insure_cuda_device(dst_dp);
+	ensure_cuda_device(dst_dp);
 
 	//INSERT: Code that calls the fft function
 	g_fwdfft(QSP_ARG  dst_dp, src1_dp);
@@ -397,7 +397,7 @@ void _set_cuda_device(QSP_ARG_DECL   Cuda_Device *cdp )
 	cudaError_t e;
 
 	if( curr_cdp == cdp ){
-		sprintf(ERROR_STRING,"set_cuda_device:  current device is already %s!?",cdp->cudev_name);
+		snprintf(ERROR_STRING,LLEN,"set_cuda_device:  current device is already %s!?",cdp->cudev_name);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -410,13 +410,13 @@ void _set_cuda_device(QSP_ARG_DECL   Cuda_Device *cdp )
 #endif //  HAVE_CUDA
 }
 
-void _insure_cuda_device(QSP_ARG_DECL  Data_Obj *dp )
+void _ensure_cuda_device(QSP_ARG_DECL  Data_Obj *dp )
 {
 	Cuda_Device *cdp;
 
 	if( AREA_FLAGS(OBJ_AREA(dp)) & DA_RAM ){
-		sprintf(ERROR_STRING,
-	"insure_cuda_device:  Object %s is a host RAM object!?",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,
+	"ensure_cuda_device:  Object %s is a host RAM object!?",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}
@@ -425,11 +425,11 @@ void _insure_cuda_device(QSP_ARG_DECL  Data_Obj *dp )
 	assert( cdp != NULL );
 
 	if( curr_cdp != cdp ){
-sprintf(ERROR_STRING,"insure_cuda_device:  curr_cdp = 0x%"PRIxPTR"  cdp = 0x%"PRIxPTR,
+snprintf(ERROR_STRING,LLEN,"ensure_cuda_device:  curr_cdp = 0x%" PRIxPTR "  cdp = 0x%" PRIxPTR,
 (uintptr_t)curr_cdp,(uintptr_t)cdp);
 advise(ERROR_STRING);
 
-sprintf(ERROR_STRING,"insure_cuda_device:  current device is %s, want %s",
+snprintf(ERROR_STRING,LLEN,"ensure_cuda_device:  current device is %s, want %s",
 curr_cdp->cudev_name,cdp->cudev_name);
 advise(ERROR_STRING);
 		set_cuda_device(cdp);
@@ -445,15 +445,15 @@ void *_tmpvec(QSP_ARG_DECL  int size,int len,const char *whence)
 
 	drv_err = cudaMalloc(&cuda_mem, size * len );
 	if( drv_err != cudaSuccess ){
-		sprintf(MSG_STR,"tmpvec (%s)",whence);
+		snprintf(MSG_STR,LLEN,"tmpvec (%s)",whence);
 		describe_cuda_driver_error2(MSG_STR,"cudaMalloc",drv_err);
 		error1("CUDA memory allocation error");
 	}
 
-//sprintf(ERROR_STRING,"tmpvec:  %d bytes allocated at 0x%"PRIxPTR,len,(uintptr_t)cuda_mem);
+//snprintf(ERROR_STRING,LLEN,"tmpvec:  %d bytes allocated at 0x%"PRIxPTR,len,(uintptr_t)cuda_mem);
 //advise(ERROR_STRING);
 
-//sprintf(ERROR_STRING,"tmpvec %s:  0x%"PRIxPTR,whence,(uintptr_t)cuda_mem);
+//snprintf(ERROR_STRING,LLEN,"tmpvec %s:  0x%"PRIxPTR,whence,(uintptr_t)cuda_mem);
 //advise(ERROR_STRING);
 	return(cuda_mem);
 #else // ! HAVE_CUDA
@@ -466,11 +466,11 @@ void freetmp(void *ptr,const char *whence)
 #ifdef HAVE_CUDA
 	cudaError_t drv_err;
 
-//sprintf(ERROR_STRING,"freetmp %s:  0x%"PRIxPTR,whence,(uintptr_t)ptr);
+//snprintf(ERROR_STRING,LLEN,"freetmp %s:  0x%"PRIxPTR,whence,(uintptr_t)ptr);
 //advise(ERROR_STRING);
 	drv_err=cudaFree(ptr);
 	if( drv_err != cudaSuccess ){
-		sprintf(DEFAULT_MSG_STR,"freetmp (%s)",whence);
+		snprintf(DEFAULT_MSG_STR,LLEN,"freetmp (%s)",whence);
 		describe_cuda_driver_error2(DEFAULT_MSG_STR,"cudaFree",drv_err);
 	}
 #endif // HAVE_CUDA
@@ -528,7 +528,7 @@ const char* _getCUFFTError(QSP_ARG_DECL  cufftResult status)
 			return "License error";
 #endif
 	}
-	sprintf(ERROR_STRING,"Unexpected CUFFT return value:  %d",status);
+	snprintf(ERROR_STRING,LLEN,"Unexpected CUFFT return value:  %d",status);
 	return(ERROR_STRING);
 }
 #endif // HAVE_CUDA
@@ -568,7 +568,7 @@ void g_fwdfft(QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src1_dp)
 	//Create plan for FFT
 	status = cufftPlan1d(&plan, NX, CUFFT_C2C, BATCH);
 	if (status != CUFFT_SUCCESS) {
-		sprintf(ERROR_STRING, "Error in cufftPlan1d: %s\n", getCUFFTError(status));
+		snprintf(ERROR_STRING,LLEN, "Error in cufftPlan1d: %s\n", getCUFFTError(status));
 		warn(ERROR_STRING);
 	}
 
@@ -576,7 +576,7 @@ void g_fwdfft(QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src1_dp)
 	status = cufftExecC2C(plan, (cufftComplex *)data,
 			(cufftComplex *)result, CUFFT_FORWARD);
 	if (status != CUFFT_SUCCESS) {
-		sprintf(ERROR_STRING, "Error in cufftExecC2C: %s\n", getCUFFTError(status));
+		snprintf(ERROR_STRING,LLEN, "Error in cufftExecC2C: %s\n", getCUFFTError(status));
 		warn(ERROR_STRING);
 	}
 
@@ -584,7 +584,7 @@ void g_fwdfft(QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src1_dp)
 	/*status = cufftExecC2C(plan, data, result, CUFFT_INVERSE);
 	if (status != CUFFT_SUCCESS)
 	{
-		sprintf(ERROR_STRING, "Error in cufftExecC2C: %s\n", getCUFFTError(status));
+		snprintf(ERROR_STRING,LLEN, "Error in cufftExecC2C: %s\n", getCUFFTError(status));
 		warn(ERROR_STRING);
 	}*/
 
@@ -620,7 +620,7 @@ static void _init_cuda_checkpoints(QSP_ARG_DECL  int n)
 	int i;
 
 	if( max_cuda_checkpoints > 0 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "init_cuda_checkpoints(%d):  already initialized with %d checpoints",
 			n,max_cuda_checkpoints);
 		warn(ERROR_STRING);
@@ -651,6 +651,7 @@ COMMAND_FUNC( do_init_checkpoints )
 #ifdef HAVE_CUDA
 	init_cuda_checkpoints(n);
 #else // ! HAVE_CUDA
+	suppress_compiler_warning(&n);
 	NO_CUDA_MSG(init_cuda_checkpoints)
 #endif // ! HAVE_CUDA
 }
@@ -694,7 +695,7 @@ COMMAND_FUNC( do_set_checkpoint )
 	}
 
 	if( n_cuda_checkpoints >= max_cuda_checkpoints ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"do_place_ckpt:  Sorry, all %d checkpoints have already been placed",
 			max_cuda_checkpoints);
 		WARN(ERROR_STRING);
@@ -730,11 +731,11 @@ COMMAND_FUNC( do_show_checkpoints )
 
 	drv_err = cudaEventElapsedTime( &msec, ckpt_tbl[0].ckpt_event, ckpt_tbl[n_cuda_checkpoints-1].ckpt_event);
 	CUDA_DRIVER_ERROR_RETURN("do_show_checkpoints", "cudaEventElapsedTime")
-	sprintf(msg_str,"Total GPU time:\t%g msec",msec);
+	snprintf(msg_str,LLEN,"Total GPU time:\t%g msec",msec);
 	prt_msg(msg_str);
 
 	// show the start tag
-	sprintf(msg_str,"GPU  %3d  %12.3f  %12.3f  %s",1,0.0,0.0,
+	snprintf(msg_str,LLEN,"GPU  %3d  %12.3f  %12.3f  %s",1,0.0,0.0,
 		ckpt_tbl[0].ckpt_tag);
 	prt_msg(msg_str);
 	cum_msec =0.0;
@@ -744,7 +745,7 @@ COMMAND_FUNC( do_show_checkpoints )
 		CUDA_DRIVER_ERROR_RETURN("do_show_checkpoints", "cudaEventElapsedTime")
 
 		cum_msec += msec;
-		sprintf(msg_str,"GPU  %3d  %12.3f  %12.3f  %s",i+1,msec,
+		snprintf(msg_str,LLEN,"GPU  %3d  %12.3f  %12.3f  %s",i+1,msec,
 			cum_msec, ckpt_tbl[i].ckpt_tag);
 		prt_msg(msg_str);
 	}

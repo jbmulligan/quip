@@ -34,7 +34,7 @@ int64_t _how_many(QSP_ARG_DECL  const char *prompt)
 	tsp=pexpr(s);
 
 	if( SCALAR_PREC_CODE(tsp) == PREC_STR ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"how_many:  can't convert string \"%s\" to an integer!?",s);
 		warn(ERROR_STRING);
 		n = 0;
@@ -146,12 +146,14 @@ const char * _nameof(QSP_ARG_DECL  const char *prompt)
 	return(buf);
 }
 
-static const char *insure_item_prompt(Item_Type *itp, const char *prompt)
+static const char *ensure_item_prompt(Item_Type *itp, const char *prompt)
 {
 	if( prompt == NULL || *prompt==0 )
 		return IT_NAME(itp);
 	return prompt;
 }
+
+#ifdef HAVE_HISTORY
 
 static void _remove_from_history_list(QSP_ARG_DECL  const char *prompt, const char *s)
 {
@@ -160,6 +162,7 @@ static void _remove_from_history_list(QSP_ARG_DECL  const char *prompt, const ch
 	rem_def(pline,s);
 }
 
+#endif // HAVE_HISTORY
 
 /*
  * Use this function instead of get_xxx(nameof("item name"))
@@ -182,7 +185,7 @@ Item *_pick_item(QSP_ARG_DECL  Item_Type *itp,const char *prompt)
 		return get_item(itp, s);
 	}
 
-	prompt = insure_item_prompt(itp,prompt);
+	prompt = ensure_item_prompt(itp,prompt);
 
 	assert( QS_PICKING_ITEM_ITP(THIS_QSP) == NULL );
 
@@ -226,7 +229,7 @@ void _init_item_hist( QSP_ARG_DECL  Item_Type *itp, const char* prompt )
 }
 #endif /* HAVE_HISTORY */
 
-static inline void insure_prompt_buf(QSP_ARG_DECL  const char *fmt, const char *pmpt)
+static inline void ensure_prompt_buf(QSP_ARG_DECL  const char *fmt, const char *pmpt)
 {
 	int n_need;
 
@@ -254,11 +257,11 @@ const char *_format_prompt(QSP_ARG_DECL  const char *fmt, const char *prompt)
 		return prompt;
 	}
 
-	insure_prompt_buf(QSP_ARG  fmt,prompt);
+	ensure_prompt_buf(QSP_ARG  fmt,prompt);
 	pline = sb_buffer(QS_QRY_PROMPT_SB(THIS_QSP));
 
 	if( QS_FLAGS(THIS_QSP) & QS_FORMAT_PROMPT ){
-		sprintf(pline,fmt,prompt);
+		snprintf(pline,LLEN,fmt,prompt);
 	} else {
 		strcpy(pline,prompt);
 	}

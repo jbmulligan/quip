@@ -54,13 +54,13 @@ static FB_Info *curr_fbip=NULL;
 #define INSURE_FB(subrt_name)						\
 									\
 	if( curr_fbip == NULL ){					\
-		sprintf(ERROR_STRING,					\
+		snprintf(ERROR_STRING,LLEN,				\
 		"%s:  no frame buffer open, trying %s",subrt_name,	\
 			DEFAULT_FB_DEVICE);				\
 		warn(ERROR_STRING);					\
 		fb_open(DEFAULT_FB_DEVICE);				\
 		if( curr_fbip == NULL ){				\
-			sprintf(ERROR_STRING,				\
+			snprintf(ERROR_STRING,LLEN,			\
 			"unable to open default frame buffer %s",	\
 				DEFAULT_FB_DEVICE);			\
 			error1(ERROR_STRING);				\
@@ -89,7 +89,7 @@ static void _fb_open(QSP_ARG_DECL const char *fb_name)
 	fbip->fbi_fd = open(fb_name,O_RDWR);
 	if( fbip->fbi_fd < 0 ){
 		perror(fb_name);
-		sprintf(ERROR_STRING,"couldn't open device %s",fb_name);
+		snprintf(ERROR_STRING,LLEN,"couldn't open device %s",fb_name);
 		warn(ERROR_STRING);
 		/* BUG? - do we need any more cleanup? */
 		del_fbi(fbip);
@@ -115,7 +115,7 @@ static void _fb_open(QSP_ARG_DECL const char *fb_name)
 
 	fbip->fbi_dp = make_dp(fb_name,&dimset,PREC_FOR_CODE(PREC_UBY));
 	if( fbip->fbi_dp == NULL ){
-		sprintf(ERROR_STRING,"Unable to create data object structure for %s",fb_name);
+		snprintf(ERROR_STRING,LLEN,"Unable to create data object structure for %s",fb_name);
 		warn(ERROR_STRING);
 		close(fbip->fbi_fd);
 		del_fbi(fbip);
@@ -125,7 +125,7 @@ static void _fb_open(QSP_ARG_DECL const char *fb_name)
 	nbytes = OBJ_ROWS(fbip->fbi_dp) * OBJ_COLS(fbip->fbi_dp)
 		* OBJ_COMPS(fbip->fbi_dp);
 
-sprintf(ERROR_STRING,"mapping frame buffer device, %ld (0x%lx) bytes (%ld Mb)",nbytes,nbytes,nbytes/(1024*1024));
+snprintf(ERROR_STRING,LLEN,"mapping frame buffer device, %ld (0x%lx) bytes (%ld Mb)",nbytes,nbytes,nbytes/(1024*1024));
 advise(ERROR_STRING);
 
 	if( (OBJ_DATA_PTR(fbip->fbi_dp)=mmap(0,nbytes,PROT_READ|PROT_WRITE,MAP_SHARED,fbip->fbi_fd,0)) == MAP_FAILED ){
@@ -151,7 +151,7 @@ static COMMAND_FUNC( do_open_fb_dev )
 
 	/* See if requested frame buffer is the current frame buffer */
 	if( curr_fbip != NULL && !strcmp(s,curr_fbip->fbi_name) ){
-		sprintf(ERROR_STRING,"Frame buffer device %s is already the current frame buffer.",s);
+		snprintf(ERROR_STRING,LLEN,"Frame buffer device %s is already the current frame buffer.",s);
 		advise(ERROR_STRING);
 		return;
 	}
@@ -160,7 +160,7 @@ static COMMAND_FUNC( do_open_fb_dev )
 	fbip = fbi_of(s);
 	if( fbip != NULL ){
 		curr_fbip = fbip;
-		sprintf(ERROR_STRING,"Frame buffer device %s is already open, making current.",s);
+		snprintf(ERROR_STRING,LLEN,"Frame buffer device %s is already open, making current.",s);
 		advise(ERROR_STRING);
 		return;
 	}
@@ -169,11 +169,11 @@ static COMMAND_FUNC( do_open_fb_dev )
 	fb_open(s);
 
 	if( curr_fbip == NULL ){
-		sprintf(ERROR_STRING,"unable to open frame buffer device %s",s);
+		snprintf(ERROR_STRING,LLEN,"unable to open frame buffer device %s",s);
 		warn(ERROR_STRING);
 		curr_fbip = save_fbip;	/* un-save */
 		if( curr_fbip != NULL ){
-			sprintf(ERROR_STRING,"Reverting to previous frame buffer device %s",curr_fbip->fbi_name);
+			snprintf(ERROR_STRING,LLEN,"Reverting to previous frame buffer device %s",curr_fbip->fbi_name);
 			advise(ERROR_STRING);
 		}
 	}
@@ -202,7 +202,7 @@ static void _fb_load(QSP_ARG_DECL Data_Obj *dp,int x, int y)
 	/* BUG assume dp is the right kind of object */
 
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,"fb_load:  object %s must be contiguous",
+		snprintf(ERROR_STRING,LLEN,"fb_load:  object %s must be contiguous",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
@@ -235,7 +235,7 @@ static void _fb_save(QSP_ARG_DECL Data_Obj *dp,int x, int y)
 	/* BUG assume dp is the right kind of object */
 
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,"fb_save:  object %s must be contiguous",
+		snprintf(ERROR_STRING,LLEN,"fb_save:  object %s must be contiguous",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
@@ -307,7 +307,7 @@ static COMMAND_FUNC( do_test_clock )
 	}
 	/* Now show */
 	for(i=0;i<n;i++){
-		sprintf(msg_str,"%ld\t%ld",(long)tv_tbl[i].tv_sec,(long)tv_tbl[i].tv_usec);
+		snprintf(msg_str,LLEN,"%ld\t%ld",(long)tv_tbl[i].tv_sec,(long)tv_tbl[i].tv_usec);
 		prt_msg(msg_str);
 	}
 
@@ -341,7 +341,7 @@ static COMMAND_FUNC( do_fb_vblank )
 			return;
 		}
 		if( (vbl_info.flags & FB_VBLANK_HAVE_VBLANK) == 0 ){
-			sprintf(ERROR_STRING,"Sorry, %s does not support vertical blanking detection",curr_fbip->fbi_name);
+			snprintf(ERROR_STRING,LLEN,"Sorry, %s does not support vertical blanking detection",curr_fbip->fbi_name);
 			warn(ERROR_STRING);
 			vbl_capability_flags |= VBL_CAPABILITY_CHECKED;
 			return;
@@ -374,7 +374,7 @@ static COMMAND_FUNC( do_fb_vblank )
 	} while( current_count == initial_count );
 
 /*
-sprintf(ERROR_STRING,"initial_count = %d, final count = %d",initial_count,current_count);
+snprintf(ERROR_STRING,LLEN,"initial_count = %d, final count = %d",initial_count,current_count);
 advise(ERROR_STRING);
 */
 	if( (current_count - initial_count) != 1 ){
@@ -382,20 +382,20 @@ advise(ERROR_STRING);
 		if( initial_count == 0xffffffff && current_count == 0 ){
 			/* do nothing */
 		} else if( current_count > initial_count ){
-			sprintf(ERROR_STRING,"do_fb_vblank:  seem to have missed %d frames!?",current_count-initial_count-1);
+			snprintf(ERROR_STRING,LLEN,"do_fb_vblank:  seem to have missed %d frames!?",current_count-initial_count-1);
 			warn(ERROR_STRING);
 		} else {
-			sprintf(ERROR_STRING,"do_fb_vblank:  seem to have some frames, current_count = %d, initial_count = %d.",
+			snprintf(ERROR_STRING,LLEN,"do_fb_vblank:  seem to have some frames, current_count = %d, initial_count = %d.",
 				current_count,initial_count);
 			warn(ERROR_STRING);
 		}
 	}
 
 #ifdef FOOBAR
-//sprintf(ERROR_STRING,"vbl data = 0x%x, vcount = %d",vbl_info.flags,vbl_info.vcount);
+//snprintf(ERROR_STRING,LLEN,"vbl data = 0x%x, vcount = %d",vbl_info.flags,vbl_info.vcount);
 //advise(ERROR_STRING);
 /*
-sprintf(ERROR_STRING,"vbl data = 0x%lx, FB_VBLANK_VBLANKING = 0x%lx",vbl_info.flags,FB_VBLANK_VBLANKING);
+snprintf(ERROR_STRING,LLEN,"vbl data = 0x%lx, FB_VBLANK_VBLANKING = 0x%lx",vbl_info.flags,FB_VBLANK_VBLANKING);
 advise(ERROR_STRING);
 */
 
@@ -405,7 +405,7 @@ advise(ERROR_STRING);
 			warn("ioctl FBIOGET_VBLANK failed!\n");
 			return;
 		}
-sprintf(ERROR_STRING,"vbl data = 0x%x, vcount = %d",vbl_info.flags,vbl_info.vcount);
+snprintf(ERROR_STRING,LLEN,"vbl data = 0x%x, vcount = %d",vbl_info.flags,vbl_info.vcount);
 advise(ERROR_STRING);
 	}
 
@@ -416,7 +416,7 @@ advise(ERROR_STRING);
 			warn("ioctl FBIOGET_VBLANK failed!\n");
 			return;
 		}
-sprintf(ERROR_STRING,"vbl data = 0x%x, count = %u, vcount = %u, hcount = %u",vbl_info.flags,
+snprintf(ERROR_STRING,LLEN,"vbl data = 0x%x, count = %u, vcount = %u, hcount = %u",vbl_info.flags,
 	vbl_info.count,vbl_info.vcount,vbl_info.hcount);
 advise(ERROR_STRING);
 	}
@@ -486,7 +486,7 @@ static COMMAND_FUNC( do_fb_pan )
 
 	if(ioctl(curr_fbip->fbi_fd, FBIOPAN_DISPLAY, &curr_fbip->fbi_var_info)<0) {
 		tell_sys_error("ioctl");
-		sprintf(ERROR_STRING,"do_fb_pan:  ioctl iopan %d %d error\n",dx,dy);
+		snprintf(ERROR_STRING,LLEN,"do_fb_pan:  ioctl iopan %d %d error\n",dx,dy);
 	        warn(ERROR_STRING);
 	        return;
 	}
@@ -517,7 +517,7 @@ static COMMAND_FUNC( do_new_fb_pan )
 	
 	if(ioctl(curr_fbip->fbi_fd, FBIOPAN_DISPLAY, &curr_fbip->fbi_var_info)<0) {
 		tell_sys_error("ioctl");
-	        sprintf(ERROR_STRING,"do_new_fb_pan:  ioctl iopan %d %d error\n",dx,dy);
+	        snprintf(ERROR_STRING,LLEN,"do_new_fb_pan:  ioctl iopan %d %d error\n",dx,dy);
 		warn(ERROR_STRING);
 	        return;
 	}
@@ -534,31 +534,31 @@ static COMMAND_FUNC( do_new_fb_pan )
 static void _show_var_info(QSP_ARG_DECL  FB_Info *fbip)
 {
 	/* Now display the contents */
-	sprintf(msg_str,"Frame buffer %s:",fbip->fbi_name);			prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"Frame buffer %s:",fbip->fbi_name);			prt_msg(msg_str);
 
-	sprintf(msg_str,"\tResolution:\t%ld x %ld",	CFBVAR(fbip,xres),CFBVAR(fbip,yres));	prt_msg(msg_str);
-	sprintf(msg_str,"\tVirtual:\t%ld x %ld",	CFBVAR(fbip,xres_virtual),CFBVAR(fbip,yres_virtual));	prt_msg(msg_str);
-	sprintf(msg_str,"\tOffset:\t%ld , %ld",		CFBVAR(fbip,xoffset),CFBVAR(fbip,yoffset));	prt_msg(msg_str);
-	sprintf(msg_str,"\tBitsPerPixel:\t%ld",		CFBVAR(fbip,bits_per_pixel));	prt_msg(msg_str);
-	sprintf(msg_str,"\tGrayscale:\t%ld",		CFBVAR(fbip,grayscale));		prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"\tResolution:\t%ld x %ld",	CFBVAR(fbip,xres),CFBVAR(fbip,yres));	prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"\tVirtual:\t%ld x %ld",	CFBVAR(fbip,xres_virtual),CFBVAR(fbip,yres_virtual));	prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"\tOffset:\t%ld , %ld",		CFBVAR(fbip,xoffset),CFBVAR(fbip,yoffset));	prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"\tBitsPerPixel:\t%ld",		CFBVAR(fbip,bits_per_pixel));	prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"\tGrayscale:\t%ld",		CFBVAR(fbip,grayscale));		prt_msg(msg_str);
 	/* bitfields for red,green,blue,transp - ? */
 	if( FBVAR(fbip,nonstd) ){
-	sprintf(msg_str,"\tNon-standard pixel format:\t%ld",	CFBVAR(fbip,nonstd));	prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"\tNon-standard pixel format:\t%ld",	CFBVAR(fbip,nonstd));	prt_msg(msg_str);
 	}
-	sprintf(msg_str,"\tActivate:\t%ld",		CFBVAR(fbip,activate));		prt_msg(msg_str);
-	sprintf(msg_str,"\tSize (mm):\t%ld x %ld",	CFBVAR(fbip,width),CFBVAR(fbip,height));	prt_msg(msg_str);
-	sprintf(msg_str,"\tPixclock:\t%ld",		CFBVAR(fbip,pixclock));		prt_msg(msg_str);
-	sprintf(msg_str,"\tLeft margin:\t%ld",		CFBVAR(fbip,left_margin));		prt_msg(msg_str);
-	sprintf(msg_str,"\tRight margin:\t%ld",		CFBVAR(fbip,right_margin));		prt_msg(msg_str);
-	sprintf(msg_str,"\tUpper margin:\t%ld",		CFBVAR(fbip,upper_margin));		prt_msg(msg_str);
-	sprintf(msg_str,"\tLower margin:\t%ld",		CFBVAR(fbip,lower_margin));		prt_msg(msg_str);
-	sprintf(msg_str,"\tHsync len:\t%ld",		CFBVAR(fbip,hsync_len));		prt_msg(msg_str);
-	sprintf(msg_str,"\tVsync len:\t%ld",		CFBVAR(fbip,vsync_len));		prt_msg(msg_str);
-	sprintf(msg_str,"\tSync:\t%ld",			CFBVAR(fbip,sync));			prt_msg(msg_str);
-	sprintf(msg_str,"\tVMode:\t%ld",		CFBVAR(fbip,vmode));			prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"\tActivate:\t%ld",		CFBVAR(fbip,activate));		prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"\tSize (mm):\t%ld x %ld",	CFBVAR(fbip,width),CFBVAR(fbip,height));	prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"\tPixclock:\t%ld",		CFBVAR(fbip,pixclock));		prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"\tLeft margin:\t%ld",		CFBVAR(fbip,left_margin));		prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"\tRight margin:\t%ld",		CFBVAR(fbip,right_margin));		prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"\tUpper margin:\t%ld",		CFBVAR(fbip,upper_margin));		prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"\tLower margin:\t%ld",		CFBVAR(fbip,lower_margin));		prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"\tHsync len:\t%ld",		CFBVAR(fbip,hsync_len));		prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"\tVsync len:\t%ld",		CFBVAR(fbip,vsync_len));		prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"\tSync:\t%ld",			CFBVAR(fbip,sync));			prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"\tVMode:\t%ld",		CFBVAR(fbip,vmode));			prt_msg(msg_str);
 	/* rotate field not present on purkinje - different kernel version? */
 	/*
-	sprintf(msg_str,"\tRotate:\t%ld",		CFBVAR(fbip,rotate));			prt_msg(msg_str);
+	snprintf(msg_str,LLEN,"\tRotate:\t%ld",		CFBVAR(fbip,rotate));			prt_msg(msg_str);
 	*/
 }
 #endif /* HAVE_FB_DEV */
@@ -610,7 +610,7 @@ static int _good_for_lut(QSP_ARG_DECL  Data_Obj *dp)
 	if( dp == NULL ) return 0;
 
 	if( OBJ_PREC(dp) != PREC_IN && OBJ_PREC(dp) != PREC_UIN ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Object %s (%s) should have %s or %s precision!?",
 			OBJ_NAME(dp),PREC_NAME(OBJ_PREC_PTR(dp)),
 				PREC_NAME(PREC_FOR_CODE(PREC_IN)),
@@ -620,7 +620,7 @@ static int _good_for_lut(QSP_ARG_DECL  Data_Obj *dp)
 	}
 
 	if( OBJ_COLS(dp) != N_FB_LUT_ENTRIES ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Object %s (%ld) should have %d columns!?",
 			OBJ_NAME(dp),(long)OBJ_COLS(dp),N_FB_LUT_ENTRIES);
 		warn(ERROR_STRING);
@@ -628,7 +628,7 @@ static int _good_for_lut(QSP_ARG_DECL  Data_Obj *dp)
 	}
 
 	if( OBJ_COMPS(dp) != N_FB_LUT_COMPONENTS ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Object %s (%ld) should have %d components!?",
 			OBJ_NAME(dp),(long)OBJ_COLS(dp),N_FB_LUT_COMPONENTS);
 		warn(ERROR_STRING);
@@ -831,7 +831,7 @@ MENU_END(fb)
 
 COMMAND_FUNC( do_fb_menu )
 {
-	/* insure_x11_server(); */	/* not clear we really need this for *this* menu!? BUG? */
+	/* ensure_x11_server(); */	/* not clear we really need this for *this* menu!? BUG? */
 	CHECK_AND_PUSH_MENU(fb);
 }
 

@@ -111,7 +111,7 @@ fprintf(stderr,"ios_read_global_startup calling redir...\n");
 
 		//note_path(QSP_ARG  startup_path.UTF8String);
 	} else {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Failed to find startup file %s.scr or %s.enc!?",
 			startup_filename,startup_filename);
 		error1(ERROR_STRING);

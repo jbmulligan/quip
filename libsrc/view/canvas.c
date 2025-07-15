@@ -48,7 +48,7 @@ void _old_load_viewer( QSP_ARG_DECL  Viewer *vp, Data_Obj *dp )
 	/*
 	if( OBJ_COLS(dp) != VW_WIDTH(vp) ||
 		OBJ_ROWS(dp) != VW_HEIGHT(vp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"Size mismatch between viewer %s and image %s",
 			vp->vw_name, OBJ_NAME(dp));
 		warn(ERROR_STRING);
@@ -58,7 +58,7 @@ void _old_load_viewer( QSP_ARG_DECL  Viewer *vp, Data_Obj *dp )
 
 	/*
 	if( (8*OBJ_COMPS(dp)) != vp->vw_depth ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"Depth mismatch between image %s (%ld) and viewer %s (%d)",
 			OBJ_NAME(dp),8*OBJ_COMPS(dp),vp->vw_name,vp->vw_depth);
 		warn(ERROR_STRING);
@@ -67,7 +67,7 @@ void _old_load_viewer( QSP_ARG_DECL  Viewer *vp, Data_Obj *dp )
 	*/
 
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"Can't display non-contiguous image %s (viewer %s)",
 			OBJ_NAME(dp),VW_NAME(vp));
 		warn(ERROR_STRING);
@@ -75,7 +75,7 @@ void _old_load_viewer( QSP_ARG_DECL  Viewer *vp, Data_Obj *dp )
 		return;
 	}
 	if( OBJ_MACH_PREC(dp) != PREC_BY && OBJ_MACH_PREC(dp) != PREC_UBY ){
-		sprintf(ERROR_STRING,"Bad pixel format (%s), image %s",
+		snprintf(ERROR_STRING,LLEN,"Bad pixel format (%s), image %s",
 				OBJ_PREC_NAME(dp),OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		advise("Only byte images may be displayed in viewers");
@@ -134,7 +134,7 @@ void _bring_image_to_front(QSP_ARG_DECL  Viewer *vp, Data_Obj *dp, int x, int y 
 		addTail(lp,np);
 		n_tried ++;
 	}
-	sprintf(ERROR_STRING,"bring_image_to_front:  image %s not found attached to viewer %s!?",OBJ_NAME(dp),VW_NAME(vp));
+	snprintf(ERROR_STRING,LLEN,"bring_image_to_front:  image %s not found attached to viewer %s!?",OBJ_NAME(dp),VW_NAME(vp));
 	warn(ERROR_STRING);
 } // end bring_image_to_front
 
@@ -157,7 +157,7 @@ void _load_viewer( QSP_ARG_DECL  Viewer *vp, Data_Obj *dp )
 {
 	if( OBJ_FRAMES(dp) != 1 ){
 #ifdef NOT_USED_NOW
-		sprintf(ERROR_STRING,"load_viewer:  Object %s has %d frames, calling old_load_viewer().",
+		snprintf(ERROR_STRING,LLEN,"load_viewer:  Object %s has %d frames, calling old_load_viewer().",
 		OBJ_NAME(dp),OBJ_FRAMES(dp));
 		advise(ERROR_STRING);
 		old_load_viewer(vp,dp);

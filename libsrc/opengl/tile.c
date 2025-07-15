@@ -107,7 +107,7 @@ static void release_vertex(Vertex *vp)
 {
 	Node *np;
 
-//sprintf(ERROR_STRING,"\t\tFreeing vertex at 0x%"PRIxPTR,(uintptr_t)vp);
+//snprintf(ERROR_STRING,LLEN,"\t\tFreeing vertex at 0x%"PRIxPTR,(uintptr_t)vp);
 //advise(ERROR_STRING);
 	np = mk_node(vp);
 	if( free_pts_lp == NULL )
@@ -129,7 +129,7 @@ static int vertex_index(Vertex *vp)
 }
 #endif /* NOT_USED */
 
-void init_dir_names()
+void init_dir_names(void)
 {
 	dir_name[NORTH]="north";
 	dir_name[SOUTH]="south";
@@ -155,7 +155,7 @@ static Vertex *_find_free_vertex(SINGLE_QSP_ARG_DECL)
 	rls_node(np);
 #ifdef CAUTIOUS
 if( vp->v_x != WACKY_NUM || vp->v_y != WACKY_NUM || vp->v_z != WACKY_NUM ){
-sprintf(ERROR_STRING,"CAUTIOUS:  find_free_vertex:  supposedly free vertex at 0x%"PRIxPTR" does not have expected wacky coord vals",(uintptr_t)vp);
+snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  find_free_vertex:  supposedly free vertex at 0x%"PRIxPTR" does not have expected wacky coord vals",(uintptr_t)vp);
 error1(ERROR_STRING);
 }
 #endif /* CAUTIOUS */
@@ -167,14 +167,14 @@ Vertex *_new_vertex(QSP_ARG_DECL  float x, float y )
 	Vertex *vp;
 
 	if( n_pts_used >= MAX_VERTICES ){
-		sprintf(ERROR_STRING,"too many tile vertices requested (%d max)",MAX_VERTICES);
+		snprintf(ERROR_STRING,LLEN,"too many tile vertices requested (%d max)",MAX_VERTICES);
 		error1(ERROR_STRING);
 	}
 
 	vp = find_free_vertex();
 	if( vp==NULL ){
 		vp = &vertex_tbl[n_pts_used++];
-sprintf(ERROR_STRING,"new_vertex %d at %g %g",n_pts_used,x,y);
+snprintf(ERROR_STRING,LLEN,"new_vertex %d at %g %g",n_pts_used,x,y);
 advise(ERROR_STRING);
 	}
 	vp->v_x = x;
@@ -182,7 +182,7 @@ advise(ERROR_STRING);
 	vp->v_z = 0.0;		/* maybe this is where we should load the elevation value? */
 				/* BUT we don't know the level-of-detail... */
 /*
-sprintf(ERROR_STRING,"new_vertex %g %g",x,y);
+snprintf(ERROR_STRING,LLEN,"new_vertex %g %g",x,y);
 advise(ERROR_STRING);
 */
 	vp->v_nref = 0;		/* we assume caller increments this as needed? */
@@ -197,7 +197,7 @@ advise(ERROR_STRING);
 			error1("CAUTIOUS:  check_if_neighbors:  new tile neighbor is not null!?");	\
 		if( old_tp->t_n[old_dir] != NULL ){							\
 show_tile(QSP_ARG  old_tp,"");\
-			sprintf(ERROR_STRING,								\
+			snprintf(ERROR_STRING,LLEN,								\
 	"CAUTIOUS:  check_if_neighbors:  existing tile %s, %s neighbor is %s (expected null)!?",	\
 			old_tp->t_name,dir_name[old_dir], old_tp->t_n[old_dir]->t_name);		\
 			error1(ERROR_STRING);								\
@@ -226,7 +226,7 @@ show_tile(QSP_ARG  old_tp,"");\
 											\
 			vp->v_nref --;		/* free vertex */			\
 			if( vp->v_nref != 0 ){						\
-				sprintf(ERROR_STRING,"Attempt to free multiply-referenced vertex!?");\
+				snprintf(ERROR_STRING,LLEN,"Attempt to free multiply-referenced vertex!?");\
 				warn(ERROR_STRING);					\
 				error1("Check declaration order of master tiles");	\
 			} else {							\
@@ -239,18 +239,18 @@ show_tile(QSP_ARG  old_tp,"");\
 	if( new_tp->t_v[new_corner1]->v_y == old_tp->t_v[old_corner1]->v_y &&				\
 	    new_tp->t_v[new_corner1]->v_x == old_tp->t_v[old_corner1]->v_x ){				\
 		/* release the two vertices */								\
-sprintf(ERROR_STRING,"%s corner of tile %s (%g,%g) matches %s corner of tile %s (%g,%g)",\
+snprintf(ERROR_STRING,LLEN,"%s corner of tile %s (%g,%g) matches %s corner of tile %s (%g,%g)",\
 quad_name[new_corner1],new_tp->t_name,new_tp->t_v[new_corner1]->v_x,new_tp->t_v[new_corner1]->v_y,\
 quad_name[old_corner1],old_tp->t_name,old_tp->t_v[old_corner1]->v_x,old_tp->t_v[old_corner1]->v_y);\
 advise(ERROR_STRING);\
-sprintf(ERROR_STRING,"releasing %s and %s vertices at 0x%"PRIxPTR" and 0x%"PRIxPTR,\
+snprintf(ERROR_STRING,LLEN,"releasing %s and %s vertices at 0x%"PRIxPTR" and 0x%"PRIxPTR,\
 quad_name[new_corner1],quad_name[new_corner2],(uintptr_t)new_tp->t_v[new_corner1],(uintptr_t)new_tp->t_v[new_corner2]);\
 advise(ERROR_STRING);\
 		if( new_tp->t_v[new_corner1] != old_tp->t_v[old_corner1] ){				\
 			FREE_VERTEX(new_tp->t_v[new_corner1]);						\
 			new_tp->t_v[new_corner1] = old_tp->t_v[old_corner1];				\
 			new_tp->t_v[new_corner1]->v_nref++;						\
-sprintf(ERROR_STRING,"%s corner of tile %s  reset to %g,%g",\
+snprintf(ERROR_STRING,LLEN,"%s corner of tile %s  reset to %g,%g",\
 quad_name[new_corner1],new_tp->t_name,new_tp->t_v[new_corner1]->v_x,new_tp->t_v[new_corner1]->v_y);\
 advise(ERROR_STRING);\
 		}											\
@@ -258,7 +258,7 @@ advise(ERROR_STRING);\
 			FREE_VERTEX(new_tp->t_v[new_corner2]);						\
 			new_tp->t_v[new_corner2] = old_tp->t_v[old_corner2];				\
 			new_tp->t_v[new_corner2]->v_nref++;						\
-sprintf(ERROR_STRING,"%s corner of tile %s  reset to %g,%g",\
+snprintf(ERROR_STRING,LLEN,"%s corner of tile %s  reset to %g,%g",\
 quad_name[new_corner2],new_tp->t_name,new_tp->t_v[new_corner2]->v_x,new_tp->t_v[new_corner2]->v_y);\
 advise(ERROR_STRING);\
 		}											\
@@ -323,14 +323,14 @@ Master_Tile * _new_master_tile(QSP_ARG_DECL  Vertex *nw, Vertex *ne, Vertex *se,
 
 		np = QLIST_HEAD(tile_lp);
 /*
-sprintf(ERROR_STRING,"searching for neighbors of tile %s",mtp->mt_tp->t_name);
+snprintf(ERROR_STRING,LLEN,"searching for neighbors of tile %s",mtp->mt_tp->t_name);
 advise(ERROR_STRING);
 */
 		while(np!= NULL){
 			Master_Tile *mtp2;
 
 			mtp2 = (Master_Tile *)np->n_data;
-sprintf(ERROR_STRING,"NOT checking tile %s",mtp2->mt_tp->t_name);
+snprintf(ERROR_STRING,LLEN,"NOT checking tile %s",mtp2->mt_tp->t_name);
 advise(ERROR_STRING);
 			/* Not used?  why not? */
 			/*
@@ -365,9 +365,9 @@ Tile * _new_tile(QSP_ARG_DECL  Tile *parent, Vertex *nw, Vertex *ne, Vertex *se,
 
 
 	if( quadrant < 0 ){
-		sprintf(name,"tile%d",tile_serial++);
+		snprintf(name,128,"tile%d",tile_serial++);
 	} else {
-		sprintf(name,"%s.%s",parent->t_name,quad_name[quadrant]);
+		snprintf(name,128,"%s.%s",parent->t_name,quad_name[quadrant]);
 	}
 
 	/* Hashing the tile names simplifies lookup-by-name, but we generally won't
@@ -478,11 +478,11 @@ return;
 
 /* debug print statements...
  *
-sprintf(ERROR_STRING,"using %s neighbor edge vertex for tile %s",dir_name[neighbor],tp->t_name);\
+snprintf(ERROR_STRING,LLEN,"using %s neighbor edge vertex for tile %s",dir_name[neighbor],tp->t_name);\
 advise(ERROR_STRING);\
  *
  *
-sprintf(ERROR_STRING,"No %s neighbor for tile %s, creating new edge vertex",dir_name[neighbor],tp->t_name);\
+snprintf(ERROR_STRING,LLEN,"No %s neighbor for tile %s, creating new edge vertex",dir_name[neighbor],tp->t_name);\
 advise(ERROR_STRING);\
  *
  */
@@ -527,7 +527,7 @@ void _subdivide_tile(QSP_ARG_DECL  Tile *tp)
 
 #ifdef QUIP_DEBUG
 if( debug & debug_tiles ){
-sprintf(ERROR_STRING,"\t %s original vertices:\n\t\t\t%g, %g, %g\n\t\t\t%g, %g, %g\n\t\t\t%g, %g, %g\n\t\t\t%g, %g, %g",tp->t_name,
+snprintf(ERROR_STRING,LLEN,"\t %s original vertices:\n\t\t\t%g, %g, %g\n\t\t\t%g, %g, %g\n\t\t\t%g, %g, %g\n\t\t\t%g, %g, %g",tp->t_name,
 tp->t_v[NW]->v_x,tp->t_v[NW]->v_y,tp->t_v[NW]->v_z,
 tp->t_v[NE]->v_x,tp->t_v[NE]->v_y,tp->t_v[NE]->v_z,
 tp->t_v[SE]->v_x,tp->t_v[SE]->v_y,tp->t_v[SE]->v_z,
@@ -535,7 +535,7 @@ tp->t_v[SW]->v_x,tp->t_v[SW]->v_y,tp->t_v[SW]->v_z
 );
 advise(ERROR_STRING);
 
-sprintf(ERROR_STRING,"\t %s transformed vertices:\n\t\t\t%g, %g\n\t\t\t%g, %g\n\t\t\t%g, %g\n\t\t\t%g, %g",tp->t_name,
+snprintf(ERROR_STRING,LLEN,"\t %s transformed vertices:\n\t\t\t%g, %g\n\t\t\t%g, %g\n\t\t\t%g, %g\n\t\t\t%g, %g",tp->t_name,
 tp->t_v[NW]->v_xf.p_x,tp->t_v[NW]->v_xf.p_y,
 tp->t_v[NE]->v_xf.p_x,tp->t_v[NE]->v_xf.p_y,
 tp->t_v[SE]->v_xf.p_x,tp->t_v[SE]->v_xf.p_y,
@@ -548,7 +548,7 @@ advise(ERROR_STRING);
 #ifdef CAUTIOUS
 	if( IS_SUBDIVIDED(tp) ){
 		/* should this be a CAUTIOUS warning, or is the user allowed to request this? */
-		sprintf(ERROR_STRING,"CAUTIOUS:  subdivide_tile:  tile %s has already been subdivided!?",tp->t_name);
+		snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  subdivide_tile:  tile %s has already been subdivided!?",tp->t_name);
 		error1(ERROR_STRING);
 		return;
 	}
@@ -583,7 +583,7 @@ advise(ERROR_STRING);
 	 *
 	 * Another difficulty arises in the choice of which DEM resolution to use -
 	 * in general, we would like to use a resolution appropriate for the level
-	 * of tile subdivision (to avoid aliasing), but we also need to insure
+	 * of tile subdivision (to avoid aliasing), but we also need to ensure
 	 * continuity between adjacent tiles, as well as stability as resolution changes.
 	 * 
 	 * We also need to have a way to keep track of the position of this tile
@@ -623,9 +623,9 @@ advise(ERROR_STRING);
 
 
 /*
-sprintf(ERROR_STRING,"tile %s, level = %d, ix = %d, iy = %d",tp->t_name, tp->t_level,tp->t_ix,tp->t_iy);
+snprintf(ERROR_STRING,LLEN,"tile %s, level = %d, ix = %d, iy = %d",tp->t_name, tp->t_level,tp->t_ix,tp->t_iy);
 advise(ERROR_STRING);
-sprintf(ERROR_STRING,"object %s, size = %ld",
+snprintf(ERROR_STRING,LLEN,"object %s, size = %ld",
 OBJ_NAME(tp->t_mtp->mt_dem_dp[tp->t_level]),OBJ_COLS(tp->t_mtp->mt_dem_dp[tp->t_level]));
 advise(ERROR_STRING);
 */
@@ -651,7 +651,7 @@ advise(ERROR_STRING);
 		ptr = (u_short *)multiply_indexed_data(tp->t_mtp->mt_dem_dp[tp->t_level],offsets);
 		d_se = *ptr;
 	} else {
-		sprintf(ERROR_STRING,"subdivide_tile:  tile %s, level %d, MAX_DEM_LEVELS = %d",
+		snprintf(ERROR_STRING,LLEN,"subdivide_tile:  tile %s, level %d, MAX_DEM_LEVELS = %d",
 			tp->t_name,tp->t_level,MAX_DEM_LEVELS);
 		warn(ERROR_STRING);
 		return;
@@ -670,7 +670,7 @@ advise(ERROR_STRING);
 		offsets[2] --;
 		ptr = multiply_indexed_data(tp->t_mtp->mt_dem_dp[tp->t_level],offsets);
 		e_ptp[NORTH]->v_z = Z_SIGN *ptr;
-sprintf(ERROR_STRING,"N edge vertex z value = %g, offsets = %ld, %ld",e_ptp[NORTH]->v_z,offsets[2],offsets[1]);
+snprintf(ERROR_STRING,LLEN,"N edge vertex z value = %g, offsets = %ld, %ld",e_ptp[NORTH]->v_z,offsets[2],offsets[1]);
 advise(ERROR_STRING);
 
 		offsets[2] += 2;
@@ -765,12 +765,12 @@ advise(ERROR_STRING);
 
 #define DEBUG_COUSIN(subq,dir,cousin_q)							\
 											\
-	sprintf(ERROR_STRING,"Tile %s:  neighbor[%d] = 0x%"PRIxPTR,tp->t_name,dir,(uintptr_t)tp->t_n[dir]);\
+	snprintf(ERROR_STRING,LLEN,"Tile %s:  neighbor[%d] = 0x%"PRIxPTR,tp->t_name,dir,(uintptr_t)tp->t_n[dir]);\
 	advise(ERROR_STRING);\
-	sprintf(ERROR_STRING,"\tsubquad[%d] = 0x%"PRIxPTR,subq,(uintptr_t)tp->t_q[subq]);\
+	snprintf(ERROR_STRING,LLEN,"\tsubquad[%d] = 0x%"PRIxPTR,subq,(uintptr_t)tp->t_q[subq]);\
 	advise(ERROR_STRING);\
 	if( tp->t_n[dir]!= NULL ){\
-		sprintf(ERROR_STRING,"\tneighbor[%d]->quadrant[%d] = 0x%"PRIxPTR,dir,cousin_q,\
+		snprintf(ERROR_STRING,LLEN,"\tneighbor[%d]->quadrant[%d] = 0x%"PRIxPTR,dir,cousin_q,\
 			(uintptr_t)tp->t_n[dir]->t_q[cousin_q]);\
 		advise(ERROR_STRING);\
 	}
@@ -822,7 +822,7 @@ advise(ERROR_STRING);
 	e_ptp[EAST]->v_z = Z_SIGN (d_ne+d_se)/2;
 	e_ptp[NORTH]->v_z = Z_SIGN (d_nw+d_ne)/2;
 	e_ptp[SOUTH]->v_z = Z_SIGN (d_sw+d_se)/2;
-//sprintf(ERROR_STRING,"Depth samples:  %g   %g   %g   %g",d_nw,d_ne,d_sw,d_se);
+//snprintf(ERROR_STRING,LLEN,"Depth samples:  %g   %g   %g   %g",d_nw,d_ne,d_sw,d_se);
 //advise(ERROR_STRING);
 }
 
@@ -841,7 +841,7 @@ Tile *add_neighbor(Tile *tp, Cardinal_Direction dir)
 
 #ifdef TRACK_NEIGHBORS
 	if( tp->t_n[dir] != NULL ){
-		sprintf(ERROR_STRING,"tile already has a neighbor to the %s",
+		snprintf(ERROR_STRING,LLEN,"tile already has a neighbor to the %s",
 			dir_name[dir]);
 		warn(ERROR_STRING);
 		return(NULL);
@@ -878,7 +878,7 @@ Tile *add_neighbor(Tile *tp, Cardinal_Direction dir)
 /*
 static void show_pt(Vertex *ptp)
 {
-	sprintf(msg_str,"\t%g, %g, %g",ptp->v_x,ptp->v_y,ptp->v_z);
+	snprintf(msg_str,LLEN,"\t%g, %g, %g",ptp->v_x,ptp->v_y,ptp->v_z);
 	prt_msg(msg_str);
 }
 */
@@ -889,20 +889,20 @@ void show_tile(QSP_ARG_DECL  Tile *tp, const char *prefix)
 	int i;
 
 if( verbose ){
-sprintf(ERROR_STRING,"show_tile 0x%"PRIxPTR,(uintptr_t)tp);
+snprintf(ERROR_STRING,LLEN,"show_tile 0x%"PRIxPTR,(uintptr_t)tp);
 advise(ERROR_STRING);
 }
-	sprintf(msg_str,"Tile %s:",tp->t_name);
+	snprintf(msg_str,LLEN,"Tile %s:",tp->t_name);
 	prt_msg(msg_str);
 
 	strcpy(str,prefix);
 	strcat(str,"  ");
 
-	sprintf(msg_str,"\t%sTile level %d, max %d",
+	snprintf(msg_str,LLEN,"\t%sTile level %d, max %d",
 		prefix, tp->t_level,tp->t_max);
 	prt_msg(msg_str);
 	/*
-	sprintf(msg_str,"\tvertices:\n\t\t%g\t%g\t%g\n\t\t%g\t%g\t%g\n\t\t%g\t%g\t%g\n\t\t%g\t%g\t%g",
+	snprintf(msg_str,LLEN,"\tvertices:\n\t\t%g\t%g\t%g\n\t\t%g\t%g\t%g\n\t\t%g\t%g\t%g\n\t\t%g\t%g\t%g",
 		tp->t_v[NW]->v_x,tp->t_v[NW]->v_y,tp->t_v[NW]->v_z,
 		tp->t_v[NE]->v_x,tp->t_v[NE]->v_y,tp->t_v[NE]->v_z,
 		tp->t_v[SW]->v_x,tp->t_v[SW]->v_y,tp->t_v[SW]->v_z,
@@ -911,7 +911,7 @@ advise(ERROR_STRING);
 	*/
 
 	for(i=0;i<4;i++){
-		sprintf(msg_str,"\t\t%s vertex (addr 0x%"PRIxPTR"):  %g, %g, %g",quad_name[i],
+		snprintf(msg_str,LLEN,"\t\t%s vertex (addr 0x%"PRIxPTR"):  %g, %g, %g",quad_name[i],
 			(uintptr_t)tp->t_v[i],
 			tp->t_v[i]->v_x,
 			tp->t_v[i]->v_y,
@@ -921,7 +921,7 @@ advise(ERROR_STRING);
 
 	if( tp->t_q[NW] != NULL ){
 		for(i=0;i<4;i++){
-			sprintf(msg_str,"%s%s quadrant:",prefix,quad_name[i]);
+			snprintf(msg_str,LLEN,"%s%s quadrant:",prefix,quad_name[i]);
 			prt_msg(msg_str);
 
 			show_tile(QSP_ARG  tp->t_q[i],str);
@@ -930,7 +930,7 @@ advise(ERROR_STRING);
 #ifdef TRACK_NEIGHBORS
 	for(i=0;i<4;i++){
 		if( tp->t_n[i] != NULL ){
-			sprintf(msg_str,"%s%s neighbor",prefix,dir_name[i]);
+			snprintf(msg_str,LLEN,"%s%s neighbor",prefix,dir_name[i]);
 			prt_msg(msg_str);
 
 			/* Can't call this recursively - because the master tiles
@@ -1038,13 +1038,13 @@ void xdraw_master( QSP_ARG_DECL  Master_Tile *mtp )
 #ifdef QUIP_DEBUG
 
 #define VERTEX(a,b)	if( debug & gl_debug ){				\
-				sprintf(ERROR_STRING,"glVertex3f %s %s quadrant %s vertex    %g %g %g",\
+				snprintf(ERROR_STRING,LLEN,"glVertex3f %s %s quadrant %s vertex    %g %g %g",\
 				tp->t_name,quad_name[a],quad_name[b],	\
 					tp->t_q[a]->t_v[b]->v_xf.p_x,				\
 					tp->t_q[a]->t_v[b]->v_xf.p_y,				\
 					tp->t_q[a]->t_v[b]->v_xf.p_z);	\
 				advise(ERROR_STRING);			\
-				sprintf(ERROR_STRING,"Original pt %s %s quadrant %s vertex  at 0x%"PRIxPTR"    %g %g %g",\
+				snprintf(ERROR_STRING,LLEN,"Original pt %s %s quadrant %s vertex  at 0x%"PRIxPTR"    %g %g %g",\
 				tp->t_name,quad_name[a],quad_name[b],	\
 					(uintptr_t)tp->t_q[a]->t_v[b],\
 					tp->t_q[a]->t_v[b]->v_x,				\
@@ -1057,7 +1057,7 @@ void xdraw_master( QSP_ARG_DECL  Master_Tile *mtp )
 					tp->t_q[a]->t_v[b]->v_xf.p_z );
 
 #define QVERTEX(b)	if( debug & gl_debug ){				\
-				sprintf(ERROR_STRING,"glVertex3f %d    %g %g %g",b,	\
+				snprintf(ERROR_STRING,LLEN,"glVertex3f %d    %g %g %g",b,	\
 					tp->t_v[b]->v_xf.p_x,				\
 					tp->t_v[b]->v_xf.p_y,				\
 					tp->t_v[b]->v_xf.p_z);	\
@@ -1070,7 +1070,7 @@ void xdraw_master( QSP_ARG_DECL  Master_Tile *mtp )
 
 #define TEX_COORD(x,y)	if( texturing ){ 					\
 				if( debug & gl_debug ){				\
-					sprintf(ERROR_STRING,"glTexCoord2f %g %g",x,y);	\
+					snprintf(ERROR_STRING,LLEN,"glTexCoord2f %g %g",x,y);	\
 					advise(ERROR_STRING);			\
 				}						\
 				glTexCoord2f(x,y);				\
@@ -1106,7 +1106,7 @@ static void _xdraw_tile(QSP_ARG_DECL  Tile *tp,Quad_Coords *qcp)
 	if( NOT_VISIBLE(tp) ){
 #ifdef QUIP_DEBUG
 if( debug & debug_tiles ){
-sprintf(ERROR_STRING,"xdraw_tile %s:  NOT_VISIBLE",tp->t_name);
+snprintf(ERROR_STRING,LLEN,"xdraw_tile %s:  NOT_VISIBLE",tp->t_name);
 advise(ERROR_STRING);
 }
 #endif // QUIP_DEBUG
@@ -1114,7 +1114,7 @@ advise(ERROR_STRING);
 	}
 #ifdef QUIP_DEBUG
 if( debug & debug_tiles ){
-sprintf(ERROR_STRING,"xdraw_tile %s:  TILE_IS_VISIBLE",tp->t_name);
+snprintf(ERROR_STRING,LLEN,"xdraw_tile %s:  TILE_IS_VISIBLE",tp->t_name);
 advise(ERROR_STRING);
 }
 #endif // QUIP_DEBUG
@@ -1138,7 +1138,7 @@ advise(ERROR_STRING);
 		/* this code draws the outline ... */
 #ifdef QUIP_DEBUG
 if( debug & debug_tiles ){
-sprintf(ERROR_STRING,"xdraw_tile %s:  drawing 2-fan",tp->t_name);
+snprintf(ERROR_STRING,LLEN,"xdraw_tile %s:  drawing 2-fan",tp->t_name);
 advise(ERROR_STRING);
 }
 #endif // QUIP_DEBUG
@@ -1175,7 +1175,7 @@ advise(ERROR_STRING);
 
 #ifdef QUIP_DEBUG
 if( debug & debug_tiles ){
-sprintf(ERROR_STRING,"xdraw_tile %s:  drawing 8-fan",tp->t_name);
+snprintf(ERROR_STRING,LLEN,"xdraw_tile %s:  drawing 8-fan",tp->t_name);
 advise(ERROR_STRING);
 }
 #endif // QUIP_DEBUG
@@ -1224,8 +1224,8 @@ DEBUG_MSG(gl_debug,"glEnd GL_TRIANGLE_FAN");
 
 		qc=(*qcp);
 
-		qc.qc_delx /= 2.0;
-		qc.qc_dely /= 2.0;
+		qc.qc_delx /= 2.0f;
+		qc.qc_dely /= 2.0f;
 		xdraw_tile(tp->t_q[SW],&qc);
 		qc.qc_x0 += qc.qc_delx;
 		xdraw_tile(tp->t_q[SE],&qc);
@@ -1268,7 +1268,7 @@ static void elevate_tile(Tile *tp,Master_Tile *mtp,float x1, float y1, float x2,
 		dem_dp = mtp->mt_dem_dp[tp->t_level];
 
 	if( dem_dp == NULL ){
-		sprintf(ERROR_STRING,"elevate_tile:  missing object at level %d",tp->t_level);
+		snprintf(ERROR_STRING,LLEN,"elevate_tile:  missing object at level %d",tp->t_level);
 		warn(ERROR_STRING);
 	}
 
@@ -1289,7 +1289,7 @@ static void elevate_tile(Tile *tp,Master_Tile *mtp,float x1, float y1, float x2,
 	SET_Z(tp->t_v[SW],x1,y1)
 #ifdef QUIP_DEBUG
 if( debug & debug_tiles ){
-sprintf(ERROR_STRING,"elevate_tile %s z values:  %g %g %g %g",tp->t_name,
+snprintf(ERROR_STRING,LLEN,"elevate_tile %s z values:  %g %g %g %g",tp->t_name,
 tp->t_v[NW]->v_z,
 tp->t_v[NE]->v_z,
 tp->t_v[SE]->v_z,
@@ -1322,7 +1322,7 @@ static void texture_tile(Tile *tp,Master_Tile *mtp,float x1, float y1, float x2,
 		tex_dp = mtp->mt_tex_dp[tp->t_level];
 
 	if( tex_dp == NULL ){
-		sprintf(ERROR_STRING,"texture_tile:  missing object at level %d",tp->t_level);
+		snprintf(ERROR_STRING,LLEN,"texture_tile:  missing object at level %d",tp->t_level);
 		warn(ERROR_STRING);
 	}
 }
@@ -1356,7 +1356,7 @@ void master_tile_elevate(QSP_ARG_DECL  Master_Tile *mtp)
 	u_short *ptr;
 
 /*
-sprintf(ERROR_STRING,"elevating master tile %s",mtp->mt_tp->t_name);
+snprintf(ERROR_STRING,LLEN,"elevating master tile %s",mtp->mt_tp->t_name);
 advise(ERROR_STRING);
 */
 	for(i=0;i<MAX_DEM_LEVELS;i++){
@@ -1368,13 +1368,13 @@ advise(ERROR_STRING);
 			/* OK, lets find the DEM file */
 
 			/*
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"master tile at 0x%"PRIxPTR" has no level %d elevation data object!?",(uintptr_t)mtp,i);
 			WARN(ERROR_STRING);
 			*/
 #ifdef CAUTIOUS
 			if( mtp->mt_dem_name == NULL || *mtp->mt_dem_name==0 ){
-				sprintf(ERROR_STRING,"CAUTIOUS:  master_tile_elevate:  Null DEM name string, master tile at 0x%"PRIxPTR,
+				snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  master_tile_elevate:  Null DEM name string, master tile at 0x%"PRIxPTR,
 					(uintptr_t)mtp);
 				WARN(ERROR_STRING);
 				return;
@@ -1383,24 +1383,24 @@ advise(ERROR_STRING);
 
 
 			if( dem_directory != NULL ){
-sprintf(ERROR_STRING,"master_tile_elevate:  using DEM dir %s",dem_directory);
+snprintf(ERROR_STRING,LLEN,"master_tile_elevate:  using DEM dir %s",dem_directory);
 advise(ERROR_STRING);
 				set_iofile_directory(dem_directory);
 			}
 
-			sprintf(filename,"%s.%d.tif",mtp->mt_dem_name,i+1);
-sprintf(ERROR_STRING,"DEM filename = %s",filename);
+			snprintf(filename,256,"%s.%d.tif",mtp->mt_dem_name,i+1);
+snprintf(ERROR_STRING,LLEN,"DEM filename = %s",filename);
 advise(ERROR_STRING);
 			ifp = read_image_file( filename );
 			if( ifp == NULL )
 				error1("error reading elevation data");
 /*
-sprintf(ERROR_STRING,"\tlevel %d, size is %ld x %ld",i,OBJ_ROWS(ifp->if_dp),OBJ_COLS(ifp->if_dp));
+snprintf(ERROR_STRING,LLEN,"\tlevel %d, size is %ld x %ld",i,OBJ_ROWS(ifp->if_dp),OBJ_COLS(ifp->if_dp));
 advise(ERROR_STRING);
 */
 
 			/* now we need to create an object to hold the image */
-			sprintf(name,"elevation.%s.%d",mtp->mt_dem_name,i);
+			snprintf(name,256,"elevation.%s.%d",mtp->mt_dem_name,i);
 			mtp->mt_dem_dp[i] = dup_obj(ifp->if_dp,name);
 
 			read_object_from_file(mtp->mt_dem_dp[i],ifp);
@@ -1414,7 +1414,7 @@ advise(ERROR_STRING);
 	 */
 
 	/* The elevation data are u_short... */
-sprintf(ERROR_STRING,"master_tile_elevate:  using object %s, size %d",OBJ_NAME(mtp->mt_dem_dp[0]),OBJ_COLS(mtp->mt_dem_dp[0]));
+snprintf(ERROR_STRING,LLEN,"master_tile_elevate:  using object %s, size %d",OBJ_NAME(mtp->mt_dem_dp[0]),OBJ_COLS(mtp->mt_dem_dp[0]));
 advise(ERROR_STRING);
 	ptr = (u_short *)OBJ_DATA_PTR(mtp->mt_dem_dp[0]);		/* first pixel is upper-LEFT corner */
 	mtp->mt_tp->t_v[NW]->v_z =  Z_SIGN *ptr++;
@@ -1432,7 +1432,7 @@ void master_tile_texture(QSP_ARG_DECL  Master_Tile *mtp)
 	if( ! texturing ) return;
 
 /*
-sprintf(ERROR_STRING,"texturing master tile %s",mtp->mt_tp->t_name);
+snprintf(ERROR_STRING,LLEN,"texturing master tile %s",mtp->mt_tp->t_name);
 advise(ERROR_STRING);
 */
 
@@ -1447,7 +1447,7 @@ advise(ERROR_STRING);
 
 #ifdef CAUTIOUS
 			if( mtp->mt_tex_name == NULL || *mtp->mt_tex_name==0 ){
-				sprintf(ERROR_STRING,"CAUTIOUS:  master_tile_texture:  Null TEX name string, master tile at 0x%"PRIxPTR,
+				snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  master_tile_texture:  Null TEX name string, master tile at 0x%"PRIxPTR,
 					(uintptr_t)mtp);
 				WARN(ERROR_STRING);
 				return;
@@ -1459,17 +1459,17 @@ advise(ERROR_STRING);
 			else
 advise("not resetting texture directory...");
 
-			sprintf(filename,"%s.%d.jpg",mtp->mt_tex_name,i/*+1*/);
+			snprintf(filename,256,"%s.%d.jpg",mtp->mt_tex_name,i/*+1*/);
 			ifp = read_image_file( filename );
 			if( ifp == NULL )
 				error1("unable to read texture file");
 
 /*
-sprintf(ERROR_STRING,"\tlevel %d, size is %ld x %ld",i,OBJ_ROWS(ifp->if_dp),OBJ_COLS(ifp->if_dp));
+snprintf(ERROR_STRING,LLEN,"\tlevel %d, size is %ld x %ld",i,OBJ_ROWS(ifp->if_dp),OBJ_COLS(ifp->if_dp));
 advise(ERROR_STRING);
 */
 			/* now we need to create an object to hold the image */
-			sprintf(name,"texture.%s.%d",mtp->mt_tex_name,i);
+			snprintf(name,256,"texture.%s.%d",mtp->mt_tex_name,i);
 			mtp->mt_tex_dp[i] = dup_obj(ifp->if_dp,name);
 
 			read_object_from_file(mtp->mt_tex_dp[i],ifp);
@@ -1532,13 +1532,13 @@ void _tile_check_subdiv(QSP_ARG_DECL  Tile *tp,Data_Obj *matp)
 
 #ifdef QUIP_DEBUG
 if( debug & debug_tiles ){
-sprintf(ERROR_STRING,"tile_check_subdiv %s:  BEGIN\n\n\tmatrix:",tp->t_name);
+snprintf(ERROR_STRING,LLEN,"tile_check_subdiv %s:  BEGIN\n\n\tmatrix:",tp->t_name);
 advise(ERROR_STRING);
-sprintf(ERROR_STRING,"\t%g\t%g\t%g\t%g",cp[0],cp[1],cp[2],cp[3]);
+snprintf(ERROR_STRING,LLEN,"\t%g\t%g\t%g\t%g",cp[0],cp[1],cp[2],cp[3]);
 advise(ERROR_STRING);
-sprintf(ERROR_STRING,"\t%g\t%g\t%g\t%g",cp[4],cp[5],cp[6],cp[7]);
+snprintf(ERROR_STRING,LLEN,"\t%g\t%g\t%g\t%g",cp[4],cp[5],cp[6],cp[7]);
 advise(ERROR_STRING);
-sprintf(ERROR_STRING,"\t%g\t%g\t%g\t%g",cp[8],cp[9],cp[10],cp[11]);
+snprintf(ERROR_STRING,LLEN,"\t%g\t%g\t%g\t%g",cp[8],cp[9],cp[10],cp[11]);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -1561,11 +1561,11 @@ advise(ERROR_STRING);
 					cp[11] ;
 
 /*
-sprintf(ERROR_STRING,"vertex %d:   %g %g %g",i,tp->t_v[i]->v_x,
+snprintf(ERROR_STRING,LLEN,"vertex %d:   %g %g %g",i,tp->t_v[i]->v_x,
                                                tp->t_v[i]->v_y,
                                                tp->t_v[i]->v_z);
 advise(ERROR_STRING);
-sprintf(ERROR_STRING,"\txformed:  %g %g %g",x,y,denom);
+snprintf(ERROR_STRING,LLEN,"\txformed:  %g %g %g",x,y,denom);
 advise(ERROR_STRING);
 */
 		if( denom <= 0.0 ){
@@ -1579,14 +1579,14 @@ advise(ERROR_STRING);
 
 #ifdef QUIP_DEBUG
 if( debug & debug_tiles ){
-sprintf(ERROR_STRING,"\tx = %g\t\ty = %g\t\tdenom = %g",x,y,denom);
+snprintf(ERROR_STRING,LLEN,"\tx = %g\t\ty = %g\t\tdenom = %g",x,y,denom);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
 		x /= denom;
 		y /= denom;
 /*
-sprintf(ERROR_STRING,"vertex (%g %g %g) transformed to %g %g",
+snprintf(ERROR_STRING,LLEN,"vertex (%g %g %g) transformed to %g %g",
 tp->t_v[i]->v_x,tp->t_v[i]->v_y,tp->t_v[i]->v_z,x,y);
 advise(ERROR_STRING);
 */
@@ -1595,7 +1595,7 @@ advise(ERROR_STRING);
 		tp->t_v[i]->v_xf.p_z = 0;
 
 /*
-sprintf(ERROR_STRING,"\t computed screen pos:  %g %g",	tp->t_v[i]->v_xf.p_x,
+snprintf(ERROR_STRING,LLEN,"\t computed screen pos:  %g %g",	tp->t_v[i]->v_xf.p_x,
 							tp->t_v[i]->v_xf.p_y);
 advise(ERROR_STRING);
 */
@@ -1607,7 +1607,7 @@ advise(ERROR_STRING);
 		tp->t_flags |= TILE_BEHIND_CAMERA;
 #ifdef QUIP_DEBUG
 if( debug & debug_tiles ){
-sprintf(ERROR_STRING,"COMPLETELY_BEHIND_CAMERA %s",tp->t_name);
+snprintf(ERROR_STRING,LLEN,"COMPLETELY_BEHIND_CAMERA %s",tp->t_name);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -1616,7 +1616,7 @@ advise(ERROR_STRING);
 		tp->t_flags |= TILE_BEHIND_CAMERA;
 #ifdef QUIP_DEBUG
 if( debug & debug_tiles ){
-sprintf(ERROR_STRING,"SMALL_TILE_PARTIALLY_BEHIND_CAMERA %s",tp->t_name);
+snprintf(ERROR_STRING,LLEN,"SMALL_TILE_PARTIALLY_BEHIND_CAMERA %s",tp->t_name);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -1645,7 +1645,7 @@ advise(ERROR_STRING);
 		tp->t_flags |= TILE_OUTSIDE_FOV;
 #ifdef QUIP_DEBUG
 if( debug & debug_tiles ){
-sprintf(ERROR_STRING,"OUTSIDE_FOV %s",tp->t_name);
+snprintf(ERROR_STRING,LLEN,"OUTSIDE_FOV %s",tp->t_name);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -1665,7 +1665,7 @@ advise(ERROR_STRING);
 
 #ifdef QUIP_DEBUG
 if( debug & debug_tiles ){
-sprintf(ERROR_STRING,"CHECKING %s:  d1 = %g, d2 = %g, THRESH = %g)",
+snprintf(ERROR_STRING,LLEN,"CHECKING %s:  d1 = %g, d2 = %g, THRESH = %g)",
 tp->t_name,d1,d2,d_thresh);
 advise(ERROR_STRING);
 }
@@ -1674,7 +1674,7 @@ advise(ERROR_STRING);
 	if( n_vertices_behind > 0 ){
 #ifdef QUIP_DEBUG
 if( debug & debug_tiles ){
-sprintf(ERROR_STRING,"tile_check_subdiv %s:  subdividing partially visible tile",tp->t_name);
+snprintf(ERROR_STRING,LLEN,"tile_check_subdiv %s:  subdividing partially visible tile",tp->t_name);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -1687,7 +1687,7 @@ advise(ERROR_STRING);
 
 #ifdef QUIP_DEBUG
 if( debug & debug_tiles ){
-sprintf(ERROR_STRING,"tile_check_subdiv %s:  subdividing large tile",tp->t_name);
+snprintf(ERROR_STRING,LLEN,"tile_check_subdiv %s:  subdividing large tile",tp->t_name);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -1703,14 +1703,14 @@ advise(ERROR_STRING);
 	} else {
 #ifdef QUIP_DEBUG
 if( debug & debug_tiles ){
-sprintf(ERROR_STRING,"tile_check_subdiv %s:  READY_TO_RENDER",tp->t_name);
+snprintf(ERROR_STRING,LLEN,"tile_check_subdiv %s:  READY_TO_RENDER",tp->t_name);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
 	}
 #ifdef QUIP_DEBUG
 if( debug & debug_tiles ){
-sprintf(ERROR_STRING,"tile_check_subdiv %s:  DONE",tp->t_name);
+snprintf(ERROR_STRING,LLEN,"tile_check_subdiv %s:  DONE",tp->t_name);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -1726,12 +1726,12 @@ static void free_subtile(Tile *tp)		/* garbage collection */
 			free_subtile(tp->t_q[i]);
 	}
 
-//sprintf(ERROR_STRING,"free_subtile %s",tp->t_name);
+//snprintf(ERROR_STRING,LLEN,"free_subtile %s",tp->t_name);
 //advise(ERROR_STRING);
 
 	/* free the vertices */
 	for(i=0;i<4;i++){
-//sprintf(ERROR_STRING,"\tvertex %d at 0x%"PRIxPTR", n_ref = %d",i,(uintptr_t)tp->t_v[i],tp->t_v[i]->v_nref);
+//snprintf(ERROR_STRING,LLEN,"\tvertex %d at 0x%"PRIxPTR", n_ref = %d",i,(uintptr_t)tp->t_v[i],tp->t_v[i]->v_nref);
 //advise(ERROR_STRING);
 		RELEASE_VERTEX( tp->t_v[i] );
 	}
@@ -1761,11 +1761,11 @@ void tile_info(QSP_ARG_DECL  Tile *tp)
 {
 	int i;
 
-	sprintf(msg_str,"Tile at 0x%"PRIxPTR,(uintptr_t)tp);
+	snprintf(msg_str,LLEN,"Tile at 0x%"PRIxPTR,(uintptr_t)tp);
 	prt_msg(msg_str);
 
 	for(i=0;i<4;i++){
-		sprintf(msg_str,"\tvertex %d at %g %g %g",i,tp->t_v[i]->v_x,tp->t_v[i]->v_y,tp->t_v[i]->v_z);
+		snprintf(msg_str,LLEN,"\tvertex %d at %g %g %g",i,tp->t_v[i]->v_x,tp->t_v[i]->v_y,tp->t_v[i]->v_z);
 		prt_msg(msg_str);
 	}
 }

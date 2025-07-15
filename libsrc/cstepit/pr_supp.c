@@ -93,7 +93,7 @@ static float frprmn_scr_funk(float *p)
 		Opt_Param *opp;
 
 		opp=(Opt_Param *)np->n_data;
-		sprintf(str,"%g",p[i+1]);
+		snprintf(str,128,"%g",p[i+1]);
 		assign_var(opp->op_name,str);
 		i++;
 		np=np->n_next;
@@ -189,7 +189,7 @@ printf("&iter = 0x%x\n",&iter);
 	frprmn(p-1,n_prms,ftol,&iter,&fret,func,dfunc);
 
 	if( verbose ){
-		sprintf(DEFAULT_MSG_STR,"run_frprmn:  %d iterations, final value %g",
+		snprintf(DEFAULT_MSG_STR,LLEN,"run_frprmn:  %d iterations, final value %g",
 			iter,fret);
 		prt_msg(DEFAULT_MSG_STR);
 	}

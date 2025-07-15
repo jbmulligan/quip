@@ -57,7 +57,7 @@ prt_msg("invert_sq_matrix:  input matrix");
 		det *= pivot;
 		matrix[j*size+j] = 1.0;
 		if( pivot == 0.0 ) {
-			sprintf(ERROR_STRING,"zero pivot, j=%d",j);
+			snprintf(ERROR_STRING,LLEN,"zero pivot, j=%d",j);
 			WARN(ERROR_STRING);
 			return (0.0);
 		}

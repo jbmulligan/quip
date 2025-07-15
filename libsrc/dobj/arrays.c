@@ -57,7 +57,7 @@ void _list_temp_dps(QSP_ARG_DECL  FILE *fp)
 		n++;
 		np=NODE_NEXT(np);
 	}
-	sprintf(MSG_STR,
+	snprintf(MSG_STR,LLEN,
 	"%d temporary objects, %d locked, %d w/ children, %d referenced",
 		n,nl,nc,nr);
 	fprintf(fp,"%s\n",MSG_STR);
@@ -191,7 +191,7 @@ static void add_tmpobjs(List *lp, int n)
 	}
 }
 
-static void insure_tmpobj_free_list(void)
+static void ensure_tmpobj_free_list(void)
 {
 	if( free_tmpobj_lp == NULL ){
 		free_tmpobj_lp = new_list();
@@ -203,7 +203,7 @@ static Data_Obj *check_tmpobj_free_list(void)
 {
 	Node *np;
 
-	insure_tmpobj_free_list();
+	ensure_tmpobj_free_list();
 
 	if( eltcount(free_tmpobj_lp) == 0 ) return NULL;
 
@@ -265,7 +265,7 @@ Data_Obj *_temp_child( QSP_ARG_DECL  const char *name, Data_Obj *dp )
 #ifdef QUIP_DEBUG
 /*
 if( debug & debug_data ){
-sprintf(ERROR_STRING,"saving child name \"%s\"",name);
+snprintf(ERROR_STRING,LLEN,"saving child name \"%s\"",name);
 advise(ERROR_STRING);
 }
 */
@@ -449,10 +449,12 @@ void _make_array_name( QSP_ARG_DECL  char *target_str, int buflen, Data_Obj *dp,
 	/* now make the name */
 	strcpy(target_str,OBJ_NAME(dp));
 	for(i=0;i<nstars;i++){
-		sprintf(index_string,"%c*%c",left_delim,right_delim);
+		snprintf(index_string,MAX_INDEX_STRING_LEN,"%c*%c",
+							left_delim,right_delim);
 		strcat(target_str,index_string);
 	}
-	sprintf(index_string,"%c%d%c",left_delim,index,right_delim);
+	snprintf(index_string,MAX_INDEX_STRING_LEN,"%c%d%c",
+						left_delim,index,right_delim);
 	strcat(target_str,index_string);
 }
 
@@ -499,7 +501,7 @@ Data_Obj *_gen_subscript( QSP_ARG_DECL  Data_Obj *dp, int which_dim, index_t ind
 	 */
 
 	if( index < base_index ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"%s subscript too small (%d, min %u) for object %s",
 			dimension_name[which_dim],index,
 			base_index,OBJ_NAME(dp));
@@ -514,7 +516,7 @@ Data_Obj *_gen_subscript( QSP_ARG_DECL  Data_Obj *dp, int which_dim, index_t ind
 	if( ! IS_BITMAP(dp) ){
 		/* indices are unsigned ! */
 		if( index-base_index >= OBJ_MACH_DIM(dp,which_dim) ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 			"%s subscript too large (%u, max %u) for object %s",
 				dimension_name[which_dim],index,
 				OBJ_MACH_DIM(dp,which_dim)+base_index-1,OBJ_NAME(dp));
@@ -523,7 +525,7 @@ Data_Obj *_gen_subscript( QSP_ARG_DECL  Data_Obj *dp, int which_dim, index_t ind
 		}
 	} else {	/* bitmap */
 		if( index-base_index >= OBJ_TYPE_DIM(dp,which_dim) ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 			"%s subscript too large (%u, max %u) for object %s",
 				dimension_name[which_dim],index,
 				OBJ_MACH_DIM(dp,which_dim)+base_index-1,OBJ_NAME(dp));
@@ -724,7 +726,7 @@ int is_in_string(int c,const char *s)
 void _set_array_base_index(QSP_ARG_DECL  int index)
 {
 	if( index < 0 || index > 1 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"set_base_index:  requested base index (%d) is out of range (0-1)",
 			index);
 		warn(ERROR_STRING);

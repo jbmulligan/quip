@@ -100,13 +100,13 @@ void _dp_halftone(QSP_ARG_DECL  Data_Obj *dpto,Data_Obj *dpfr,dimension_t n,floa
 		return;
 	}
 	if( OBJ_COLS(dpto) > MAXCOLS ){
-		sprintf(ERROR_STRING,"sp_halftone:  Sorry, image %s has %d columns, max is %d",OBJ_NAME(dpto),
+		snprintf(ERROR_STRING,LLEN,"sp_halftone:  Sorry, image %s has %d columns, max is %d",OBJ_NAME(dpto),
 			OBJ_COLS(dpto),MAXCOLS);
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_PREC(dpto) != PREC_UBY ){
-		sprintf(ERROR_STRING,"dp_halftone:  target image %s (%s) must be unsigned byte precision",
+		snprintf(ERROR_STRING,LLEN,"dp_halftone:  target image %s (%s) must be unsigned byte precision",
 			OBJ_NAME(dpto),OBJ_PREC_NAME(dpto));
 		WARN(ERROR_STRING);
 		return;

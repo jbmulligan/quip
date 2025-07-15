@@ -49,8 +49,9 @@ static void init_format_type_tbl(void);
 #define PADDED_FLT_FMT_STR	"%10.24g"		// not used???
 #define PLAIN_FLT_FMT_STR	"%g"
 
+// BUG - use sym const for buffer size
 #define UPDATE_PADDED_FLOAT_FORMAT_STRING						\
-	sprintf(padded_flt_fmt_str,"%%%d.%dg",min_field_width,display_precision);
+	snprintf(padded_flt_fmt_str,16,"%%%d.%dg",min_field_width,display_precision);
 
 #define NORMAL_SEPARATOR	" "
 #define POSTSCRIPT_SEPARATOR	""
@@ -62,28 +63,28 @@ ITEM_INTERFACE_DECLARATIONS(Integer_Output_Fmt,int_out_fmt,0)
 
 #define DECLARE_FMT_FUNC(type,format,member,fmt_str_prefix,padding_fmt_str,plain_fmt_str)		\
 													\
-static void _format_##type##_data_##format(QSP_ARG_DECL  char *buf, Scalar_Value *svp, int pad_flag)	\
+static void _format_##type##_data_##format(QSP_ARG_DECL  char *buf,int buflen, Scalar_Value *svp, int pad_flag)	\
 {													\
 	if( pad_flag ){											\
-		sprintf(buf,#fmt_str_prefix #padding_fmt_str plain_fmt_str, svp->member);		\
+		snprintf(buf,buflen,#fmt_str_prefix #padding_fmt_str plain_fmt_str, svp->member);		\
 	} else {											\
-		sprintf(buf,#fmt_str_prefix plain_fmt_str, svp->member);				\
+		snprintf(buf,buflen,#fmt_str_prefix plain_fmt_str, svp->member);				\
 	}												\
 }
 
 #define DECLARE_PS_FMT_FUNC(type,format,member)						\
 											\
-static void _format_##type##_data_##format(QSP_ARG_DECL  char *buf, Scalar_Value *svp, int pad_flag)	\
+static void _format_##type##_data_##format(QSP_ARG_DECL  char *buf, int buflen,Scalar_Value *svp, int pad_flag)	\
 {											\
-	sprintf(buf,"%02x",svp->member);							\
+	snprintf(buf,buflen,"%02x",svp->member);							\
 }
 
 
 #define DECLARE_INVALID_FMT_FUNC(type,format)						\
 											\
-static void _format_##type##_data_##format(QSP_ARG_DECL  char *buf, Scalar_Value *svp, int pad_flag)	\
+static void _format_##type##_data_##format(QSP_ARG_DECL  char *buf,int buflen, Scalar_Value *svp, int pad_flag)	\
 {											\
-	sprintf(ERROR_STRING,"CAUTIOUS:  can't apply %s format to %s!?",#format,#type);	\
+	snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  can't apply %s format to %s!?",#format,#type);	\
 	error1(ERROR_STRING);								\
 }
 
@@ -168,22 +169,22 @@ DECLARE_FMT_FUNC(u_long,	postscript,	u_ull,	0x%,	-17,	PRIx64)
  *	5) %f, %g read w/ how_much()
  */
 
-#define INIT_OUTPUT_FORMAT(name,code,padded_fmt_str,plain_fmt_str,prefix)	\
-	iof_p = new_int_out_fmt(#name);						\
-	assert(iof_p!=NULL);							\
-	iof_p->iof_code = code;							\
-	iof_p->iof_padded_fmt_str = padded_fmt_str;				\
-	iof_p->iof_plain_fmt_str = plain_fmt_str;				\
-	iof_p->iof_fmt_string_func = _format_string_data_##name;		\
-	iof_p->iof_fmt_char_func = _format_char_data_##name;			\
-	iof_p->iof_fmt_byte_func = _format_byte_data_##name;			\
-	iof_p->iof_fmt_u_byte_func = _format_u_byte_data_##name;		\
-	iof_p->iof_fmt_short_func = _format_short_data_##name;			\
-	iof_p->iof_fmt_u_short_func = _format_u_short_data_##name;		\
-	iof_p->iof_fmt_int_func = _format_int_data_##name;			\
-	iof_p->iof_fmt_u_int_func = _format_u_int_data_##name;			\
-	iof_p->iof_fmt_long_func = _format_long_data_##name;			\
-	iof_p->iof_fmt_u_long_func = _format_u_long_data_##name;		\
+#define INIT_OUTPUT_FORMAT(name,code,padded_fmt_str,plain_fmt_str,prefix)\
+	iof_p = new_int_out_fmt(#name);					\
+	assert(iof_p!=NULL);						\
+	iof_p->iof_code = code;						\
+	iof_p->iof_padded_fmt_str = padded_fmt_str;			\
+	iof_p->iof_plain_fmt_str = plain_fmt_str;			\
+	iof_p->iof_fmt_string_func = _format_string_data_##name;	\
+	iof_p->iof_fmt_char_func = _format_char_data_##name;		\
+	iof_p->iof_fmt_byte_func = _format_byte_data_##name;		\
+	iof_p->iof_fmt_u_byte_func = _format_u_byte_data_##name;	\
+	iof_p->iof_fmt_short_func = _format_short_data_##name;		\
+	iof_p->iof_fmt_u_short_func = _format_u_short_data_##name;	\
+	iof_p->iof_fmt_int_func = _format_int_data_##name;		\
+	iof_p->iof_fmt_u_int_func = _format_u_int_data_##name;		\
+	iof_p->iof_fmt_long_func = _format_long_data_##name;		\
+	iof_p->iof_fmt_u_long_func = _format_u_long_data_##name;	\
 
 
 #define init_output_formats() _init_output_formats(SINGLE_QSP_ARG)
@@ -375,7 +376,7 @@ static int _process_format_char(QSP_ARG_DECL  const char **sptr )
 	s++;
 
 	if( *s && !isspace(*s) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"white space should follow format descriptor!?");
 		warn(ERROR_STRING);
 	}
@@ -419,7 +420,7 @@ void _set_input_format_string( QSP_ARG_DECL  const char *s )
 
 	while( *s ){
 		if( process_format_string_char(&s) < 0 ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"Poorly formed input format string \"%s\"" , orig_str);
 			warn(ERROR_STRING);
 			// BUG?  clean up by releasing format?
@@ -439,7 +440,7 @@ static void default_format_release(Input_Format_Spec *fmt_p)
 static int float_format_read_long(QSP_ARG_DECL  int64_t *result, const char *pmpt, Input_Format_Spec *fmt_p)
 {
 	if( !ascii_warned ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Float format data assigned to integer object %s!?",
 			OBJ_NAME( ascii_data_dp) );
 		warn(ERROR_STRING);
@@ -485,7 +486,7 @@ static inline void _consume_literal_string(QSP_ARG_DECL  Input_Format_Spec *fmt_
 	const char *s;
 	s=nameof(fmt_p->fmt_litstr);
 	if( strcmp(s,fmt_p->fmt_litstr) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"expected literal string \"%s\", saw string \"%s\"",
 			fmt_p->fmt_litstr,s);
 		warn(ERROR_STRING);
@@ -563,7 +564,7 @@ static void int_format_consume(QSP_ARG_DECL  Precision *prec_p)
 		howmany_type l;
 		l=how_many("dummy integer");
         if( verbose ){      // this was added just to suppress a compiler warning about never-read value l
-            sprintf(ERROR_STRING,"Ignoring integer value %lld",l);  // BUG? use format macro
+            snprintf(ERROR_STRING,LLEN,"Ignoring integer value %lld",l);  // BUG? use format macro
             advise(ERROR_STRING);
         }
 		advance_format();
@@ -579,7 +580,7 @@ static void float_format_consume(QSP_ARG_DECL  Precision *prec_p)
 		double d;
 		d=how_much("dummy float");
         if( verbose ){      // this was added just to suppress a compiler warning about never-read value
-            sprintf(ERROR_STRING,"Ignoring float value %g",d);
+            snprintf(ERROR_STRING,LLEN,"Ignoring float value %g",d);
             advise(ERROR_STRING);
         }
 
@@ -596,7 +597,7 @@ static void string_format_consume(QSP_ARG_DECL  Precision *prec_p)
 		const char *s;
 		s=nameof("dummy string");
         if( verbose ){      // this was added just to suppress a compiler warning about never-read value
-            sprintf(ERROR_STRING,"Ignoring string value \"%s\"",s);
+            snprintf(ERROR_STRING,LLEN,"Ignoring string value \"%s\"",s);
             advise(ERROR_STRING);
         }
 
@@ -673,7 +674,7 @@ static int int_format_read_string(QSP_ARG_DECL  const char **sptr, const char *p
 	howmany_type l;
 	l=how_many("dummy integer value");
     if( verbose ){      // this was added just to suppress a compiler warning about never-read value
-        sprintf(ERROR_STRING,"Ignoring integer value %lld",l);  // BUG use format macro
+        snprintf(ERROR_STRING,LLEN,"Ignoring integer value %lld",l);  // BUG use format macro
         advise(ERROR_STRING);
     }
 
@@ -685,7 +686,7 @@ static int float_format_read_string(QSP_ARG_DECL  const char **sptr, const char 
 	double d;
 	d=how_much("dummy float value");
     if( verbose ){      // this was added just to suppress a compiler warning about never-read value
-        sprintf(ERROR_STRING,"Ignoring double value %g",d);
+        snprintf(ERROR_STRING,LLEN,"Ignoring double value %g",d);
         advise(ERROR_STRING);
     }
 
@@ -710,12 +711,12 @@ static inline int _check_input_level(SINGLE_QSP_ARG_DECL)
 {
 	if( QLEVEL != ASCII_LEVEL ){
 		if( verbose ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"check_input_level (ascii):  input depth is %d, expected %d!?",
 				QLEVEL,ASCII_LEVEL);
 			advise(ERROR_STRING);
 		}
-		sprintf(ERROR_STRING,"premature end of data (%d elements read so far)",dobj_n_gotten);
+		snprintf(ERROR_STRING,LLEN,"premature end of data (%d elements read so far)",dobj_n_gotten);
 		warn(ERROR_STRING);
 
 		if( HAS_FORMAT_LIST ){
@@ -759,7 +760,7 @@ static int _get_a_string(QSP_ARG_DECL  Data_Obj *dp,char *datap,int dim)
 	}
 	if( i >= DIMENSION(OBJ_TYPE_DIMS(dp),dim) ){
 		t -= INCREMENT(OBJ_TYPE_INCS(dp),dim);
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "get_a_string:  input string (%ld chars) longer than data buffer (%ld chars)",
 			(long)(strlen(orig)+1),
 			(long)DIMENSION(OBJ_TYPE_DIMS(dp),dim));
@@ -780,7 +781,7 @@ int _object_is_in_ram(QSP_ARG_DECL  Data_Obj *dp, const char *op_str)
 
 	if( ! OBJ_IS_RAM(dp) ){
 		if( dp != warned_dp ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"Object %s is not in host ram, cannot %s!?",
 				OBJ_NAME(dp), op_str);
 			warn(ERROR_STRING);
@@ -807,7 +808,7 @@ static int _get_next_element(QSP_ARG_DECL   Data_Obj *dp,void *datap)
 
 #ifdef QUIP_DEBUG
 if( debug & debug_data ){
-sprintf(ERROR_STRING,"get_next_element:  getting a %s value for address 0x%lx",
+snprintf(ERROR_STRING,LLEN,"get_next_element:  getting a %s value for address 0x%lx",
 OBJ_MACH_PREC_NAME(dp),(u_long)datap);
 advise(ERROR_STRING);
 }
@@ -815,7 +816,7 @@ advise(ERROR_STRING);
 
 	prec_p = OBJ_MACH_PREC_PTR(dp);
 	prompt = msg_str;	// use this buffer...
-	sprintf(prompt,"%s data",PREC_NAME(prec_p));
+	snprintf(prompt,LLEN,"%s data",PREC_NAME(prec_p));
 	(*(prec_p->set_value_from_input_func))(QSP_ARG  datap, prompt);
 
 	dobj_n_gotten++;
@@ -872,7 +873,7 @@ static int64_t get_bit_from_bitmap(Data_Obj *dp, void *data)
 
 	/* We encode the bit in the data address - it's not the real address. */
 	which_bit = ((u_char *)data) - ((u_char *)OBJ_DATA_PTR(dp));
-sprintf(ERROR_STRING,"get_bit_from_bitmap:  which_bit = %d",which_bit);
+snprintf(ERROR_STRING,LLEN,"get_bit_from_bitmap:  which_bit = %d",which_bit);
 advise(ERROR_STRING);
 	which_bit += OBJ_BIT0(dp);
 
@@ -912,9 +913,9 @@ void _format_scalar_obj(QSP_ARG_DECL  char *buf,int buflen,Data_Obj *dp,void *da
 		c=(*(unsigned char *)data);
 		// BUG we don't check against buflen here, but should be OK
 		if( isalnum(c) || ispunct(c) )
-			sprintf(buf," '%c'",c);	// add a space to be the same as 4 octal chars
+			snprintf(buf,buflen," '%c'",c);	// add a space to be the same as 4 octal chars
 		else
-			sprintf(buf,"0%03o",c);
+			snprintf(buf,buflen,"0%03o",c);
 		return;
 	}
 
@@ -926,7 +927,7 @@ void _format_scalar_obj(QSP_ARG_DECL  char *buf,int buflen,Data_Obj *dp,void *da
 		warn("format_scalar_obj:  don't know what to do with bitmaps!?");
 		/*
 		l = get_bit_from_bitmap(dp,data);
-		sprintf(buf,ifmtstr,l);
+		snprintf(buf,buflen,ifmtstr,l);
 		*/
 	}
 }
@@ -939,7 +940,7 @@ void _format_scalar_obj(QSP_ARG_DECL  char *buf,int buflen,Data_Obj *dp,void *da
 void _format_scalar_value(QSP_ARG_DECL  char *buf,int buflen,void *data,Precision *prec_p, int pad_flag)
 {
 	// BUG - buflen is ignored?
-	(*(PREC_MACH_PREC_PTR(prec_p)->format_func))(QSP_ARG  buf,data,pad_flag);
+	(*(PREC_MACH_PREC_PTR(prec_p)->format_func))(QSP_ARG  buf,buflen,data,pad_flag);
 }
 
 char * string_for_scalar(QSP_ARG_DECL  void *data,Precision *prec_p )
@@ -1080,7 +1081,7 @@ static void _pnt_dim( QSP_ARG_DECL  FILE *fp, Data_Obj *dp, unsigned char *data,
 		inc=(ELEMENT_SIZE(dp)*OBJ_MACH_INC(dp,dim));
 #ifdef QUIP_DEBUG
 if( debug & debug_data ){
-sprintf(ERROR_STRING,"pntdim: dim=%d, n=%d, inc=%d",dim,OBJ_MACH_DIM(dp,dim),
+snprintf(ERROR_STRING,LLEN,"pntdim: dim=%d, n=%d, inc=%d",dim,OBJ_MACH_DIM(dp,dim),
 inc);
 advise(ERROR_STRING);
 }
@@ -1238,7 +1239,7 @@ void _pntvec(QSP_ARG_DECL  Data_Obj *dp,FILE *fp)			/**/
 	/* BUG should set format based on desired radix !!! */
 
 	// // BUG should only do this at init time, and when changed...
-	// sprintf(padded_flt_fmt_str,"%%%d.%dg",min_field_width,display_precision);
+	// snprintf(padded_flt_fmt_str,"%%%d.%dg",min_field_width,display_precision);
 
 	if( OBJ_MACH_PREC(dp) == PREC_SP ){
 		sp_pntvec(dp,fp);
@@ -1274,12 +1275,12 @@ void _pntvec(QSP_ARG_DECL  Data_Obj *dp,FILE *fp)			/**/
 
 static void _shp_trace(QSP_ARG_DECL  const char *name,Shape_Info *shpp)
 {
-	sprintf(ERROR_STRING,
+	snprintf(ERROR_STRING,LLEN,
 		"%s: mindim = %d,  maxdim = %d",
 		name, SHP_MINDIM(shpp), SHP_MAXDIM(shpp));
 	advise(ERROR_STRING);
 
-	sprintf(ERROR_STRING,
+	snprintf(ERROR_STRING,LLEN,
 		"%s dim:  %u %u %u %u %u",
 		name,
 		SHP_TYPE_DIM(shpp,0),
@@ -1294,7 +1295,7 @@ void _dptrace( QSP_ARG_DECL  Data_Obj *dp )
 {
 	shp_trace(OBJ_NAME( dp) ,OBJ_SHAPE(dp) );
 
-	sprintf(ERROR_STRING,
+	snprintf(ERROR_STRING,LLEN,
 		// why %u format when increment can be negative???
 		"%s inc:  %u %u %u %u %u  (%u %u %u %u %u)",
 		OBJ_NAME( dp) ,
@@ -1401,7 +1402,7 @@ static void _read_object_with_check(QSP_ARG_DECL  Data_Obj *dp, int expect_exact
 
 	if( level == QLEVEL ){
 		if( expect_exact_count ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"Needed %d values for object %s, file %s has more!?",
 				OBJ_N_MACH_ELTS(dp),OBJ_NAME( dp) ,filename);
 			warn(ERROR_STRING);
@@ -1443,7 +1444,7 @@ void _read_obj(QSP_ARG_DECL   Data_Obj *dp)
 	dobj_n_gotten = 0;
 
 	if( ! OBJ_IS_RAM(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"read_obj:  object %s must be in RAM for assignment!?",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
@@ -1464,18 +1465,18 @@ void _read_obj(QSP_ARG_DECL   Data_Obj *dp)
 
 	if( OBJ_PREC(dp) == PREC_CHAR || OBJ_PREC(dp) == PREC_STR ){
 		if( get_strings(dp,(char *)data_ptr,N_DIMENSIONS-1) < 0 ){
-			sprintf(ERROR_STRING,"error reading strings for object %s",OBJ_NAME( dp) );
+			snprintf(ERROR_STRING,LLEN,"error reading strings for object %s",OBJ_NAME( dp) );
 			warn(ERROR_STRING);
 		}
 	} else if( IS_BITMAP(dp) ){
 		if( get_bits(dp,data_ptr,N_DIMENSIONS-1,OBJ_BIT0(dp)) < 0){
-			sprintf(ERROR_STRING,"expected %d bits for bitmap object %s",
+			snprintf(ERROR_STRING,LLEN,"expected %d bits for bitmap object %s",
 				OBJ_N_TYPE_ELTS(dp),OBJ_NAME( dp) );
 			warn(ERROR_STRING);
 		}
 	} else {	// normal object
 		if( get_sheets(dp,(u_char *)data_ptr,N_DIMENSIONS-1) < 0 ){
-			sprintf(ERROR_STRING,"expected %d elements for object %s",
+			snprintf(ERROR_STRING,LLEN,"expected %d elements for object %s",
 				OBJ_N_MACH_ELTS(dp),OBJ_NAME( dp) );
 			warn(ERROR_STRING);
 		}
@@ -1503,7 +1504,7 @@ void _set_max_per_line(QSP_ARG_DECL  int n )
 	if( n < 1 )
 		warn("max_per_line must be positive");
 	else if( n > ENFORCED_MAX_PER_LINE ){
-		sprintf(ERROR_STRING,"Requested max_per_line (%d) exceeds hard-coded maximum (%d)",
+		snprintf(ERROR_STRING,LLEN,"Requested max_per_line (%d) exceeds hard-coded maximum (%d)",
 				n,ENFORCED_MAX_PER_LINE);
 		warn(ERROR_STRING);
 	} else

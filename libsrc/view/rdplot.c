@@ -101,7 +101,7 @@ void _rdplot(QSP_ARG_DECL  FILE *fp )
 				else warn("unsupported line color");
 				break;
 			default:
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 				"unrecognized plot command '%c' (%o)",c,c);
 				warn(ERROR_STRING);
 				goto plotdun;

@@ -29,7 +29,7 @@
 ITEM_INTERFACE_DECLARATIONS(Fly_Cam,fly_cam,0)
 
 #define UNIMP_FUNC(name)						\
-	sprintf(ERROR_STRING,"Function %s is not implemented!?",name);	\
+	snprintf(ERROR_STRING,LLEN,"Function %s is not implemented!?",name);	\
 	warn(ERROR_STRING);
 
 #ifdef HAVE_LIBFLYCAP
@@ -41,19 +41,19 @@ ITEM_INTERFACE_DECLARATIONS(Fly_Cam,fly_cam,0)
 #endif // ! HAVE_LIBFLYCAP
 
 #define REPORT_INT_PROP(struct_ptr,p)				\
-	sprintf(MSG_STR,"%-28s %d",#p ":",(struct_ptr)->p);	\
+	snprintf(MSG_STR,LLEN,"%-28s %d",#p ":",(struct_ptr)->p);	\
 	prt_msg(MSG_STR);
 
 #define REPORT_INT_PROP_HEX(struct_ptr,p)			\
-	sprintf(MSG_STR,"%-28s 0x%x",#p ":",(struct_ptr)->p);	\
+	snprintf(MSG_STR,LLEN,"%-28s 0x%x",#p ":",(struct_ptr)->p);	\
 	prt_msg(MSG_STR);
 
 #define REPORT_BOOL_PROP(struct_ptr,p)						\
-	sprintf(MSG_STR,"%-28s %s",#p ":",(struct_ptr)->p?"true":"false");	\
+	snprintf(MSG_STR,LLEN,"%-28s %s",#p ":",(struct_ptr)->p?"true":"false");	\
 	prt_msg(MSG_STR);
 
 #define REPORT_FLOAT_PROP(struct_ptr,p)				\
-	sprintf(MSG_STR,"%-28s %g",#p ":",(struct_ptr)->p);	\
+	snprintf(MSG_STR,LLEN,"%-28s %g",#p ":",(struct_ptr)->p);	\
 	prt_msg(MSG_STR);
 
 #ifdef HAVE_LIBFLYCAP
@@ -61,7 +61,7 @@ static const char *name_for_pixel_format(fc2PixelFormat f);	// forward def
 static void report_fmt7_info(QSP_ARG_DECL  fc2Format7Info *f7i_p );
 
 #define REPORT_PXLFMT_PROP(struct_ptr,p)						\
-	sprintf(MSG_STR,"%-28s %s",#p ":",name_for_pixel_format((struct_ptr)->p));	\
+	snprintf(MSG_STR,LLEN,"%-28s %s",#p ":",name_for_pixel_format((struct_ptr)->p));	\
 	prt_msg(MSG_STR);
 
 
@@ -381,14 +381,14 @@ static void report_fc2_error(QSP_ARG_DECL  fc2Error err, const char *whence )
 			msg = "There is an image consistency error."; break;
 
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"report_fc2_error (%s):  unhandled error code %d!?\n",
 				whence,err);
 			warn(ERROR_STRING);
 			msg = "unhandled error code";
 			break;
 	}
-	sprintf(ERROR_STRING,"%s:  %s",whence,msg);
+	snprintf(ERROR_STRING,LLEN,"%s:  %s",whence,msg);
 	warn(ERROR_STRING);
 }
 
@@ -416,10 +416,10 @@ void list_fly_cam_properties(QSP_ARG_DECL  Fly_Cam *fcp)
 	lp = pgr_prop_list();	// all properties
 	np = QLIST_HEAD(lp);
 	if( np != NULL ){
-		sprintf(MSG_STR,"\n%s properties",fcp->fc_name);
+		snprintf(MSG_STR,LLEN,"\n%s properties",fcp->fc_name);
 		prt_msg(MSG_STR);
 	} else {
-		sprintf(ERROR_STRING,"%s has no properties!?",fcp->fc_name);
+		snprintf(ERROR_STRING,LLEN,"%s has no properties!?",fcp->fc_name);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -427,7 +427,7 @@ void list_fly_cam_properties(QSP_ARG_DECL  Fly_Cam *fcp)
 	while(np!=NULL){
 		pgpt = (Fly_Cam_Property_Type *)NODE_DATA(np);
 		if( pgpt->info.present ){
-			sprintf(MSG_STR,"\t%s",pgpt->name);
+			snprintf(MSG_STR,LLEN,"\t%s",pgpt->name);
 			prt_msg(MSG_STR);
 		}
 		np = NODE_NEXT(np);
@@ -494,12 +494,12 @@ void show_property_info(QSP_ARG_DECL  Fly_Cam *fcp, Fly_Cam_Property_Type *pgpt 
 {
 	char var_name[32],val_str[32];
 
-	sprintf(MSG_STR,"\n%s %s info:",fcp->fc_name,pgpt->name);
+	snprintf(MSG_STR,LLEN,"\n%s %s info:",fcp->fc_name,pgpt->name);
 	prt_msg(MSG_STR);
 
 	// Now print out the property info?
 	if( ! pgpt->info.present ){
-		sprintf(MSG_STR,"%s is not present.",pgpt->name);
+		snprintf(MSG_STR,LLEN,"%s is not present.",pgpt->name);
 		prt_msg(MSG_STR);
 		return;
 	}
@@ -535,7 +535,7 @@ void show_property_info(QSP_ARG_DECL  Fly_Cam *fcp, Fly_Cam_Property_Type *pgpt 
 		prt_msg("\tReadout is not supported");
 
 	if( pgpt->info.absValSupported ){
-		sprintf(MSG_STR,"\tRange:\n\t\t"
+		snprintf(MSG_STR,LLEN,"\tRange:\n\t\t"
 		"%d - %d (integer)\n\t\t"
 		"%g - %g (absolute)",
 			pgpt->info.min,
@@ -543,34 +543,34 @@ void show_property_info(QSP_ARG_DECL  Fly_Cam *fcp, Fly_Cam_Property_Type *pgpt 
 	pgpt->info.absMin,pgpt->info.absMax);
 		prt_msg(MSG_STR);
 
-		sprintf(var_name,"%s_abs_min",pgpt->name);	// BUG possible buffer overrun, use snprintf or whatever...
-		sprintf(val_str,"%g",pgpt->info.absMin);
+		snprintf(var_name,32,"%s_abs_min",pgpt->name);	// BUG possible buffer overrun, use snprintf or whatever...
+		snprintf(val_str,32,"%g",pgpt->info.absMin);
 		assign_var(var_name,val_str);
 
-		sprintf(var_name,"%s_abs_max",pgpt->name);	// BUG possible buffer overrun, use snprintf or whatever...
-		sprintf(val_str,"%g",pgpt->info.absMax);
+		snprintf(var_name,32,"%s_abs_max",pgpt->name);	// BUG possible buffer overrun, use snprintf or whatever...
+		snprintf(val_str,32,"%g",pgpt->info.absMax);
 		assign_var(var_name,val_str);
 	} else {
-		sprintf(MSG_STR,"\tRange:  %d - %d",
+		snprintf(MSG_STR,LLEN,"\tRange:  %d - %d",
 			pgpt->info.min,pgpt->info.max);
 		prt_msg(MSG_STR);
 
-		sprintf(var_name,"%s_abs_min",pgpt->name);	// BUG possible buffer overrun, use snprintf or whatever...
+		snprintf(var_name,32,"%s_abs_min",pgpt->name);	// BUG possible buffer overrun, use snprintf or whatever...
 		assign_var(var_name,"(undefined)");
 
-		sprintf(var_name,"%s_abs_max",pgpt->name);	// BUG possible buffer overrun, use snprintf or whatever...
+		snprintf(var_name,32,"%s_abs_max",pgpt->name);	// BUG possible buffer overrun, use snprintf or whatever...
 		assign_var(var_name,"(undefined)");
 	}
 
-	sprintf(var_name,"%s_min",pgpt->name);	// BUG possible buffer overrun, use snprintf or whatever...
-	sprintf(val_str,"%d",pgpt->info.min);
+	snprintf(var_name,32,"%s_min",pgpt->name);	// BUG possible buffer overrun, use snprintf or whatever...
+	snprintf(val_str,32,"%d",pgpt->info.min);
 	assign_var(var_name,val_str);
 
-	sprintf(var_name,"%s_max",pgpt->name);	// BUG possible buffer overrun, use snprintf or whatever...
-	sprintf(val_str,"%d",pgpt->info.max);
+	snprintf(var_name,32,"%s_max",pgpt->name);	// BUG possible buffer overrun, use snprintf or whatever...
+	snprintf(val_str,32,"%d",pgpt->info.max);
 	assign_var(var_name,val_str);
 
-	sprintf(MSG_STR,"\tUnits:  %s (%s)",pgpt->info.pUnits,pgpt->info.pUnitAbbr);
+	snprintf(MSG_STR,LLEN,"\tUnits:  %s (%s)",pgpt->info.pUnits,pgpt->info.pUnitAbbr);
 	prt_msg(MSG_STR);
 }
 
@@ -587,22 +587,22 @@ void refresh_property_value(QSP_ARG_DECL  Fly_Cam *fcp, Fly_Cam_Property_Type *p
 
 void show_property_value(QSP_ARG_DECL  Fly_Cam *fcp, Fly_Cam_Property_Type *pgpt )
 {
-	sprintf(MSG_STR,"\n%s %s:",
+	snprintf(MSG_STR,LLEN,"\n%s %s:",
 		fcp->fc_name,pgpt->name);
 	prt_msg(MSG_STR);
 
 	if( pgpt->info.autoSupported ){
 		if( pgpt->prop.autoManualMode )
-			sprintf(MSG_STR,"\tAuto mode enabled");
+			snprintf(MSG_STR,LLEN,"\tAuto mode enabled");
 		else
-			sprintf(MSG_STR,"\tAuto mode disabled");
+			snprintf(MSG_STR,LLEN,"\tAuto mode disabled");
 	} else if( pgpt->info.manualSupported ){
 		if( pgpt->prop.autoManualMode )
-			sprintf(MSG_STR,"\tautoManualMode is true");
+			snprintf(MSG_STR,LLEN,"\tautoManualMode is true");
 		else
-			sprintf(MSG_STR,"\tautoManualMode is false");
+			snprintf(MSG_STR,LLEN,"\tautoManualMode is false");
 	} else {
-		sprintf(MSG_STR,"HUH???  Does not support auto or manual!?");
+		snprintf(MSG_STR,LLEN,"HUH???  Does not support auto or manual!?");
 	}
 	prt_msg(MSG_STR);
 
@@ -625,34 +625,34 @@ void show_property_value(QSP_ARG_DECL  Fly_Cam *fcp, Fly_Cam_Property_Type *pgpt
 		// Now print out the property value itself!
 		// Can we see both???
 
-		sprintf(MSG_STR,"\t%s:  %d (integer)",
+		snprintf(MSG_STR,LLEN,"\t%s:  %d (integer)",
 			pgpt->name,pgpt->prop.valueA);
 		prt_msg(MSG_STR);
 
 		// let a script access the value also
-		sprintf(MSG_STR,"%d",pgpt->prop.valueA);
+		snprintf(MSG_STR,LLEN,"%d",pgpt->prop.valueA);
 		assign_var(pgpt->name,MSG_STR);
 		// should this be a reserved var?  I think so!
 
 		if( pgpt->info.absValSupported ){
-			sprintf(MSG_STR,"\t%s:  %g %s (absolute)",
+			snprintf(MSG_STR,LLEN,"\t%s:  %g %s (absolute)",
 				pgpt->name,pgpt->prop.absValue,pgpt->info.pUnitAbbr);
 			prt_msg(MSG_STR);
 
 			// let a script access the value also
-			sprintf(MSG_STR,"%g",pgpt->prop.absValue);
-			sprintf(ERROR_STRING,"%s_abs",pgpt->name);	// using ERROR_STRING as a temporary...
+			snprintf(MSG_STR,LLEN,"%g",pgpt->prop.absValue);
+			snprintf(ERROR_STRING,LLEN,"%s_abs",pgpt->name);	// using ERROR_STRING as a temporary...
 			assign_var(ERROR_STRING,MSG_STR);
 			// should this be a reserved var?  I think so!
 		} else {
-			sprintf(ERROR_STRING,"%s_abs",pgpt->name);	// using ERROR_STRING as a temporary...
+			snprintf(ERROR_STRING,LLEN,"%s_abs",pgpt->name);	// using ERROR_STRING as a temporary...
 			assign_var(ERROR_STRING,"(undefined)");
 		}
 	} else {
 		prt_msg("\t(Readout not supported)");
-		sprintf(ERROR_STRING,"%s",pgpt->name);
+		snprintf(ERROR_STRING,LLEN,"%s",pgpt->name);
 		assign_var(ERROR_STRING,"(undefined)");
-		sprintf(ERROR_STRING,"%s_abs",pgpt->name);
+		snprintf(ERROR_STRING,LLEN,"%s_abs",pgpt->name);
 		assign_var(ERROR_STRING,"(undefined)");
 	}
 }
@@ -663,7 +663,7 @@ void set_prop_value(QSP_ARG_DECL  Fly_Cam *fcp, Fly_Cam_Property_Type *pgpt, Fly
 
 	if( vp->pv_is_abs ){
 		if( vp->pv_u.u_f < pgpt->info.absMin || vp->pv_u.u_f > pgpt->info.absMax ){
-			sprintf(ERROR_STRING,"Requested %s (%f) out of range (%f - %f)",
+			snprintf(ERROR_STRING,LLEN,"Requested %s (%f) out of range (%f - %f)",
 				pgpt->name,
 				vp->pv_u.u_f,pgpt->info.absMin,pgpt->info.absMax);
 			warn(ERROR_STRING);
@@ -673,7 +673,7 @@ void set_prop_value(QSP_ARG_DECL  Fly_Cam *fcp, Fly_Cam_Property_Type *pgpt, Fly
 		pgpt->prop.absValue = vp->pv_u.u_f;
 	} else {
 		if( vp->pv_u.u_i < pgpt->info.min || vp->pv_u.u_i > pgpt->info.max ){
-			sprintf(ERROR_STRING,"Requested %s (%d) out of range (%d - %d)",
+			snprintf(ERROR_STRING,LLEN,"Requested %s (%d) out of range (%d - %d)",
 				pgpt->name,
 				vp->pv_u.u_i,pgpt->info.min,pgpt->info.max);
 			warn(ERROR_STRING);
@@ -695,7 +695,7 @@ void set_prop_auto(QSP_ARG_DECL  Fly_Cam *fcp, Fly_Cam_Property_Type *pgpt, BOOL
 	fc2Error err;
 
 	if( ! pgpt->info.autoSupported ){
-		sprintf(ERROR_STRING,"Sorry, auto mode not supported for %s.",
+		snprintf(ERROR_STRING,LLEN,"Sorry, auto mode not supported for %s.",
 			pgpt->name);
 		warn(ERROR_STRING);
 		return;
@@ -709,11 +709,11 @@ void set_prop_auto(QSP_ARG_DECL  Fly_Cam *fcp, Fly_Cam_Property_Type *pgpt, BOOL
 	}
 }
 
-static void insure_stopped(QSP_ARG_DECL  Fly_Cam *fcp, const char *op_desc)
+static void ensure_stopped(QSP_ARG_DECL  Fly_Cam *fcp, const char *op_desc)
 {
 	if( (fcp->fc_flags & FLY_CAM_IS_RUNNING) == 0 ) return;
 
-	sprintf(ERROR_STRING,"Stopping capture on %s prior to %s",
+	snprintf(ERROR_STRING,LLEN,"Stopping capture on %s prior to %s",
 		fcp->fc_name,op_desc);
 	advise(ERROR_STRING);
 
@@ -799,7 +799,7 @@ int get_fly_cam_names( QSP_ARG_DECL  Data_Obj *str_dp )
 
 	n=eltcount(lp);
 	if( OBJ_COLS(str_dp) < n ){
-		sprintf(ERROR_STRING,"String object %s has too few columns (%ld) to hold %d fly_cam names",
+		snprintf(ERROR_STRING,LLEN,"String object %s has too few columns (%ld) to hold %d fly_cam names",
 			OBJ_NAME(str_dp),(long)OBJ_COLS(str_dp),n);
 		warn(ERROR_STRING);
 		n = OBJ_COLS(str_dp);
@@ -813,7 +813,7 @@ int get_fly_cam_names( QSP_ARG_DECL  Data_Obj *str_dp )
 		dst = OBJ_DATA_PTR(str_dp);
 		dst += i * OBJ_PXL_INC(str_dp);
 		if( strlen(fcp->fc_name)+1 > OBJ_COMPS(str_dp) ){
-			sprintf(ERROR_STRING,"String object %s has too few components (%ld) to hold fly_cam name \"%s\"",
+			snprintf(ERROR_STRING,LLEN,"String object %s has too few components (%ld) to hold fly_cam name \"%s\"",
 				OBJ_NAME(str_dp),(long)OBJ_COMPS(str_dp),fcp->fc_name);
 			warn(ERROR_STRING);
 		} else {
@@ -838,7 +838,7 @@ int get_fly_cam_video_mode_strings( QSP_ARG_DECL  Data_Obj *str_dp, Fly_Cam *fcp
 	int i, n;
 
 	if( OBJ_COLS(str_dp) < fcp->fc_n_video_modes ){
-		sprintf(ERROR_STRING,"String object %s has too few columns (%ld) to hold %d modes",
+		snprintf(ERROR_STRING,LLEN,"String object %s has too few columns (%ld) to hold %d modes",
 			OBJ_NAME(str_dp),(long)OBJ_COLS(str_dp),fcp->fc_n_video_modes);
 		warn(ERROR_STRING);
 		n = OBJ_COLS(str_dp);
@@ -856,7 +856,7 @@ int get_fly_cam_video_mode_strings( QSP_ARG_DECL  Data_Obj *str_dp, Fly_Cam *fcp
 		dst = OBJ_DATA_PTR(str_dp);
 		dst += i * OBJ_PXL_INC(str_dp);
 		if( strlen(src)+1 > OBJ_COMPS(str_dp) ){
-			sprintf(ERROR_STRING,"String object %s has too few components (%ld) to hold mode string \"%s\"",
+			snprintf(ERROR_STRING,LLEN,"String object %s has too few components (%ld) to hold mode string \"%s\"",
 				OBJ_NAME(str_dp),(long)OBJ_COMPS(str_dp),src);
 			warn(ERROR_STRING);
 		} else {
@@ -894,10 +894,10 @@ static void get_framerate_choices(QSP_ARG_DECL  Fly_Cam *fcp)
 
 	mask = fcp->fc_framerate_mask_tbl[ fcp->fc_my_video_mode_index ];
 /*
-sprintf(ERROR_STRING,"%s:  video mode is %s",
+snprintf(ERROR_STRING,LLEN,"%s:  video mode is %s",
 fcp->fc_name,all_video_modes[fcp->fc_video_mode_index].nvm_name);
 advise(ERROR_STRING);
-sprintf(ERROR_STRING,"%s:  my video mode %s (index = %d)",
+snprintf(ERROR_STRING,LLEN,"%s:  my video mode %s (index = %d)",
 fcp->fc_name,fcp->fc_video_mode_names[fcp->fc_my_video_mode_index],
 fcp->fc_my_video_mode_index);
 advise(ERROR_STRING);
@@ -959,7 +959,7 @@ int get_fly_cam_framerate_strings( QSP_ARG_DECL  Data_Obj *str_dp, Fly_Cam *fcp 
 	n = fcp->fc_n_framerates;
 
 	if( OBJ_COLS(str_dp) < n ){
-		sprintf(ERROR_STRING,"String object %s has too few columns (%ld) to hold %d framerates",
+		snprintf(ERROR_STRING,LLEN,"String object %s has too few columns (%ld) to hold %d framerates",
 			OBJ_NAME(str_dp),(long)OBJ_COLS(str_dp),n);
 		warn(ERROR_STRING);
 		n = OBJ_COLS(str_dp);
@@ -970,7 +970,7 @@ int get_fly_cam_framerate_strings( QSP_ARG_DECL  Data_Obj *str_dp, Fly_Cam *fcp 
 		dst = OBJ_DATA_PTR(str_dp);
 		dst += i * OBJ_PXL_INC(str_dp);
 		if( strlen(src)+1 > OBJ_COMPS(str_dp) ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 "String object %s has too few components (%ld) to hold framerate string \"%s\"",
 				OBJ_NAME(str_dp),(long)OBJ_COMPS(str_dp),src);
 			warn(ERROR_STRING);
@@ -1099,7 +1099,7 @@ int set_std_mode(QSP_ARG_DECL  Fly_Cam *fcp, int idx )
 //	CHECK_IDX(set_std_mode)
 	assert( idx >= 0 && idx < fcp->fc_n_video_modes );
 
-	insure_stopped(QSP_ARG  fcp,"setting video mode");
+	ensure_stopped(QSP_ARG  fcp,"setting video mode");
 
 	m = all_video_modes[ fcp->fc_video_mode_indices[idx] ].nvm_value;
 	if( m == FC2_VIDEOMODE_FORMAT7 ){
@@ -1176,7 +1176,7 @@ void report_fmt7_modes(QSP_ARG_DECL  Fly_Cam *fcp )
 {
 	int i;
 
-	sprintf(MSG_STR,"\nCamera %s has %d format7 modes\n",fcp->fc_name,fcp->fc_n_fmt7_modes);
+	snprintf(MSG_STR,LLEN,"\nCamera %s has %d format7 modes\n",fcp->fc_name,fcp->fc_n_fmt7_modes);
 	prt_msg(MSG_STR);
 
 	for(i=0;i<fcp->fc_n_fmt7_modes;i++){
@@ -1273,7 +1273,7 @@ int set_fmt7_mode(QSP_ARG_DECL  Fly_Cam *fcp, int idx )
 {
 	fc2Format7ImageSettings settings;
 
-	insure_stopped(QSP_ARG  fcp,"setting format7 mode");
+	ensure_stopped(QSP_ARG  fcp,"setting format7 mode");
 
 	if( idx < 0 || idx >= fcp->fc_n_fmt7_modes ){
 		warn("Format 7 index out of range!?");
@@ -1304,7 +1304,7 @@ void set_eii_property(QSP_ARG_DECL  Fly_Cam *fcp, int idx, int yesno )
 
 	eii_p = (myEmbeddedImageInfo *) (&fcp->fc_ei_info);
 	if( ! eii_p->prop_tbl[idx].available ){
-		sprintf(ERROR_STRING,"Property %s is not available on %s",
+		snprintf(ERROR_STRING,LLEN,"Property %s is not available on %s",
 			eii_prop_names[idx],fcp->fc_name);
 		warn(ERROR_STRING);
 		return;
@@ -1342,7 +1342,7 @@ void show_grab_mode(QSP_ARG_DECL  Fly_Cam *fcp)
 
 	idx = index_of_grab_mode(fcp->fc_config.grabMode);
 	if( idx < 0 ) return;
-	sprintf(MSG_STR,"Current grab mode:  %s",all_grab_modes[idx].ngm_name);
+	snprintf(MSG_STR,LLEN,"Current grab mode:  %s",all_grab_modes[idx].ngm_name);
 	prt_msg(MSG_STR);
 }
 
@@ -1351,7 +1351,7 @@ int pick_fly_cam_framerate(QSP_ARG_DECL  Fly_Cam *fcp, const char *pmpt)
 	int i;
 
 	if( fcp == NULL ){
-		sprintf(ERROR_STRING,"pick_fly_cam_framerate:  no fly_cam selected!?");
+		snprintf(ERROR_STRING,LLEN,"pick_fly_cam_framerate:  no fly_cam selected!?");
 		warn(ERROR_STRING);
 		return -1;
 	}
@@ -1368,7 +1368,7 @@ int set_framerate(QSP_ARG_DECL  Fly_Cam *fcp, int framerate_index)
 
 	if( fcp == NULL ) return -1;
 
-	insure_stopped(QSP_ARG  fcp,"setting frame rate");
+	ensure_stopped(QSP_ARG  fcp,"setting frame rate");
 
 	rate = all_framerates[framerate_index].nfr_value;
 	err = fc2SetVideoModeAndFrameRate(fcp->fc_context,
@@ -1385,14 +1385,14 @@ int set_framerate(QSP_ARG_DECL  Fly_Cam *fcp, int framerate_index)
 
 void show_fly_cam_framerate(QSP_ARG_DECL  Fly_Cam *fcp)
 {
-	sprintf(MSG_STR,"%s framerate:  %s",
+	snprintf(MSG_STR,LLEN,"%s framerate:  %s",
 		fcp->fc_name,all_framerates[fcp->fc_framerate_index].nfr_name);
 	advise(MSG_STR);
 }
 
 void show_fly_cam_video_mode(QSP_ARG_DECL  Fly_Cam *fcp)
 {
-	sprintf(MSG_STR,"%s video mode:  %s",
+	snprintf(MSG_STR,LLEN,"%s video mode:  %s",
 		fcp->fc_name,name_for_video_mode(fcp->fc_video_mode));
 	advise(MSG_STR);
 }
@@ -1455,7 +1455,7 @@ static int set_default_video_mode(QSP_ARG_DECL  Fly_Cam *fcp)
 	} while( m == FC2_VIDEOMODE_FORMAT7  && _nskip < fcp->fc_n_video_modes );
 
 	if( m == FC2_VIDEOMODE_FORMAT7 ){
-		sprintf(ERROR_STRING,"set_default_video_mode:  %s has only format7 modes!?",
+		snprintf(ERROR_STRING,LLEN,"set_default_video_mode:  %s has only format7 modes!?",
 			fcp->fc_name);
 		advise(ERROR_STRING);
 		return -1;
@@ -1483,7 +1483,7 @@ static int set_default_video_mode(QSP_ARG_DECL  Fly_Cam *fcp)
 	fcp->fc_framerate = r;
 	fcp->fc_framerate_index = index_of_framerate(r);
 
-//sprintf(ERROR_STRING,"set_default_video_mode:  setting to %s", name_for_video_mode(m));
+//snprintf(ERROR_STRING,LLEN,"set_default_video_mode:  setting to %s", name_for_video_mode(m));
 //advise(ERROR_STRING);
 
 
@@ -1502,7 +1502,7 @@ static int set_default_video_mode(QSP_ARG_DECL  Fly_Cam *fcp)
 	//set_script_var_from_int(QSP_ARG
 	//		"n_framerates",fcp->fc_framerates.num);
 
-sprintf(ERROR_STRING,"%s:  %s, %s fps",fcp->fc_name,name_for_video_mode(m),
+snprintf(ERROR_STRING,LLEN,"%s:  %s, %s fps",fcp->fc_name,name_for_video_mode(m),
 						name_for_framerate(r) );
 advise(ERROR_STRING);
 
@@ -1535,25 +1535,20 @@ static Fly_Cam *unique_fly_cam_instance( QSP_ARG_DECL  fc2Context context )
 	i=1;
 	fcp=NULL;
 	while(fcp==NULL){
-		//sprintf(cname,"%s_%d",cam_p->model,i);
 		if( snprintf(cname,LLEN,"%s_%d",camInfo.modelName,i) >= LLEN ){
 			error1("unique_fly_cam_instance:  camera name too long for buffer!?");
 		}
 		fix_string(cname);	// change spaces to underscores
-//sprintf(ERROR_STRING,"Checking for existence of %s",cname);
-//advise(ERROR_STRING);
 		fcp = fly_cam_of( cname );
 		if( fcp == NULL ){	// This index is free
-//sprintf(ERROR_STRING,"%s is not in use",cname);
-//advise(ERROR_STRING);
 			fcp = new_fly_cam( cname );
 			if( fcp == NULL ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"Failed to create fly_cam %s!?",cname);
 				error1(ERROR_STRING);
 			}
 		} else {
-//sprintf(ERROR_STRING,"%s IS in use",cname);
+//snprintf(ERROR_STRING,LLEN,"%s IS in use",cname);
 //advise(ERROR_STRING);
 			fcp = NULL;
 		}
@@ -1568,7 +1563,6 @@ static Fly_Cam *unique_fly_cam_instance( QSP_ARG_DECL  fc2Context context )
 
 static void show_fmt7_table_data(QSP_ARG_DECL  fc2Format7Info *f7i_p)
 {
-//	sprintf(MSG_STR,
 }
 
 static void get_fmt7_modes(QSP_ARG_DECL  Fly_Cam *fcp)
@@ -1600,7 +1594,7 @@ fprintf(stderr,"format7 mode %d is NOT supported\n",i);
 		}
 	}
 	if( (largest+1) != fcp->fc_n_fmt7_modes ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Unexpected number of format7 modes!?  (largest index = %d, n_modes = %d)",
 			largest,fcp->fc_n_fmt7_modes);
 		error1(ERROR_STRING);
@@ -1625,12 +1619,12 @@ report_fmt7_info(QSP_ARG  &fcp->fc_fmt7_info_tbl[i] );
 
 #define SHOW_FIELD(desc_str,value)					\
 									\
-sprintf(MSG_STR,"\t%s:  %d",#desc_str,fcp->fc_fmt7_info_tbl[mode].value);	\
+snprintf(MSG_STR,LLEN,"\t%s:  %d",#desc_str,fcp->fc_fmt7_info_tbl[mode].value);	\
 prt_msg(MSG_STR);
 
 #define SHOW_FIELD_HEX(desc_str,value)					\
 									\
-sprintf(MSG_STR,"\t%s:  0x%x",#desc_str,fcp->fc_fmt7_info_tbl[mode].value); \
+snprintf(MSG_STR,LLEN,"\t%s:  0x%x",#desc_str,fcp->fc_fmt7_info_tbl[mode].value); \
 prt_msg(MSG_STR);
 
 static void report_fmt7_info(QSP_ARG_DECL  fc2Format7Info *f7i_p )
@@ -1785,14 +1779,14 @@ name_for_framerate(fcp->fc_framerate)
 //#ifdef NOT_GOOD
 	if( set_default_video_mode(QSP_ARG  fcp) < 0 ){
 		/*
-		sprintf(ERROR_STRING,"error setting default video mode for %s",fcp->fc_name);
+		snprintf(ERROR_STRING,LLEN,"error setting default video mode for %s",fcp->fc_name);
 		warn(ERROR_STRING);
 		cleanup_fly_cam( fcp );
 		return(NULL);
 		*/
 		// This can fail for fly_cams that only support format7...
 		// Deal with this better later
-		sprintf(ERROR_STRING,"error setting default video mode for %s, only format7?",
+		snprintf(ERROR_STRING,LLEN,"error setting default video mode for %s, only format7?",
 			fcp->fc_name);
 		advise(ERROR_STRING);
 	}
@@ -1856,7 +1850,7 @@ int init_fly_cam_system(SINGLE_QSP_ARG_DECL)
 	init_property_types(SINGLE_QSP_ARG);
 
 	fc2GetLibraryVersion(&version);
-	sprintf(ERROR_STRING,"FlyCapture2 library version:  %d.%d.%d.%d",
+	snprintf(ERROR_STRING,LLEN,"FlyCapture2 library version:  %d.%d.%d.%d",
 		version.major,version.minor,version.type,version.build);
 	advise(ERROR_STRING);
 
@@ -1881,7 +1875,7 @@ int init_fly_cam_system(SINGLE_QSP_ARG_DECL)
 		advise("No fly_cams detected.");
 		return 0;
 	}
-	sprintf(ERROR_STRING,
+	snprintf(ERROR_STRING,LLEN,
 		"%d fly_cam%s found.", numCameras, numCameras==1?"":"s" );
 	advise(ERROR_STRING);
 
@@ -1910,7 +1904,7 @@ int init_fly_cam_system(SINGLE_QSP_ARG_DECL)
 #ifdef HAVE_LIBFLYCAP
 static void show_cam_info(QSP_ARG_DECL  fc2CameraInfo *cip)
 {
-	sprintf(MSG_STR,
+	snprintf(MSG_STR,LLEN,
                 "\n*** CAMERA INFORMATION ***\n"
                 "Serial number - %u\n"
                 "Camera model - %s (%s)\n"
@@ -1936,7 +1930,7 @@ static void show_cam_info(QSP_ARG_DECL  fc2CameraInfo *cip)
 
 void show_n_buffers(QSP_ARG_DECL  Fly_Cam *fcp)
 {
-	sprintf(MSG_STR,"%s:  %d buffers",fcp->fc_name,fcp->fc_n_buffers);
+	snprintf(MSG_STR,LLEN,"%s:  %d buffers",fcp->fc_name,fcp->fc_n_buffers);
 	prt_msg(MSG_STR);
 }
 
@@ -1947,7 +1941,7 @@ int set_n_buffers(QSP_ARG_DECL  Fly_Cam *fcp, int n )
 
 fprintf(stderr,"set_n_buffers %s %d\n",fcp->fc_name,n);
 	if( n < MIN_N_BUFFERS || n > MAX_N_BUFFERS ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "set_n_buffers:  number of buffers must be between %d and %d (%d requested)!?",
 			MIN_N_BUFFERS,MAX_N_BUFFERS,n);
 		warn(ERROR_STRING);
@@ -1973,7 +1967,7 @@ show_n_buffers(QSP_ARG  fcp);
 static void show_cam_cfg(QSP_ARG_DECL  fc2Config *cfp)
 {
 	prt_msg("*** Configuration ***");
-	sprintf(MSG_STR,
+	snprintf(MSG_STR,LLEN,
 		"number of buffers:  %d\n"
 		"number of image notifications:  %d\n"
 		"min. num. image notifications:  %d\n"
@@ -2000,7 +1994,7 @@ static void show_cam_cfg(QSP_ARG_DECL  fc2Config *cfp)
 #define SHOW_EI(member)					\
 							\
 	if( eip->member.available ){			\
-		sprintf(MSG_STR,"%s:  %s",#member,	\
+		snprintf(MSG_STR,LLEN,"%s:  %s",#member,	\
 		eip->member.onOff ? "on" : "off" );	\
 		prt_msg(MSG_STR);			\
 	}
@@ -2032,7 +2026,7 @@ void print_fly_cam_info(QSP_ARG_DECL  Fly_Cam *fcp)
 
 	/*
 	i=index_of_framerate(fcp->fc_framerate);
-	sprintf(msg_str,"\tframe rate:  %s",all_framerates[i].nfr_name);
+	snprintf(msg_str,LLEN,"\tframe rate:  %s",all_framerates[i].nfr_name);
 	prt_msg(msg_str);
 	*/
 
@@ -2041,7 +2035,7 @@ void print_fly_cam_info(QSP_ARG_DECL  Fly_Cam *fcp)
 	// show_fmt7_modes(QSP_ARG  fcp);
 	// Show the current video mode
 
-	sprintf(MSG_STR,"Current video mode:  %s%s",
+	snprintf(MSG_STR,LLEN,"Current video mode:  %s%s",
 		fcp->fc_my_video_mode_index >= 0 ?
 		fcp->fc_video_mode_names[ fcp->fc_my_video_mode_index ] :
 		"format7 mode ",
@@ -2052,7 +2046,7 @@ void print_fly_cam_info(QSP_ARG_DECL  Fly_Cam *fcp)
 			);
 	prt_msg(MSG_STR);
 
-	sprintf(MSG_STR,"Current frame rate:  %s",
+	snprintf(MSG_STR,LLEN,"Current frame rate:  %s",
 		all_framerates[ fcp->fc_framerate_index ].nfr_name );
 	prt_msg(MSG_STR);
 }
@@ -2063,7 +2057,7 @@ static void init_one_frame(QSP_ARG_DECL  Fly_Cam *fcp, int index )
 	char fname[32];
 	Dimension_Set ds1;
 
-	sprintf(fname,"frame%d",index);
+	snprintf(fname,32,"frame%d",index);
 	//assign_var("newest",fname+5);
 
 	dp = dobj_of(fname);
@@ -2082,7 +2076,7 @@ static void init_one_frame(QSP_ARG_DECL  Fly_Cam *fcp, int index )
 //fprintf(stderr,"init_one_frame %d:  %s, data at 0x%lx\n",index,OBJ_NAME(dp),(long)OBJ_DATA_PTR(dp));
 //		}
 	} else {
-		sprintf(ERROR_STRING,"init_one_frame:  object %s already exists!?",
+		snprintf(ERROR_STRING,LLEN,"init_one_frame:  object %s already exists!?",
 			fname);
 		warn(ERROR_STRING);
 	}
@@ -2140,7 +2134,7 @@ static void init_fly_base(QSP_ARG_DECL  Fly_Cam *fcp)
 			return;
 		}
 /*
-sprintf(ERROR_STRING,"pData = 0x%lx",(long)fcp->fc_img_p->pData);
+snprintf(ERROR_STRING,LLEN,"pData = 0x%lx",(long)fcp->fc_img_p->pData);
 advise(ERROR_STRING);
 */
 		buf_addr = fcp->fc_img_p->pData;
@@ -2172,17 +2166,17 @@ advise(ERROR_STRING);
 	//fcp->fc_buf_delta = (largest - smallest) / 30;
 
 	if( verbose ){
-		sprintf(ERROR_STRING,"%d distinct buffers seen.",
+		snprintf(ERROR_STRING,LLEN,"%d distinct buffers seen.",
 			n_buffers_seen);
 		advise(ERROR_STRING);
-		sprintf(ERROR_STRING,"largest addr = 0x%lx",
+		snprintf(ERROR_STRING,LLEN,"largest addr = 0x%lx",
 			(long)largest_addr);
 		advise(ERROR_STRING);
-		sprintf(ERROR_STRING,"smallest addr = 0x%lx",
+		snprintf(ERROR_STRING,LLEN,"smallest addr = 0x%lx",
 			(long)smallest_addr);
 		advise(ERROR_STRING);
 
-		sprintf(ERROR_STRING,"buf_delta = 0x%lx",
+		snprintf(ERROR_STRING,LLEN,"buf_delta = 0x%lx",
 			(long)fcp->fc_buf_delta);
 		advise(ERROR_STRING);
 	}
@@ -2200,7 +2194,7 @@ int check_buffer_alignment(QSP_ARG_DECL  Fly_Cam *fcp)
 
 	for(i=0;i<fcp->fc_n_buffers;i++){
 		if( ((long)(fcp->fc_base+i*fcp->fc_buf_delta)) % RV_ALIGNMENT_REQ != 0 ){
-			sprintf(ERROR_STRING,"Buffer %d is not aligned - %d byte alignment required for raw volume I/O!?",
+			snprintf(ERROR_STRING,LLEN,"Buffer %d is not aligned - %d byte alignment required for raw volume I/O!?",
 				i,RV_ALIGNMENT_REQ);
 			warn(ERROR_STRING);
 			return -1;
@@ -2215,7 +2209,7 @@ static int index_of_buffer(QSP_ARG_DECL  Fly_Cam *fcp,fc2Image *ip)
 
 	idx = ( ip->pData - fcp->fc_base ) / fcp->fc_buf_delta;
 	/*
-sprintf(ERROR_STRING,
+snprintf(ERROR_STRING,LLEN,
 "index_of_buffer:  data at 0x%lx, base = 0x%lx, idx = %d",
 (long)ip->pData,(long)fcp->fc_base,idx);
 advise(ERROR_STRING);
@@ -2367,7 +2361,7 @@ void stop_firewire_capture(QSP_ARG_DECL  Fly_Cam *fcp)
 #define CHECK_VALID_SIZE										\
 													\
 	if( ! isValid ){										\
-		sprintf(ERROR_STRING,"set_fmt7_size:  requested size (%d x %d) is not valid!?",w,h);	\
+		snprintf(ERROR_STRING,LLEN,"set_fmt7_size:  requested size (%d x %d) is not valid!?",w,h);	\
 		warn(ERROR_STRING);									\
 		return;											\
 	}
@@ -2375,7 +2369,7 @@ void stop_firewire_capture(QSP_ARG_DECL  Fly_Cam *fcp)
 #define CHECK_VALID_POSN										\
 													\
 	if( ! isValid ){										\
-		sprintf(ERROR_STRING,"set_fmt7_posn:  requested position (%d, %d) is not valid!?",x,y);	\
+		snprintf(ERROR_STRING,LLEN,"set_fmt7_posn:  requested position (%d, %d) is not valid!?",x,y);	\
 		warn(ERROR_STRING);									\
 		return;											\
 	}
@@ -2474,7 +2468,7 @@ void set_buffer_obj(QSP_ARG_DECL  Fly_Cam *fcp, Data_Obj *dp)
 {
 	// make sure sizes match
 	if( OBJ_COLS(dp) != fcp->fc_cols || OBJ_ROWS(dp) != fcp->fc_rows ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "set_buffer_obj:  size mismatch between %s (%dx%d) and object %s (%dx%d)",
 			fcp->fc_name,fcp->fc_cols,fcp->fc_rows,
 			OBJ_NAME(dp),OBJ_COLS(dp),OBJ_ROWS(dp) );
@@ -2482,7 +2476,7 @@ void set_buffer_obj(QSP_ARG_DECL  Fly_Cam *fcp, Data_Obj *dp)
 		return;
 	}
 	if( PREC_CODE(OBJ_MACH_PREC_PTR(dp)) != PREC_UBY ){
-		sprintf(ERROR_STRING,"Object %s (%s) should have %s precision!?",
+		snprintf(ERROR_STRING,LLEN,"Object %s (%s) should have %s precision!?",
 			OBJ_NAME(dp),OBJ_PREC_NAME(dp),NAME_FOR_PREC_CODE(PREC_UBY));
 		warn(ERROR_STRING);
 		return;
@@ -2528,7 +2522,7 @@ void get_strobe_info(QSP_ARG_DECL Fly_Cam *fcp, int source)
 	fc2Error err;
 
 	if( fcp == NULL ){
-		sprintf(ERROR_STRING,"get_strobe_info:  no fly_cam selected!?");
+		snprintf(ERROR_STRING,LLEN,"get_strobe_info:  no fly_cam selected!?");
 		warn(ERROR_STRING);
 		return;
 	}
@@ -2621,7 +2615,7 @@ int pick_grab_mode(QSP_ARG_DECL Fly_Cam *fcp, const char *pmpt)
 	int idx;
 
 	if( fcp == NULL ){
-		sprintf(ERROR_STRING,"pick_fly_cam_grab_mode:  no fly_cam selected!?");
+		snprintf(ERROR_STRING,LLEN,"pick_fly_cam_grab_mode:  no fly_cam selected!?");
 		warn(ERROR_STRING);
 		return -1;
 	}

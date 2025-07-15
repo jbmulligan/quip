@@ -46,7 +46,7 @@ SPINK_WRAPPER_TWO_ARG(node_is_readable,NodeIsReadable,spinNodeHandle,hNode,bool8
 SPINK_WRAPPER_TWO_ARG(node_is_writable,NodeIsWritable,spinNodeHandle,hNode,bool8_t *,flag_p)
 SPINK_WRAPPER_TWO_ARG(set_enum_int_val,EnumerationSetIntValue,spinNodeHandle,hNode,int64_t , v)
 
-SPINK_WRAPPER_THREE_ARG(convert_spink_image,ImageConvert,spinImage,hSrcImg,spinPixelFormatEnums,fmt,spinImage,hDestImg)
+/*SPINK_WRAPPER_THREE_ARG(convert_spink_image,ImageConvert,spinImage,hSrcImg,spinPixelFormatEnums,fmt,spinImage,hDestImg)*/
 SPINK_WRAPPER_THREE_ARG(fetch_spink_node,NodeMapGetNode,spinNodeMapHandle,hMap,const char *,tag,spinNodeHandle *,hNode_p)
 SPINK_WRAPPER_THREE_ARG(get_cam_from_list,CameraListGet,spinCameraList,hCamList,int,idx,spinCamera *,hCam_p)
 SPINK_WRAPPER_THREE_ARG(get_entry_symbolic,EnumerationEntryGetSymbolic,spinNodeHandle,hNode,char *,buf,size_t *,buflen_p)
@@ -67,18 +67,19 @@ SPINK_WRAPPER_ONE_ARG(unregister_all_log_event_handlers,SystemUnregisterAllLogEv
 //SPINK_WRAPPER_ONE_ARG(unregister_all_log_events,SystemUnregisterAllLogEvents,spinSystem,hSystem)
 SPINK_WRAPPER_ONE_ARG(exec_spink_command,CommandExecute,spinNodeHandle,hNode)
 SPINK_WRAPPER_ONE_ARG(destroy_image,ImageDestroy,spinImage,hImage)
-SPINK_WRAPPER_ONE_ARG(set_default_color_proc,ImageSetDefaultColorProcessing,spinColorProcessingAlgorithm,algorithm)
-SPINK_WRAPPER_ONE_ARG(get_default_color_proc,ImageGetDefaultColorProcessing,spinColorProcessingAlgorithm*,pAlgorithm)
+/*SPINK_WRAPPER_ONE_ARG(set_default_color_proc,ImageSetDefaultColorProcessing,spinColorProcessingAlgorithm,algorithm)*/
+/*SPINK_WRAPPER_ONE_ARG(get_default_color_proc,ImageGetDefaultColorProcessing,spinColorProcessingAlgorithm*,pAlgorithm)*/
 //SPINK_WRAPPER_ONE_ARG(destroy_device_event,DeviceEventDestroy,spinDeviceEvent,hDeviceEvent)
 
 
 // These were commented out - which version???
-SPINK_WRAPPER_ONE_ARG(destroy_device_event,DeviceEventDestroy,spinDeviceEventData,hDeviceEvent)
-SPINK_WRAPPER_ONE_ARG(destroy_image_event,ImageEventDestroy,spinImageEvent,hImageEvent)
-SPINK_WRAPPER_ONE_ARG(destroy_arrival_event,ArrivalEventDestroy,spinArrivalEvent,hArrivalEvent)
-SPINK_WRAPPER_ONE_ARG(destroy_removal_event,RemovalEventDestroy,spinRemovalEvent,hRemovalEvent)
-SPINK_WRAPPER_ONE_ARG(destroy_iface_event,InterfaceEventDestroy,spinInterfaceEvent,hInterfaceEvent)
-SPINK_WRAPPER_ONE_ARG(destroy_log_event,LogEventDestroy,spinLogEvent,hLogEvent)
+// Most throw errors w/ version 3.x for intel mac...
+/*SPINK_WRAPPER_ONE_ARG(destroy_device_event,DeviceEventDestroy,spinDeviceEventData,hDeviceEvent)*/
+/*SPINK_WRAPPER_ONE_ARG(destroy_image_event,ImageEventDestroy,spinImageEvent,hImageEvent)*/
+/*SPINK_WRAPPER_ONE_ARG(destroy_arrival_event,ArrivalEventDestroy,spinArrivalEvent,hArrivalEvent)*/
+/*SPINK_WRAPPER_ONE_ARG(destroy_removal_event,RemovalEventDestroy,spinRemovalEvent,hRemovalEvent)*/
+/*SPINK_WRAPPER_ONE_ARG(destroy_iface_event,InterfaceEventDestroy,spinInterfaceEvent,hInterfaceEvent)*/
+/*SPINK_WRAPPER_ONE_ARG(destroy_log_event,LogEventDestroy,spinLogEvent,hLogEvent)*/
 // end of commented out lines
 
 
@@ -146,12 +147,16 @@ SPINK_WRAPPER_TWO_ARG(unregister_iface_iface_event_handler,InterfaceUnregisterIn
 SPINK_WRAPPER_TWO_ARG(iface_is_in_use,InterfaceIsInUse,spinInterface,hInterface,bool8_t*,pbIsInUse)
 SPINK_WRAPPER_TWO_ARG(get_camera_access_mode,CameraGetAccessMode,spinCamera,hCamera,spinAccessMode*,pAccessMode)
 SPINK_WRAPPER_TWO_ARG(camera_is_streaming,CameraIsStreaming,spinCamera,hCamera,bool8_t*,pbIsStreaming)
-<<<<<<< HEAD
-SPINK_WRAPPER_TWO_ARG(register_cam_device_event,CameraRegisterDeviceEvent,spinCamera,hCamera,spinDeviceEventData,hDeviceEvent)
-SPINK_WRAPPER_TWO_ARG(unregister_cam_device_event,CameraUnregisterDeviceEvent,spinCamera,hCamera,spinDeviceEvent,hDeviceEvent)
-SPINK_WRAPPER_TWO_ARG(register_cam_image_event,CameraRegisterImageEvent,spinCamera,hCamera,spinImageEvent,hImageEvent)
-SPINK_WRAPPER_TWO_ARG(unregister_cam_image_event,CameraUnregisterImageEvent,spinCamera,hCamera,spinImageEvent,hImageEvent)
-=======
+
+//<<<<<<< HEAD
+
+/*SPINK_WRAPPER_TWO_ARG(register_cam_device_event,CameraRegisterDeviceEvent,spinCamera,hCamera,spinDeviceEventData,hDeviceEvent)*/
+/*SPINK_WRAPPER_TWO_ARG(unregister_cam_device_event,CameraUnregisterDeviceEvent,spinCamera,hCamera,spinDeviceEvent,hDeviceEvent)*/
+/*SPINK_WRAPPER_TWO_ARG(register_cam_image_event,CameraRegisterImageEvent,spinCamera,hCamera,spinImageEvent,hImageEvent)*/
+/*SPINK_WRAPPER_TWO_ARG(unregister_cam_image_event,CameraUnregisterImageEvent,spinCamera,hCamera,spinImageEvent,hImageEvent)*/
+
+//=======
+
 SPINK_WRAPPER_TWO_ARG(register_cam_device_event_handler,CameraRegisterDeviceEventHandler,spinCamera,hCamera,spinDeviceEventHandler,hDeviceEventHandler)
 //SPINK_WRAPPER_TWO_ARG(register_cam_device_event,CameraRegisterDeviceEvent,spinCamera,hCamera,spinDeviceEvent,hDeviceEvent)
 SPINK_WRAPPER_TWO_ARG(unregister_cam_device_event_handler,CameraUnregisterDeviceEventHandler,spinCamera,hCamera,spinDeviceEventHandler,hDeviceEventHandler)
@@ -160,7 +165,9 @@ SPINK_WRAPPER_TWO_ARG(register_cam_image_event,CameraRegisterImageEventHandler,s
 //SPINK_WRAPPER_TWO_ARG(register_cam_image_event,CameraRegisterImageEvent,spinCamera,hCamera,spinImageEvent,hImageEvent)
 SPINK_WRAPPER_TWO_ARG(unregister_cam_image_event_handler,CameraUnregisterImageEventHandler,spinCamera,hCamera,spinImageEventHandler,hImageEventHandler)
 //SPINK_WRAPPER_TWO_ARG(unregister_cam_image_event,CameraUnregisterImageEvent,spinCamera,hCamera,spinImageEvent,hImageEvent)
->>>>>>> 45bee3d9771945c0486ef302b675a311dcf57e01
+
+//>>>>>>> 45bee3d9771945c0486ef302b675a311dcf57e01
+
 SPINK_WRAPPER_TWO_ARG(camera_is_valid,CameraIsValid,spinCamera,hCamera,bool8_t*,pbValid)
 SPINK_WRAPPER_TWO_ARG(camera_is_initialized,CameraIsInitialized,spinCamera,hCamera,bool8_t*,pbInit)
 SPINK_WRAPPER_TWO_ARG(discover_cam_max_packet_size,CameraDiscoverMaxPacketSize,spinCamera,hCamera,unsigned int*,pMaxPacketSize)
@@ -178,10 +185,10 @@ SPINK_WRAPPER_TWO_ARG(get_image_padding_y,ImageGetPaddingY,spinImage,hImage,size
 SPINK_WRAPPER_TWO_ARG(get_image_frame_id,ImageGetFrameID,spinImage,hImage,uint64_t*,pFrameID)
 SPINK_WRAPPER_TWO_ARG(get_image_timestamp,ImageGetTimeStamp,spinImage,hImage,uint64_t*,pTimeStamp)
 SPINK_WRAPPER_TWO_ARG(get_image_payload_type,ImageGetPayloadType,spinImage,hImage,size_t*,pPayloadType)
-SPINK_WRAPPER_TWO_ARG(get_TL_payload_type,ImageGetTLPayloadType,spinImage,hImage,spinPayloadTypeInfoIDs*,pPayloadType)
+/*SPINK_WRAPPER_TWO_ARG(get_TL_payload_type,ImageGetTLPayloadType,spinImage,hImage,spinPayloadTypeInfoIDs*,pPayloadType)*/
 SPINK_WRAPPER_TWO_ARG(get_image_pixel_format,ImageGetPixelFormat,spinImage,hImage,spinPixelFormatEnums*,pPixelFormat)
 SPINK_WRAPPER_TWO_ARG(get_TL_pixel_format,ImageGetTLPixelFormat,spinImage,hImage,uint64_t*,pPixelFormat)
-SPINK_WRAPPER_TWO_ARG(get_TL_pixel_format_namespace,ImageGetTLPixelFormatNamespace,spinImage,hImage,spinPixelFormatNamespaceID*,pPixelFormatNamespace)
+/*SPINK_WRAPPER_TWO_ARG(get_TL_pixel_format_namespace,ImageGetTLPixelFormatNamespace,spinImage,hImage,spinPixelFormatNamespaceID*,pPixelFormatNamespace)*/
 SPINK_WRAPPER_TWO_ARG(get_valid_image_payload_size,ImageGetValidPayloadSize,spinImage,hImage,size_t*,pSize)
 //SPINK_WRAPPER_TWO_ARG(spinImageSaveFromExt,Image,hImage,const char*,pFilename)
 //SPINK_WRAPPER_TWO_ARG(spinImageGetChunkLayoutID,Image,hImage,uint64_t*,pId)
@@ -244,13 +251,17 @@ SPINK_WRAPPER_THREE_ARG(get_pizel_format_name,ImageGetPixelFormatName,spinImage,
 //SPINK_WRAPPER_THREE_ARG(ImageSaveJpg2,spinImage,hImage,const char*,pFilename,const spinJPG2Option*,pOption)
 //SPINK_WRAPPER_THREE_ARG(ImageSaveBmp,spinImage,hImage,const char*,pFilename,const spinBMPOption*,pOption)
 SPINK_WRAPPER_THREE_ARG(get_image_status_description,ImageGetStatusDescription,spinImageStatus,status,char*,pBuf,size_t*,pLen)
-<<<<<<< HEAD
-SPINK_WRAPPER_THREE_ARG(create_device_event,DeviceEventCreate,spinDeviceEventData*,phDeviceEvent,spinDeviceEventFunction,pFunction,void*,pUserData)
-SPINK_WRAPPER_THREE_ARG(create_image_event,ImageEventCreate,spinImageEvent*,phImageEvent,spinImageEventFunction,pFunction,void*,pUserData)
-SPINK_WRAPPER_THREE_ARG(create_arrival_event,ArrivalEventCreate,spinArrivalEvent*,phArrivalEvent,spinArrivalEventFunction,pFunction,void*,pUserData)
-SPINK_WRAPPER_THREE_ARG(create_removal_event,RemovalEventCreate,spinRemovalEvent*,phRemovalEvent,spinRemovalEventFunction,pFunction,void*,pUserData)
-SPINK_WRAPPER_THREE_ARG(create_log_event,LogEventCreate,spinLogEvent*,phLogEvent,spinLogEventFunction,pFunction,void*,pUserData)
-=======
+
+//<<<<<<< HEAD
+
+/*SPINK_WRAPPER_THREE_ARG(create_device_event,DeviceEventCreate,spinDeviceEventData*,phDeviceEvent,spinDeviceEventFunction,pFunction,void*,pUserData)*/
+/*SPINK_WRAPPER_THREE_ARG(create_image_event,ImageEventCreate,spinImageEvent*,phImageEvent,spinImageEventFunction,pFunction,void*,pUserData)*/
+/*SPINK_WRAPPER_THREE_ARG(create_arrival_event,ArrivalEventCreate,spinArrivalEvent*,phArrivalEvent,spinArrivalEventFunction,pFunction,void*,pUserData)*/
+/*SPINK_WRAPPER_THREE_ARG(create_removal_event,RemovalEventCreate,spinRemovalEvent*,phRemovalEvent,spinRemovalEventFunction,pFunction,void*,pUserData)*/
+/*SPINK_WRAPPER_THREE_ARG(create_log_event,LogEventCreate,spinLogEvent*,phLogEvent,spinLogEventFunction,pFunction,void*,pUserData)*/
+
+//=======
+
 SPINK_WRAPPER_THREE_ARG(create_device_event,DeviceEventHandlerCreate,spinDeviceEventHandler*,phDeviceEvent,spinDeviceEventFunction,pFunction,void*,pUserData)
 SPINK_WRAPPER_THREE_ARG(create_image_event,ImageEventHandlerCreate,spinImageEventHandler*,phImageEvent,spinImageEventFunction,pFunction,void*,pUserData)
 SPINK_WRAPPER_THREE_ARG(create_device_arrival_event_handler,DeviceArrivalEventHandlerCreate,spinDeviceArrivalEventHandler*,phArrivalEvent,spinArrivalEventFunction,pFunction,void*,pUserData)
@@ -261,7 +272,9 @@ SPINK_WRAPPER_THREE_ARG(create_log_event_handler,LogEventHandlerCreate,spinLogEv
 //SPINK_WRAPPER_THREE_ARG(create_arrival_event,ArrivalEventCreate,spinArrivalEvent*,phArrivalEvent,spinArrivalEventFunction,pFunction,void*,pUserData)
 //SPINK_WRAPPER_THREE_ARG(create_removal_event,RemovalEventCreate,spinRemovalEvent*,phRemovalEvent,spinRemovalEventFunction,pFunction,void*,pUserData)
 //SPINK_WRAPPER_THREE_ARG(create_log_event,LogEventCreate,spinLogEvent*,phLogEvent,spinLogEventFunction,pFunction,void*,pUserData)
->>>>>>> 45bee3d9771945c0486ef302b675a311dcf57e01
+
+//>>>>>>> 45bee3d9771945c0486ef302b675a311dcf57e01
+
 SPINK_WRAPPER_THREE_ARG(get_image_stats_channel_status,ImageStatisticsGetChannelStatus,spinImageStatistics,hStatistics,spinStatisticsChannel,channel,bool8_t*,pbEnabled)
 SPINK_WRAPPER_THREE_ARG(set_image_stats_channel_status,ImageStatisticsSetChannelStatus,spinImageStatistics,hStatistics,spinStatisticsChannel,channel,bool8_t,bEnable)
 SPINK_WRAPPER_THREE_ARG(get_n_image_stats_pixel_values,ImageStatisticsGetNumPixelValues,spinImageStatistics,hStatistics,spinStatisticsChannel,channel,unsigned int*,pNumValues)

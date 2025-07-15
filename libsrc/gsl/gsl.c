@@ -16,7 +16,7 @@ static void export_matrix_data_to_gsl( QSP_ARG_DECL  gsl_matrix *mp, Data_Obj *d
 	/* BUG?  check for matching sizes? */
 
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "export_matrix_data_to_gsl:  Sorry, for now object %s should be contiguous",
 			OBJ_NAME(dp));
 		WARN(ERROR_STRING);
@@ -68,7 +68,7 @@ static void export_vector_data_to_gsl( QSP_ARG_DECL  gsl_vector *vp, Data_Obj *d
 	/* BUG?  check for matching sizes? */
 
 	if(! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,"export_matrix_data_to_gsl:  Sorry, for now object %s should be contiguous",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"export_matrix_data_to_gsl:  Sorry, for now object %s should be contiguous",OBJ_NAME(dp));
 		WARN(ERROR_STRING);
 		return;
 	}
@@ -112,7 +112,7 @@ static void import_matrix_data_from_gsl( QSP_ARG_DECL  Data_Obj *dp, gsl_matrix 
 	/* BUG?  check for matching sizes? */
 
 	if(! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "import_matrix_data_from_gsl:  Sorry, for now object %s should be contiguous",
 			OBJ_NAME(dp));
 		WARN(ERROR_STRING);
@@ -162,7 +162,7 @@ static void import_vector_data_from_gsl( QSP_ARG_DECL  Data_Obj *dp, gsl_vector 
 	/* BUG?  check for matching sizes? */
 
 	if(! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,"import_vector_data_from_gsl:  Sorry, for now object %s should be contiguous",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"import_vector_data_from_gsl:  Sorry, for now object %s should be contiguous",OBJ_NAME(dp));
 		WARN(ERROR_STRING);
 		return;
 	}
@@ -244,7 +244,7 @@ void gsl_svd (QSP_ARG_DECL  Data_Obj *a_dp, Data_Obj *w_dp, Data_Obj *v_dp)
 		return;
 	}
 	if( n > m ){
-        	sprintf(ERROR_STRING,
+        	snprintf(ERROR_STRING,LLEN,
 	"gsl_svd: input matrix %s (%d x %d) cannot be wider than tall!?",
 			OBJ_NAME(a_dp),m,n);
 		WARN(ERROR_STRING);
@@ -252,7 +252,7 @@ void gsl_svd (QSP_ARG_DECL  Data_Obj *a_dp, Data_Obj *w_dp, Data_Obj *v_dp)
 	}
 
 	if( OBJ_COLS(w_dp) != n ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "gsl_svd: weight vector %s should have %d columns, to match input matrix %s!?",
 			OBJ_NAME(w_dp),n,OBJ_NAME(a_dp));
 		WARN(ERROR_STRING);
@@ -286,56 +286,56 @@ void gsl_solve(QSP_ARG_DECL  Data_Obj *x_dp, Data_Obj *u_dp, Data_Obj *w_dp, Dat
 	n=OBJ_COLS(u_dp);
 	m=OBJ_ROWS(u_dp);
 	if( m < n ){
-		sprintf(ERROR_STRING,"do_gsl_solve:  matrix %s (%d x %d) cannot be wider than tall",
+		snprintf(ERROR_STRING,LLEN,"do_gsl_solve:  matrix %s (%d x %d) cannot be wider than tall",
 			OBJ_NAME(u_dp),m,n);
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_COLS(w_dp) != n ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"do_gsl_solve:  dimension of eigenvalue vector %s (%d) must be match # of columns of matrix %s (%d)",
 			OBJ_NAME(w_dp),OBJ_COLS(w_dp),OBJ_NAME(u_dp),n);
 		WARN(ERROR_STRING);
 		return;
 	}
 	if(OBJ_ROWS(w_dp) != 1){
-		sprintf(ERROR_STRING,"do_gsl_solve:  eigenvalue vector %s (%d rows) should be a row vector!?",
+		snprintf(ERROR_STRING,LLEN,"do_gsl_solve:  eigenvalue vector %s (%d rows) should be a row vector!?",
 			OBJ_NAME(w_dp),OBJ_ROWS(w_dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if(OBJ_ROWS(b_dp) != 1){
-		sprintf(ERROR_STRING,"do_gsl_solve:  data vector %s (%d rows) should be a row vector!?",
+		snprintf(ERROR_STRING,LLEN,"do_gsl_solve:  data vector %s (%d rows) should be a row vector!?",
 			OBJ_NAME(b_dp),OBJ_ROWS(b_dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_ROWS(x_dp) != 1 ){
-		sprintf(ERROR_STRING,"do_gsl_solve:  weight vector %s (%d rows) should be a row vector!?",
+		snprintf(ERROR_STRING,LLEN,"do_gsl_solve:  weight vector %s (%d rows) should be a row vector!?",
 			OBJ_NAME(x_dp),OBJ_ROWS(x_dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_COLS(v_dp) != n || OBJ_ROWS(v_dp) != n ){
-		sprintf(ERROR_STRING,"do_gsl_solve:  V matrix %s (%d x %d) should be square with dimension %d",
+		snprintf(ERROR_STRING,LLEN,"do_gsl_solve:  V matrix %s (%d x %d) should be square with dimension %d",
 			OBJ_NAME(v_dp),OBJ_ROWS(v_dp),OBJ_COLS(v_dp),n);
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_ROWS(u_dp) > MAX_DIM ){
-		sprintf(ERROR_STRING,"do_gsl_solve:  matrix %s has %d rows, max is %d",
+		snprintf(ERROR_STRING,LLEN,"do_gsl_solve:  matrix %s has %d rows, max is %d",
 			OBJ_NAME(u_dp),OBJ_ROWS(u_dp),MAX_DIM);
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_ROWS(v_dp) > MAX_DIM ){
-		sprintf(ERROR_STRING,"do_gsl_solve:  matrix %s has %d rows, max is %d",
+		snprintf(ERROR_STRING,LLEN,"do_gsl_solve:  matrix %s has %d rows, max is %d",
 			OBJ_NAME(v_dp),OBJ_ROWS(u_dp),MAX_DIM);
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_COLS(b_dp) != OBJ_ROWS(u_dp) ){
-		sprintf(ERROR_STRING,"do_gsl_solve:  Number of elements of data vector %s (%ld) should match number of rows of U matrix %s (%ld)",
+		snprintf(ERROR_STRING,LLEN,"do_gsl_solve:  Number of elements of data vector %s (%ld) should match number of rows of U matrix %s (%ld)",
 			OBJ_NAME(b_dp),(long)OBJ_COLS(b_dp),OBJ_NAME(u_dp),(long)OBJ_ROWS(u_dp));
 		WARN(ERROR_STRING);
 		return;

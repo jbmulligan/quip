@@ -20,7 +20,7 @@ void gen_string( char *buf, int buflen )
 	const char *s;
 
 	if( buflen < 33 ){
-		sprintf(ERROR_STRING,"gen_string:  buffer length (%d) should be at least 33",buflen);
+		snprintf(ERROR_STRING,LLEN,"gen_string:  buffer length (%d) should be at least 33",buflen);
 		warn(ERROR_STRING);
 		for(i=0;i<buflen;i++){
 			buf[i] = 'a' + i;
@@ -105,7 +105,7 @@ static int _value_of_hex_digit(QSP_ARG_DECL  int c)
 	} else if( isupper(c) && c<='F' ){
 		d= 10 + c - 'A';
 	} else {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"value_of_hex_digit:  character 0x%x is not a valid hex digit!?",
 			c);
 		warn(ERROR_STRING);
@@ -203,13 +203,13 @@ int has_encryption_suffix(const char *name)
 
 #define PRINT_ERR1(fmt,arg)				\
 	{						\
-		sprintf(ERROR_STRING,fmt,arg);	\
+		snprintf(ERROR_STRING,LLEN,fmt,arg);	\
 		warn(ERROR_STRING);		\
 	}
 
 #define PRINT_ERR2(fmt,arg1,arg2)				\
 	{						\
-		sprintf(ERROR_STRING,fmt,arg1,arg2);	\
+		snprintf(ERROR_STRING,LLEN,fmt,arg1,arg2);	\
 		warn(ERROR_STRING);		\
 	}
 

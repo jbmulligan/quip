@@ -501,7 +501,7 @@ static void test_parport(void)
 	INSIST_RAM_OBJ(dp,"test_parport")
 
 	if( OBJ_PREC(dp) != PREC_UDI ){
-		sprintf(ERROR_STRING,"latency vector %s (%s) should have precision %s",
+		snprintf(ERROR_STRING,LLEN,"latency vector %s (%s) should have precision %s",
 			OBJ_NAME(dp),PREC_NAME(OBJ_PREC_PTR(dp)),
 				NAME_FOR_PREC_CODE(PREC_UDI));
 		warn(ERROR_STRING);
@@ -509,14 +509,14 @@ static void test_parport(void)
 	}
 
 	if( OBJ_COMPS(dp) != 2 ){
-		sprintf(ERROR_STRING,"latency vector %s (%d) should have 2 components",
+		snprintf(ERROR_STRING,LLEN,"latency vector %s (%d) should have 2 components",
 			OBJ_NAME(dp),OBJ_COMPS(dp));
 		warn(ERROR_STRING);
 		return;
 	}
 
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,"latency vector %s should be contiguous",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"latency vector %s should be contiguous",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}
@@ -579,7 +579,7 @@ int init_genlock(SINGLE_QSP_ARG_DECL)
 
 	n=how_many("number of frame buffers to genlock");
 	if( n < 1 || n > MAX_HEADS ){
-		sprintf(ERROR_STRING,"do_genlock:  number of frame buffers (%d) must be between 1 and %d",n,MAX_HEADS);
+		snprintf(ERROR_STRING,LLEN,"do_genlock:  number of frame buffers (%d) must be between 1 and %d",n,MAX_HEADS);
 		warn(ERROR_STRING);
 		return -1;
 	}
@@ -651,14 +651,14 @@ void report_genlock_status( FB_Info *fbip )
 		if( gli1.gli_fbip[i] == fbip ) index=i;
 
 	if( index < 0 ){
-		sprintf(ERROR_STRING,"report_genlock_status:  genlock is not active for frame buffer %s!?",fbip->fbi_name);
+		snprintf(ERROR_STRING,LLEN,"report_genlock_status:  genlock is not active for frame buffer %s!?",fbip->fbi_name);
 		warn(ERROR_STRING);
 		return;
 	}
 
 	l2 = gli1.gli_fb_latency[index] /1000.0;
 	l3 = gli1.gli_drift[index] / 1000.0;
-	sprintf(msg_str,"%s:\t\tvbl %g msec after ext pulse\t\tdrift = %g",fbip->fbi_name,l2,l3);
+	snprintf(msg_str,LLEN,"%s:\t\tvbl %g msec after ext pulse\t\tdrift = %g",fbip->fbi_name,l2,l3);
 	prt_msg(msg_str);
 }
 
@@ -743,7 +743,7 @@ static void _start_fb_threads(QSP_ARG_DECL  int n_frame_buffers,int* fd_arr)
 		ppi[i].ppi_index=i;
 		ppi[i].ppi_flags = 0;
 		ppi[i].ppi_fd = fd_arr[i];
-sprintf(ERROR_STRING,"calling pthread_create for thread %d",i);
+snprintf(ERROR_STRING,LLEN,"calling pthread_create for thread %d",i);
 advise(ERROR_STRING);
 		pthread_create(&fb_thr[i],&attr1,fb_pair_daemon,&ppi[i]);
 	}

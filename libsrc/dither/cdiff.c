@@ -192,7 +192,7 @@ static void sprd_e3(float * cvec,int col)
 static int _not_float(QSP_ARG_DECL  Data_Obj *dp)
 {
 	if( OBJ_PREC(dp) != PREC_SP ){
-		sprintf(ERROR_STRING,"object %s (%s) must have float precision",
+		snprintf(ERROR_STRING,LLEN,"object %s (%s) must have float precision",
 			OBJ_NAME(dp),PREC_NAME(OBJ_PREC_PTR(dp)));
 		warn(ERROR_STRING);
 		return(1);
@@ -206,7 +206,7 @@ void ctoneit(QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src_dp)
 	float cvec[3];
 	float *src_ptr;
 
-sprintf(ERROR_STRING,"BEGIN ctoneit, dst = %s",OBJ_NAME(dst_dp));
+snprintf(ERROR_STRING,LLEN,"BEGIN ctoneit, dst = %s",OBJ_NAME(dst_dp));
 advise(ERROR_STRING);
 
 	if( dst_dp == NULL || src_dp == NULL ){
@@ -302,7 +302,7 @@ advise(ERROR_STRING);
 			for(col_index=0;col_index<OBJ_COLS(dst_dp);col_index++){
 #ifdef QUIP_DEBUG
 if( debug & spread_debug ){
-sprintf(ERROR_STRING,"Setting component %d of image %s at %d %d (addr = 0x%lx) to value %d",
+snprintf(ERROR_STRING,LLEN,"Setting component %d of image %s at %d %d (addr = 0x%lx) to value %d",
 comp_index,OBJ_NAME(dst_dp),col_index,row_index,(u_long)dst_ptr,image[comp_index][col_index]);
 advise(ERROR_STRING);
 }

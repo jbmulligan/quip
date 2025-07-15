@@ -306,7 +306,6 @@ define(`GENERIC_SLEN_VEC_FUNC_DBM',`_GENERIC_SLEN_VEC_FUNC_DBM($1,$2,$3,$4,$5)')
 dnl	/* FIXME still need to convert these to generic macros if possible */
 
 define(`_VEC_FUNC_MM',`__VEC_FUNC_MM($1,$2)')
-define(`_VEC_FUNC_MM_IND',`__VEC_FUNC_MM_IND($1,$2,$3)')
 
 // rvdot - we need temporary space for the products!?
 // The first step should be a normal vmul...

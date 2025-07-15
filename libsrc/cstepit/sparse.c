@@ -108,7 +108,7 @@ static void jac_func_crs( double *parameters, struct splm_crsm *jac, int nvars,
 #endif // THREAD_SAFE_QUERY
 
 	if( OBJ_PREC(mat_dp) != PREC_SP ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "Jacobian structure specification matrix %s (%s) should have %s precision!?",
 			OBJ_NAME(mat_dp),PREC_NAME(OBJ_PREC_PTR(mat_dp)),
 			PREC_NAME(PREC_FOR_CODE(PREC_SP)) );
@@ -116,14 +116,14 @@ static void jac_func_crs( double *parameters, struct splm_crsm *jac, int nvars,
 		return;
 	}
 	if( OBJ_COLS(mat_dp) != nvars ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "Number of columns of %s (%d) does not match number of variables (%d)!?",
 			OBJ_NAME(mat_dp),OBJ_COLS(mat_dp),nvars);
 		warn(ERROR_STRING);
 		return;
 	}
 	if( OBJ_ROWS(mat_dp) != nobs ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "Number of rows of %s (%d) does not match number of observations (%d)!?",
 			OBJ_NAME(mat_dp),OBJ_COLS(mat_dp),nvars);
 		warn(ERROR_STRING);
@@ -156,7 +156,7 @@ static void jac_func_crs( double *parameters, struct splm_crsm *jac, int nvars,
 
 #define INSIST_DP( dp )							\
 	if( OBJ_PREC(param_dp) != PREC_DP ){				\
-		sprintf(ERROR_STRING,					\
+		snprintf(ERROR_STRING,LLEN,					\
 	"Parameter object %s has %s precision, should be %s",		\
 			OBJ_NAME(dp),PREC_NAME(OBJ_PREC_PTR(dp)),	\
 				PREC_NAME(PREC_FOR_CODE(PREC_DP)) );	\
@@ -166,7 +166,7 @@ static void jac_func_crs( double *parameters, struct splm_crsm *jac, int nvars,
 
 #define INSIST_CONTIG( dp )						\
 	if( ! IS_CONTIGUOUS(dp) ){					\
-		sprintf(ERROR_STRING,					\
+		snprintf(ERROR_STRING,LLEN,					\
 	"Parameter vector %s must be contiguous!?",OBJ_NAME(dp));	\
 		WARN(ERROR_STRING);					\
 		return;							\
@@ -236,7 +236,7 @@ fprintf(stderr,"do_difcrs:  app data at 0x%lx\n",
 	nvars = (int) OBJ_N_MACH_ELTS(param_dp);
 
 	if( OBJ_COLS(jac_dp) != nvars ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "Number of columns (%d) of Jacobian (%s) does not match number of elements (%d) of param vector %s!?",
 			OBJ_COLS(jac_dp),OBJ_NAME(jac_dp),
 			nvars,OBJ_NAME(param_dp) );
@@ -245,7 +245,7 @@ fprintf(stderr,"do_difcrs:  app data at 0x%lx\n",
 	}
 
 	if( OBJ_ROWS(jac_dp) != nobs ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "Number of rows (%d) of Jacobian (%s) does not match number of elements (%d) of observation vector %s!?",
 			OBJ_ROWS(jac_dp),OBJ_NAME(jac_dp),
 			nobs,OBJ_NAME(true_dp) );
@@ -271,7 +271,7 @@ fprintf(stderr,"%d non-zero Jacobian entries\n",Jnnz);
 
 #define PRINT_INFO(desc_str,index)				\
 								\
-	sprintf(MSG_STR,"%s:  %g",#desc_str,info[index]);	\
+	snprintf(MSG_STR,LLEN,"%s:  %g",#desc_str,info[index]);	\
 	prt_msg(MSG_STR);
 
 	PRINT_INFO(Initial error,0);

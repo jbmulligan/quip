@@ -73,7 +73,7 @@ if( debug ) advise("allocating hips header");
 				} else if( ! strcmp(word1,"VDIM:") ){
 					SET_OBJ_ROWS(ifp->if_dp, atoi(word2) );
 				} else if( verbose ){
-					sprintf(ERROR_STRING,
+					snprintf(ERROR_STRING,LLEN,
 				"Ignoring header field %s",word1);
 					advise(ERROR_STRING);
 				}

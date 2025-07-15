@@ -166,7 +166,7 @@ static void prepare_image_for_mapping(Data_Obj *dp)
 	glClear(GL_COLOR_BUFFER_BIT);
 
 /*
-sprintf(ERROR_STRING,"update_cuda_viewer:  tex_id = %d, buf_id = %d",
+snprintf(ERROR_STRING,LLEN,"update_cuda_viewer:  tex_id = %d, buf_id = %d",
 OBJ_TEX_ID(dp),OBJ_BUF_ID(dp));
 advise(ERROR_STRING);
 */
@@ -248,35 +248,35 @@ static void map_cuda_viewer(QSP_ARG_DECL  Cuda_Viewer *cvp,
 				Data_Obj *img_dp, Data_Obj *coord_dp) 
 {
 	if( OBJ_PREC(coord_dp) != PREC_SP ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"map_cuda_viewer:  coord object %s must have %s precision!?",
 			OBJ_NAME(coord_dp),PREC_NAME(OBJ_PREC_PTR(coord_dp)));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( ! IS_CONTIGUOUS(coord_dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"map_cuda_viewer:  coord object %s must be contiguous!?",
 			OBJ_NAME(coord_dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_COMPS(coord_dp) != 2 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"map_cuda_viewer:  coord object %s must have 2 components!?",
 			OBJ_NAME(coord_dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_COLS(coord_dp) != 2 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"map_cuda_viewer:  coord object %s must have 2 columns!?",
 			OBJ_NAME(coord_dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_ROWS(coord_dp) != 2 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"map_cuda_viewer:  coord object %s must have 2 rows!?",
 			OBJ_NAME(coord_dp));
 		WARN(ERROR_STRING);
@@ -432,7 +432,7 @@ COMMAND_FUNC( do_new_cuda_vwr )
 	if( vp == NULL ) return;
 
 	if( ! READY_FOR_GLX(vp) ) {
-		sprintf(ERROR_STRING,"Existing viewer %s must be initialized for GL before using with CUDA!?",VW_NAME(vp) );
+		snprintf(ERROR_STRING,LLEN,"Existing viewer %s must be initialized for GL before using with CUDA!?",VW_NAME(vp) );
 		WARN(ERROR_STRING);
 		return;
 	}
@@ -440,7 +440,7 @@ COMMAND_FUNC( do_new_cuda_vwr )
 	glew_check();	/* without this, we get a segmentation violation on glGenBuffers??? */
 
 	if( new_cuda_viewer(QSP_ARG  vp) == NULL ){
-		sprintf(ERROR_STRING,"Error making %s a cuda viewer!?",VW_NAME(vp));
+		snprintf(ERROR_STRING,LLEN,"Error making %s a cuda viewer!?",VW_NAME(vp));
 		WARN(ERROR_STRING);
 	}
 }
@@ -450,7 +450,7 @@ static int image_mapping_checks(QSP_ARG_DECL  Cuda_Viewer *cvp, Data_Obj *dp)
 	select_gl_viewer( QSP_ARG  cvp->cv_vp );
 
 	if( ! IS_GL_BUFFER(dp) ){
-		sprintf(ERROR_STRING,"Object %s is not a GL buffer object.",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"Object %s is not a GL buffer object.",OBJ_NAME(dp));
 		WARN(ERROR_STRING);
 		return -1;
 	}
@@ -541,7 +541,7 @@ COMMAND_FUNC( do_new_gl_buffer )
 	/* Make sure this name isn't already in use... */
 	dp = dobj_of(QSP_ARG  s);
 	if( dp != NULL ){
-		sprintf(ERROR_STRING,"Data object name '%s' is already in use, can't use for GL buffer object.",s);
+		snprintf(ERROR_STRING,LLEN,"Data object name '%s' is already in use, can't use for GL buffer object.",s);
 		NWARN(ERROR_STRING);
 		return;
 	}
@@ -560,7 +560,7 @@ COMMAND_FUNC( do_new_gl_buffer )
 	ds.ds_dimension[4]=1;
 	dp = _make_dp(QSP_ARG  s,&ds,PREC_FOR_CODE(PREC_UBY));
 	if( dp == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Error creating data_obj header for %s",s);
 		ERROR1(ERROR_STRING);
 	}
@@ -581,7 +581,7 @@ COMMAND_FUNC( do_new_gl_buffer )
 #ifdef HAVE_LIBGLEW
 	glGenBuffers(1, OBJ_BUF_ID_P(dp) );	// first arg is # buffers to generate?
 
-//sprintf(ERROR_STRING,"glGenBuffers gave us buf_id = %d",OBJ_BUF_ID(dp));
+//snprintf(ERROR_STRING,LLEN,"glGenBuffers gave us buf_id = %d",OBJ_BUF_ID(dp));
 //advise(ERROR_STRING);
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER,  OBJ_BUF_ID(dp) ); 
 
@@ -608,7 +608,7 @@ COMMAND_FUNC( do_new_gl_buffer )
 	}
 
 	glGenTextures(1, OBJ_TEX_ID_P(dp) );
-//sprintf(ERROR_STRING,"glGenTextures gave us tex_id = %d",OBJ_TEX_ID(dp));
+//snprintf(ERROR_STRING,LLEN,"glGenTextures gave us tex_id = %d",OBJ_TEX_ID(dp));
 //advise(ERROR_STRING);
 	glBindTexture(GL_TEXTURE_2D, OBJ_TEX_ID(dp) );
 	t = gl_pixel_type(dp);
@@ -625,7 +625,7 @@ COMMAND_FUNC( do_new_gl_buffer )
 	
 	// Leave the buffer mapped by default
 	//cutilSafeCall(cudaGLMapBufferObject( &OBJ_DATA_PTR(dp),  OBJ_BUF_ID(dp) ));
-sprintf(ERROR_STRING,"Mapping buffer %s",OBJ_NAME(dp));
+snprintf(ERROR_STRING,LLEN,"Mapping buffer %s",OBJ_NAME(dp));
 advise(ERROR_STRING);
 	e = cudaGLMapBufferObject( &OBJ_DATA_PTR(dp),  OBJ_BUF_ID(dp) );
 	if( e != cudaSuccess ){

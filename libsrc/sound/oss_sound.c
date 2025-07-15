@@ -134,7 +134,7 @@ void record_sound(Data_Obj *dp)
 	u_short *sp;
 	
 	/*
-	sprintf(error_string,"audio_state=%d",audio_state);
+	snprintf(error_string,LLEN,"audio_state=%d",audio_state);
 	advise(error_string);
 	*/
 	
@@ -143,7 +143,7 @@ void record_sound(Data_Obj *dp)
 	/* Do we need to reinitialize to get set up??? */
 	
 	if( MACHINE_PREC(dp) != PREC_IN ){
-		sprintf(error_string,
+		snprintf(error_string,LLEN,
 	"Object %s has precision %s, should be %s for sounds",dp->dt_name,
 			prec_name[MACHINE_PREC(dp)],prec_name[PREC_IN]);
 		warn(error_string);
@@ -173,7 +173,7 @@ void record_sound(Data_Obj *dp)
 
 	if( gettimeofday(&tv,&tz) < 0 ){
 		perror("gettimeofday");
-		sprintf(error_string,"error getting time stamp for sound %s",dp->dt_name);
+		snprintf(error_string,LLEN,"error getting time stamp for sound %s",dp->dt_name);
 		warn(error_string);
 	} else {
 		/* We convert the seconds from the epoch into month,day
@@ -215,10 +215,10 @@ void record_sound(Data_Obj *dp)
 	n_record = dp->dt_nelts - n_reserve;
 	if( (n_read=read(afd, (((short *)dp->dt_data)+n_reserve), n_record * sizeof(short) )) < 0 ){
 		perror("read");
-		sprintf(error_string,"Error recording sound %s",dp->dt_name);
+		snprintf(error_string,LLEN,"Error recording sound %s",dp->dt_name);
 		warn(error_string);
 	} else if( n_read != n_record*sizeof(short)){
-		sprintf(error_string,"record_sound %s:  %ld bytes requested, %d actually read",
+		snprintf(error_string,LLEN,"record_sound %s:  %ld bytes requested, %d actually read",
 			dp->dt_name,n_record,n_read);
 		warn(error_string);
 	}
@@ -233,20 +233,20 @@ void record_sound(Data_Obj *dp)
 void play_sound(Data_Obj *dp)
 {
 	if( MACHINE_PREC(dp) != PREC_IN ){
-		sprintf(error_string,"Object %s has precision %s, should be %s for sounds",dp->dt_name,
+		snprintf(error_string,LLEN,"Object %s has precision %s, should be %s for sounds",dp->dt_name,
 			prec_name[MACHINE_PREC(dp)],prec_name[PREC_IN]);
 		warn(error_string);
 		return;
 	}
 
 	if( dp->dt_tdim != nchannels ){
-		sprintf(error_string,
+		snprintf(error_string,LLEN,
 	"Sound %s has %ld components, output configured for %d channels!?",  
 			dp->dt_name,dp->dt_tdim,nchannels);
 		advise(error_string);
 
 		if( set_playback_nchan(dp->dt_tdim) < 0 ){
-			sprintf(error_string,
+			snprintf(error_string,LLEN,
 	"Sound %s has illegal number of channels (%ld)",
 				dp->dt_name,dp->dt_tdim);
 			warn(error_string);
@@ -257,7 +257,7 @@ void play_sound(Data_Obj *dp)
 	if(audio_state!=AUDIO_PLAY) audio_init(AUDIO_PLAY);	
 
 	/*
-	sprintf(error_string,"audio_state=%d",audio_state);
+	snprintf(error_string,LLEN,"audio_state=%d",audio_state);
 	advise(error_string);
 	*/
 
@@ -344,17 +344,17 @@ void set_samp_freq(unsigned int req_rate)
 	samp_freq = req_rate;
 	if(ioctl(afd, SNDCTL_DSP_SPEED, &samp_freq) == -1 ){
 		perror("ioctl");
-		sprintf(error_string,"error setting sample frequency to %d",req_rate);
+		snprintf(error_string,LLEN,"error setting sample frequency to %d",req_rate);
 		warn(error_string);
 		if( prev_rate > 0 ){
-			sprintf(error_string,"reverting to previous rate %d",prev_rate);
+			snprintf(error_string,LLEN,"reverting to previous rate %d",prev_rate);
 			advise(error_string);
 		}
 		/* close(afd); */
 		return;
 	}
 	if( req_rate != samp_freq){
-		sprintf(error_string,"frequency %d requested, %d actually set",
+		snprintf(error_string,LLEN,"frequency %d requested, %d actually set",
 			req_rate,samp_freq);
 		warn(error_string);
 		return;
@@ -442,7 +442,7 @@ void audio_init(int mode)
 
 #ifdef DEBUG
 	if( debug & sound_debug ){
-		sprintf(error_string,"audio_init:  mode = %d",mode);
+		snprintf(error_string,LLEN,"audio_init:  mode = %d",mode);
 		advise(error_string);
 	}
 #endif /* DEBUG */
@@ -452,7 +452,7 @@ void audio_init(int mode)
 	if( mfd == 0 ){
 		if( (mfd = open(MIXER_NAME,O_RDWR,0)) < 0 ){
 			perror("open");
-			sprintf(error_string,"error opening mixer device %s",
+			snprintf(error_string,LLEN,"error opening mixer device %s",
 				MIXER_NAME);
 			warn(error_string);
 		}
@@ -466,7 +466,7 @@ advise("mixer opened");
 	if(audio_state != AUDIO_UNINITED) {
 #ifdef DEBUG
 		if( debug & sound_debug ){
-			sprintf(error_string,
+			snprintf(error_string,LLEN,
 				"closing file descriptor, afd=%d",afd);
 			advise(error_string);
 		}
@@ -618,7 +618,7 @@ static void *audio_reader(void *arg)
 			perror("read");
 			warn("Error recording sound stream");
 		} else if( n_read != n_want ){
-			sprintf(error_string,"audio_reader:  %d bytes requested, %d actually read",
+			snprintf(error_string,LLEN,"audio_reader:  %d bytes requested, %d actually read",
 				n_want,n_read);
 			warn(error_string);
 		}
@@ -680,7 +680,7 @@ static  void *disk_writer(void *arg)
 			tell_sys_error("write");
 			warn("error writing audio stream file");
 		} else if( n_written != n_want ){
-			sprintf(error_string,"disk_writer:  %d audio bytes requested, %d actually written",
+			snprintf(error_string,LLEN,"disk_writer:  %d audio bytes requested, %d actually written",
 					n_want,n_written);
 			warn(error_string);
 		}
@@ -690,7 +690,7 @@ static  void *disk_writer(void *arg)
 			tell_sys_error("write");
 			warn("error writing audio timestamp stream file");
 		} else if( n_written != sizeof(*tvp) ){
-	sprintf(error_string,"disk_writer:  %d timestamp bytes requested, %d actually written",
+	snprintf(error_string,LLEN,"disk_writer:  %d timestamp bytes requested, %d actually written",
 				n_want,n_written);
 			warn(error_string);
 		}
@@ -795,7 +795,7 @@ static void *audio_writer(void *arg)
 			tell_sys_error("write");
 			warn("error writing audio stream data to audio device");
 		} else if( n_written != n_want ){
-			sprintf(error_string,"audio_writer:  %d bytes requested, %d actually written",
+			snprintf(error_string,LLEN,"audio_writer:  %d bytes requested, %d actually written",
 					n_want,n_written);
 			warn(error_string);
 		}
@@ -827,7 +827,7 @@ static void *disk_reader(void *arg)
 			halting=1;
 			/* BUG should zero the buffer or goto */
 		} else if( n_read != n_want ){
-			sprintf(error_string,"disk_reader:  %d audio bytes requested, %d actually read",
+			snprintf(error_string,LLEN,"disk_reader:  %d audio bytes requested, %d actually read",
 					n_want,n_read);
 			warn(error_string);
 		}

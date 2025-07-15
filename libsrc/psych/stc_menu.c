@@ -37,7 +37,7 @@ static COMMAND_FUNC( do_get_value )
 	xv_p = indexed_data(STAIR_XVAL_OBJ(stc_p),stc_p->stair_val);
 	assert(xv_p!=NULL);
 
-	sprintf(valstr,"%g",*xv_p);
+	snprintf(valstr,32,"%g",*xv_p);
 	assign_var(s,valstr);
 }
 

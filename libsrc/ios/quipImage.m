@@ -18,14 +18,14 @@ QUIP_IMAGE_TYPE *objc_img_for_dp(Data_Obj *dp, int little_endian_flag)
 	CGColorSpaceRef colorSpace;
 
 	if( OBJ_PREC(dp) != PREC_UBY ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 			"cgimg_for_dp:  object %s (%s) must be u_byte",
 			OBJ_NAME(dp),OBJ_PREC_NAME(dp));
 		NWARN(DEFAULT_ERROR_STRING);
 		return NULL;
 	}
 	if( OBJ_COMPS(dp) != 4 ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 			"cgimg_for_dp:  object %s (%d) must have 4 components",
 			OBJ_NAME(dp),OBJ_COMPS(dp));
 		NWARN(DEFAULT_ERROR_STRING);

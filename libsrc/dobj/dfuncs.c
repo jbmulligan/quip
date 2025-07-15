@@ -33,13 +33,13 @@ static inline double _comp_func( QSP_ARG_DECL   Data_Obj *dp, index_t index )
 	if( dp==NULL ) return(0.0);
 
 	if( !IS_SCALAR(dp) ){
-		sprintf(ERROR_STRING,"comp_func:  %s is not a scalar",
+		snprintf(ERROR_STRING,LLEN,"comp_func:  %s is not a scalar",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return(0.0);
 	}
 	if( OBJ_MACH_DIM(dp,0) <= (dimension_t)index ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"Component index %d out of range for object %s",
 			index,OBJ_NAME(dp));
 		warn(ERROR_STRING);
@@ -48,7 +48,7 @@ static inline double _comp_func( QSP_ARG_DECL   Data_Obj *dp, index_t index )
 	assert(prec_p!=NULL);
 
 #ifdef HAVE_ANY_GPU
-	ram_dp = _insure_ram_obj_for_reading(DEFAULT_QSP_ARG dp);
+	ram_dp = _ensure_ram_obj_for_reading(DEFAULT_QSP_ARG dp);
 	assert(ram_dp!=NULL);
 #else /* ! HAVE_ANY_GPU */
 	ram_dp = dp;
@@ -67,13 +67,13 @@ double val_func(QSP_ARG_DECL  Data_Obj *dp )
 {
 	if( dp==NULL ) return(0.0);
 	if( !IS_SCALAR(dp) ){
-		sprintf(ERROR_STRING,"val_func:  %s is not a scalar",
+		snprintf(ERROR_STRING,LLEN,"val_func:  %s is not a scalar",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return(0.0);
 	}
 	if( OBJ_MACH_DIM(dp,0) > 1 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"value:  %s has %d components; returning comp. #0",
 			OBJ_NAME(dp),OBJ_MACH_DIM(dp,0));
 		warn(ERROR_STRING);
@@ -85,17 +85,17 @@ static double re_func(QSP_ARG_DECL  Data_Obj *dp )
 {
 	if( dp==NULL ) return(0.0);
 	if( !IS_SCALAR(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"re_func:  %s is not a scalar",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return(0.0);
 	}
 	if( OBJ_MACH_DIM(dp,0) == 1 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s is real, not complex!?",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 	} else if( OBJ_MACH_DIM(dp,0) != 2 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s is multidimensional, not complex!?",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 	}
@@ -106,13 +106,13 @@ static double im_func(QSP_ARG_DECL  Data_Obj *dp )
 {
 	if( dp==NULL ) return(0.0);
 	if( !IS_SCALAR(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"im_func:  %s is not a scalar",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return(0.0);
 	}
 	if( OBJ_MACH_DIM(dp,0) != 2 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s is not complex; returning 0.0", OBJ_NAME(dp));
 		warn(ERROR_STRING);
 	}

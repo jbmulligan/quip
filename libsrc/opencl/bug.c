@@ -122,12 +122,12 @@ ERROR_CASE( CL_INVALID_DEVICE_PARTITION_COUNT,	"invalid device partition count"	
 
 		default:
 			msg="unhandled";
-			sprintf(error_string,
+			snprintf(error_string,LLEN,
 	"report_ocl_error:  Unhandled error code %d (0x%x)!?",status,status);
 			warn(error_string);
 			break;
 	}
-	sprintf(error_string,"%s:  %s",whence,msg);
+	snprintf(error_string,LLEN,"%s:  %s",whence,msg);
 	warn(error_string);
 }
 char *get_platform_string(cl_platform_id pf_id, int code)
@@ -356,7 +356,7 @@ static void init_ocl_devices(cl_platform_id pf_id)
 //fprintf(stderr,"init_ocl_devices:  %d device%s found\n",n_devs,n_devs==1?"":"s");
 
 	if( verbose ){
-		sprintf(error_string,"%d OpenCL device%s found...",n_devs,
+		snprintf(error_string,LLEN,"%d OpenCL device%s found...",n_devs,
 			n_devs==1?"":"s");
 		advise(error_string);
 	}
@@ -438,7 +438,7 @@ cl_kernel ocl_create_kernel(cl_program program, const char *name, cl_device_id d
 
 	//create a kernel object with specified name
 	if( verbose ){
-		sprintf(error_string,"ocl_create_kernel:  creating kernel with name '%s'\n",name);
+		snprintf(error_string,LLEN,"ocl_create_kernel:  creating kernel with name '%s'\n",name);
 		advise(error_string);
 	}
 	kernel = clCreateKernel(program, name, &status);

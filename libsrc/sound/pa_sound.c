@@ -88,7 +88,7 @@ static void _copy_sound_data(QSP_ARG_DECL  void *dest, Sound_Data *sdp, int fram
 		case PREC_BY:  COPY_SOUND(char,0) break;
 		case PREC_IN:  COPY_SOUND(short,0) break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"copy_sound_data:  unsupported sound precision %s!?",
 					PREC_NAME(sdp->src_prec_p));
 			warn(ERROR_STRING);
@@ -141,7 +141,7 @@ int _sound_seek(QSP_ARG_DECL  index_t idx)
 {
 	// index_t is unsigned so we don't need to check for negative!
 	if( idx >= the_sdp->src_n_frames ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"sound_seek:  bad index (%d), should be in the range 0-%d!?",
 			idx,the_sdp->src_n_frames);
 		warn(ERROR_STRING);
@@ -161,7 +161,7 @@ int _async_play_sound(QSP_ARG_DECL  Data_Obj *dp)
 	if(audio_state!=AUDIO_PLAY) audio_init(QSP_ARG  AUDIO_PLAY);
 
 	if( OBJ_MACH_PREC(dp) != PREC_IN ){
-		sprintf(ERROR_STRING,"Object %s has precision %s, should be %s for sounds",OBJ_NAME(dp),
+		snprintf(ERROR_STRING,LLEN,"Object %s has precision %s, should be %s for sounds",OBJ_NAME(dp),
 			PREC_NAME(OBJ_MACH_PREC_PTR(dp)),NAME_FOR_PREC_CODE(PREC_IN));
 		warn(ERROR_STRING);
 		return -1;
@@ -170,7 +170,7 @@ int _async_play_sound(QSP_ARG_DECL  Data_Obj *dp)
 	// what precisions can be played - any?
 
 	if( OBJ_COMPS(dp) > 2 ){
-		sprintf(ERROR_STRING,"Sound %s has %ld components, expected 1 or 2!?",
+		snprintf(ERROR_STRING,LLEN,"Sound %s has %ld components, expected 1 or 2!?",
 			OBJ_NAME(dp),(long)OBJ_COMPS(dp));
 		advise(ERROR_STRING);
 		return -1;
@@ -208,7 +208,7 @@ fprintf(stderr,"play_sound:  the_sdp = 0x%lx\n",(long)the_sdp);
 			outputParameters.sampleFormat = paInt16 ;
 			break;
 		default:
-			sprintf(ERROR_STRING,"play_sound:  unhandled obj precision %s!?",
+			snprintf(ERROR_STRING,LLEN,"play_sound:  unhandled obj precision %s!?",
 				PREC_NAME(OBJ_PREC_PTR(dp)));
 			warn(ERROR_STRING);
 			outputParameters.sampleFormat = paInt32 ;
@@ -290,7 +290,7 @@ void set_samp_freq(QSP_ARG_DECL  unsigned int req_rate)
 {
 	CHECK_AUDIO(AUDIO_PLAY);
 
-	// BUG?  should we insure validity?
+	// BUG?  should we ensure validity?
 	the_sample_rate = req_rate;
 }
 
@@ -313,7 +313,7 @@ void audio_init(QSP_ARG_DECL  int mode)
 
 #ifdef DEBUG
 	if( debug & sound_debug ){
-		sprintf(ERROR_STRING,"audio_init:  mode = %d",mode);
+		snprintf(ERROR_STRING,LLEN,"audio_init:  mode = %d",mode);
 		advise(ERROR_STRING);
 	}
 #endif /* DEBUG */

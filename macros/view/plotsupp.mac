@@ -35,6 +35,8 @@ If var_exists(plotsupp_loaded) "warn 'plotsupp.mac already read!?' exit_macro"
 
 Set plotsupp_loaded 1
 Set margins_set 0
+Set n_x_custom_ticks 0
+Set n_y_custom_ticks 0
 
 # basic plotting macros
 
@@ -61,7 +63,7 @@ Check_Var y_tick_last $ymax
 Check_Var y_tick_first $ymin
 If !$vars_ok exit_macro
 
-advise "Plot_Data_Range $xmin $ymin $xmax $ymax"
+#advise "Plot_Data_Range $xmin $ymin $xmax $ymax"
 Plot_Data_Range $xmin $ymin $xmax $ymax
 
 If var_exists('y_legend')
@@ -124,7 +126,7 @@ If !$vars_ok exit_macro
 If var_exists('x_legend')
   'X_Legend $x_legend'
 #Plot_X_Axis $xmin $xmax $x_tick_spacing $ymin
-advise "Setup_X_Axis:  x_tick_auto = $x_tick_auto, x_tick_last = $x_tick_last"
+#advise "Setup_X_Axis:  x_tick_auto = $x_tick_auto, x_tick_last = $x_tick_last"
 If $x_tick_auto
   Then 'Plot_X_Axis_Offset $xmin $xmax $x_tick_spacing $ymin $x_tick_offset $x_tick_last\
         Label_X_Ticks $xmin+$x_tick_offset $x_tick_last $x_tick_spacing'
@@ -272,7 +274,7 @@ Set param_vec_name ${nospacename}_params
 .
 
 Define Init_New_Plotter 1 name
-#advise "Init_New_Plotter $1"
+advise "Init_New_Plotter $1"
 If strcmp('$the_plotter','no_plotter')
   "Remember_Plotter_Params"
 # Here we need to forget everything about the old plotter...
@@ -461,6 +463,7 @@ view xsync $1 quit
 .
 
 Define Select_Plotter 1 plotter_name
+advise "Select_Plotter $1"
 # Should selecting a plotter bring it to the front???
 view show "$1" quit		# raise viewer
 Set recall 0

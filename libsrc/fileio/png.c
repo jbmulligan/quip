@@ -87,7 +87,7 @@ int _png_to_dp( QSP_ARG_DECL  Data_Obj *dp, Png_Hdr *hdr_p )	// unix version
 	} else if( n == 16 ){
 		p = PREC_UIN;
 	} else {
-		sprintf(ERROR_STRING,"Unexpected bit depth %d",n);
+		snprintf(ERROR_STRING,LLEN,"Unexpected bit depth %d",n);
 		warn(ERROR_STRING);
 		p = PREC_UBY;	// probably not going to work...
 	}
@@ -219,7 +219,7 @@ static dimension_t _count_png_frames(QSP_ARG_DECL  Image_File *ifp, long *frame_
 	} while( ! end_seen);
 
 	if( (end_pos % file_pos2) != 0 ){
-		sprintf(ERROR_STRING,"count_png_frames:  size of first frame (%ld) does not divide file size (%ld) !?",file_pos2,end_pos);
+		snprintf(ERROR_STRING,LLEN,"count_png_frames:  size of first frame (%ld) does not divide file size (%ld) !?",file_pos2,end_pos);
 		warn(ERROR_STRING);
 	} else {
 		nf = end_pos / file_pos2;
@@ -357,7 +357,8 @@ static void _init_frame_count(QSP_ARG_DECL  Image_File *ifp)
 
 static int init_png_for_reading(QSP_ARG_DECL  Image_File *ifp /* , png_infop info_ptr */ )
 {
-	assert( ! PNG_FRAMES_COUNTED(ifp) );	// flag that we've read the header once...
+	// check flag indicating that the header has been read already...
+	assert( ! PNG_FRAMES_COUNTED(ifp) );
 
 	// header already zeroed in the open func...
 
@@ -365,7 +366,10 @@ static int init_png_for_reading(QSP_ARG_DECL  Image_File *ifp /* , png_infop inf
 
 	init_frame_count(ifp);
 
-	fill_hdr(HDR_P);		// fill the header struct using png_ptr and info_ptr
+	fill_hdr(HDR_P);		// fill the header struct
+					// using png_ptr and info_ptr
+					// BUT THOSE ARGS ARE NOW
+					// COMMENTED OUT???
 
 	// rewind
 	if( fseek(ifp->if_fp,0L,SEEK_SET) < 0 )
@@ -594,7 +598,8 @@ static int get_bgcolor(QSP_ARG_DECL  Image_File *ifp, u_char *red, u_char *green
 	return 0;
 }
 
-#define PXL_TYPE u_short
+// WHY WAS THIS u_short???
+#define PXL_TYPE u_char
 
 static u_char *get_image( QSP_ARG_DECL  Image_File *ifp, u_long *pRowbytes )
 {
@@ -705,7 +710,7 @@ FIO_RD_FUNC( pngfio )
 	get_bgcolor(QSP_ARG  ifp, &bg_red, &bg_green, &bg_blue);
 
 	if( HDR_P->channels != OBJ_COMPS(dp) ){
-		sprintf(ERROR_STRING,"png_rd:  file %s has %d channels, but object %s has depth %d!?",
+		snprintf(ERROR_STRING,LLEN,"png_rd:  file %s has %d channels, but object %s has depth %d!?",
 			ifp->if_name,HDR_P->channels,OBJ_NAME(dp),OBJ_COMPS(dp));
 		warn(ERROR_STRING);
 		return;
@@ -731,7 +736,7 @@ FIO_RD_FUNC( pngfio )
 
 	if( FILE_FINISHED(ifp) ){
 		if( verbose ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"closing file \"%s\" after reading %d frames",
 				ifp->if_name,ifp->if_nfrms);
 			advise(ERROR_STRING);
@@ -822,7 +827,7 @@ FIO_WT_FUNC( pngfio )		// unix version
 	bit_depth = 8 * PREC_SIZE(OBJ_PREC_PTR(dp));
 
 	if( bit_depth != 8 && bit_depth != 16 ){
-		sprintf(ERROR_STRING,"Bad bit depth (%d) for PNG!?",bit_depth);
+		snprintf(ERROR_STRING,LLEN,"Bad bit depth (%d) for PNG!?",bit_depth);
 		warn(ERROR_STRING);
 		return(-1);
 	}
@@ -849,7 +854,7 @@ FIO_WT_FUNC( pngfio )		// unix version
 			color_type = PNG_COLOR_TYPE_GRAY;
 //fprintf(stderr,"pngfio_wt:  color_type_to_write not set, using GRAY based on OBJ_COMPS...\n");
 		} else {
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"Object %s has bad number of components (%d) for png",
 							OBJ_NAME(dp),OBJ_COMPS(dp));
 			warn(ERROR_STRING);
@@ -914,7 +919,7 @@ FIO_WT_FUNC( pngfio )		// unix version
 //ifp->if_nfrms,ifp->if_frms_to_wt);
 	if( ifp->if_nfrms == ifp->if_frms_to_wt ){
 		if( verbose ){
-	sprintf(ERROR_STRING, "closing file \"%s\" after writing %d frames",
+	snprintf(ERROR_STRING,LLEN, "closing file \"%s\" after writing %d frames",
 			ifp->if_name,ifp->if_nfrms);
 			NADVISE(ERROR_STRING);
 		}
@@ -930,16 +935,16 @@ FIO_WT_FUNC( pngfio )		// unix version
 
 FIO_INFO_FUNC(pngfio)
 {
-	sprintf(msg_str,"\tnumber of rows in header %ld", (long)HDR_P->height);
+	snprintf(msg_str,LLEN,"\tnumber of rows in header %ld", (long)HDR_P->height);
 	prt_msg(msg_str);
 
-	sprintf(msg_str,"\tnumber of channels %d", HDR_P->channels);
+	snprintf(msg_str,LLEN,"\tnumber of channels %d", HDR_P->channels);
 	prt_msg(msg_str);
 
-	sprintf(msg_str,"\tbits per channel %d", HDR_P->bit_depth);
+	snprintf(msg_str,LLEN,"\tbits per channel %d", HDR_P->bit_depth);
 	prt_msg(msg_str);
 
-	sprintf(msg_str,"\tbits per pixel %d", HDR_P->pixel_depth);
+	snprintf(msg_str,LLEN,"\tbits per pixel %d", HDR_P->pixel_depth);
 	prt_msg(msg_str);
 
 	switch(HDR_P->color_type) {
@@ -965,18 +970,18 @@ FIO_INFO_FUNC(pngfio)
 			break;
 
 		default:
-			sprintf(msg_str,"\tunknown color type %d", HDR_P->color_type);
+			snprintf(msg_str,LLEN,"\tunknown color type %d", HDR_P->color_type);
 			prt_msg(msg_str);
 	}
 
 	switch(HDR_P->interlace_type) {
 		case PNG_INTERLACE_NONE:
-			sprintf(msg_str,"\tinterlace type PNG_INTERLACE_NONE");
+			snprintf(msg_str,LLEN,"\tinterlace type PNG_INTERLACE_NONE");
 			prt_msg(msg_str);
 			break;
 
 		case PNG_INTERLACE_ADAM7:
-			sprintf(msg_str,"\tinterlace type PNG_INTERLACE_ADAM7");
+			snprintf(msg_str,LLEN,"\tinterlace type PNG_INTERLACE_ADAM7");
 			prt_msg(msg_str);
 			break;
 	}
@@ -1015,7 +1020,7 @@ void _set_color_type(QSP_ARG_DECL  int color_type)
 			break;
 
 		default:
-			sprintf(ERROR_STRING,"unknown color type %d", color_type);
+			snprintf(ERROR_STRING,LLEN,"unknown color type %d", color_type);
 			warn(ERROR_STRING);
 	}
 }
@@ -1146,7 +1151,7 @@ static void _png_to_dp(QSP_ARG_DECL  Data_Obj *dp, UIImage *img)	// iOS version
 		bpp=CGImageGetBitsPerPixel(img.CGImage);
 	}
 	if( bpp % 8 != 0 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"png_to_dp:  bits per pixel (%zu) is not a multiple of 8!?",bpp);
 		warn(ERROR_STRING);
 	}
@@ -1229,7 +1234,7 @@ FIO_RD_FUNC( pngfio )		// iOS version
 	assert( png_ifp != NULL );
 
 	if( ifp != png_ifp ){
-		sprintf(ERROR_STRING,"pngfio_rd:  have image data from %s, but %s requested!?",
+		snprintf(ERROR_STRING,LLEN,"pngfio_rd:  have image data from %s, but %s requested!?",
 			IF_NAME(png_ifp),IF_NAME(ifp));
 		warn(ERROR_STRING);
 		return;

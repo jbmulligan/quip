@@ -50,7 +50,7 @@ typedef enum {
 
 #ifdef BUILD_FOR_IOS
 #define MAKE_NEEDY(vp)		{ \
-/*sprintf(DEFAULT_ERROR_STRING,"MAKE_NEEDY:  canvas = 0x%lx",(long)VW_CANVAS(vp));\
+/*snprintf(DEFAULT_ERROR_STRING,LLEN,"MAKE_NEEDY:  canvas = 0x%lx",(long)VW_CANVAS(vp));\
 advise(DEFAULT_ERROR_STRING);*/ \
 [VW_CANVAS(vp) setNeedsDisplay];}
 
@@ -225,13 +225,13 @@ IOS_ITEM_LIST_PROT(Viewer,vwr)
 extern void init_viewer_canvas(Viewer *vp);
 extern void init_viewer_images(Viewer *vp);
 
-#define INSIST_IMAGE_VIEWER(whence)						\
-										\
-	if( !is_image_viewer(QSP_ARG  vp) ){					\
-		sprintf(ERROR_STRING,"%s:  %s is not an image viewer!?",	\
-			#whence,VW_NAME(vp));					\
-		WARN(ERROR_STRING);						\
-		return;								\
+#define INSIST_IMAGE_VIEWER(whence)					\
+									\
+	if( !is_image_viewer(QSP_ARG  vp) ){				\
+		snprintf(ERROR_STRING,LLEN,"%s:  %s is not an image viewer!?",\
+			#whence,VW_NAME(vp));				\
+		WARN(ERROR_STRING);					\
+		return;							\
 	}
 
 
@@ -242,7 +242,7 @@ extern void init_viewer_images(Viewer *vp);
 #define add_ios_sizable add_sizable
 
 #ifdef HAVE_X11
-#define INSURE_X11_SERVER  insure_x11_server(SINGLE_QSP_ARG);
+#define INSURE_X11_SERVER  ensure_x11_server(SINGLE_QSP_ARG);
 #else
 #define INSURE_X11_SERVER
 #endif /* ! HAVE_X11 */

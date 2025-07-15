@@ -276,12 +276,12 @@ fprintf(stderr,"%s = 0x%lx\n",#k,k);
 #ifdef QUIP_DEBUG
 if( debug & xdebug ){
 NADVISE("XCreateWindow");
-sprintf(ERROR_STRING,"dpy = %s,  dispDEEP = %d",
+snprintf(ERROR_STRING,LLEN,"dpy = %s,  dispDEEP = %d",
 DO_NAME(dop),DO_DEPTH(dop));
 NADVISE(ERROR_STRING);
-sprintf(ERROR_STRING,"calling XCreateWindow, depth = %d",DO_DEPTH(dop));
+snprintf(ERROR_STRING,LLEN,"calling XCreateWindow, depth = %d",DO_DEPTH(dop));
 NADVISE(ERROR_STRING);
-sprintf(ERROR_STRING,"\tx = %d, y = %d, w = %d, h = %d, border = %d, vis = %ld (0x%lx)",
+snprintf(ERROR_STRING,LLEN,"\tx = %d, y = %d, w = %d, h = %d, border = %d, vis = %ld (0x%lx)",
 x,y,w,h,WINDOW_BORDER_WIDTH,(u_long)DO_VISUAL(dop),(u_long)DO_VISUAL(dop));
 NADVISE(ERROR_STRING);
 }
@@ -616,7 +616,7 @@ void _show_viewer(QSP_ARG_DECL  Viewer *vp)
 	window_sys_init(SINGLE_QSP_ARG);
 
 	//XMapRaised(DO_DISPLAY(dop),vp->vw_xwin);
-//sprintf(ERROR_STRING,"show_viewer %s calling XMapRaised...",vp->vw_name);
+//snprintf(ERROR_STRING,LLEN,"show_viewer %s calling XMapRaised...",vp->vw_name);
 //advise(ERROR_STRING);
 	XMapRaised(VW_DPY(vp),vp->vw_xwin);
 	// When we command a movement, the content window ends up lower
@@ -672,7 +672,7 @@ static int _x_image_for(QSP_ARG_DECL  Viewer *vp,Data_Obj *dp)
 #ifdef QUIP_DEBUG
 if( debug & xdebug )
 {
-sprintf(ERROR_STRING,"Destroying old X image, viewer %s",vp->vw_name);
+snprintf(ERROR_STRING,LLEN,"Destroying old X image, viewer %s",vp->vw_name);
 NADVISE(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -682,7 +682,7 @@ NADVISE(ERROR_STRING);
 
 #ifdef QUIP_DEBUG
 if( debug & xdebug ){
-sprintf(ERROR_STRING,"x_image_for %s:  viewer %s has no old X image",OBJ_NAME(dp),vp->vw_name);
+snprintf(ERROR_STRING,LLEN,"x_image_for %s:  viewer %s has no old X image",OBJ_NAME(dp),vp->vw_name);
 NADVISE(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -691,7 +691,7 @@ NADVISE(ERROR_STRING);
 
 #ifdef QUIP_DEBUG
 if( debug & xdebug ){
-sprintf(ERROR_STRING,"x_image_for %s:  calling XCreateImage",OBJ_NAME(dp));
+snprintf(ERROR_STRING,LLEN,"x_image_for %s:  calling XCreateImage",OBJ_NAME(dp));
 NADVISE(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -770,7 +770,7 @@ void _embed_image(QSP_ARG_DECL  Viewer *vp,Data_Obj *dp,int x,int y)
 
 #ifdef QUIP_DEBUG
 //if( debug & xdebug ){
-//sprintf(ERROR_STRING,"embed_image %s (depth = %d), viewer %s (depth = %d)",
+//snprintf(ERROR_STRING,LLEN,"embed_image %s (depth = %d), viewer %s (depth = %d)",
 //OBJ_NAME(dp),8*OBJ_COMPS(dp),vp->vw_name,vp->vw_depth);
 //advise(ERROR_STRING);
 //}
@@ -780,7 +780,7 @@ void _embed_image(QSP_ARG_DECL  Viewer *vp,Data_Obj *dp,int x,int y)
 
 	if( x < 0 || y < 0 ||	x+OBJ_COLS(dp) > vp->vw_width ||
 				y+OBJ_ROWS(dp) > vp->vw_height ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"embed_image:  Can't embed image %s (%d x %d) at %d %d in viewer %s (%d x %d)",
 			OBJ_NAME(dp),OBJ_ROWS(dp),OBJ_COLS(dp),
 			x,y,vp->vw_name,vp->vw_height,vp->vw_width);
@@ -790,7 +790,7 @@ void _embed_image(QSP_ARG_DECL  Viewer *vp,Data_Obj *dp,int x,int y)
 
 	if( vp->vw_depth == 15 || vp->vw_depth == 16 ){
 		if( OBJ_PREC(dp) != PREC_IN && OBJ_PREC(dp) != PREC_UIN ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"embed_image:  image \"%s\" is type %s, should be short",
 				OBJ_NAME(dp),OBJ_PREC_NAME(dp));
 			warn(ERROR_STRING);
@@ -803,7 +803,7 @@ void _embed_image(QSP_ARG_DECL  Viewer *vp,Data_Obj *dp,int x,int y)
 				warn("non-byte image (with null name) passed to embed_image!?");
 				abort();
 			}
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"embed_image:  image \"%s\" is type %s, should be %s or %s",
 				OBJ_NAME(dp),OBJ_PREC_NAME(dp),
 				PREC_NAME(PREC_FOR_CODE(PREC_BY)), PREC_NAME(PREC_FOR_CODE(PREC_UBY)));
@@ -826,7 +826,7 @@ void _embed_image(QSP_ARG_DECL  Viewer *vp,Data_Obj *dp,int x,int y)
  *  to determine 32 bpp for 24 bit color or 24bpp for 24 bit color
  */
 	if( x_image_for(vp,dp) < 0 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"embed_image:  can't find x_image for viewer %s, object %s",
 			vp->vw_name,OBJ_NAME(dp));
 		warn(ERROR_STRING);
@@ -838,7 +838,7 @@ void _embed_image(QSP_ARG_DECL  Viewer *vp,Data_Obj *dp,int x,int y)
 	if( display_bpp != OBJ_COMPS(dp) * PREC_SIZE( OBJ_MACH_PREC_PTR(dp) ) ){
 		/* BUG don't deal with short case correctly here... */
 		if( PREC_SIZE(OBJ_MACH_PREC_PTR(dp)) != 1 ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"embed_image:  expected byte precision for object %s (%d %s components)!?",
 				OBJ_NAME(dp),OBJ_COMPS(dp),OBJ_PREC_NAME(dp));
 			warn(ERROR_STRING);
@@ -901,7 +901,7 @@ void _embed_image(QSP_ARG_DECL  Viewer *vp,Data_Obj *dp,int x,int y)
 
 #ifdef QUIP_DEBUG
 //if( debug & xdebug ){
-//sprintf(ERROR_STRING,"embed_image:  deleting disp_dp %s",OBJ_NAME(disp_dp));
+//snprintf(ERROR_STRING,LLEN,"embed_image:  deleting disp_dp %s",OBJ_NAME(disp_dp));
 //advise(ERROR_STRING);
 //}
 #endif /* QUIP_DEBUG */
@@ -928,30 +928,30 @@ static void _dop_info( QSP_ARG_DECL  Draw_Op *dop)
 {
 	switch(dop->do_op){
 		case DRAW_OP_FOREGROUND:
-			sprintf(msg_str,"\tselect 0x%x",dop->do_color);
+			snprintf(msg_str,LLEN,"\tselect 0x%x",dop->do_color);
 			break;
 		case DRAW_OP_BACKGROUND:
-			sprintf(msg_str,"\tbgselect 0x%x",dop->do_color);
+			snprintf(msg_str,LLEN,"\tbgselect 0x%x",dop->do_color);
 			break;
 		case DRAW_OP_MOVE:
-			sprintf(msg_str,"\tmove %d %d",dop->do_x,dop->do_y);
+			snprintf(msg_str,LLEN,"\tmove %d %d",dop->do_x,dop->do_y);
 			break;
 		case DRAW_OP_CONT:
-			sprintf(msg_str,"\tcont %d %d",dop->do_x,dop->do_y);
+			snprintf(msg_str,LLEN,"\tcont %d %d",dop->do_x,dop->do_y);
 			break;
 		case DRAW_OP_TEXT:
-			sprintf(msg_str,"\ttext \"%s\"",dop->do_str);
+			snprintf(msg_str,LLEN,"\ttext \"%s\"",dop->do_str);
 			break;
 		case DRAW_OP_TEXT_MODE:
-			sprintf(msg_str,"\ttext_mode \"%s\"",
+			snprintf(msg_str,LLEN,"\ttext_mode \"%s\"",
 				string_for_text_mode(dop->do_text_mode));
 			break;
 		case DRAW_OP_ARC:
-			sprintf(msg_str,"\tarc %d %d",dop->do_xl,dop->do_yu);
+			snprintf(msg_str,LLEN,"\tarc %d %d",dop->do_xl,dop->do_yu);
 			break;
 
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 			"dop_info:  unrecognized drawing op %d (0x%x)",
 					dop->do_op,dop->do_op);
 			warn(ERROR_STRING);
@@ -1037,7 +1037,7 @@ dop_info(dop);
 				break;
 
 			default:
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"refresh_drawing:  unrecognized drawing op %d (0x%x)",
 					dop->do_op,dop->do_op);
 				warn(ERROR_STRING);
@@ -1070,7 +1070,7 @@ void _unembed_image(QSP_ARG_DECL  Viewer *vp,Data_Obj *dp,int x,int y)
 	if( x < 0 || y < 0 ||	x+OBJ_COLS(dp) > vp->vw_width  ||
 				y+OBJ_ROWS(dp) > vp->vw_height ){
 
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Can't extract image %s (%d x %d) from %d %d in viewer %s (%d x %d)",
 			OBJ_NAME(dp),OBJ_ROWS(dp),OBJ_COLS(dp),
 			x,y,vp->vw_name,vp->vw_height,vp->vw_width);
@@ -1087,7 +1087,7 @@ void _unembed_image(QSP_ARG_DECL  Viewer *vp,Data_Obj *dp,int x,int y)
 	}
 
 	/* XGetImage will fail if the viewer is not mapped -
-	 * how do we insure this?
+	 * how do we ensure this?
 	 *
 	 * here we test if mapped (open), but really also need to make sure in front!
 	 *
@@ -1140,7 +1140,7 @@ void _unembed_image(QSP_ARG_DECL  Viewer *vp,Data_Obj *dp,int x,int y)
 		} else if ( display_bpp == 4 && OBJ_COMPS(dp) == 3 ){
 			/* ok */
 		} else {
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"unembed_image:  display has %d bpp, image %s (%s) has depth %d",
 				display_bpp,OBJ_NAME(dp),OBJ_PREC_NAME(dp),
 				OBJ_COMPS(dp));
@@ -1208,7 +1208,7 @@ void _redraw_viewer(QSP_ARG_DECL  Viewer *vp)
 
 #ifdef QUIP_DEBUG
 if( debug & xdebug ){
-sprintf(ERROR_STRING,"not redrawing viewer %s, drawn within last 1 sec",
+snprintf(ERROR_STRING,LLEN,"not redrawing viewer %s, drawn within last 1 sec",
 vp->vw_name);
 advise(ERROR_STRING);
 }
@@ -1496,7 +1496,7 @@ void _dump_drawlist(QSP_ARG_DECL  Viewer *vp)
 	/*
 	 * The plotting space is in terms of the window size
 	 */
-	sprintf(msg_str,"space 0 0 %d %d",vp->vw_width-1,vp->vw_height-1);
+	snprintf(msg_str,LLEN,"space 0 0 %d %d",vp->vw_width-1,vp->vw_height-1);
 	prt_msg(msg_str);
 
 	while(np!=NULL){
@@ -1509,32 +1509,32 @@ void _dump_drawlist(QSP_ARG_DECL  Viewer *vp)
 
 		switch(dop->do_op){
 			case DRAW_OP_FOREGROUND:
-				sprintf(msg_str,"select %d",dop->do_color);
+				snprintf(msg_str,LLEN,"select %d",dop->do_color);
 				break;
 			case DRAW_OP_BACKGROUND:
-				sprintf(msg_str,"background %d",dop->do_color);
+				snprintf(msg_str,LLEN,"background %d",dop->do_color);
 				break;
 			case DRAW_OP_MOVE:
-				sprintf(msg_str,"move %d %d",dop->do_x,dop->do_y);
+				snprintf(msg_str,LLEN,"move %d %d",dop->do_x,dop->do_y);
 				break;
 			case DRAW_OP_CONT:
-				sprintf(msg_str,"cont %d %d",dop->do_x,dop->do_y);
+				snprintf(msg_str,LLEN,"cont %d %d",dop->do_x,dop->do_y);
 				break;
 			case DRAW_OP_TEXT:
-				sprintf(msg_str,"font \"%s\"",dop->do_xfp->xf_name);
-				sprintf(msg_str,"text \"%s\"",dop->do_str);
+				snprintf(msg_str,LLEN,"font \"%s\"",dop->do_xfp->xf_name);
+				snprintf(msg_str,LLEN,"text \"%s\"",dop->do_str);
 				break;
 			case DRAW_OP_TEXT_MODE:
-				sprintf(msg_str,"text_mode \"%s\"",
+				snprintf(msg_str,LLEN,"text_mode \"%s\"",
 					string_for_text_mode(dop->do_text_mode) );
 				break;
 			case DRAW_OP_ARC:
-				sprintf(msg_str,"arc %d %d %d %d %d %d",
+				snprintf(msg_str,LLEN,"arc %d %d %d %d %d %d",
 					dop->do_xl,dop->do_yu,dop->do_w,
 					dop->do_h,dop->do_a1,dop->do_a2);
 				break;
 			default:
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 					"bad draw op %d\n",dop->do_op);
 				warn(ERROR_STRING);
 				msg_str[0]=0;
@@ -1589,7 +1589,7 @@ void _xp_text(QSP_ARG_DECL  Viewer *vp,int x,int y,const char *s)
 
 	x -= h_offset;
 	if( x < 0 ){
-		sprintf(ERROR_STRING,"_xp_text:  negative x offset (%d) requested",
+		snprintf(ERROR_STRING,LLEN,"_xp_text:  negative x offset (%d) requested",
 			x);
 		warn(ERROR_STRING);
 		x=0;
@@ -1610,7 +1610,7 @@ void _xp_line(QSP_ARG_DECL  Viewer *vp,int x1,int y1,int x2,int y2)
 {
 #ifdef QUIP_DEBUG
 if( debug & xdebug ){
-sprintf(ERROR_STRING,"XDrawLine %s, %d %d %d %d",vp->vw_name,x1,y1,x2,y2);
+snprintf(ERROR_STRING,LLEN,"XDrawLine %s, %d %d %d %d",vp->vw_name,x1,y1,x2,y2);
 NADVISE(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -1625,7 +1625,7 @@ NADVISE(ERROR_STRING);
 
 void _xp_linewidth(Viewer *vp,int w)
 {
-	//sprintf(msg_str,"\tGC\t0x%lx",(u_long)vp->vw_gc);
+	//snprintf(msg_str,LLEN,"\tGC\t0x%lx",(u_long)vp->vw_gc);
 	//prt_msg(msg_str);
 	SET_VW_LINE_WIDTH(vp,w);
 
@@ -1757,21 +1757,21 @@ void _show_geom(QSP_ARG_DECL  Viewer *vp)
 		return;
 	}
 
-	sprintf(msg_str,"window is at %d, %d, size %d by %d",x,y,width,height);
+	snprintf(msg_str,LLEN,"window is at %d, %d, size %d by %d",x,y,width,height);
 	prt_msg(msg_str);
-	sprintf(msg_str,"border width is %d, depth is %d",border_width,depth);
+	snprintf(msg_str,LLEN,"border width is %d, depth is %d",border_width,depth);
 	prt_msg(msg_str);
 }
 
 void _extra_viewer_info(QSP_ARG_DECL  Viewer *vp)
 {
-	sprintf(msg_str,"\tDisplay\t0x%lx",(u_long)VW_DPY(vp));
+	snprintf(msg_str,LLEN,"\tDisplay\t0x%lx",(u_long)VW_DPY(vp));
 	prt_msg(msg_str);
-	sprintf(msg_str,"\tScreen\t0x%x",VW_SCREEN_NO(vp));
+	snprintf(msg_str,LLEN,"\tScreen\t0x%x",VW_SCREEN_NO(vp));
 	prt_msg(msg_str);
-	sprintf(msg_str,"\tGC\t0x%lx",(u_long)vp->vw_gc);
+	snprintf(msg_str,LLEN,"\tGC\t0x%lx",(u_long)vp->vw_gc);
 	prt_msg(msg_str);
-	sprintf(msg_str,"\tWindow\t0x%lx",(u_long)vp->vw_xwin);
+	snprintf(msg_str,LLEN,"\tWindow\t0x%lx",(u_long)vp->vw_xwin);
 	prt_msg(msg_str);
 }
 
@@ -1847,7 +1847,7 @@ void update_image(Viewer *vp)
 	np=QLIST_HEAD(vp->vw_image_list);
 	if( vp->vw_dp == NULL ){
 	/*
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"update_image:  no associated data object for viewer %s",vp->vw_name);
 		warn(ERROR_STRING);
 	*/
@@ -1899,8 +1899,19 @@ void refresh_shm_window(Viewer *vp)
 }
 #endif /* NOT_USED */
 
+// Note that shared memory segments are not destroyed when the process
+// exits!?  Therefore we have to be careful to clean up before exiting.
+// This is not currently done...  We can list the current shared memory
+// segments with the command "ipcs -a" and remove segments with ipcrm.
+// But that should not be needed if we code things correctly here...
+
 int shm_setup(Viewer *vp)
 {
+	//int permission_bits = 0777;	// like file system
+	int permission_bits = 0666;	// like file system
+	int id;
+
+fprintf(stderr,"shm_setup BEGIN\n");
 	/* SHARED MEMORY PORTION */
 
 	shminfo = (XShmSegmentInfo*) getbuf (sizeof(XShmSegmentInfo));
@@ -1923,9 +1934,27 @@ int shm_setup(Viewer *vp)
 
 	shm_bpp = shmimage->bytes_per_line / shmimage->width;
 
+fprintf(stderr,"shm_setup: bytes_per_line = %d\n",shmimage->bytes_per_line);
+fprintf(stderr,"shm_setup: height = %d\n",shmimage->height);
+fprintf(stderr,"shm_setup: n_bytes = %d (0x%x)\n",
+shmimage->bytes_per_line*shmimage->height,
+shmimage->bytes_per_line*shmimage->height);
+fprintf(stderr,"shm_setup: 1MB = %d (0x%x)\n",1024*1024,1024*1024);
+
+fprintf(stderr,"IPC_PRIVATE = 0x%x\n",IPC_PRIVATE);
+fprintf(stderr,"IPC_CREAT = 0x%x\n",IPC_CREAT);
+
+	// DEBUG: check for an existing segment
+	id = shmget(IPC_PRIVATE,0,0);
+	if( id == -1 ){
+		perror("No preexisting segment (shmget)");
+	} else {
+		fprintf(stderr,"Preexisting segment found\n");
+	}
+
 	if ((shminfo->shmid = shmget(IPC_PRIVATE,  /*ftok(DevName, 'v'),*/
 				shmimage->bytes_per_line * shmimage->height,
-				IPC_CREAT | 0777)) == -1) {
+				IPC_CREAT | permission_bits)) == -1) {
 		perror("Shared memory error (shmget)");
 		return(-1);
 	}
@@ -1937,6 +1966,7 @@ int shm_setup(Viewer *vp)
 	shmimage->data = shminfo->shmaddr;
 
 	XShmAttach(VW_DPY(vp), shminfo);	/* check return val?? */
+fprintf(stderr,"Setting have_shmimage flag\n");
 	have_shmimage=1;
 	return(0);
 }
@@ -2111,12 +2141,15 @@ void relabel_viewer(Viewer *vp,const char *s)
 
 #endif /* ! HAVE_X11 */
 
-void _cycle_viewer_images(QSP_ARG_DECL  Viewer *vp, int frame_duration )
+void _cycle_viewer_images(QSP_ARG_DECL  Viewer *vp, int frame_duration, int n_repeats )
 {
 	// BUG are we displaying the head or the tail???
 	Node *np;
 	Window_Image *wip;
 
+if( n_repeats != 1 ){
+warn("ignoring passed value of n_repeats, using 1");
+}
 	assert( VW_IMAGE_LIST(vp) != NULL );
 	assert( QLIST_HEAD( VW_IMAGE_LIST(vp) ) != NULL );
 

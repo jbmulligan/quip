@@ -205,7 +205,7 @@ static void another_child(Vec_Expr_Node * enp,Vec_Expr_Node * child,int index)
 
 		/*
 //		if( VN_PARENT(child) != NULL ){
-//			sprintf(ERROR_STRING,
+//			snprintf(ERROR_STRING,LLEN,
 //				"CAUTIOUS:  another_child:  node n%d (%s) has parent n%d (%s), rival n%d (%s)!?",
 //				child->en_serial,
 //				NNAME(child),
@@ -413,6 +413,9 @@ void _rls_vectree(QSP_ARG_DECL  Vec_Expr_Node *enp)
 // BUG?  we could use the expected number of children based on node code...
 	for(i=0;i<MAX_CHILDREN(enp);i++)
 		if( VN_CHILD(enp,i) != NULL ){
+			if( VN_PARENT(VN_CHILD(enp,i)) != enp ){
+				dump_tree(enp);
+			}
 			assert( VN_PARENT(VN_CHILD(enp,i)) == enp );
 			rls_vectree(VN_CHILD(enp,i));
 		}
@@ -467,7 +470,7 @@ void _rls_vectree(QSP_ARG_DECL  Vec_Expr_Node *enp)
 			assert( AERROR("init_expr_node:  bad data type code!?") );
 			break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 "rls_vectree:  missing case for tree node data type %s",
 tnt_tbl[VN_CODE(enp)].tnt_name);
 			warn(ERROR_STRING);
@@ -528,7 +531,7 @@ void set_global_ctx(SINGLE_QSP_ARG_DECL)
 	icp = (Item_Context *)NODE_DATA(QLIST_TAIL(LIST_OF_DOBJ_CONTEXTS));
 #ifdef QUIP_DEBUG
 if( debug & scope_debug ){
-sprintf(ERROR_STRING,"set_global_ctx:  pushing global context %s",CTX_NAME(icp));
+snprintf(ERROR_STRING,LLEN,"set_global_ctx:  pushing global context %s",CTX_NAME(icp));
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -544,7 +547,7 @@ void unset_global_ctx(SINGLE_QSP_ARG_DECL)
 	Item_Context *icp;
 	icp = pop_item_context(dobj_itp);
 if( debug & scope_debug ){
-sprintf(ERROR_STRING,"unset_global_ctx:  global context %s popped",CTX_NAME(icp));
+snprintf(ERROR_STRING,LLEN,"unset_global_ctx:  global context %s popped",CTX_NAME(icp));
 advise(ERROR_STRING);
 }
 #else // ! QUIP_DEBUG
@@ -560,7 +563,7 @@ void show_context_stack(QSP_ARG_DECL  Item_Type *itp)
 	Node *np;
 	Item_Context *icp;
 
-	sprintf(ERROR_STRING,"Context stack for item type %s",IT_NAME(itp));
+	snprintf(ERROR_STRING,LLEN,"Context stack for item type %s",IT_NAME(itp));
 	advise(ERROR_STRING);
 
 	np=QLIST_HEAD(LIST_OF_CONTEXTS(itp));
@@ -570,12 +573,12 @@ void show_context_stack(QSP_ARG_DECL  Item_Type *itp)
 		return;
 	}
 	icp=(Item_Context *)NODE_DATA(np);
-	sprintf(ERROR_STRING,"%s (%s)",CTX_NAME(icp),CTX_NAME(current_context(itp)));
+	snprintf(ERROR_STRING,LLEN,"%s (%s)",CTX_NAME(icp),CTX_NAME(current_context(itp)));
 	advise(ERROR_STRING);
 	np=NODE_NEXT(np);
 	while(np!=NULL){
 		icp=(Item_Context *)NODE_DATA(np);
-		sprintf(ERROR_STRING,"%s",CTX_NAME(icp));
+		snprintf(ERROR_STRING,LLEN,"%s",CTX_NAME(icp));
 		advise(ERROR_STRING);
 		np=NODE_NEXT(np);
 	}
@@ -590,7 +593,7 @@ void _node_error(QSP_ARG_DECL  Vec_Expr_Node *enp)
 
 	assert( string_is_printable(SR_STRING(VN_INFILE(enp))) );
 
-	sprintf(DEFAULT_ERROR_STRING,"File %s, line %d:",SR_STRING(VN_INFILE(enp)),VN_LINENO(enp));
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"File %s, line %d:",SR_STRING(VN_INFILE(enp)),VN_LINENO(enp));
 	advise(DEFAULT_ERROR_STRING);
 }
 

@@ -45,14 +45,14 @@ int _path_exists(QSP_ARG_DECL  const char *pathname)
 
 	if( S_ISDIR(statb.st_mode) || S_ISREG(statb.st_mode) || S_ISCHR(statb.st_mode) ){
 /*
-sprintf(ERROR_STRING,"path_exists(%s) = 1",pathname);
+snprintf(ERROR_STRING,LLEN,"path_exists(%s) = 1",pathname);
 advise(ERROR_STRING);
 */
 		return(1);
 	}
 
 /*
-sprintf(ERROR_STRING,"path_exists(%s) = 0",pathname);
+snprintf(ERROR_STRING,LLEN,"path_exists(%s) = 0",pathname);
 advise(ERROR_STRING);
 */
 	return(0);
@@ -73,7 +73,7 @@ int _directory_exists(QSP_ARG_DECL  const char *dirname)
 	}
 
 	if( ! S_ISDIR(statb.st_mode) ){
-		sprintf(DEFAULT_ERROR_STRING,"%s is not a directory!?",dirname);
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"%s is not a directory!?",dirname);
 		warn(DEFAULT_ERROR_STRING);
 		return(0);
 	}
@@ -95,7 +95,7 @@ int _regfile_exists(QSP_ARG_DECL  const char *pathname)
 	}
 
 	if( ! S_ISREG(statb.st_mode) ){
-		sprintf(DEFAULT_ERROR_STRING,"%s is not a regular file!?",pathname);
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"%s is not a regular file!?",pathname);
 		warn(DEFAULT_ERROR_STRING);
 		return(0);
 	}
@@ -139,7 +139,7 @@ int _can_write_to(QSP_ARG_DECL  const char *name)
 #endif // ! S_IWUSR
 
 		if( (statb.st_mode & OWNER_CAN_WRITE ) == 0 ){
-			sprintf(DEFAULT_ERROR_STRING,
+			snprintf(DEFAULT_ERROR_STRING,LLEN,
 				"No owner write-permission on %s", name);
 			warn(DEFAULT_ERROR_STRING);
 			return(0);
@@ -151,7 +151,7 @@ int _can_write_to(QSP_ARG_DECL  const char *name)
 // No other permissions on windows???
 #ifdef S_IWOTH
 	  else if( (statb.st_mode & S_IWOTH) == 0 ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 			"No other write-permission on %s",name);
 		warn(DEFAULT_ERROR_STRING);
 		return(0);
@@ -172,7 +172,7 @@ int _file_exists(QSP_ARG_DECL  const char *pathname)
 
 	if( stat(pathname,&statb) < 0 ){
 		if( verbose ){
-			sprintf(MSG_STR,
+			snprintf(MSG_STR,LLEN,
 				"file %s does not already exist",pathname);
 			prt_msg(MSG_STR);
 		}
@@ -191,7 +191,7 @@ int _file_exists(QSP_ARG_DECL  const char *pathname)
 	struct stat statb;
 
 	if( stat(pathname,&statb) < 0 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"file_content_size:  file %s does not exist!?",
 			pathname);
 		warn(ERROR_STRING);
@@ -231,17 +231,17 @@ int _file_exists(QSP_ARG_DECL  const char *pathname)
 int _check_file_access(QSP_ARG_DECL  const char *filename)
 {
 	if( ! file_exists(filename) ){
-		sprintf(ERROR_STRING,"File %s does not exist.",filename);
+		snprintf(ERROR_STRING,LLEN,"File %s does not exist.",filename);
 		//error1(ERROR_STRING);
 		warn(ERROR_STRING);
 		return -1;
 	}
 	/*if( ! can_read_from(filename) ){
-		sprintf(ERROR_STRING,"File %s exists, but no read permission.",filename);
+		snprintf(ERROR_STRING,LLEN,"File %s exists, but no read permission.",filename);
 		error1(ERROR_STRING);
 	}*/
 	if( ! can_write_to(filename) ){
-		sprintf(ERROR_STRING,"File %s exists, but no write permission.",filename);
+		snprintf(ERROR_STRING,LLEN,"File %s exists, but no write permission.",filename);
 		//error1(ERROR_STRING);
 		warn(ERROR_STRING);
 		return -1;

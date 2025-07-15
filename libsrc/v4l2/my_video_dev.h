@@ -85,7 +85,7 @@ typedef struct video_device {
 #define CHECK_DEVICE(whence)							\
 										\
 	if( curr_vdp == NO_VIDEO_DEVICE ){					\
-		sprintf(ERROR_STRING,"%s:  no video device selected",#whence);	\
+		snprintf(ERROR_STRING,LLEN,"%s:  no video device selected",#whence);	\
 		WARN(ERROR_STRING);						\
 		return;								\
 	}
@@ -94,7 +94,7 @@ typedef struct video_device {
 #define CHECK_DEVICE2(whence)							\
 										\
 	if( curr_vdp == NO_VIDEO_DEVICE ){					\
-		sprintf(ERROR_STRING,"%s:  no video device selected",#whence);	\
+		snprintf(ERROR_STRING,LLEN,"%s:  no video device selected",#whence);	\
 		WARN(ERROR_STRING);						\
 		return -1;							\
 	}

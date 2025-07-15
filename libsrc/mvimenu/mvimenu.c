@@ -116,7 +116,7 @@ Movie *_create_movie(QSP_ARG_DECL  const char *moviename)
 		/* overwrite an existing movie only if clobber flag set */
 		if( clobber_movies ){
 			if( verbose ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 			"create_movie:  clobbering existing movie %s",moviename);
 				advise(ERROR_STRING);
 			}
@@ -124,7 +124,7 @@ Movie *_create_movie(QSP_ARG_DECL  const char *moviename)
 			/* maybe do something module-specific here */
 			/* what does rtv do, that's the question! */
 		} else {
-			sprintf(ERROR_STRING,"NOT clobbering existing movie %s",moviename);
+			snprintf(ERROR_STRING,LLEN,"NOT clobbering existing movie %s",moviename);
 			advise(ERROR_STRING);
 			return(NULL);
 		}
@@ -207,7 +207,7 @@ static Movie *open_if(QSP_ARG_DECL  const char *s)
 
 	if( mvip == NULL ){
 		if( verbose ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 			"Trying to open movie file %s",s);
 			advise(ERROR_STRING);
 		}
@@ -221,7 +221,7 @@ if( debug & mvi_debug ) advise("calling movie open_func");
 		mvip = mvi_of(s);
 	}
 	if( mvip == NULL ){
-		sprintf(ERROR_STRING,"No movie \"%s\"",s);
+		snprintf(ERROR_STRING,LLEN,"No movie \"%s\"",s);
 		warn(ERROR_STRING);
 		return(mvip);
 	}
@@ -244,7 +244,7 @@ static COMMAND_FUNC( do_open_mvi )
 	s=NAMEOF("movie filename");
 	mvip = mvi_of(s);
 	if( mvip != NULL ){
-		sprintf(ERROR_STRING,"Movie %s was already open!?",s);
+		snprintf(ERROR_STRING,LLEN,"Movie %s was already open!?",s);
 		advise(ERROR_STRING);
 		SET_MOVIE_TIME(mvip, time(NULL) );
 		return;
@@ -368,7 +368,7 @@ static COMMAND_FUNC( do_shuttle )
 	if( mvip == NULL ) return;
 
 	if( frame < 0 || frame >= (incr_t) MOVIE_FRAMES(mvip) ){
-		sprintf(ERROR_STRING,"Frame index %d out of range for movie %s",
+		snprintf(ERROR_STRING,LLEN,"Frame index %d out of range for movie %s",
 			frame,MOVIE_NAME(mvip));
 		warn(ERROR_STRING);
 		return;
@@ -418,7 +418,7 @@ static COMMAND_FUNC( do_getframe )
 	if( mvip == NULL || dp == NULL ) return;
 
 	if( frame < 0 || frame >= (incr_t)MOVIE_FRAMES(mvip) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"frame index %d out of range for movie %s",
 			frame,MOVIE_NAME(mvip));
 		warn(ERROR_STRING);
@@ -426,11 +426,11 @@ static COMMAND_FUNC( do_getframe )
 	}
 	if( OBJ_ROWS(dp) != MOVIE_HEIGHT(mvip) ||
 		OBJ_COLS(dp) != MOVIE_WIDTH(mvip) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"frame size mismatch between image %s and movie %s",
 			OBJ_NAME(dp),MOVIE_NAME(mvip));
 		warn(ERROR_STRING);
-		sprintf(ERROR_STRING,"image %s is %d x %d, movie %s is %d x %d",
+		snprintf(ERROR_STRING,LLEN,"image %s is %d x %d, movie %s is %d x %d",
 			OBJ_NAME(dp),OBJ_ROWS(dp),OBJ_COLS(dp),
 			MOVIE_NAME(mvip),MOVIE_HEIGHT(mvip),MOVIE_WIDTH(mvip));
 		advise(ERROR_STRING);
@@ -463,7 +463,7 @@ static COMMAND_FUNC( do_getframec )
 	if( mvip == NULL || dp == NULL ) return;
 
 	if( frame < 0 || frame >= (incr_t) MOVIE_FRAMES(mvip) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"frame index %d out of range for movie %s",
 			frame,MOVIE_NAME(mvip));
 		warn(ERROR_STRING);
@@ -471,11 +471,11 @@ static COMMAND_FUNC( do_getframec )
 	}
 	if( OBJ_ROWS(dp) != MOVIE_HEIGHT(mvip) ||
 		OBJ_COLS(dp) != MOVIE_WIDTH(mvip) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"frame size mismatch between image %s and movie %s",
 			OBJ_NAME(dp),MOVIE_NAME(mvip));
 		warn(ERROR_STRING);
-		sprintf(ERROR_STRING,"image %s is %d x %d, movie %s is %d x %d",
+		snprintf(ERROR_STRING,LLEN,"image %s is %d x %d, movie %s is %d x %d",
 			OBJ_NAME(dp),OBJ_ROWS(dp),OBJ_COLS(dp),
 			MOVIE_NAME(mvip),MOVIE_HEIGHT(mvip),MOVIE_WIDTH(mvip));
 		advise(ERROR_STRING);
@@ -506,7 +506,7 @@ static COMMAND_FUNC( do_getfields )
 	if( mvip == NULL || dp == NULL ) return;
 
 	if( field < 0 || field >= (incr_t)MOVIE_FRAMES(mvip)*2 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"field index %d out of range for movie %s",
 			field,MOVIE_NAME(mvip));
 		warn(ERROR_STRING);
@@ -514,11 +514,11 @@ static COMMAND_FUNC( do_getfields )
 	}
 	if( OBJ_ROWS(dp) != MOVIE_HEIGHT(mvip)/2 ||
 		OBJ_COLS(dp) != MOVIE_WIDTH(mvip) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"field size mismatch between image %s and movie %s",
 			OBJ_NAME(dp),MOVIE_NAME(mvip));
 		warn(ERROR_STRING);
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"image %s is %d x %d, movie %s field size is %d x %d",
 			OBJ_NAME(dp),OBJ_ROWS(dp),OBJ_COLS(dp),
 			MOVIE_NAME(mvip),MOVIE_HEIGHT(mvip)/2,MOVIE_WIDTH(mvip));
@@ -550,7 +550,7 @@ static COMMAND_FUNC( do_getfieldc )
 	if( mvip == NULL || dp == NULL ) return;
 
 	if( field < 0 || field >= (incr_t)MOVIE_FRAMES(mvip)*2 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"field index %d out of range for movie %s",
 			field,MOVIE_NAME(mvip));
 		warn(ERROR_STRING);
@@ -558,11 +558,11 @@ static COMMAND_FUNC( do_getfieldc )
 	}
 	if( OBJ_ROWS(dp) != MOVIE_HEIGHT(mvip)/2 ||
 		OBJ_COLS(dp) != MOVIE_WIDTH(mvip) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"field size mismatch between image %s and movie %s",
 			OBJ_NAME(dp),MOVIE_NAME(mvip));
 		warn(ERROR_STRING);
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"image %s is %d x %d, movie %s field size is %d x %d",
 			OBJ_NAME(dp),OBJ_ROWS(dp),OBJ_COLS(dp),
 			MOVIE_NAME(mvip),MOVIE_HEIGHT(mvip)/2,MOVIE_WIDTH(mvip));
@@ -606,7 +606,7 @@ static COMMAND_FUNC( do_del_mvi )
 void close_movie(QSP_ARG_DECL  Movie *mvip)
 {
 	/* First must destroy all sequences that reference this movie.
-	 * The fact that this flag is set does not insure that there
+	 * The fact that this flag is set does not ensure that there
 	 * are actually any seqs to delete, since they could have been
 	 * deleted already by someone else...
 	 */
@@ -671,20 +671,20 @@ static void set_mvidir(QSP_ARG_DECL  const char *dirname)
 	/* first check that the file exists! */
 	if( stat(dirname,&statb) < 0 ){
 		tell_sys_error(dirname);
-		sprintf(ERROR_STRING,"Couldn't set movie directory to %s",dirname);
+		snprintf(ERROR_STRING,LLEN,"Couldn't set movie directory to %s",dirname);
 		warn(ERROR_STRING);
 		return;
 	}
 
 	if( ! S_ISDIR(statb.st_mode) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s is not a directory",dirname);
 		warn(ERROR_STRING);
 		return;
 	}
 
 	if( movie_dir != NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Resetting movie directory to %s (was %s)",dirname,movie_dir);
 		advise(ERROR_STRING);
 		rls_str((char *)movie_dir);
@@ -699,7 +699,7 @@ static COMMAND_FUNC( do_list_mvis ){ list_mvis(tell_msgfile()); }
 MENU_BEGIN(playback)
 ADD_CMD( directory,	do_set_mvidir,		set movie directory )
 ADD_CMD( open,		do_open_mvi,		open a movie file )
-ADD_CMD( insure,	do_openif_mvi,		open a (possibly opened) movie file )
+ADD_CMD( ensure,	do_openif_mvi,		open a (possibly opened) movie file )
 ADD_CMD( play,		do_play_movie,		play a movie to external video device )
 ADD_CMD( shuttle,	do_shuttle,		play a movie frame to external video )
 ADD_CMD( close,		do_del_mvi,		close an open movie file )
@@ -755,7 +755,7 @@ static COMMAND_FUNC( do_end_movie )
 	if( mvip == NULL ) return;
 
 	if( ! IS_ASSEMBLING(mvip) ){
-		sprintf(ERROR_STRING,"Movie \"%s\" is not being assembled",MOVIE_NAME(mvip));
+		snprintf(ERROR_STRING,LLEN,"Movie \"%s\" is not being assembled",MOVIE_NAME(mvip));
 		warn(ERROR_STRING);
 		return;
 	}
@@ -849,7 +849,7 @@ static COMMAND_FUNC( report_mm )
 	if( the_mmp == NULL )
 		warn("No movie module loaded");
 	else {
-		sprintf(msg_str,"Current movie module:  %s",the_mmp->mm_name);
+		snprintf(msg_str,LLEN,"Current movie module:  %s",the_mmp->mm_name);
 		prt_msg(msg_str);
 	}
 }
@@ -882,7 +882,7 @@ static double get_mvi_size(QSP_ARG_DECL  Item *ip,int index)
 		case 2: d=MOVIE_HEIGHT(mvip); break;
 		case 3: d=MOVIE_FRAMES(mvip); break;
 		default:
-			sprintf(ERROR_STRING,"Unsupported movie size function, index %d",index);
+			snprintf(ERROR_STRING,LLEN,"Unsupported movie size function, index %d",index);
 			warn(ERROR_STRING);
 			d=1.0;
 			break;
@@ -1002,7 +1002,7 @@ const char *movie_pathname(const char *filename)
 	static char pathname[LLEN];
 
 	if( movie_dir != NULL && *movie_dir && *filename != '/' ){
-		sprintf(pathname,"%s/%s",movie_dir,filename);
+		snprintf(pathname,LLEN,"%s/%s",movie_dir,filename);
 		return(pathname);
 	} else {
 		return(filename);

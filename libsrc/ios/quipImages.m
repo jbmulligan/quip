@@ -1,6 +1,7 @@
 //
 //  quipImages.m
 //
+// macOS or iOS???
 #include <QuartzCore/QuartzCore.h>
 
 // for mach_absolute_time()
@@ -90,10 +91,10 @@ uint64_t my_absolute_to_nanoseconds( uint64_t *t )
 	if( (QI_QV(self)).baseTime == 0 ){
 		[QI_QV(self) setBaseTime:t];
 	}
-//sprintf(DEFAULT_ERROR_STRING,"_onScreenRefresh:  t = %g, base_time = %g",t,(QI_QV(self)).baseTime);
-//sprintf(DEFAULT_ERROR_STRING,"_onScreenRefresh:  _vbl_count = %d, _frame_duration = %d",_vbl_count,_frame_duration);
+//snprintf(DEFAULT_ERROR_STRING,LLEN,"_onScreenRefresh:  t = %g, base_time = %g",t,(QI_QV(self)).baseTime);
+//snprintf(DEFAULT_ERROR_STRING,LLEN,"_onScreenRefresh:  _vbl_count = %d, _frame_duration = %d",_vbl_count,_frame_duration);
 //NADVISE(DEFAULT_ERROR_STRING);
-	sprintf(time_buf,"%g",t - (QI_QV(self)).baseTime);
+	snprintf(time_buf,64,"%g",t - (QI_QV(self)).baseTime);
 	assign_var(DEFAULT_QSP_ARG  "refresh_time", time_buf );
 
 	//ltime -= _time0_2;
@@ -101,7 +102,7 @@ uint64_t my_absolute_to_nanoseconds( uint64_t *t )
 	uint64_t ns;
 	//ns = AbsoluteToNanoseconds( *(AbsoluteTime *) &ltime );
 	ns = my_absolute_to_nanoseconds( &ltime );
-	sprintf(time_buf,"%g",round(ns/100000)/10.0);
+	snprintf(time_buf,64,"%g",round(ns/100000)/10.0);
 	assign_var(DEFAULT_QSP_ARG  "refresh_time2", time_buf );
 }
 
@@ -159,10 +160,13 @@ uint64_t my_absolute_to_nanoseconds( uint64_t *t )
 	if( refresh_func != NULL ){
 		[self exec_refresh_func];
 	} else {
-        if( afterAnimation != NULL && animationStarted ){
+	        if( afterAnimation != NULL && animationStarted ){
+			// Not sure where the old code is???
+#ifdef BUILD_FOR_IOS
 			if( ! self.animating ){
 				[self animationDone];
 			}
+#endif
 		}
 	}
 }
@@ -170,8 +174,13 @@ uint64_t my_absolute_to_nanoseconds( uint64_t *t )
 -(void) startAnimation
 {
 	animationStarted = 1;
-	// enableRefreshEventProcessing is called if an when we set _afterAnimation
+
+	// enableRefreshEventProcessing is called
+	// if and when we set _afterAnimation
+
+#ifdef BUILD_FOR_IOS
 	[self startAnimating];
+#endif // BUILD_FOR_IOS
 }
 
 -(NSInteger) subviewCount
@@ -228,6 +237,7 @@ uint64_t my_absolute_to_nanoseconds( uint64_t *t )
 	_queue_idx = 0;
 }
 
+#ifdef BUILD_FOR_IOS
 -(void) queueFrame: (UIImage *)uii_p
 {
 	//assert( [self hasSubview:qiv_p] );
@@ -240,6 +250,7 @@ uint64_t my_absolute_to_nanoseconds( uint64_t *t )
 	assert( self.frameQueue != NULL );
 	[ self.frameQueue addObject:uii_p];	// adds at end of array
 }
+#endif // BUILD_FOR_IOS
 
 -(void) enableRefreshEventProcessing
 {
@@ -298,15 +309,15 @@ uint64_t my_absolute_to_nanoseconds( uint64_t *t )
 			displayLinkWithTarget:self
 			selector:@selector(_onScreenRefresh)];
 //fprintf(stderr,"initWithSize:  created updateTimer\n");
-#endif // BUILD_FOR_IOS
 
-	self.opaque = YES;
+	//self.opaque = YES;		// no longer allowed?  read-only
 	self.alpha = 1.0;
 	self.hidden=NO;
 
 	//self.imageScaling = NSScaleNone;	// not with iOS?
 
 	self.contentMode = UIViewContentModeTopLeft;
+#endif // BUILD_FOR_IOS
 
 	return self;
 }  // end initWithSize

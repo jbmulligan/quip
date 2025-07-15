@@ -82,7 +82,7 @@ static void pparam(QSP_ARG_DECL  Param* p,FILE* fp)	/** print parameter pted to 
 		fprintf(fp,"%s\t\"%s\"\n",p->p_name,p->u.strp);
 	}
 	else {
-		sprintf(ERROR_STRING,"parameter type:  0x%x",p->p_type);
+		snprintf(ERROR_STRING,LLEN,"parameter type:  0x%x",p->p_type);
 		warn(ERROR_STRING);
 		error1(badpstr);
 	}
@@ -123,7 +123,7 @@ static void getarrel(QSP_ARG_DECL  Param *p,int pindex)
 	tprm.p_name=p->p_name;
 	max=(int)((p->p_type & NELTMASK) + 1);
 	if( pindex < 0 || pindex >= max ){
-		sprintf(ERROR_STRING,"legal indices:0 to %d",max);
+		snprintf(ERROR_STRING,LLEN,"legal indices:0 to %d",max);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -138,10 +138,10 @@ static void getarrel(QSP_ARG_DECL  Param *p,int pindex)
 		tprm.u.ip=p->u.ip+pindex;
 	}
 	switch(pindex){
-		case 0: sprintf(pmpt,"(1st) "); break;
-		case 1: sprintf(pmpt,"(2nd) "); break;
-		case 2: sprintf(pmpt,"(3rd) "); break;
-		default: sprintf(pmpt,"(%dth) ",pindex+1); break;
+		case 0: snprintf(pmpt,160,"(1st) "); break;
+		case 1: snprintf(pmpt,160,"(2nd) "); break;
+		case 2: snprintf(pmpt,160,"(3rd) "); break;
+		default: snprintf(pmpt,160,"(%dth) ",pindex+1); break;
 	}
 	strcat(pmpt,p->p_comment);
 	getparm(QSP_ARG   &tprm );
@@ -221,7 +221,7 @@ static COMMAND_FUNC( do_chng_one )
 		}
 		return;
 	} else if( get_pval(QSP_ARG  s,theptbl) == -1 ){
-		sprintf(ERROR_STRING,"Unknown parameter \"%s\"",s);
+		snprintf(ERROR_STRING,LLEN,"Unknown parameter \"%s\"",s);
 		warn(ERROR_STRING);
 	}
 }
@@ -250,7 +250,7 @@ static index_t ifarr(QSP_ARG_DECL  const char *s)	/* return index or NOTARR */
 	i=0;
 	while( *s && *s!=']' ){
 		if( i >= (MAX_INDEX_STRING_LEN-1)){
-			sprintf(ERROR_STRING,"ifarr:  index string too long (%d chars max)",
+			snprintf(ERROR_STRING,LLEN,"ifarr:  index string too long (%d chars max)",
 				MAX_INDEX_STRING_LEN-1);
 			warn(ERROR_STRING);
 			return(NOTARR);
@@ -284,7 +284,7 @@ static int get_pval(QSP_ARG_DECL  const char *name,Param* ptable)
 			return(0);
 		} else ptable++;
 	}
-	sprintf(ERROR_STRING,"no parameter \"%s\"",name);
+	snprintf(ERROR_STRING,LLEN,"no parameter \"%s\"",name);
 	warn(ERROR_STRING);
 	return(-1);
 }

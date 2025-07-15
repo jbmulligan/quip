@@ -107,7 +107,7 @@ static int _check_n_comps(QSP_ARG_DECL  Equivalence_Data *eqd_p)
 			QUAT_PRECISION(EQ_PREC_CODE(eqd_p)) ){
 
 		if( CHILD_DIM(0) != 1 ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"Sorry, %s objects must have component dimension (%d) equal to 1",
 				PREC_NAME(EQ_PREC_PTR(eqd_p)),
 				CHILD_DIM(0)
@@ -138,7 +138,7 @@ static int _check_parent_min_contig(QSP_ARG_DECL  Equivalence_Data *eqd_p)
 	}
 
 	if( n_contig < EQ_N_PER_CHILD(eqd_p) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"get_n_per_child:  parent object %s n_contig (%d) < n_per_child (%d), can't cast to %s",
 			OBJ_NAME(parent_dp),n_contig,EQ_N_PER_CHILD(eqd_p),PREC_NAME(EQ_PREC_PTR(eqd_p)));
 		warn(ERROR_STRING);
@@ -207,7 +207,7 @@ static int _check_eq_size_match(QSP_ARG_DECL  Equivalence_Data *eqd_p)
 //fprintf(stderr,"check_eq_size_match:  total_parent_bytes = %d (size %d x n_elts %d)\n",
 //total_parent_bytes,ELEMENT_SIZE(parent_dp),OBJ_N_MACH_ELTS(parent_dp));
 	if( total_child_bytes != total_parent_bytes){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"make_equivalence %s:  total requested size (%d bytes) does not match parent %s (%d bytes)",
 			EQ_NAME(eqd_p),total_child_bytes,
 			OBJ_NAME( parent_dp ),total_parent_bytes);
@@ -263,7 +263,7 @@ static incr_t parent_inc_at_level(Equivalence_Data *eqd_p)
  */
 
 /* When we bring in more parent elements
- * to fill in a child dimension, we have to insure that
+ * to fill in a child dimension, we have to ensure that
  * the spacing remains even.
  *
  * This test is like the contiguity test - but we only care
@@ -646,7 +646,7 @@ Data_Obj *_make_equivalence( QSP_ARG_DECL  const char *name, Data_Obj *parent, D
 	eqd1.eqd_child_type_incs = (&is1);
 
 	if( IS_BITMAP(parent) && ! IS_CONTIGUOUS(parent) ){
-		sprintf(ERROR_STRING,"Sorry, can't make equivalence to non-contiguous bitmap %s!?",
+		snprintf(ERROR_STRING,LLEN,"Sorry, can't make equivalence to non-contiguous bitmap %s!?",
 			OBJ_NAME(parent));
 		warn(ERROR_STRING);
 		return NULL;

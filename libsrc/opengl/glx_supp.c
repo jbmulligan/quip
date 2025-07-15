@@ -56,7 +56,7 @@ void _swap_buffers(SINGLE_QSP_ARG_DECL)
 #else // BUILD_FOR_OBJC
 	//glSwapBuffers();
 	glFlush();
-	glutPostRedisplay();
+//	glutPostRedisplay();
 #endif // BUILD_FOR_OBJC
 }
 
@@ -111,7 +111,7 @@ void _wait_video_sync(QSP_ARG_DECL  int n)
 
 	(*m_glXGetVideoSyncSGI)(&count);
 /*
-sprintf(ERROR_STRING,"Calling glXWaitVideoSyncSGI(%d (0x%x), %d (0x%x), %d (0x%x))",
+snprintf(ERROR_STRING,LLEN,"Calling glXWaitVideoSyncSGI(%d (0x%x), %d (0x%x), %d (0x%x))",
 divisor,divisor,remainder,remainder,count,count);
 advise(ERROR_STRING);
 */
@@ -167,13 +167,13 @@ static void show_renderer_info( QSP_ARG_DECL  Renderer_Info *rip )
 	const char *s;
 	int n;
 
-	sprintf(ERROR_STRING,"Vendor:  %s",rip->glr_vendor);
+	snprintf(ERROR_STRING,LLEN,"Vendor:  %s",rip->glr_vendor);
 	advise(ERROR_STRING);
 
-	sprintf(ERROR_STRING,"Renderer:  %s",rip->glr_renderer);
+	snprintf(ERROR_STRING,LLEN,"Renderer:  %s",rip->glr_renderer);
 	advise(ERROR_STRING);
 
-	sprintf(ERROR_STRING,"Version:  %s",rip->glr_version);
+	snprintf(ERROR_STRING,LLEN,"Version:  %s",rip->glr_version);
 	advise(ERROR_STRING);
 
 	// count the extensions, expect too many to fit in LLEN string
@@ -184,7 +184,7 @@ static void show_renderer_info( QSP_ARG_DECL  Renderer_Info *rip )
 		s++;
 	}
 
-	sprintf(ERROR_STRING,"Extensions:  %d available",n);
+	snprintf(ERROR_STRING,LLEN,"Extensions:  %d available",n);
 	advise(ERROR_STRING);
 
 	show_extensions(QSP_ARG  rip);
@@ -229,7 +229,7 @@ static void init_glx_context(QSP_ARG_DECL Viewer *vp)
 	int list[20];
 	int index;
 
-//sprintf(ERROR_STRING,"width: %d height: %d\n", vp->vw_width, vp->vw_height);
+//snprintf(ERROR_STRING,LLEN,"width: %d height: %d\n", vp->vw_width, vp->vw_height);
 //advise(ERROR_STRING);
 	vinfo_template.visual = VW_VISUAL(vp);
 	vinfo_template.depth = VW_DEPTH(vp);
@@ -252,18 +252,18 @@ static void init_glx_context(QSP_ARG_DECL Viewer *vp)
 	vis_info_p = glXChooseVisual(VW_DPY(vp),VW_SCREEN_NO(vp),list);
 
 	if( vis_info_p == NULL ){
-		sprintf(ERROR_STRING,"unable to get a visual with DEPTH_SIZE %d",list[1]);
+		snprintf(ERROR_STRING,LLEN,"unable to get a visual with DEPTH_SIZE %d",list[1]);
 		warn(ERROR_STRING);
 		vis_info_p = XGetVisualInfo(VW_DPY(vp),mask,&vinfo_template,&n);
 		if( vis_info_p == NULL )
 			error1("XGetVisualInfo failed!?");
 	} else {
 //		advise("FOUND visual with desired DEPTH_SIZE");
-//sprintf(ERROR_STRING,"visual id = %ld (0x%lx)",vis_info_p->visualid,vis_info_p->visualid);
+//snprintf(ERROR_STRING,LLEN,"visual id = %ld (0x%lx)",vis_info_p->visualid,vis_info_p->visualid);
 //advise(ERROR_STRING);
 	}
 
-//sprintf(ERROR_STRING,"init_glx_context:  visual id = %ld (0x%lx)",vis_info_p->visualid,vis_info_p->visualid);
+//snprintf(ERROR_STRING,LLEN,"init_glx_context:  visual id = %ld (0x%lx)",vis_info_p->visualid,vis_info_p->visualid);
 //advise(ERROR_STRING);
 
 
@@ -287,13 +287,13 @@ static void init_glx_context(QSP_ARG_DECL Viewer *vp)
 			NULL,	/* list of shared contexts? */
 			True);
 		if( VW_OGL_CTX(vp)== NULL ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"init_glx_context( %s ): glXCreateContext failed!?",
 				vp->vw_name);
 			warn(ERROR_STRING);
 		} else {
 	//		if( verbose ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 		"init_glx_context( %s ):  created GL context 0x%"PRIxPTR,
 			vp->vw_name,(uintptr_t)VW_OGL_CTX(vp));
 				advise(ERROR_STRING);
@@ -316,9 +316,9 @@ COMMAND_FUNC( do_render_to )
 
 static int glut_inited=0;
 
-#define insure_glut() _insure_glut(SINGLE_QSP_ARG)
+#define ensure_glut() _ensure_glut(SINGLE_QSP_ARG)
 
-static int _insure_glut(SINGLE_QSP_ARG_DECL)
+static int _ensure_glut(SINGLE_QSP_ARG_DECL)
 {
 #ifdef HAVE_GLUT
 	int argc=0;
@@ -329,7 +329,7 @@ static int _insure_glut(SINGLE_QSP_ARG_DECL)
 #ifdef HAVE_GLUT
 	glutInit(&argc,argv);
 #else // ! HAVE_GLUT
-	warn("insure_glut:  No GLUT support in this build!?");
+	warn("ensure_glut:  No GLUT support in this build!?");
 	return -1;
 #endif // ! HAVE_GLUT
 	glut_inited=1;
@@ -342,7 +342,7 @@ COMMAND_FUNC( do_set_fullscreen )
 
 	yesno = ASKIF("fullscreen mode");
 
-	if( insure_glut() < 0 ) return;
+	if( ensure_glut() < 0 ) return;
 
 #ifdef HAVE_GLUT
 	if( yesno )
@@ -383,7 +383,7 @@ void select_gl_viewer(QSP_ARG_DECL  Viewer *vp)
 
 #ifdef CAUTIOUS
 	if( VW_OGL_CTX(vp) == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"CAUTIOUS:  select_gl_viewer %s:  no GL context!?",vp->vw_name);
 		error1(ERROR_STRING);
 	}
@@ -391,7 +391,7 @@ void select_gl_viewer(QSP_ARG_DECL  Viewer *vp)
 
 /*
 if( verbose ){
-sprintf(ERROR_STRING,"select_gl_viewer( %s ) setting current context to 0x%"PRIxPTR,
+snprintf(ERROR_STRING,LLEN,"select_gl_viewer( %s ) setting current context to 0x%"PRIxPTR,
 vp->vw_name,(uintptr_t)VW_OGL_CTX(vp));
 advise(ERROR_STRING);
 }
@@ -405,7 +405,7 @@ advise(ERROR_STRING);
 	//wait_for_mapped( QSP_ARG  vp, 10 );
 
 	if( glXMakeCurrent(VW_DPY(vp),vp->vw_xwin,VW_OGL_CTX(vp)) != True ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"select_gl_viewer:  Unable to set current GLX context to %s!?",vp->vw_name);
 		WARN(ERROR_STRING);
 	}

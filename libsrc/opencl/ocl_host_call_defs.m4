@@ -20,14 +20,14 @@ define(`SET_BLOCK_COUNT',`')			// nop?
 
 define(`SET_MAX_THREADS_FROM_OBJ',`')	// nop
 
-dnl PORT - insure_gpu_device ???
+dnl PORT - ensure_gpu_device ???
 
 dnl GET_MAX_THREADS(dp)
 
 define(`GET_MAX_THREADS',`
 
-	/* insure_cuda_device( $1 ); */
-	insure_ocl_device( $1 );
+	/* ensure_cuda_device( $1 ); */
+	ensure_ocl_device( $1 );
 	max_threads_per_block = get_max_threads_per_block($1);
 	// BUG OpenCL does not use max_threads_per_block!?
 ')
@@ -41,21 +41,21 @@ define(`REPORT_KERNEL_CALL',`fprintf(stderr,"Calling kernel %s\n","HOST_FAST_CAL
 
 define(`REPORT_THREAD_INFO',`
 
-sprintf(DEFAULT_ERROR_STRING,"Blocks:  %d x %d x %d    Threads:  %d x %d x %d",
+snprintf(DEFAULT_ERROR_STRING,LLEN,"Blocks:  %d x %d x %d    Threads:  %d x %d x %d",
 n_blocks.x,n_blocks.y,n_blocks.z,
 n_threads_per_block.x,n_threads_per_block.y,n_threads_per_block.z);
 NADVISE(DEFAULT_ERROR_STRING);
-sprintf(DEFAULT_ERROR_STRING,"Length:  %d x %d x %d    Extra:  %d x %d x %d",
+snprintf(DEFAULT_ERROR_STRING,LLEN,"Length:  %d x %d x %d    Extra:  %d x %d x %d",
 VA_LEN_X(vap),VA_LEN_Y(vap),VA_LEN_Z(vap),extra.x,extra.y,extra.z);
 NADVISE(DEFAULT_ERROR_STRING);
 ')
 
 define(`REPORT_THREAD_INFO2',`
 
-sprintf(DEFAULT_ERROR_STRING,"Blocks:  %d x %d    Threads:  %d x %d",
+snprintf(DEFAULT_ERROR_STRING,LLEN,"Blocks:  %d x %d    Threads:  %d x %d",
 n_blocks.x,n_blocks.y,n_threads_per_block.x,n_threads_per_block.y);
 NADVISE(DEFAULT_ERROR_STRING);
-sprintf(DEFAULT_ERROR_STRING,"Len1:  %ld   Len2:  %ld   Extra:  %d x %d",
+snprintf(DEFAULT_ERROR_STRING,LLEN,"Len1:  %ld   Len2:  %ld   Extra:  %d x %d",
 len1,len2,extra.x,extra.y);
 NADVISE(DEFAULT_ERROR_STRING);
 ')

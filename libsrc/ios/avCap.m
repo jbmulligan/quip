@@ -81,7 +81,7 @@ fprintf(stderr,"captureOutput BEGIN\n");
 		}
 
 		if( s.width != OBJ_COLS(grab_dp) || s.height != OBJ_ROWS(grab_dp) ){
-			sprintf(DEFAULT_ERROR_STRING,
+			snprintf(DEFAULT_ERROR_STRING,LLEN,
 		"grab buffer size (%dx%d) does not match image %s (%dx%d)",
 				(int)s.width,(int)s.height,OBJ_NAME(grab_dp),
 				OBJ_COLS(grab_dp),OBJ_ROWS(grab_dp));
@@ -377,7 +377,7 @@ format:@"copyImageFromBuffer:  crop rectangle does not fit within image data"
 
 	//int8_t *bytes = (int8_t*)malloc(size);
 	if( OBJ_N_MACH_ELTS(dp) != size ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 "copyImageFromBuffer:  size of object %s byte count (%d) does not match request (%lu)",
 			OBJ_NAME(dp),
 			OBJ_N_MACH_ELTS(dp),size);
@@ -385,7 +385,7 @@ format:@"copyImageFromBuffer:  crop rectangle does not fit within image data"
 		return -1;
 	}
 	if( !IS_CONTIGUOUS(dp) ){
-		sprintf(DEFAULT_ERROR_STRING,
+		snprintf(DEFAULT_ERROR_STRING,LLEN,
 "copyImageFromBuffer:  object %s must be contiguous!?",
 			OBJ_NAME(dp) );
 		NWARN(DEFAULT_ERROR_STRING);

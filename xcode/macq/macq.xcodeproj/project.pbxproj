@@ -3,10 +3,13 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F818B782B799EAA003B2FA1 /* mac_sound.c in Sources */ = {isa = PBXBuildFile; fileRef = 1F818B772B799EAA003B2FA1 /* mac_sound.c */; };
+		1F818B7B2B799F2C003B2FA1 /* CoreAudioTypes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F818B792B799EF3003B2FA1 /* CoreAudioTypes.framework */; };
+		1F818B7C2B799F2C003B2FA1 /* CoreAudioTypes.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1F818B792B799EF3003B2FA1 /* CoreAudioTypes.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		71614B3C18774639001AC360 /* fbmenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 71614B3B18774639001AC360 /* fbmenu.m */; };
 		71614B3E187746AF001AC360 /* genlock.c in Sources */ = {isa = PBXBuildFile; fileRef = 71614B3D187746AF001AC360 /* genlock.c */; };
 		71614B40187746FC001AC360 /* mouse.c in Sources */ = {isa = PBXBuildFile; fileRef = 71614B3F187746FC001AC360 /* mouse.c */; };
@@ -263,9 +266,7 @@
 		7C63B36B17E1171C00CBA8CA /* xplot.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B36A17E1171C00CBA8CA /* xplot.m */; };
 		7C63B36D17E1172900CBA8CA /* viewmenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B36C17E1172900CBA8CA /* viewmenu.m */; };
 		7C63B36F17E1173800CBA8CA /* viewer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B36E17E1173800CBA8CA /* viewer.m */; };
-		7C63B37117E1180800CBA8CA /* ios_supp.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37017E1180800CBA8CA /* ios_supp.m */; };
 		7C63B37317E11E1900CBA8CA /* quipCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37217E11E1900CBA8CA /* quipCanvas.m */; };
-		7C63B37517E11E8900CBA8CA /* quipImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37417E11E8900CBA8CA /* quipImageView.m */; };
 		7C63B37717E11F8D00CBA8CA /* quipImages.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37617E11F8D00CBA8CA /* quipImages.m */; };
 		7C63B37B17E12A3000CBA8CA /* linear.c in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37A17E12A3000CBA8CA /* linear.c */; };
 		7C63B37D17E2573E00CBA8CA /* quipNavController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37C17E2573E00CBA8CA /* quipNavController.m */; };
@@ -356,7 +357,6 @@
 		7CE62D4A1DCD1445000FED59 /* encrypt.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B38417E27B4100CBA8CA /* encrypt.m */; };
 		7CE62D4C1DCD144E000FED59 /* quipNavController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37C17E2573E00CBA8CA /* quipNavController.m */; };
 		7CE62D4D1DCD1452000FED59 /* quipImages.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37617E11F8D00CBA8CA /* quipImages.m */; };
-		7CE62D4E1DCD1457000FED59 /* quipImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37417E11E8900CBA8CA /* quipImageView.m */; };
 		7CE62D4F1DCD145C000FED59 /* quipCanvas.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37217E11E1900CBA8CA /* quipCanvas.m */; };
 		7CE62D501DCD1460000FED59 /* quipAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B34F17E1012000CBA8CA /* quipAppDelegate.m */; };
 		7CE62D511DCD1465000FED59 /* screen_obj.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B34D17E0FFDA00CBA8CA /* screen_obj.m */; };
@@ -445,7 +445,6 @@
 		7CE62DA61DCD3172000FED59 /* dragmenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B35C17E1151B00CBA8CA /* dragmenu.m */; };
 		7CE62DA71DCD3177000FED59 /* drawmenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B36617E1156C00CBA8CA /* drawmenu.m */; };
 		7CE62DA81DCD317C000FED59 /* gen_win.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B36817E1157E00CBA8CA /* gen_win.m */; };
-		7CE62DA91DCD3181000FED59 /* ios_supp.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37017E1180800CBA8CA /* ios_supp.m */; };
 		7CE62DAA1DCD3185000FED59 /* linear.c in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B37A17E12A3000CBA8CA /* linear.c */; };
 		7CE62DAB1DCD318B000FED59 /* linmenu.c in Sources */ = {isa = PBXBuildFile; fileRef = 71AC4A8717E1AF0200AABB78 /* linmenu.c */; };
 		7CE62DAC1DCD3191000FED59 /* plotmenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C63B35E17E1152A00CBA8CA /* plotmenu.m */; };
@@ -574,6 +573,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		1F818B7D2B799F2C003B2FA1 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1F818B7C2B799F2C003B2FA1 /* CoreAudioTypes.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7CE62D0E1DCC0CB5000FED59 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -586,6 +596,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1F818B772B799EAA003B2FA1 /* mac_sound.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mac_sound.c; sourceTree = "<group>"; };
+		1F818B792B799EF3003B2FA1 /* CoreAudioTypes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioTypes.framework; path = System/Library/Frameworks/CoreAudioTypes.framework; sourceTree = SDKROOT; };
 		71614B3B18774639001AC360 /* fbmenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fbmenu.m; sourceTree = "<group>"; };
 		71614B3D187746AF001AC360 /* genlock.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = genlock.c; sourceTree = "<group>"; };
 		71614B3F187746FC001AC360 /* mouse.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mouse.c; sourceTree = "<group>"; };
@@ -847,9 +859,7 @@
 		7C63B36A17E1171C00CBA8CA /* xplot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = xplot.m; sourceTree = "<group>"; };
 		7C63B36C17E1172900CBA8CA /* viewmenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = viewmenu.m; sourceTree = "<group>"; };
 		7C63B36E17E1173800CBA8CA /* viewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = viewer.m; sourceTree = "<group>"; };
-		7C63B37017E1180800CBA8CA /* ios_supp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ios_supp.m; sourceTree = "<group>"; };
 		7C63B37217E11E1900CBA8CA /* quipCanvas.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = quipCanvas.m; sourceTree = "<group>"; };
-		7C63B37417E11E8900CBA8CA /* quipImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = quipImageView.m; sourceTree = "<group>"; };
 		7C63B37617E11F8D00CBA8CA /* quipImages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = quipImages.m; sourceTree = "<group>"; };
 		7C63B37A17E12A3000CBA8CA /* linear.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = linear.c; sourceTree = "<group>"; };
 		7C63B37C17E2573E00CBA8CA /* quipNavController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = quipNavController.m; sourceTree = "<group>"; };
@@ -903,6 +913,7 @@
 				7C653CBC1CA7326100F33A85 /* CoreVideo.framework in Frameworks */,
 				7C653CBA1CA7324900F33A85 /* AVFoundation.framework in Frameworks */,
 				7C653CB81CA7323000F33A85 /* CoreMedia.framework in Frameworks */,
+				1F818B7B2B799F2C003B2FA1 /* CoreAudioTypes.framework in Frameworks */,
 				71AC49D517E000A400AABB78 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -923,6 +934,7 @@
 		7177F9011A00ABF600BB5918 /* sound */ = {
 			isa = PBXGroup;
 			children = (
+				1F818B772B799EAA003B2FA1 /* mac_sound.c */,
 				7CE624B42190F0B400DE68C9 /* no_sound.c */,
 				7177F9061A00AC2500BB5918 /* alert.c */,
 				7177F9021A00AC0800BB5918 /* soundmenu.c */,
@@ -951,6 +963,7 @@
 		71AC49D317E000A400AABB78 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1F818B792B799EF3003B2FA1 /* CoreAudioTypes.framework */,
 				7C14654720990FD40055B598 /* libtermcap.tbd */,
 				7CDCA7241CC1941F004AD95C /* GLUT.framework */,
 				7C6CDBFA1CBF7553001AC12F /* OpenGL.framework */,
@@ -1392,7 +1405,6 @@
 				7C63B37E17E274EC00CBA8CA /* macos_main.m */,
 				7C63B37C17E2573E00CBA8CA /* quipNavController.m */,
 				7C63B37617E11F8D00CBA8CA /* quipImages.m */,
-				7C63B37417E11E8900CBA8CA /* quipImageView.m */,
 				7C63B37217E11E1900CBA8CA /* quipCanvas.m */,
 				7C63B34F17E1012000CBA8CA /* quipAppDelegate.m */,
 				7C63B34D17E0FFDA00CBA8CA /* screen_obj.m */,
@@ -1426,7 +1438,6 @@
 				7C63B35C17E1151B00CBA8CA /* dragmenu.m */,
 				7C63B36617E1156C00CBA8CA /* drawmenu.m */,
 				7C63B36817E1157E00CBA8CA /* gen_win.m */,
-				7C63B37017E1180800CBA8CA /* ios_supp.m */,
 				7C63B37A17E12A3000CBA8CA /* linear.c */,
 				71AC4A8717E1AF0200AABB78 /* linmenu.c */,
 				7C63B35E17E1152A00CBA8CA /* plotmenu.m */,
@@ -1475,6 +1486,7 @@
 				71AC49CD17E000A400AABB78 /* Sources */,
 				71AC49CE17E000A400AABB78 /* Frameworks */,
 				71AC49CF17E000A400AABB78 /* Resources */,
+				1F818B7D2B799F2C003B2FA1 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1508,8 +1520,9 @@
 		71AC49C917E000A300AABB78 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				CLASSPREFIX = mq;
-				LastUpgradeCheck = 0910;
+				LastUpgradeCheck = 1430;
 				ORGANIZATIONNAME = "Jeff Mulligan";
 				TargetAttributes = {
 					7CE62D0F1DCC0CB5000FED59 = {
@@ -1671,10 +1684,8 @@
 				7C63B36D17E1172900CBA8CA /* viewmenu.m in Sources */,
 				7C2B11F41CA707520089B27A /* questions.c in Sources */,
 				7C63B36F17E1173800CBA8CA /* viewer.m in Sources */,
-				7C63B37117E1180800CBA8CA /* ios_supp.m in Sources */,
 				7C63B37317E11E1900CBA8CA /* quipCanvas.m in Sources */,
 				7CE624B12190EF4900DE68C9 /* vl2_fft.c in Sources */,
-				7C63B37517E11E8900CBA8CA /* quipImageView.m in Sources */,
 				7C6CDC051CBF76BD001AC12F /* slow_len.c in Sources */,
 				7C63B37717E11F8D00CBA8CA /* quipImages.m in Sources */,
 				7C63B37B17E12A3000CBA8CA /* linear.c in Sources */,
@@ -1770,6 +1781,7 @@
 				71CE755617E59B0300D93DE7 /* lump.c in Sources */,
 				71CE755D17E59B1600D93DE7 /* mlfit.c in Sources */,
 				71CE756017E59B1600D93DE7 /* stc_edit.c in Sources */,
+				1F818B782B799EAA003B2FA1 /* mac_sound.c in Sources */,
 				71CE756117E59B1600D93DE7 /* weibull.c in Sources */,
 				71CE756417E59B2700D93DE7 /* exp.c in Sources */,
 				71CE756717E59B3B00D93DE7 /* stair.c in Sources */,
@@ -1894,7 +1906,6 @@
 				7CE62D551DCD1477000FED59 /* ios_list.m in Sources */,
 				7CE62DFD1DCD59BD000FED59 /* ppm.c in Sources */,
 				7CE62DE61DCD3941000FED59 /* slow_len.c in Sources */,
-				7CE62D4E1DCD1457000FED59 /* quipImageView.m in Sources */,
 				7CE62D481DCD143D000FED59 /* camera.m in Sources */,
 				7CE62D3A1DCD0CD1000FED59 /* history.c in Sources */,
 				7CE62D201DCD0BC8000FED59 /* quip_exec.c in Sources */,
@@ -2099,7 +2110,6 @@
 				7CE62DD41DCD382C000FED59 /* sched.c in Sources */,
 				7CE62D181DCD0897000FED59 /* ocl_rand.c in Sources */,
 				7CE62D791DCD307B000FED59 /* obj_args.c in Sources */,
-				7CE62DA91DCD3181000FED59 /* ios_supp.m in Sources */,
 				7CE62D1D1DCD0BBC000FED59 /* container.c in Sources */,
 				7CE62DB01DCD31A5000FED59 /* xplot.m in Sources */,
 				7CE62D321DCD0CB0000FED59 /* hash.c in Sources */,
@@ -2140,6 +2150,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -2147,18 +2158,22 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -2188,6 +2203,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -2195,18 +2211,22 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -2233,6 +2253,7 @@
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = NO;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MacQuIP/MacQuIP-Prefix.pch";
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
@@ -2247,10 +2268,12 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
+					.,
 					../../include,
-					/sw/include,
 				);
+				INCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "libsrc/*";
 				INFOPLIST_FILE = "MacQuIP/MacQuIP-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
 				"OTHER_CFLAGS[arch=*]" = "-DBUILD_FOR_MACOS_APP";
 				PRODUCT_BUNDLE_IDENTIFIER = "NASA.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2269,6 +2292,7 @@
 				CLANG_ANALYZER_SECURITY_INSECUREAPI_STRCPY = NO;
 				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MacQuIP/MacQuIP-Prefix.pch";
 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
@@ -2283,10 +2307,12 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
+					.,
 					../../include,
-					/sw/include,
 				);
+				INCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "libsrc/*";
 				INFOPLIST_FILE = "MacQuIP/MacQuIP-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
 				"OTHER_CFLAGS[arch=*]" = "-DBUILD_FOR_MACOS_APP";
 				PRODUCT_BUNDLE_IDENTIFIER = "NASA.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2307,6 +2333,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CODE_SIGN_IDENTITY = "-";
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -2318,7 +2345,7 @@
 					../../include,
 					/sw/include,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				"OTHER_CFLAGS[arch=*]" = (
 					"-DBUILD_FOR_MACOS",
@@ -2340,6 +2367,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -2351,7 +2379,7 @@
 					../../include,
 					/sw/include,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				"OTHER_CFLAGS[arch=*]" = (
 					"-DBUILD_FOR_MACOS",

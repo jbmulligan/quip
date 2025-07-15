@@ -94,7 +94,7 @@ static COMMAND_FUNC( do_set_curr_align )
 	/* what units are these supposed to be in??? */
 
 	/*
-	sprintf(align, "%3.2f,%3.2f,%3.2f,%3.2f,0,0,0,%3.2f,0,0,0,%3.2f",
+	snprintf(align,MAX_CMD_STRING_LEN, "%3.2f,%3.2f,%3.2f,%3.2f,0,0,0,%3.2f,0,0,0,%3.2f",
 		pdp[ixyz], pdp[ixyz+1], pdp[ixyz+2], pdp[ixyz], pdp[ixyz+1], pdp[ixyz+2]); 
 		*/
 	error1("need to fix alignment code");
@@ -129,7 +129,7 @@ static COMMAND_FUNC( do_set_align )
 	Yz = (float)HOW_MUCH("Yz - positive Y direction from X-axis");
 
 	/* FIXME - We should check these values to ensure that they are reasonable ... */
-	sprintf(align, "%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f", 
+	snprintf(align,MAX_CMD_STRING_LEN, "%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f", 
 		Ox, Oy, Oz, Xx, Xy, Xz, Yx, Yy, Yz);
 	
 	if(send_polh_cmd(PH_ALIGNMENT, align) < 0) WARN("Unable to set polhemus alignment!");	
@@ -175,7 +175,7 @@ static COMMAND_FUNC( do_set_curr_ref_bore )
 	/* BUG make sure we have euler angles */
 
 	//format_polh_data(&fp1,tmp_pt_dp, &station_info[curr_station_idx].sd_single_prf );
-	//sprintf(bore, "%3.2f %3.2f %3.2f", fp1.fp_azim, fp1.fp_elev, fp1.fp_roll);
+	//snprintf(bore,MAX_CMD_STRING_LEN, "%3.2f %3.2f %3.2f", fp1.fp_azim, fp1.fp_elev, fp1.fp_roll);
 	WARN("do_set_curr_ref_bore:  Need to determine correct format for data!?");
 
 	if( send_polh_cmd(PH_REF_BORESIGHT, bore) < 0 ) 
@@ -263,7 +263,7 @@ static COMMAND_FUNC( do_set_post )
 		return;
 	}
 
-	sprintf(post, "%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f", xmax, ymax, zmax, xmin, ymin, zmin);
+	snprintf(post,MAX_CMD_STRING_LEN, "%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f", xmax, ymax, zmax, xmin, ymin, zmin);
 
 	if( send_polh_cmd(PH_POSITIONAL_ENV, post) < 0 ) 
 		WARN("Unable to set positional operational envelope");
@@ -289,10 +289,10 @@ static COMMAND_FUNC( do_set_hemi )
 	int i=0;
 
 	for(i=0;i<N_HEMI_COMPS;i++){
-		sprintf(MSG_STR,"%s of vector in direction of hemisphere", ask_strs[i]);
+		snprintf(MSG_STR,LLEN,"%s of vector in direction of hemisphere", ask_strs[i]);
 		vecs[i]=(float)HOW_MUCH(MSG_STR);
 		if( vecs[i] < MIN_HEMI_VALUE || vecs[i] > MAX_HEMI_VALUE ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 			"bad %s %f specified, value must be between %d and %d",
 			ask_strs[i], vecs[i], MIN_HEMI_VALUE, MAX_HEMI_VALUE);
 			WARN(ERROR_STRING);
@@ -300,7 +300,7 @@ static COMMAND_FUNC( do_set_hemi )
 		}		
 	}
 
-	sprintf(hemi, "%1.2f,%1.2f,%1.2f", vecs[0], vecs[1], vecs[2]);
+	snprintf(hemi,MAX_CMD_STRING_LEN, "%1.2f,%1.2f,%1.2f", vecs[0], vecs[1], vecs[2]);
 
 	if( send_polh_cmd(PH_HEMISPHERE, hemi) < 0 ) 
 		WARN("Unable to set polhemus operational hemisphere!");
@@ -403,7 +403,7 @@ static Polh_Output_Type get_record_type(SINGLE_QSP_ARG_DECL)
 		od_names[i] = od_tbl[i].od_name;
 #ifdef CAUTIOUS
 		if( od_tbl[i].od_type != i ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"CAUTIOUS:  Output data table entry %d has type code %d!?",
 				i,od_tbl[i].od_type);
 			error1(ERROR_STRING);
@@ -425,7 +425,7 @@ static COMMAND_FUNC( do_set_record )
 
 	n = (int) HOW_MANY("number of measurements to transfer");
 	if( n <= 0 || n > N_OUTPUT_TYPES ){
-		sprintf(ERROR_STRING,"measurements:  number of measurements must be > 0 and <= %d",
+		snprintf(ERROR_STRING,LLEN,"measurements:  number of measurements must be > 0 and <= %d",
 			N_OUTPUT_TYPES);
 		WARN(ERROR_STRING);
 		return;
@@ -469,14 +469,14 @@ static COMMAND_FUNC( do_mk_vector )
 
 	dp = dobj_of(name);
 	if( dp != NULL ){
-		sprintf(ERROR_STRING,"Can't create new polhemus data vector %s, name is in use already",
+		snprintf(ERROR_STRING,LLEN,"Can't create new polhemus data vector %s, name is in use already",
 			name);
 		WARN(ERROR_STRING);
 		return;
 	}
 
 	if( n <= 0 ){
-		sprintf(ERROR_STRING,"number of records (%d) must be positive",n);
+		snprintf(ERROR_STRING,LLEN,"number of records (%d) must be positive",n);
 		WARN(ERROR_STRING);
 		return;
 	}
@@ -534,10 +534,10 @@ static COMMAND_FUNC( do_assign_var )
 	if( i_type < 0 ) return;
 	if( index < 0 || index >= od_tbl[i_type].od_strings ){
 		if( od_tbl[i_type].od_strings==1){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"For %s records, index must be 0",od_tbl[i_type].od_name);
 		} else {
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"For %s records, index must be between 0 and %d",
 				od_tbl[i_type].od_name,
 				od_tbl[i_type].od_strings-1);
@@ -677,7 +677,7 @@ static COMMAND_FUNC( do_set_angl )
 		return;
 	}
 		
-	sprintf(angl, "%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f", amax, emax, rmax, amin, emin, rmin);
+	snprintf(angl,MAX_CMD_STRING_LEN, "%3.2f,%3.2f,%3.2f,%3.2f,%3.2f,%3.2f", amax, emax, rmax, amin, emin, rmin);
 
 	if( send_polh_cmd(PH_ANGULAR_ENV, angl ) < 0) 
 		WARN("Unable to set angular operational envelope");
@@ -732,10 +732,10 @@ static COMMAND_FUNC( do_get_status )
 static void inform_activation_state(QSP_ARG_DECL  int station)
 {
 	if( STATION_IS_ACTIVE(station) ){
-		sprintf(MSG_STR,"Station %d is activated",station+1);
+		snprintf(MSG_STR,LLEN,"Station %d is activated",station+1);
 		prt_msg(MSG_STR);
 	} else {
-		sprintf(MSG_STR,"Station %d is not activated",station+1);
+		snprintf(MSG_STR,LLEN,"Station %d is not activated",station+1);
 		prt_msg(MSG_STR);
 	}
 }
@@ -780,7 +780,7 @@ static COMMAND_FUNC( do_get_sync )
 	else if( !strncmp((char *)(&resp_buf[1]),polh_cmds[PH_SOFTWARE_SYNC].pc_cmdstr,2) )
 		prt_msg("Current sync mode is software");
 	else {
-		sprintf(ERROR_STRING,"Unrecognized sync mode string:  \"%s\"",(char *)(&resp_buf[1]) );
+		snprintf(ERROR_STRING,LLEN,"Unrecognized sync mode string:  \"%s\"",(char *)(&resp_buf[1]) );
 		WARN(ERROR_STRING);
 	}
 	*/

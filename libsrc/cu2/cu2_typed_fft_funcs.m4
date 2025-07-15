@@ -13,7 +13,7 @@ define(`CUDA_CPX_FFT_BODY',`
 		OBJ_N_TYPE_ELTS( OA_DEST(oap) ),
 		CUFFT_C2C, 1 /* BATCH */ );	// why called batch?
 	if (status != CUFFT_SUCCESS) {
-		sprintf(ERROR_STRING, "Error in cufftPlan1d: %s\\n", getCUFFTError(status));
+		snprintf(ERROR_STRING,LLEN, "Error in cufftPlan1d: %s\\n", getCUFFTError(status));
 		warn(ERROR_STRING);
 fprintf(stderr,"requested size:  %d\\n",OBJ_N_TYPE_ELTS(OA_DEST(oap)));
 		return;
@@ -23,7 +23,7 @@ fprintf(stderr,"cufft complex, direction %d\\n",$3);
 	status = $1(plan, ($2 *) OBJ_DATA_PTR( OA_SRC1(oap) ),
 			($2 *) OBJ_DATA_PTR( OA_DEST(oap) ), $3);
 	if (status != CUFFT_SUCCESS) {
-		sprintf(ERROR_STRING, "Error in $1: %s\\n", getCUFFTError(status));
+		snprintf(ERROR_STRING,LLEN, "Error in $1: %s\\n", getCUFFTError(status));
 		warn(ERROR_STRING);
 	}
 
@@ -43,7 +43,7 @@ define(`CUDA_REAL_FFT_BODY',`
 		/*OBJ_N_TYPE_ELTS( OA_DEST(oap) )*/ $5,
 		$2, 1 /* BATCH */ );	// why called batch?
 	if (status != CUFFT_SUCCESS) {
-		sprintf(ERROR_STRING, "Error in cufftPlan1d: %s\\n", getCUFFTError(status));
+		snprintf(ERROR_STRING,LLEN, "Error in cufftPlan1d: %s\\n", getCUFFTError(status));
 		warn(ERROR_STRING);
 		return;
 	}
@@ -51,7 +51,7 @@ define(`CUDA_REAL_FFT_BODY',`
 	status = $1(plan, ($4 *) OBJ_DATA_PTR( OA_SRC1(oap) ),
 			($3 *) OBJ_DATA_PTR( OA_DEST(oap) ) );
 	if (status != CUFFT_SUCCESS) {
-		sprintf(ERROR_STRING, "Error in $1: %s\\n", getCUFFTError(status));
+		snprintf(ERROR_STRING,LLEN, "Error in $1: %s\\n", getCUFFTError(status));
 		warn(ERROR_STRING);
 	}
 

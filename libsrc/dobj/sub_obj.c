@@ -112,13 +112,13 @@ static int _is_inside( QSP_ARG_DECL  index_t index, int which_dim, const char *s
 	pd = OBJ_TYPE_DIM(parent,which_dim);
 
 	if( /* index < 0 || */ index >= pd){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "%s offset %d for subobject \"%s\" falls outside of parent \"%s\" (%s count = %d)",
 			dimension_name[which_dim],
 			index,sub_name,OBJ_NAME(parent),
 			dimension_name[which_dim],pd);
 		warn(ERROR_STRING);
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"dim index %d:  parent size = %u",
 			which_dim, OBJ_TYPE_DIM(parent,which_dim));
 		advise(ERROR_STRING);
@@ -480,7 +480,7 @@ int _relocate_with_offsets( QSP_ARG_DECL  Data_Obj *dp, index_t *offsets )
 	index_t os;
 
 	if( OBJ_PARENT(dp) == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"__relocate:  object \"%s\" is not a subimage",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
@@ -490,7 +490,7 @@ int _relocate_with_offsets( QSP_ARG_DECL  Data_Obj *dp, index_t *offsets )
 	if( check_posn(OBJ_PARENT(dp),offsets,
 		OBJ_TYPE_DIMS(dp),OBJ_NAME(dp)) < 0 ){
 
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"bad relocation info for %s",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return(-1);

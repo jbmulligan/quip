@@ -27,7 +27,7 @@ static Viewer *draw_vp=NULL;
 #define DRAW_CHECK(s)							\
 									\
 	if( draw_vp == NULL ){						\
-		sprintf(ERROR_STRING,"%s:  no drawing viewer selected!?",#s);	\
+		snprintf(ERROR_STRING,LLEN,"%s:  no drawing viewer selected!?",#s);	\
 		warn(ERROR_STRING);					\
 		return;							\
 	}
@@ -35,7 +35,7 @@ static Viewer *draw_vp=NULL;
 #define DRAW_CHECK_INT(s,error_ret_val)					\
 									\
 	if( draw_vp == NULL ){						\
-		sprintf(ERROR_STRING,"%s:  no drawing viewer selected!?",#s);	\
+		snprintf(ERROR_STRING,LLEN,"%s:  no drawing viewer selected!?",#s);	\
 		warn(ERROR_STRING);					\
 		return error_ret_val;					\
 	}
@@ -105,7 +105,7 @@ static int ios_check_font(const char *fontname)
 		}
 	}
 	if( ! found ){
-		sprintf(ERROR_STRING,"Font %s not found!?",fontname);
+		snprintf(ERROR_STRING,LLEN,"Font %s not found!?",fontname);
 		warn(ERROR_STRING);
 		fprintf(stderr,"Font %s not found!?",fontname);
 		fprintf(stderr,"Available fonts:\n");
@@ -141,7 +141,7 @@ static int _quick_load_font(QSP_ARG_DECL  const char *fontname)
 			// xlsfonts lists some fonts twice
 			// (perhaps because of multiple font directories???)
 			// so we suppress this warning.
-			sprintf(ERROR_STRING,"load_font:  font %s is already loaded!?",
+			snprintf(ERROR_STRING,LLEN,"load_font:  font %s is already loaded!?",
 				fontname);
 			advise(ERROR_STRING);
 		}
@@ -162,10 +162,13 @@ static int _quick_load_font(QSP_ARG_DECL  const char *fontname)
 
 #ifdef BUILD_FOR_IOS
 	return ios_check_font(fontname);
-#endif /* BUILD_FOR_IOS */
+#elif BUILD_FOR_MACOS
+	warn("quick_load_font:  Sorry, not implemented yet.");
+	return 0;
+#endif /* BUILD_FOR_MACOS */
 
 	
-}
+}	// quick_load_font
 
 
 #define find_font(varname, family, bold_name, font_size ) _find_font(QSP_ARG  varname, family, bold_name, font_size )
@@ -181,7 +184,7 @@ static void _find_font(QSP_ARG_DECL  const char *varname, const char *family, co
 
 	//                      | change that r to i for italic
 	//                      | |star can be "normal" or "normal-sans" or ???
-	sprintf(pattern,"*%s-%s-r-*--%d-*",family,bold_name,font_size);
+	snprintf(pattern,LLEN,"*%s-%s-r-*--%d-*",family,bold_name,font_size);
 	flist = XListFonts(VW_DPY(draw_vp),pattern,MAX_FONT_NAMES,&nfonts);
 	if( nfonts < 0 ){
 		warn("find_font:  XListFonts returned negative!?");
@@ -221,12 +224,12 @@ static void _load_font(QSP_ARG_DECL  const char *fontname)
 
 			advise("more than 1 font matches this specification");
 			for(i=0;i<nfonts;i++){
-				sprintf(ERROR_STRING,"\t%s",flist[i]);
+				snprintf(ERROR_STRING,LLEN,"\t%s",flist[i]);
 				advise(ERROR_STRING);
 			}
 		}
 	} else if( nfonts != 1 ){
-		sprintf(ERROR_STRING,"Font %s is not available",fontname);
+		snprintf(ERROR_STRING,LLEN,"Font %s is not available",fontname);
 		warn(ERROR_STRING);
 		XFreeFontNames(flist);
 		return;
@@ -252,7 +255,7 @@ static void _load_font_set(QSP_ARG_DECL  const char *pattern)
 
 	flist = XListFonts(VW_DPY(draw_vp),pattern,MAX_FONT_NAMES,&nfonts);
 	if( nfonts == 0 ){
-		sprintf(ERROR_STRING,"No fonts found matching '%s'!?",pattern);
+		snprintf(ERROR_STRING,LLEN,"No fonts found matching '%s'!?",pattern);
 		advise(ERROR_STRING);
 		return;
 	}
@@ -374,13 +377,13 @@ static COMMAND_FUNC( do_show_gc )
 
 	XGetGCValues(VW_DPY(draw_vp),VW_GC(draw_vp),mask,&gcvals);
 
-	sprintf(msg_str,"Graphics Context for viewer %s:",VW_NAME(draw_vp));
+	snprintf(msg_str,LLEN,"Graphics Context for viewer %s:",VW_NAME(draw_vp));
 	prt_msg(msg_str);
-	sprintf(msg_str,"planemask\t%ld",gcvals.plane_mask);
+	snprintf(msg_str,LLEN,"planemask\t%ld",gcvals.plane_mask);
 	prt_msg(msg_str);
-	sprintf(msg_str,"foreground\t%ld",gcvals.foreground);
+	snprintf(msg_str,LLEN,"foreground\t%ld",gcvals.foreground);
 	prt_msg(msg_str);
-	sprintf(msg_str,"background\t%ld",gcvals.background);
+	snprintf(msg_str,LLEN,"background\t%ld",gcvals.background);
 	prt_msg(msg_str);
 #endif /* HAVE_X11 */
 }
@@ -505,9 +508,9 @@ static COMMAND_FUNC( do_fill_poly )
 
 	for (i=0; i < num_points; i++) {
 		char s[100];
-		sprintf(s, "point %d x value", i+1);
+		snprintf(s,100, "point %d x value", i+1);
 		x_vals[i] = (int)how_many(s);
-		sprintf(s, "point %d y value", i+1);
+		snprintf(s,100, "point %d y value", i+1);
 		y_vals[i] = (int)how_many(s);
 	}
 
@@ -598,7 +601,7 @@ static COMMAND_FUNC( do_get_string_width )
 	s=nameof("string");
 
 	n = get_string_width(draw_vp,s);
-	sprintf(msg_str,"%d",n);
+	snprintf(msg_str,LLEN,"%d",n);
 	assign_var(v,msg_str);
 	rls_str((char *)v);
 }

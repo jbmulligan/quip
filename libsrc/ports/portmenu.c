@@ -52,11 +52,11 @@ static COMMAND_FUNC( start_client )
 	actual = open_client_port(QSP_ARG  handle, hostname, port_no );
 	if( actual >= 0 ){	/* success */
 		if( actual != port_no ){
-			sprintf(ERROR_STRING,"start_client:  Service port number %d requested, %d actually used",port_no,actual);
+			snprintf(ERROR_STRING,LLEN,"start_client:  Service port number %d requested, %d actually used",port_no,actual);
 			advise(ERROR_STRING);
 		}
 	}
-	sprintf(str,"%d",actual);
+	snprintf(str,16,"%d",actual);
 	assign_reserved_var("actual_port_number",str);
 }
 
@@ -75,11 +75,11 @@ static COMMAND_FUNC( start_server )
 	actual = open_server_port(QSP_ARG  handle, port_no );
 	if( actual >= 0 ){	/* success */
 		if( actual != port_no ){
-			sprintf(ERROR_STRING,"start_server:  Port number %d requested, %d actually used",port_no,actual);
+			snprintf(ERROR_STRING,LLEN,"start_server:  Port number %d requested, %d actually used",port_no,actual);
 			advise(ERROR_STRING);
 		}
 	}
-	sprintf(str,"%d",actual);
+	snprintf(str,16,"%d",actual);
 	assign_reserved_var("actual_port_number",str);
 //fprintf(stderr,"server started on port %d\n",actual);
 }
@@ -111,7 +111,7 @@ static COMMAND_FUNC( do_connect_port )
 	if( mpp==NULL ) return;
 
 	if( (mpp->mp_flags & PORT_SERVER) == 0 ){
-		sprintf(ERROR_STRING,"lstnport:  port %s is not a server port!?",
+		snprintf(ERROR_STRING,LLEN,"lstnport:  port %s is not a server port!?",
 			mpp->mp_name);
 		warn(ERROR_STRING);
 		return;
@@ -272,7 +272,7 @@ advise("default packet code case, port needs auth...");
 			 */
 
 			if( verbose ){
-				sprintf(ERROR_STRING,
+				snprintf(ERROR_STRING,LLEN,
 	"port_read:  ignoring %s packet (code %d)",
 					PORT_DATATYPE_NAME(pkp->pk_pdt),
 					pkp->pk_pdt->pdt_code);
@@ -325,13 +325,13 @@ static COMMAND_FUNC( do_port_redir )
 	if( mpp==NULL ) return;
 
 	if( ! IS_CONNECTED(mpp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "do_port_redir:  Port %s is not connected to a client!?",mpp->mp_name);
 		warn(ERROR_STRING);
 		return;
 	}
 
-	sprintf(str,"Port %s",mpp->mp_name);
+	snprintf(str,128,"Port %s",mpp->mp_name);
 
 	redir_with_flags(QSP_ARG  (FILE *)mpp, str, Q_SOCKET );
 	//SET_QS_FLAG_BITS(THIS_QSP, Q_SOCKET);
@@ -375,7 +375,7 @@ static COMMAND_FUNC(do_test_reachability)
 	test_reachability(QSP_ARG  s);
 #else /* ! BUILD_FOR_IOS */
 	// suppress compiler warning
-	sprintf(ERROR_STRING,"NOT testing reachability of %s",s);
+	snprintf(ERROR_STRING,LLEN,"NOT testing reachability of %s",s);
 	advise(ERROR_STRING);
 #endif /* ! BUILD_FOR_IOS */
 }

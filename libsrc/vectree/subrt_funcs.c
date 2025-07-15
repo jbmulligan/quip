@@ -93,7 +93,7 @@ static Vec_Expr_Node *_get_one_arg(QSP_ARG_DECL  Vec_Expr_Node *enp, Precision *
 	Vec_Expr_Node *ret_enp=NULL;
 	switch(VN_CODE(enp)){
 		case T_PTR_DECL:
-			sprintf(msg_str,"object for %s * %s",
+			snprintf(msg_str,LLEN,"object for %s * %s",
 				PREC_NAME(prec_p),
 				VN_DECL_NAME(enp)
 				);
@@ -111,7 +111,7 @@ static Vec_Expr_Node *_get_one_arg(QSP_ARG_DECL  Vec_Expr_Node *enp, Precision *
 			}
 			break;
 		case T_SCAL_DECL:
-			sprintf(msg_str,"%s scalar for %s",
+			snprintf(msg_str,LLEN,"%s scalar for %s",
 				PREC_NAME(prec_p),
 				VN_DECL_NAME(enp)
 				);
@@ -145,7 +145,7 @@ static Platform_Device *_pfdev_for_node(QSP_ARG_DECL  Vec_Expr_Node *enp)
 		case T_REFERENCE:
 			break;
 		default:
-			sprintf(ERROR_STRING,"Missing case for %s in pfdev_for_node!?",
+			snprintf(ERROR_STRING,LLEN,"Missing case for %s in pfdev_for_node!?",
 				node_desc(enp));
 			warn(ERROR_STRING);
 			break;
@@ -178,7 +178,7 @@ void _update_pfdev_from_children(QSP_ARG_DECL  Vec_Expr_Node *enp)
 			// that works on any device...
 			if( VN_PFDEV( VN_CHILD(enp,i) ) != NULL &&
 					pdp != VN_PFDEV( VN_CHILD(enp,i) ) ){
-				sprintf(ERROR_STRING,"Platform mismatch:  %s (%s) and %s (%s)!?",
+				snprintf(ERROR_STRING,LLEN,"Platform mismatch:  %s (%s) and %s (%s)!?",
 					node_desc(defining_enp),PFDEV_NAME(pdp),
 					node_desc(VN_CHILD(enp,i)), PFDEV_NAME(VN_PFDEV(VN_CHILD(enp,i))) );
 				warn(ERROR_STRING);
@@ -224,7 +224,7 @@ static Vec_Expr_Node * _get_subrt_arg_tree(QSP_ARG_DECL  Vec_Expr_Node *enp)
 			break;
 			
 		default:
-			sprintf(ERROR_STRING,"get_subrt_arg_tree:  unhandled case %s",node_desc(enp));
+			snprintf(ERROR_STRING,LLEN,"get_subrt_arg_tree:  unhandled case %s",node_desc(enp));
 			warn(ERROR_STRING);
 			break;
 	}
@@ -275,21 +275,21 @@ COMMAND_FUNC( do_dump_subrt )
 void _dump_subrt(QSP_ARG_DECL Subrt *srp)
 {
 	if( IS_SCRIPT(srp) ){
-		sprintf(msg_str,"Script subrt %s:",SR_NAME(srp));
+		snprintf(msg_str,LLEN,"Script subrt %s:",SR_NAME(srp));
 		prt_msg(msg_str);
 		prt_msg((char *)SR_BODY(srp));
 		return;
 	}
 
 	if( SR_ARG_DECLS(srp) != NULL ){
-		sprintf(msg_str,"Subrt %s arg declarations:\n",SR_NAME(srp));
+		snprintf(msg_str,LLEN,"Subrt %s arg declarations:\n",SR_NAME(srp));
 		prt_msg(msg_str);
 		print_dump_legend(SINGLE_QSP_ARG);
 		dump_tree(SR_ARG_DECLS(srp));
 	}
 
 	if( SR_BODY(srp) != NULL ){
-		sprintf(msg_str,"Subrt %s body:\n",SR_NAME(srp));
+		snprintf(msg_str,LLEN,"Subrt %s body:\n",SR_NAME(srp));
 		prt_msg(msg_str);
 		print_dump_legend(SINGLE_QSP_ARG);
 		dump_tree(SR_BODY(srp));
@@ -338,14 +338,14 @@ COMMAND_FUNC( do_subrt_info )
 	if( srp==NULL ) return;
 
 	if( IS_SCRIPT(srp) ){
-		sprintf(msg_str,"\nScript subroutine %s, %d arguments:\n",SR_NAME(srp),SR_N_ARGS(srp));
+		snprintf(msg_str,LLEN,"\nScript subroutine %s, %d arguments:\n",SR_NAME(srp),SR_N_ARGS(srp));
 		prt_msg(msg_str);
 
 		prt_msg((char *)SR_BODY(srp));
 		return;
 	}
 
-	sprintf(msg_str,"\nSubroutine %s:",SR_NAME(srp));
+	snprintf(msg_str,LLEN,"\nSubroutine %s:",SR_NAME(srp));
 	prt_msg(msg_str);
 
 	enp = SR_BODY(srp);
@@ -354,30 +354,30 @@ COMMAND_FUNC( do_subrt_info )
 		describe_shape(VN_SHAPE(enp));
 	} else prt_msg("shape not determinable");
 
-	sprintf(msg_str,"\t%d arguments",SR_N_ARGS(srp));
+	snprintf(msg_str,LLEN,"\t%d arguments",SR_N_ARGS(srp));
 	prt_msg(msg_str);
 
 	if( SR_RET_LIST(srp) != NULL ){
-		sprintf(msg_str,"%d unknown return shape nodes:",eltcount(SR_RET_LIST(srp)));
+		snprintf(msg_str,LLEN,"%d unknown return shape nodes:",eltcount(SR_RET_LIST(srp)));
 		prt_msg(msg_str);
 		np=QLIST_HEAD(SR_RET_LIST(srp));
 		while(np!=NULL){
 			Vec_Expr_Node *ret_enp;
 			ret_enp = (Vec_Expr_Node *)NODE_DATA(np);
-			sprintf(msg_str,"\tn%d:",VN_SERIAL(ret_enp));
+			snprintf(msg_str,LLEN,"\tn%d:",VN_SERIAL(ret_enp));
 			prt_msg(msg_str);
 			dump_tree(ret_enp);
 			np=NODE_NEXT(np);
 		}
 	}
 	if( SR_CALL_LIST(srp) != NULL ){
-		sprintf(msg_str,"%d unknown callfunc shape nodes:",eltcount(SR_CALL_LIST(srp)));
+		snprintf(msg_str,LLEN,"%d unknown callfunc shape nodes:",eltcount(SR_CALL_LIST(srp)));
 		prt_msg(msg_str);
 		np=QLIST_HEAD(SR_CALL_LIST(srp));
 		while(np!=NULL){
 			Vec_Expr_Node *c_enp;
 			c_enp = (Vec_Expr_Node *)NODE_DATA(np);
-			sprintf(msg_str,"\tn%d:",VN_SERIAL(c_enp));
+			snprintf(msg_str,LLEN,"\tn%d:",VN_SERIAL(c_enp));
 			prt_msg(msg_str);
 			dump_tree(c_enp);
 			np=NODE_NEXT(np);
@@ -389,7 +389,7 @@ COMMAND_FUNC( do_subrt_info )
 		warn("subroutine has no associated input file!?");
 	} else {
 		assert( string_is_printable(SR_STRING(VN_INFILE(enp))) );
-		sprintf(msg_str,"Subroutine %s declared at line %d, file %s",
+		snprintf(msg_str,LLEN,"Subroutine %s declared at line %d, file %s",
 			SR_NAME(srp),
 			VN_LINENO(enp),
 			SR_STRING(VN_INFILE(enp))
@@ -399,7 +399,7 @@ COMMAND_FUNC( do_subrt_info )
 
 
 	/*
-	sprintf(msg_str,"\t%ld flops, %ld math calls",
+	snprintf(msg_str,LLEN,"\t%ld flops, %ld math calls",
 		enp->en_flops,enp->en_nmath);
 	prt_msg(msg_str);
 
@@ -420,7 +420,7 @@ Subrt *_create_script_subrt(QSP_ARG_DECL  const char *name,int nargs,const char 
 	return srp;
 }
 
-static void insure_subrt_ctx_stack(SINGLE_QSP_ARG_DECL)
+static void ensure_subrt_ctx_stack(SINGLE_QSP_ARG_DECL)
 {
 	assert(THIS_VPD!=NULL);
 	if( SUBRT_CTX_STACK == NULL ){
@@ -466,7 +466,7 @@ static const char *_get_subrt_id(QSP_ARG_DECL  const char *name)
 
 	assert(THIS_VPD != NULL);
 
-	insure_subrt_ctx_stack(SINGLE_QSP_ARG);
+	ensure_subrt_ctx_stack(SINGLE_QSP_ARG);
 	s=savestr(name);
 	np=mk_node((void *)s);
 	addTail(SUBRT_CTX_STACK,np);
@@ -542,7 +542,7 @@ void _delete_id(QSP_ARG_DECL  Item *ip)
 			break;
 
 		default:
-			sprintf(ERROR_STRING,"delete_id:  unhandled id type %d",ID_TYPE(idp));
+			snprintf(ERROR_STRING,LLEN,"delete_id:  unhandled id type %d",ID_TYPE(idp));
 			warn(ERROR_STRING);
 			break;
 	}
@@ -585,7 +585,7 @@ void _delete_subrt_ctx(QSP_ARG_DECL  const char *name)
 
 #ifdef QUIP_DEBUG
 if( debug & scope_debug ){
-sprintf(ERROR_STRING,"delete_subrt_ctx %s:  calling pop_subrt_ctx",name);
+snprintf(ERROR_STRING,LLEN,"delete_subrt_ctx %s:  calling pop_subrt_ctx",name);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -613,7 +613,7 @@ void _pop_subrt_cpair(QSP_ARG_DECL  Context_Pair *cpp,const char *name)
 {
 #ifdef QUIP_DEBUG
 if( debug & scope_debug ){
-sprintf(ERROR_STRING,"pop_subrt_cpair %s:  calling pop_subrt_ctx",name);
+snprintf(ERROR_STRING,LLEN,"pop_subrt_cpair %s:  calling pop_subrt_ctx",name);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -640,7 +640,7 @@ static const char *_get_subrt_ctx_name(QSP_ARG_DECL  const char *name,Item_Type 
 	assert( ! strcmp(name,(char *)NODE_DATA(np)) );
 
 	/* BUG possible string overflow */
-	sprintf(ctxname,"%s.%s",IT_NAME(itp), name_for_ctx_stack(SINGLE_QSP_ARG) );
+	snprintf(ctxname,LLEN,"%s.%s",IT_NAME(itp), name_for_ctx_stack(SINGLE_QSP_ARG) );
 
 	return( ctxname );
 }
@@ -654,7 +654,7 @@ Item_Context * pop_subrt_ctx(QSP_ARG_DECL  const char *name,Item_Type *itp)
 
 	ctxname = get_subrt_ctx_name(name,itp);
 
-//sprintf(ERROR_STRING,"Searching for context %s",ctxname);
+//snprintf(ERROR_STRING,LLEN,"Searching for context %s",ctxname);
 //advise(ERROR_STRING);
 	icp = ctx_of(ctxname);
 	assert( icp != NULL );

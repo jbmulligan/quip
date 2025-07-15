@@ -126,7 +126,7 @@ mk_win:
 	} else {
 		if( vp->vw_width != OBJ_COLS(dp) ||
 			vp->vw_height != OBJ_ROWS(dp) ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"Resizing movie viewer for movie %s",
 				OBJ_NAME(dp));
 			advise(ERROR_STRING);
@@ -165,7 +165,7 @@ static void x_get_frame(QSP_ARG_DECL  Movie *mvip,uint32_t n,Data_Obj *dp)
 	if( OBJ_FRAMES(src_dp) > 1 ){
 		/* BUG won't work right if nseqs > 1 ... */
 		char index[16];
-		sprintf(index,"[%d]",n);
+		snprintf(index,16,"[%d]",n);
 		src_dp = index_data(src_dp,index);
 	}
 

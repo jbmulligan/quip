@@ -64,7 +64,7 @@ void _make_cursor( QSP_ARG_DECL  const char *name, Data_Obj *bitmap_dp, int x, i
 		mk_cursor(name,(u_short *)OBJ_DATA_PTR(bitmap_dp),OBJ_COLS(bitmap_dp) * 16,
 			OBJ_ROWS(bitmap_dp),x,y);
 	else {
-		sprintf(ERROR_STRING,"make_cursor:  bitmap object %s (%s) should have %s or %s precision",
+		snprintf(ERROR_STRING,LLEN,"make_cursor:  bitmap object %s (%s) should have %s or %s precision",
 			OBJ_NAME(bitmap_dp),OBJ_PREC_NAME(bitmap_dp),
 			PREC_NAME(PREC_FOR_CODE(PREC_IN)),
 			PREC_NAME(PREC_FOR_CODE(PREC_DI)) );

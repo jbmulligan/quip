@@ -11,9 +11,11 @@
 #include "getbuf.h"
 #include "platform.h"
 
-/* Out new strategy for changing size is to make a subsampled image for destination and
- * source, based on the dimension values for each of the 5 dimensions.
- * This is more general than enlarge and reduce, because we can be enlarging in one
+/* Our new strategy for changing size is to make a subsampled image
+ * for destination and source,
+ * based on the dimension values for each of the 5 dimensions.
+ * This is more general than enlarge and reduce,
+ * because we can be enlarging in one
  * dimension while reducing in another, all with a single op.
  *
  * BUT this logic appears to cause multiple overwrites on reduce!?
@@ -41,7 +43,9 @@ static int _change_size(QSP_ARG_DECL  Data_Obj *dst_dp,Data_Obj *src_dp )
 	index_t dst_indices[N_DIMENSIONS]={0,0,0,0,0}, src_indices[N_DIMENSIONS]={0,0,0,0,0};
 	index_t dst_offset, src_offset;
 
-	/* For simplicity, we don't allow size changes to be combined with conversions */
+	/* For simplicity, we don't allow size changes
+	 * to be combined with conversions
+	 */
 
 	if( !dp_same_prec(dst_dp,src_dp,"change_size") )
 		return(-1);
@@ -50,7 +54,7 @@ static int _change_size(QSP_ARG_DECL  Data_Obj *dst_dp,Data_Obj *src_dp )
 		if( OBJ_TYPE_DIM(dst_dp,i) > OBJ_TYPE_DIM(src_dp,i) ){
 			/* enlargement - subsample the destination */
 			set_dimension(enlargement_factor,i,
-				floor( OBJ_TYPE_DIM(dst_dp,i) / OBJ_TYPE_DIM(src_dp,i) ) );
+				(dimension_t) floor( OBJ_TYPE_DIM(dst_dp,i) / OBJ_TYPE_DIM(src_dp,i) ) );
 			set_dimension(reduction_factor,i, 0);
 
 			set_dimension(size_dsp,i, OBJ_TYPE_DIM(src_dp,i) );
@@ -60,10 +64,10 @@ static int _change_size(QSP_ARG_DECL  Data_Obj *dst_dp,Data_Obj *src_dp )
 		} else {
 			/* reduction - subsample the source */
 			set_dimension(reduction_factor,i,
-				ceil( OBJ_TYPE_DIM(src_dp,i) / OBJ_TYPE_DIM(dst_dp,i) ) );
+				(dimension_t) ceil( OBJ_TYPE_DIM(src_dp,i) / OBJ_TYPE_DIM(dst_dp,i) ) );
 			set_dimension(enlargement_factor,i, 0 );
 
-			set_dimension(size_dsp,i, floor( OBJ_TYPE_DIM(src_dp,i) /
+			set_dimension(size_dsp,i, (dimension_t) floor( OBJ_TYPE_DIM(src_dp,i) /
 				DIMENSION(reduction_factor,i) ) );
 			/* We don't need to do this multiple times, just pick one and do it */
 			/*set_dimension(n_dsp,i, DIMENSION(reduction_factor,i) ); */

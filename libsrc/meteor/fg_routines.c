@@ -81,13 +81,13 @@ advise("fg_open BEGIN");
 	/* open the digitizer */
 	/* jbm:  was RDONLY, changed to RDWR for mmap */
 	if ((meteor_fd = open(MeteorDev, O_RDWR)) < 0) {
-		sprintf(ERROR_STRING,"open(%s)",MeteorDev);
+		snprintf(ERROR_STRING,LLEN,"open(%s)",MeteorDev);
 		perror(ERROR_STRING);
 		return( -1 );
 	}
 
 	if( verbose ){
-		sprintf(ERROR_STRING,"MeteorDev %s opened, fd=%d",MeteorDev,meteor_fd);
+		snprintf(ERROR_STRING,LLEN,"MeteorDev %s opened, fd=%d",MeteorDev,meteor_fd);
 		advise(ERROR_STRING);
 	}
 
@@ -100,7 +100,7 @@ advise("fg_open BEGIN");
 	err_cnts.n_frames_captured = 0;
 	err_cnts.even_fields_captured = 0;
 	err_cnts.odd_fields_captured = 0;
-sprintf(ERROR_STRING,"fg_open:  ioctl METEORSCOUNT (0x%x)",METEORSCOUNT);
+snprintf(ERROR_STRING,LLEN,"fg_open:  ioctl METEORSCOUNT (0x%x)",METEORSCOUNT);
 advise(ERROR_STRING);
 	if (ioctl(meteor_fd, (int)(METEORSCOUNT), &err_cnts) < 0) {
 		perror("fg_open:  ioctl(METEORSCOUNT)");
@@ -113,7 +113,7 @@ advise(ERROR_STRING);
 	if( (numcols % 8) != 0 )
 		numcols = numcols & 0x3f8;
 
-sprintf(ERROR_STRING,"fg_open:  ioctl METEORSINPUT");
+snprintf(ERROR_STRING,LLEN,"fg_open:  ioctl METEORSINPUT");
 advise(ERROR_STRING);
 	if (ioctl(meteor_fd, METEORSINPUT, &video_source) < 0) {
 		perror("ioctl(METEORSINPUT)");
@@ -121,7 +121,7 @@ advise(ERROR_STRING);
 		return( -1 );
 	}
 
-sprintf(ERROR_STRING,"fg_open:  ioctl METEORSFMT");
+snprintf(ERROR_STRING,LLEN,"fg_open:  ioctl METEORSFMT");
 advise(ERROR_STRING);
 	if (ioctl(meteor_fd, METEORSFMT, &iformat) < 0) {
 		perror("ioctl(METEORSFMT)");
@@ -299,7 +299,7 @@ int assoc_pids(pid1,pid2)
 		error1("error associating process id");
 	}
 /*
-sprintf(ERROR_STRING,"associating pid's %d and %d",pid1,pid2);
+snprintf(ERROR_STRING,LLEN,"associating pid's %d and %d",pid1,pid2);
 advise(ERROR_STRING);
 */
 
@@ -320,7 +320,7 @@ int unassoc_pids(pid1,pid2)
 		error1("error unassociating process id");
 	}
 /*
-sprintf(ERROR_STRING,"unassociating pid's %d and %d",pid1,pid2);
+snprintf(ERROR_STRING,LLEN,"unassociating pid's %d and %d",pid1,pid2);
 advise(ERROR_STRING);
 */
 

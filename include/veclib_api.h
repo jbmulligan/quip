@@ -24,10 +24,10 @@ extern void setvarg5(Vec_Obj_Args *oap,Data_Obj *dstv,Data_Obj *src1,Data_Obj *s
 /* Public prototypes */
 
 // which file did this come from?
-extern int _insure_static(QSP_ARG_DECL  const Vec_Obj_Args *oap);
+extern int _ensure_static(QSP_ARG_DECL  const Vec_Obj_Args *oap);
 extern void add_link(void (*func)(LINK_FUNC_ARG_DECLS),LINK_FUNC_ARG_DECLS);
 
-#define insure_static(oap) _insure_static(QSP_ARG  oap)
+#define ensure_static(oap) _ensure_static(QSP_ARG  oap)
 
 /* vectbl.c */
 extern void vl_init(SINGLE_QSP_ARG_DECL);

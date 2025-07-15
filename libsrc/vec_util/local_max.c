@@ -27,37 +27,37 @@ long _local_maxima(QSP_ARG_DECL  Data_Obj *val_dp, Data_Obj *coord_dp, Data_Obj 
 
 	/* For now, we only support contiguous float */
 	if( OBJ_PREC(src_dp) != PREC_SP ){
-		sprintf(ERROR_STRING,"local_maxima:  source image %s (%s) should have %s precision!?",
+		snprintf(ERROR_STRING,LLEN,"local_maxima:  source image %s (%s) should have %s precision!?",
 			OBJ_NAME(src_dp),OBJ_PREC_NAME(src_dp),NAME_FOR_PREC_CODE(PREC_SP));
 		advise(ERROR_STRING);
 		return(-1);
 	}
 	if( OBJ_PREC(val_dp) != PREC_SP ){
-		sprintf(ERROR_STRING,"local_maxima:  max value vector %s (%s) should have %s precision!?",
+		snprintf(ERROR_STRING,LLEN,"local_maxima:  max value vector %s (%s) should have %s precision!?",
 			OBJ_NAME(val_dp),OBJ_PREC_NAME(val_dp),NAME_FOR_PREC_CODE(PREC_SP));
 		advise(ERROR_STRING);
 		return(-1);
 	}
 	if( ! IS_CONTIGUOUS(src_dp) ){
-		sprintf(ERROR_STRING,"local_maxima:  source image %s should be contiguous!?",
+		snprintf(ERROR_STRING,LLEN,"local_maxima:  source image %s should be contiguous!?",
 			OBJ_NAME(src_dp));
 		advise(ERROR_STRING);
 		return(-1);
 	}
 	if( OBJ_PREC(coord_dp) != PREC_UDI ){
-		sprintf(ERROR_STRING,"local_maxima:  coordinate array %s (%s) should have %s precision!?",
+		snprintf(ERROR_STRING,LLEN,"local_maxima:  coordinate array %s (%s) should have %s precision!?",
 			OBJ_NAME(coord_dp),OBJ_PREC_NAME(coord_dp),NAME_FOR_PREC_CODE(PREC_UDI));
 		advise(ERROR_STRING);
 		return(-1);
 	}
 	if( ! IS_CONTIGUOUS(coord_dp) ){
-		sprintf(ERROR_STRING,"local_maxima:  coordinate vector %s should be contiguous!?",
+		snprintf(ERROR_STRING,LLEN,"local_maxima:  coordinate vector %s should be contiguous!?",
 			OBJ_NAME(coord_dp));
 		advise(ERROR_STRING);
 		return(-1);
 	}
 	if( ! IS_CONTIGUOUS(val_dp) ){
-		sprintf(ERROR_STRING,"local_maxima:  max value vector %s should be contiguous!?",
+		snprintf(ERROR_STRING,LLEN,"local_maxima:  max value vector %s should be contiguous!?",
 			OBJ_NAME(val_dp));
 		advise(ERROR_STRING);
 		return(-1);
@@ -76,7 +76,7 @@ long _local_maxima(QSP_ARG_DECL  Data_Obj *val_dp, Data_Obj *coord_dp, Data_Obj 
 		src_p = w_p + 1;
 		for(x=1;x<(OBJ_COLS(src_dp)-1);x++){
 			v=(*src_p);
-//sprintf(ERROR_STRING,"%g at %d %d",v,x,y);
+//snprintf(ERROR_STRING,LLEN,"%g at %d %d",v,x,y);
 //prt_msg(ERROR_STRING);
 			if(
 				   v >  *(nw_p  )
@@ -89,12 +89,12 @@ long _local_maxima(QSP_ARG_DECL  Data_Obj *val_dp, Data_Obj *coord_dp, Data_Obj 
 				&& v >= *(sw_p+2)
 								){
 
-//sprintf(ERROR_STRING,"local max %g at %d %d",v,x,y);
+//snprintf(ERROR_STRING,LLEN,"local max %g at %d %d",v,x,y);
 //advise(ERROR_STRING);
 				/* this is a local max! */
 				n_maxima++;
 				if( n_maxima > OBJ_COLS(coord_dp) ){
-					sprintf(ERROR_STRING,"local_maxima:  coord vector %s (%d columns) needs to be enlarged!?",
+					snprintf(ERROR_STRING,LLEN,"local_maxima:  coord vector %s (%d columns) needs to be enlarged!?",
 						OBJ_NAME(coord_dp),OBJ_COLS(coord_dp));
 					warn(ERROR_STRING);
 					return(OBJ_COLS(coord_dp));

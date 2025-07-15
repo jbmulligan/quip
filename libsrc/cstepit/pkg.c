@@ -12,14 +12,14 @@ static void init_all_opt_pkgs(SINGLE_QSP_ARG_DECL);
 
 ITEM_INTERFACE_DECLARATIONS(Opt_Pkg,opt_pkg,0)
 
-void insure_opt_pkg(SINGLE_QSP_ARG_DECL)
+void ensure_opt_pkg(SINGLE_QSP_ARG_DECL)
 {
 	if( curr_opt_pkg == NULL ){
 		init_all_opt_pkgs(SINGLE_QSP_ARG);
 		curr_opt_pkg=get_opt_pkg("cstepit" );
 		assert( curr_opt_pkg != NULL );
 		if( verbose ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"Using default optimization package \"%s\"",
 				curr_opt_pkg->pkg_name);
 			advise(ERROR_STRING);

@@ -29,7 +29,7 @@ static void _flip_coin(SINGLE_QSP_ARG_DECL)
 	int coin=0;	// initialize to quiet compiler, but not necessary!?
 
 	coin=(int)rn(1);
-	sprintf(buf,"%d",coin);
+	snprintf(buf,128,"%d",coin);
 	assign_var("coin",buf);
 }
 
@@ -70,12 +70,12 @@ static void _get_this_xval(QSP_ARG_DECL  Trial_Class *tc_p, int val_idx)
 
 	assert( CLASS_XVAL_OBJ(tc_p) != NULL );
 	xv_p = indexed_data( CLASS_XVAL_OBJ(tc_p), val_idx );
-	sprintf(buf,"%f",*xv_p);
+	snprintf(buf,256,"%f",*xv_p);
 
 	strip_trailing_zeroes(buf);
 	assign_var("xval",buf);
 
-	sprintf(buf,"%d",val_idx);
+	snprintf(buf,256,"%d",val_idx);
 	assign_var("val",buf);
 }
 
@@ -103,7 +103,7 @@ static void _set_class_index(QSP_ARG_DECL  Staircase *stc_p)
 	char buf[256];
 	Trial_Class *tc_p = STAIR_CLASS(stc_p);
 
-	sprintf(buf,"%d",CLASS_INDEX(tc_p));
+	snprintf(buf,256,"%d",CLASS_INDEX(tc_p));
 	assign_var("class",buf);
 }
 

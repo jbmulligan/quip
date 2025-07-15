@@ -4,7 +4,7 @@
  * Disclaimer:  No guarantees of performance accompany this software,
  * nor is any responsibility assumed on the part of the authors.  All the
  * software has been tested extensively and every effort has been made to
- * insure its reliability.
+ * ensure its reliability.
  */
 
 /*
@@ -101,15 +101,15 @@ int wt_hips2_hdr(FILE *fp,Hips2_Header *hd,const Filename fname)
 	while (xp != NULLPAR) {
 		if (xp->count == 1) {
 			switch (xp->format) {
-			case PFASCII:	sprintf(s,"%s c 1 %d\n",xp->name,
+			case PFASCII:	snprintf(s,LINELENGTH,"%s c 1 %d\n",xp->name,
 						(int) xp->val.v_b); break;
-			case PFBYTE:	sprintf(s,"%s b 1 %d\n",xp->name,
+			case PFBYTE:	snprintf(s,LINELENGTH,"%s b 1 %d\n",xp->name,
 						(int) xp->val.v_b); break;
-			case PFSHORT:	sprintf(s,"%s s 1 %d\n",xp->name,
+			case PFSHORT:	snprintf(s,LINELENGTH,"%s s 1 %d\n",xp->name,
 						(int) xp->val.v_s); break;
-			case PFINT:	sprintf(s,"%s i 1 %d\n",xp->name,
+			case PFINT:	snprintf(s,LINELENGTH,"%s i 1 %d\n",xp->name,
 						xp->val.v_i); break;
-			case PFFLOAT:	sprintf(s,"%s f 1 %f\n",xp->name,
+			case PFFLOAT:	snprintf(s,LINELENGTH,"%s f 1 %f\n",xp->name,
 						xp->val.v_f); break;
 			default:	return(perr(HE_HDWPTYPE,xp->format,
 						fname));
@@ -117,23 +117,23 @@ int wt_hips2_hdr(FILE *fp,Hips2_Header *hd,const Filename fname)
 		}
 		else {
 			switch (xp->format) {
-			case PFASCII:	sprintf(s,"%s c %d %d\n",xp->name,
+			case PFASCII:	snprintf(s,LINELENGTH,"%s c %d %d\n",xp->name,
 						xp->count,offset);
 					offset += xp->count * sizeof(h_byte);
 					break;
-			case PFBYTE:	sprintf(s,"%s b %d %d\n",xp->name,
+			case PFBYTE:	snprintf(s,LINELENGTH,"%s b %d %d\n",xp->name,
 						xp->count,offset);
 					offset += xp->count * sizeof(h_byte);
 					break;
-			case PFSHORT:	sprintf(s,"%s s %d %d\n",xp->name,
+			case PFSHORT:	snprintf(s,LINELENGTH,"%s s %d %d\n",xp->name,
 						xp->count,offset);
 					offset += xp->count * sizeof(short);
 					break;
-			case PFINT:	sprintf(s,"%s i %d %d\n",xp->name,
+			case PFINT:	snprintf(s,LINELENGTH,"%s i %d %d\n",xp->name,
 						xp->count,offset);
 					offset += xp->count * sizeof(int);
 					break;
-			case PFFLOAT:	sprintf(s,"%s f %d %d\n",xp->name,
+			case PFFLOAT:	snprintf(s,LINELENGTH,"%s f %d %d\n",xp->name,
 						xp->count,offset);
 					offset += xp->count * sizeof(float);
 					break;
@@ -148,7 +148,7 @@ int wt_hips2_hdr(FILE *fp,Hips2_Header *hd,const Filename fname)
 			return(perr(HE_HDRPWRT,fname));
 		xp = xp->nextp;
 	}
-	sprintf(s,"%d\n",offset);	/* the size of the binary area */
+	snprintf(s,LINELENGTH,"%d\n",offset);	/* the size of the binary area */
 	j = (int) strlen(s);
 	i += j;
 	while ((i & 03) != 0) {		/* pad binary area size line with
@@ -209,7 +209,7 @@ static int dfprintf(FILE *fp,int i,Filename fname)
 	char s[30];
 	int j;
 
-	sprintf(s,"%6d\n",i);	/* jbm, %d to %6d to be able to edit header */
+	snprintf(s,30,"%6d\n",i);	/* jbm, %d to %6d to be able to edit header */
 	j = (int) strlen(s);
 	if (fwrite(s,j,1,fp) != 1)
 		return(perr(HE_HDRWRT,fname));

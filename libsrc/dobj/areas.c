@@ -158,7 +158,7 @@ _new_area( QSP_ARG_DECL  const char *s, uint32_t siz, unsigned int n )
 
 void _data_area_info(QSP_ARG_DECL  Data_Area *ap )
 {
-	sprintf(MSG_STR,"AREA %s:%-30s",PFDEV_NAME(AREA_PFDEV(ap)),ap->da_name);
+	snprintf(MSG_STR,LLEN,"AREA %s:%-30s",PFDEV_NAME(AREA_PFDEV(ap)),ap->da_name);
 	prt_msg_frag(MSG_STR);
 	switch(ap->da_flags & DA_TYPE_MASK ){
 		case DA_RAM:
@@ -197,10 +197,10 @@ void _data_area_info(QSP_ARG_DECL  Data_Area *ap )
 
 void _list_area(QSP_ARG_DECL  Data_Area *ap )
 {
-	sprintf(MSG_STR,"AREA %-10s",ap->da_name);
+	snprintf(MSG_STR,LLEN,"AREA %-10s",ap->da_name);
 	prt_msg_frag(MSG_STR);
 	if( ap->da_memsiz != 0 ){
-		sprintf(MSG_STR,"   0x%-10x total bytes, 0x%-10x remaining",
+		snprintf(MSG_STR,LLEN,"   0x%-10x total bytes, 0x%-10x remaining",
 			ap->da_memsiz,
 			ap->da_memfree);
 		prt_msg(MSG_STR);
@@ -246,10 +246,10 @@ void _show_area_space( QSP_ARG_DECL  Data_Area *ap )
 
 	n=eltcount(lp);
 	if( n == 0 ){
-		sprintf(MSG_STR,"Area %s has no objects.",ap->da_name);
+		snprintf(MSG_STR,LLEN,"Area %s has no objects.",ap->da_name);
 		prt_msg(MSG_STR);
 	} else {
-		sprintf(MSG_STR,"Area %s:  %d object%s:",ap->da_name,n,n==1?"":"s");
+		snprintf(MSG_STR,LLEN,"Area %s:  %d object%s:",ap->da_name,n,n==1?"":"s");
 		prt_msg(MSG_STR);
 	}
 
@@ -309,7 +309,7 @@ static void _init_scratch_scalar(QSP_ARG_DECL  Data_Area *ap)
 
 	//set_data_area(ap);	// init_scratch_scalar
 	push_data_area(ap);	// init_scratch_scalar
-	sprintf(name,"%s.scratch_scalar",AREA_NAME(ap));
+	snprintf(name,MAX_NAME_LEN,"%s.scratch_scalar",AREA_NAME(ap));
 	ap->da_dp = mk_scalar(name, PREC_FOR_CODE(PREC_DP) );
 	pop_data_area();	// init_scratch_scalar
 }

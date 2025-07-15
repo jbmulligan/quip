@@ -99,7 +99,7 @@ void update_if(void)
 
 void _setcolor(QSP_ARG_DECL  int c,int r,int g,int b)
 {
-	/*insure_linearization(); */
+	/*ensure_linearization(); */
 
 	if( color_index_out_of_range(c) )
 		return;
@@ -108,7 +108,7 @@ void _setcolor(QSP_ARG_DECL  int c,int r,int g,int b)
 
 	if( r < 0 ) r=0;
 	else if( r>phosmax ){
-		sprintf(ERROR_STRING,"Clipping red value %d to maximum %d",
+		snprintf(ERROR_STRING,LLEN,"Clipping red value %d to maximum %d",
 			r,phosmax);
 		warn(ERROR_STRING);
 		r=phosmax;
@@ -116,7 +116,7 @@ void _setcolor(QSP_ARG_DECL  int c,int r,int g,int b)
 
 	if( g < 0 ) g=0;
 	else if( g>phosmax ){
-		sprintf(ERROR_STRING,"Clipping green value %d to maximum %d",
+		snprintf(ERROR_STRING,LLEN,"Clipping green value %d to maximum %d",
 			g,phosmax);
 		warn(ERROR_STRING);
 		g=phosmax;
@@ -124,7 +124,7 @@ void _setcolor(QSP_ARG_DECL  int c,int r,int g,int b)
 
 	if( b < 0 ) b=0;
 	else if( b>phosmax ){
-		sprintf(ERROR_STRING,"Clipping blue value %d to maximum %d",
+		snprintf(ERROR_STRING,LLEN,"Clipping blue value %d to maximum %d",
 			b,phosmax);
 		warn(ERROR_STRING);
 		b=phosmax;
@@ -193,7 +193,7 @@ void _make_grayscale(QSP_ARG_DECL  int base,int n_colors)
 	int i;
 	int inc,v;
 
-	/*insure_linearization(); */
+	/*ensure_linearization(); */
 
 	inc = phosmax/(n_colors-1);
 	v=0;
@@ -214,7 +214,7 @@ void _make_rgb(QSP_ARG_DECL  int base,int nr,int ng,int nb)
 	int rinc,ginc,binc;
 	int saved_ncolors;
 	int ncolors,c;
-	char str[256];
+	char str[LLEN];
 
 	if( nr > 1 ) rinc = (phosmax/(nr-1));
 	else { rinc = 0; nr = -nr; }
@@ -247,7 +247,7 @@ void _make_rgb(QSP_ARG_DECL  int base,int nr,int ng,int nb)
 	update_if();
 
 	if( (base + saved_ncolors) >= N_COLORS){
-		sprintf(str,"too many colors specified, used %d", ncolors);
+		snprintf(str,LLEN,"too many colors specified, used %d", ncolors);
 		warn(str);
 		return;
 	}
@@ -271,7 +271,7 @@ void _setmap(QSP_ARG_DECL  Data_Obj *dp)
 	short nc,ci,pxl_inc;
 	float *fptr;
 	short i,r,g,b;
-	char str[256];
+	char str[LLEN];
 
 	if( dp == NULL ) return;
 
@@ -284,7 +284,7 @@ void _setmap(QSP_ARG_DECL  Data_Obj *dp)
 		return;
 	}
 	if( (nc=(short)OBJ_COLS(dp)) > N_COLORS ){
-		sprintf(str,"setmap(): too many vector elements, using %d",
+		snprintf(str,LLEN,"setmap(): too many vector elements, using %d",
 			N_COLORS);
 		warn(str);
 		nc=N_COLORS;
@@ -317,7 +317,7 @@ void _getmap(QSP_ARG_DECL  Data_Obj *dp)
 	short nc,ci,pxl_inc;
 	float *fptr;
 	short i;
-	char str[256];
+	char str[LLEN];
 
 	if( dp == NULL ) return;
 
@@ -331,7 +331,7 @@ void _getmap(QSP_ARG_DECL  Data_Obj *dp)
 	}
 
 	if( (nc=(short)OBJ_COLS(dp)) > N_COLORS ){
-		sprintf(str,"getmap(): too many vector elements, using %d",
+		snprintf(str,LLEN,"getmap(): too many vector elements, using %d",
 			N_COLORS);
 		warn(str);
 		nc=N_COLORS;
@@ -360,7 +360,7 @@ void print_cm(QSP_ARG_DECL  u_int from, u_int to)
 
 	advise("Printing colormap");
 	for(i=from;i<N_COLORS && i<=to;i++){
-		sprintf(msg_str,"%d:\t\t%d\t%d\t%d\t%d\n",i,CM_DATA( DPA_CMAP_OBJ(current_dpyp),0,i),
+		snprintf(msg_str,LLEN,"%d:\t\t%d\t%d\t%d\t%d\n",i,CM_DATA( DPA_CMAP_OBJ(current_dpyp),0,i),
 			CM_DATA( DPA_CMAP_OBJ(current_dpyp),1,i),CM_DATA( DPA_CMAP_OBJ(current_dpyp),2,i),CM_DATA( DPA_CMAP_OBJ(current_dpyp),3,i));
 		prt_msg(msg_str);
 	}
@@ -372,7 +372,7 @@ void _select_cmap_display(QSP_ARG_DECL  Dpyable *dpyp)
 {
 #ifdef CAUTIOUS
 	if( dpyp == NULL ){
-		sprintf(ERROR_STRING,"CAUTIOUS:  select_cmap_display:  null display!?");
+		snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  select_cmap_display:  null display!?");
 		warn(ERROR_STRING);
 		return;
 	}
@@ -407,9 +407,9 @@ int _color_index_out_of_range(QSP_ARG_DECL  unsigned int index)
 	if( /* index < 0 || */	// index is unsigned...
 			index >= OBJ_COLS( DPA_CMAP_OBJ(current_dpyp)) ){
 
-		char str[256];
+		char str[LLEN];
 
-		sprintf(str,"color index %d out of range for colormap %s",
+		snprintf(str,LLEN,"color index %d out of range for colormap %s",
 			index,OBJ_NAME( DPA_CMAP_OBJ(current_dpyp)));
 		warn(str);
 		return(1);

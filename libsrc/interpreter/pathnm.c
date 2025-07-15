@@ -25,7 +25,7 @@ const char *_parent_directory_of(QSP_ARG_DECL  const char *pathname)
 	s+=strlen(parent_name)-1;		/* now points to last char */
 
 	if( *s == '/' ){
-		sprintf(ERROR_STRING,"Pathname \"%s\" ends with a slash!?",
+		snprintf(ERROR_STRING,LLEN,"Pathname \"%s\" ends with a slash!?",
 			pathname);
 		warn(ERROR_STRING);
 	}

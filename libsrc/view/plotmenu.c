@@ -88,10 +88,10 @@ static COMMAND_FUNC( do_xp_fill_polygon )
 	y_vals = (float *) getbuf(sizeof(float) * num_points);
 	
 	for (i=0; i < num_points; i++) {
-		char s[100];
-		sprintf(s, "point %d x value", i+1);
+		char s[LLEN];
+		snprintf(s,LLEN, "point %d x value", i+1);
 		x_vals[i] = (float)how_much(s);
-		sprintf(s, "point %d y value", i+1);
+		snprintf(s,LLEN, "point %d y value", i+1);
 		y_vals[i] = (float)how_much(s);
 	}
 
@@ -218,7 +218,7 @@ static int bad_plot_vec2(QSP_ARG_DECL Data_Obj *dp,dimension_t n_comps_expected,
 	if( dp==NULL ) return 1;
 
 	if( OBJ_PREC(dp) != PREC_SP && OBJ_PREC(dp) != PREC_DP ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s:  data vector %s (%s) should have float or double precision",
 			funcname,
 			OBJ_NAME(dp),OBJ_MACH_PREC_NAME(dp));
@@ -226,7 +226,7 @@ static int bad_plot_vec2(QSP_ARG_DECL Data_Obj *dp,dimension_t n_comps_expected,
 		return 1;
 	}
 	if( OBJ_COMPS(dp) != n_comps_expected ){
-		sprintf(ERROR_STRING,"%s:  data vector %s (%d) should have %d components",
+		snprintf(ERROR_STRING,LLEN,"%s:  data vector %s (%d) should have %d components",
 			funcname,OBJ_NAME(dp),OBJ_COMPS(dp),n_comps_expected);
 		warn(ERROR_STRING);
 		return 1;
@@ -239,7 +239,7 @@ static int bad_plot_vec(QSP_ARG_DECL Data_Obj *dp,dimension_t n_comps_expected,c
 	if( dp==NULL ) return 1;
 
 	if( OBJ_PREC(dp) != PREC_SP ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s:  data vector %s (%s) should have float precision",
 			funcname,
 			OBJ_NAME(dp),OBJ_MACH_PREC_NAME(dp));
@@ -247,7 +247,7 @@ static int bad_plot_vec(QSP_ARG_DECL Data_Obj *dp,dimension_t n_comps_expected,c
 		return 1;
 	}
 	if( OBJ_COMPS(dp) != n_comps_expected ){
-		sprintf(ERROR_STRING,"%s:  data vector %s (%d) should have %d components",
+		snprintf(ERROR_STRING,LLEN,"%s:  data vector %s (%d) should have %d components",
 			funcname,OBJ_NAME(dp),OBJ_COMPS(dp),n_comps_expected);
 		warn(ERROR_STRING);
 		return 1;
@@ -334,7 +334,7 @@ static COMMAND_FUNC( do_cyplot )
 		return;
 	}
 	if( !dp_same_size(dp,cdp,"do_cyplot") ){
-		sprintf(ERROR_STRING,"data vector %s and color vector %s must have identical sizes",
+		snprintf(ERROR_STRING,LLEN,"data vector %s and color vector %s must have identical sizes",
 			OBJ_NAME(dp),OBJ_NAME(cdp));
 		warn(ERROR_STRING);
 		return;
@@ -409,7 +409,7 @@ static COMMAND_FUNC( do_xyplot )
 			double_xyplot(dp);
 			break;
 		default:
-			sprintf(ERROR_STRING,"do_xyplot:  unhandled precision %s (object %s)",
+			snprintf(ERROR_STRING,LLEN,"do_xyplot:  unhandled precision %s (object %s)",
 				OBJ_PREC_NAME(dp),OBJ_NAME(dp));
 			warn(ERROR_STRING);
 			break;
@@ -538,9 +538,6 @@ ADD_CMD( plot,		do_rdplot,	interpret plot(5) file )
 ADD_CMD( dump,		do_dumpdraw,	dump viewer drawlist to stdout )
 ADD_CMD( info,		do_tell_plot_space, report plotting space )
 ADD_CMD( update,	do_update_plot,	force refresh of plot )
-#ifdef FOOBAR
-ADD_CMD( quit,		do_end_plot,	exit submenu )
-#endif /* FOOBAR */
 MENU_END(xplot)
 
 COMMAND_FUNC( do_xp_menu )

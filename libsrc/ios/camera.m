@@ -65,7 +65,7 @@ static void init_formats(Camera *cam)
 	NSArray *fmt_list=cam.dev.formats;
 
 	n= (int) fmt_list.count;
-	sprintf(MSG_STR,"\t%d formats supported",n);
+	snprintf(MSG_STR,LLEN,"\t%d formats supported",n);
 	prt_msg(MSG_STR);
 
 	// Now scan the list:
@@ -121,7 +121,7 @@ static void init_camera_subsystem(SINGLE_QSP_ARG_DECL)
 
 		cam = new_camera(QSP_ARG  avcd.localizedName.UTF8String );
 		if( cam == NULL ){
-			sprintf(ERROR_STRING,"Error creating camera %s!?",
+			snprintf(ERROR_STRING,LLEN,"Error creating camera %s!?",
 				avcd.localizedName.UTF8String);
 			WARN(ERROR_STRING);
 			return;
@@ -144,7 +144,7 @@ static void init_camera_subsystem(SINGLE_QSP_ARG_DECL)
 
 static void print_cam_info(QSP_ARG_DECL  Camera *cam)
 {
-	sprintf(MSG_STR,"%s:",cam.name.UTF8String);
+	snprintf(MSG_STR,LLEN,"%s:",cam.name.UTF8String);
 	prt_msg(MSG_STR);
 
 	// could list possible focus modes?
@@ -166,7 +166,7 @@ static void print_cam_info(QSP_ARG_DECL  Camera *cam)
 		prt_msg("\tNo auto white balance");
 
 	NSArray *fmt_list=cam.dev.formats;
-	sprintf(MSG_STR,"\t%d formats supported",(int)fmt_list.count);
+	snprintf(MSG_STR,LLEN,"\t%d formats supported",(int)fmt_list.count);
 	prt_msg(MSG_STR);
 }
 
@@ -204,7 +204,7 @@ static int get_ios_item_names( QSP_ARG_DECL  Data_Obj *str_dp, IOS_Item_Type *it
 
 	n=ios_eltcount(lp);
 	if( OBJ_COLS(str_dp) < n ){
-		sprintf(ERROR_STRING,"String object %s has too few columns (%ld) to hold %d %s names",
+		snprintf(ERROR_STRING,LLEN,"String object %s has too few columns (%ld) to hold %d %s names",
 			OBJ_NAME(str_dp),(long)OBJ_COLS(str_dp),n,IOS_ITEM_TYPE_NAME(itp));
 		WARN(ERROR_STRING);
 		n = OBJ_COLS(str_dp);
@@ -218,7 +218,7 @@ static int get_ios_item_names( QSP_ARG_DECL  Data_Obj *str_dp, IOS_Item_Type *it
 		dst = OBJ_DATA_PTR(str_dp);
 		dst += i * OBJ_PXL_INC(str_dp);
 		if( strlen(IOS_ITEM_NAME(ip))+1 > OBJ_COMPS(str_dp) ){
-			sprintf(ERROR_STRING,"String object %s has too few components (%ld) to hold item name \"%s\"",
+			snprintf(ERROR_STRING,LLEN,"String object %s has too few components (%ld) to hold item name \"%s\"",
 				OBJ_NAME(str_dp),(long)OBJ_COMPS(str_dp),IOS_ITEM_NAME(ip));
 			WARN(ERROR_STRING);
 		} else {

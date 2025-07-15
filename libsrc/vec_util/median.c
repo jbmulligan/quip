@@ -240,7 +240,7 @@ static void _process_median(QSP_ARG_DECL  Data_Obj *dpto,Data_Obj *dpfr)
 		/* BUG this will not catch subobjects that share data, so be careful! */
 	}
 	if( !IS_CONTIGUOUS(dpto) || !IS_CONTIGUOUS(dpfr) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s and %s must be contiguous for median filter",
 			OBJ_NAME(dpto),OBJ_NAME(dpfr));
 		WARN(ERROR_STRING);
@@ -255,12 +255,12 @@ static void _process_median(QSP_ARG_DECL  Data_Obj *dpto,Data_Obj *dpfr)
 		/* case PREC_SP: sp_median(dpto,dpfr); break; */
 		case PREC_UBY: uby_median(dpto,dpfr); break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 			"sorry, %s precision not supported by median filter",
 				PREC_NAME(OBJ_PREC_PTR(dpto)));
 			WARN(ERROR_STRING);
 			advise("supported precisions:");
-			sprintf(ERROR_STRING,"\t%s",NAME_FOR_PREC_CODE(PREC_UBY));
+			snprintf(ERROR_STRING,LLEN,"\t%s",NAME_FOR_PREC_CODE(PREC_UBY));
 			advise(ERROR_STRING);
 			break;
 	}
@@ -422,7 +422,7 @@ void _median_1D(QSP_ARG_DECL  Data_Obj *dpto,Data_Obj *dpfr,int median_radius)
 static int _good_for_sorting(QSP_ARG_DECL  Data_Obj *dp)
 {
 	if( IS_COMPLEX(dp) || IS_QUAT(dp) || IS_COLOR(dp) ){
-		sprintf(ERROR_STRING,"sort_data:  Sorry, can't sort complex/quaternion/color object %s",
+		snprintf(ERROR_STRING,LLEN,"sort_data:  Sorry, can't sort complex/quaternion/color object %s",
 			OBJ_NAME(dp));
 		WARN(ERROR_STRING);
 		return 0;
@@ -442,12 +442,12 @@ void _sort_data(QSP_ARG_DECL  Data_Obj *dp)
 		return;
 
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,"sort_data:  object %s must be contiguous",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"sort_data:  object %s must be contiguous",OBJ_NAME(dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( IS_BITMAP(dp) ){
-		sprintf(ERROR_STRING,"sort_data:  Sorry, can't sort bitmap object %s",
+		snprintf(ERROR_STRING,LLEN,"sort_data:  Sorry, can't sort bitmap object %s",
 			OBJ_NAME(dp));
 		WARN(ERROR_STRING);
 		return;
@@ -477,12 +477,12 @@ void _sort_indices(QSP_ARG_DECL  Data_Obj *index_dp,Data_Obj *data_dp)
 		return;
 
 	if( ! IS_CONTIGUOUS(index_dp) ){
-		sprintf(ERROR_STRING,"sort_data:  object %s must be contiguous",OBJ_NAME(index_dp));
+		snprintf(ERROR_STRING,LLEN,"sort_data:  object %s must be contiguous",OBJ_NAME(index_dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_MACH_PREC(index_dp) != PREC_UDI && OBJ_MACH_PREC(index_dp) != PREC_DI ){
-		sprintf(ERROR_STRING,"sort_indices:  index array %s (%s) should have %s or %s precision",
+		snprintf(ERROR_STRING,LLEN,"sort_indices:  index array %s (%s) should have %s or %s precision",
 			OBJ_NAME(index_dp),OBJ_PREC_NAME(index_dp),
 			NAME_FOR_PREC_CODE(PREC_UDI),NAME_FOR_PREC_CODE(PREC_DI));
 		WARN(ERROR_STRING);
@@ -493,14 +493,14 @@ void _sort_indices(QSP_ARG_DECL  Data_Obj *index_dp,Data_Obj *data_dp)
 	 * we print a warning, but sort anyway.
 	 */
 	if( OBJ_N_TYPE_ELTS(data_dp) != OBJ_TYPE_DIM(data_dp, OBJ_MINDIM(data_dp) ) ){
-		sprintf(ERROR_STRING,"sort_indices:  only sorting first %s of object %s",
+		snprintf(ERROR_STRING,LLEN,"sort_indices:  only sorting first %s of object %s",
 			dimension_name[ OBJ_MINDIM(data_dp) ], OBJ_NAME(data_dp) );
 		WARN(ERROR_STRING);
 	}
 
 	/* make sure the index of the array matches what we are sorting */
 	if( OBJ_N_TYPE_ELTS(index_dp) != OBJ_TYPE_DIM(data_dp, OBJ_MINDIM(data_dp) ) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"sort_indices:  size of index array %s (%d) does not match %s dimension of object %s (%d)",
 			OBJ_NAME(index_dp),OBJ_N_TYPE_ELTS(index_dp),dimension_name[OBJ_MINDIM(data_dp)],
 			OBJ_NAME(data_dp),OBJ_TYPE_DIM(data_dp, OBJ_MINDIM(data_dp) ) );

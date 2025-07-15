@@ -6,7 +6,7 @@
 #define CLIP_INDEX							\
 									\
 	if( si >= OBJ_COLS(lut_dp) ){					\
-		sprintf(ERROR_STRING,					\
+		snprintf(ERROR_STRING,LLEN,				\
 "Index value %d exceeds size of lookup table %s (%d), clipping.",	\
 			si,OBJ_NAME(lut_dp),OBJ_COLS(lut_dp));		\
 		WARN(ERROR_STRING);					\
@@ -57,7 +57,7 @@ int _lutmap( QSP_ARG_DECL  Data_Obj *dest_dp, Data_Obj *src_dp, Data_Obj *lut_dp
 	VINSIST_RAM_OBJ(lut_dp,lutmap,-1)
 
 	if( OBJ_PREC(dest_dp) != OBJ_PREC(lut_dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"lutmap:  precision mismatch destination %s (%s) and lut %s (%s)",
 			OBJ_NAME(dest_dp),OBJ_PREC_NAME(dest_dp),
 			OBJ_NAME(lut_dp),OBJ_PREC_NAME(lut_dp));
@@ -65,7 +65,7 @@ int _lutmap( QSP_ARG_DECL  Data_Obj *dest_dp, Data_Obj *src_dp, Data_Obj *lut_dp
 		return(-1);
 	}
 	if( OBJ_COMPS(dest_dp) != OBJ_COMPS(lut_dp)*OBJ_COMPS(src_dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"lutmap:  destination (%s) depth (%d) should be product of\n"
 		"\tsource (%s) depth (%d) and lut (%s) depth (%d)",
 			OBJ_NAME(dest_dp), OBJ_COMPS(dest_dp),
@@ -76,33 +76,33 @@ int _lutmap( QSP_ARG_DECL  Data_Obj *dest_dp, Data_Obj *src_dp, Data_Obj *lut_dp
 		return(-1);
 	}
 	if( OBJ_N_TYPE_ELTS(dest_dp) != OBJ_N_TYPE_ELTS(src_dp) * OBJ_COMPS(lut_dp) ){
-		sprintf(ERROR_STRING,"lutmap:  destination %s and source %s must match in size",
+		snprintf(ERROR_STRING,LLEN,"lutmap:  destination %s and source %s must match in size",
 			OBJ_NAME(dest_dp),OBJ_NAME(src_dp));
 		WARN(ERROR_STRING);
 		return(-1);
 	}
 	if( OBJ_PREC(src_dp) != PREC_UIN && OBJ_PREC(src_dp) != PREC_UBY ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "lutmap:  source %s precision (%s) must be unsigned byte or unsigned short",
 			OBJ_NAME(src_dp),OBJ_PREC_NAME(src_dp));
 		WARN(ERROR_STRING);
 		return(-1);
 	}
 	if( OBJ_PREC(src_dp) == PREC_UBY && OBJ_COLS(lut_dp) != 256 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "lutmap:  lut %s size (%d) must be 256 for byte indexing",OBJ_NAME(lut_dp),OBJ_COLS(lut_dp));
 		WARN(ERROR_STRING);
 		return(-1);
 	}
 	/* BUG?  if we use short indices, we may not want to have a full 64k lookup table... */
 	if( !IS_CONTIGUOUS(src_dp) ){
-		sprintf(ERROR_STRING,"lutmap:  source image %s must be contiguous",
+		snprintf(ERROR_STRING,LLEN,"lutmap:  source image %s must be contiguous",
 			OBJ_NAME(src_dp));
 		WARN(ERROR_STRING);
 		return(-1);
 	}
 	if( !IS_CONTIGUOUS(dest_dp) ){
-		sprintf(ERROR_STRING,"lutmap:  destination image %s must be contiguous",
+		snprintf(ERROR_STRING,LLEN,"lutmap:  destination image %s must be contiguous",
 			OBJ_NAME(dest_dp));
 		WARN(ERROR_STRING);
 		return(-1);
@@ -143,7 +143,7 @@ int _lutmap( QSP_ARG_DECL  Data_Obj *dest_dp, Data_Obj *src_dp, Data_Obj *lut_dp
 			DO_MAPPING(u_char,u_short)
 		}
 	} else {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Sorry, unhandled destination precision (%s) for lutmap",OBJ_PREC_NAME(dest_dp));
 		WARN(ERROR_STRING);
 		return(-1);

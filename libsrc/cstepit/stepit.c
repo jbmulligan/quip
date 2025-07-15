@@ -707,7 +707,7 @@ static void intrupt()
  * Here if control-C noticed
  */
 
-static void ccseen()
+static void ccseen(void)
 {
 
 	ccflag = 0;
@@ -722,7 +722,7 @@ static void ccseen()
  * Report and exit
  */
 
-static void done()
+static void done(void)
 {
 	int     i;
 
@@ -752,13 +752,13 @@ void getvals(double *arr, int n)
 int _reset_n_opt_params(QSP_ARG_DECL  int n)
 {
 	if( n<=0 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"requested n_params %d must be positive (and <= %d)",
 			n,VARS);
 		warn(ERROR_STRING);
 		n=1;
 	} else if( n>VARS ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"requested n_params %d is too large, must be <= %d",
 			n,VARS);
 		warn(ERROR_STRING);
@@ -774,7 +774,7 @@ void _set_opt_param_vals(QSP_ARG_DECL  double *arr, int n)
 	if( n_params == 0 )
 		n_params=n;
 	else if( n!=n_params ){
-		sprintf(ERROR_STRING,"setvals:  n_params = %d, n = %d",n_params,n);
+		snprintf(ERROR_STRING,LLEN,"setvals:  n_params = %d, n = %d",n_params,n);
 		advise(ERROR_STRING);
 		warn("parameter count mismatch");
 	}
@@ -790,7 +790,7 @@ void _set_opt_param_minmax(QSP_ARG_DECL  double *minarr, double *maxarr, int n)
 	if( n_params==0 )
 		n_params=n;
 	else if( n!=n_params ){
-		sprintf(ERROR_STRING,"setminmax:  n_params = %d, n = %d",n_params,n);
+		snprintf(ERROR_STRING,LLEN,"setminmax:  n_params = %d, n = %d",n_params,n);
 		advise(ERROR_STRING);
 		warn("parameter count mismatch");
 	}
@@ -808,7 +808,7 @@ void _set_opt_param_delta(QSP_ARG_DECL  double *delarr, double *dmnarr, int n)
 	if( n_params==0 )
 		n_params=n;
 	else if( n!=n_params ){
-		sprintf(ERROR_STRING,"setminmax:  n_params = %d, n = %d",n_params,n);
+		snprintf(ERROR_STRING,LLEN,"setminmax:  n_params = %d, n = %d",n_params,n);
 		advise(ERROR_STRING);
 		warn("parameter count mismatch");
 	}

@@ -27,6 +27,8 @@
 u_long usb2000_debug=0;
 #endif /* DEBUG */
 
+#define PKT_BUF_SIZE	20
+
 /* globals */
 u_short ascii_mode = TRUE;			/* default mode is binary (pg.12) */
 u_short data_strg_mode = DISABLE;		/* default mode is to xmit the spectra thru serial port */
@@ -74,7 +76,7 @@ USB2000_Cmd_Def usb2000_cmd_tbl[]={
 static void dump_buf(char *buf)
 {
 	while( *buf != '\0') {
-		sprintf(ERROR_STRING, "0x%x	%c", *buf, *buf );
+		snprintf(ERROR_STRING,LLEN, "0x%x	%c", *buf, *buf );
 		advise(ERROR_STRING);
 		buf++;
 	}
@@ -85,21 +87,21 @@ static void dump_buf(char *buf)
 void _make_pkt(QSP_ARG_DECL  char *pkt, const char *cmd, u_int arg )
 {
 	if( ascii_mode ) {
-			sprintf((char *)pkt,"%s%d\n", cmd, arg);
+			snprintf((char *)pkt,PKT_BUF_SIZE,"%s%d\n", cmd, arg);
 	} else {
 		u_short cmd_len;
 
 		cmd_len = strlen(cmd);
 
 		if( cmd_len == 1 )
-			sprintf(pkt,"%x%.4x", *cmd, arg);
+			snprintf(pkt,PKT_BUF_SIZE,"%x%.4x", *cmd, arg);
 
 		else if( cmd_len == 2 )
-			sprintf(pkt,"%.2x%.2x%.4x", *cmd, *(cmd+1), arg);
+			snprintf(pkt,PKT_BUF_SIZE,"%.2x%.2x%.4x", *cmd, *(cmd+1), arg);
 
 #ifdef CAUTIOUS
 		else {
-			sprintf(ERROR_STRING,"ERROR: cmd_len: %d not possible", cmd_len);
+			snprintf(ERROR_STRING,LLEN,"ERROR: cmd_len: %d not possible", cmd_len);
 			warn(ERROR_STRING);
 		}
 #endif /* CAUTIOUS */
@@ -113,20 +115,20 @@ static void make_pxl_mode_pkt( char *pkt, int pxl_mode, int x, int y, int n, int
 	if( ascii_mode ) {
 		switch(pxl_mode) {
 			case 0:
-				sprintf(pkt, "P0\n");
+				snprintf(pkt,PKT_BUF_SIZE, "P0\n");
 				break;
 			case 1:
-				sprintf(pkt, "P1\n%d\n", n);
+				snprintf(pkt,PKT_BUF_SIZE, "P1\n%d\n", n);
 				break;
 			case 3:
-				sprintf(pkt, "P3\n%d\n%d\n%d\n", x, y, n);
+				snprintf(pkt,PKT_BUF_SIZE, "P3\n%d\n%d\n%d\n", x, y, n);
 				break;
 			case 4:
-				sprintf(pkt, "P4\n%d\n", n);
+				snprintf(pkt,PKT_BUF_SIZE, "P4\n%d\n", n);
 
 				for(i=0; i<n; i++) {
 					pkt += strlen(pkt);
-					sprintf(pkt, "%d\n", pxl_locations_p[i]);
+					snprintf(pkt,PKT_BUF_SIZE, "%d\n", pxl_locations_p[i]);
 				}
 				break;
 		}
@@ -136,20 +138,20 @@ static void make_pxl_mode_pkt( char *pkt, int pxl_mode, int x, int y, int n, int
 
 				/* P = 0x50 */
 			case 0:
-				sprintf(pkt, "500000");
+				snprintf(pkt,PKT_BUF_SIZE, "500000");
 				break;
 			case 1:
-				sprintf(pkt, "500001%.4x", n);
+				snprintf(pkt,PKT_BUF_SIZE, "500001%.4x", n);
 				break;
 			case 3:
-				sprintf(pkt, "500003%.4x%.4x%.4x", x, y, n);
+				snprintf(pkt,PKT_BUF_SIZE, "500003%.4x%.4x%.4x", x, y, n);
 				break;
 			case 4:
-				sprintf(pkt, "500004%.4x", n);
+				snprintf(pkt,PKT_BUF_SIZE, "500004%.4x", n);
 
 				for(i=0; i<n; i++) {
 					pkt += strlen(pkt);
-					sprintf(pkt, "%.4x", pxl_locations_p[i]);
+					snprintf(pkt,PKT_BUF_SIZE, "%.4x", pxl_locations_p[i]);
 				}
 				break;
 		}
@@ -174,7 +176,7 @@ static int get_echo(QSP_ARG_DECL  const char *pkt)
 				return -1;
 
 			if( *(echo_bufp+i) != *(pkt+i) ) {
-				sprintf(ERROR_STRING, "Unexpected 0x%x instead of 0x%x received .... please restart the usb2000",
+				snprintf(ERROR_STRING,LLEN, "Unexpected 0x%x instead of 0x%x received .... please restart the usb2000",
 					*(echo_bufp+i), *(pkt+i) );
 				WARN(ERROR_STRING);
 
@@ -201,7 +203,7 @@ int get_tail(SINGLE_QSP_ARG_DECL)
 		}
 
 		if( recv_buf[0] != LF || recv_buf[1] != CR || recv_buf[2] != 0x3e || recv_buf[3] != SPACE ) {
-			sprintf(ERROR_STRING, "ERROR: Unexpected trailing chars (0x%x 0x%x 0x%x 0x%x) received",
+			snprintf(ERROR_STRING,LLEN, "ERROR: Unexpected trailing chars (0x%x 0x%x 0x%x 0x%x) received",
 				recv_buf[0], recv_buf[1] ,recv_buf[2] ,recv_buf[3]);
 			WARN(ERROR_STRING);
 			clear_input_buf(SINGLE_QSP_ARG);
@@ -219,7 +221,7 @@ int get_tail(SINGLE_QSP_ARG_DECL)
 int do_cmd_1_arg(QSP_ARG_DECL  Cmd_Index cmd_index, int data_word)
 {
 	u_short len;
-	char pkt[20];
+	char pkt[PKT_BUF_SIZE];
 	USB2000_Cmd_Def *ucdp;
 
 	ucdp = &usb2000_cmd_tbl[cmd_index];
@@ -255,9 +257,9 @@ static int do_inq_1_arg(QSP_ARG_DECL  Cmd_Index cmd_index)
 	ucdp = &usb2000_cmd_tbl[cmd_index];
 
 	if( ucdp->ucd_index == LS_450_ANALOG_OP	|| ucdp->ucd_index == LS_450_LED_MODE )
-		sprintf(pkt, "o?%c", *(ucdp->ucd_cmd+1) );
+		snprintf(pkt,PKT_BUF_SIZE, "o?%c", *(ucdp->ucd_cmd+1) );
 	else
-		sprintf(pkt, "?%s", ucdp->ucd_cmd);
+		snprintf(pkt,PKT_BUF_SIZE, "?%s", ucdp->ucd_cmd);
 
 	len = strlen(pkt);
 
@@ -387,7 +389,7 @@ int get_n_of_scans(SINGLE_QSP_ARG_DECL)
 
 		} else {
 
-			sprintf(ERROR_STRING,"ERROR: Unexpected char 0x%x received instead of ACK/NAK", is_ack);
+			snprintf(ERROR_STRING,LLEN,"ERROR: Unexpected char 0x%x received instead of ACK/NAK", is_ack);
 			WARN(ERROR_STRING);
 
 		}
@@ -428,7 +430,7 @@ static int get_STX(SINGLE_QSP_ARG_DECL)
 
 		if ( response!=ETX ) {
 
-			sprintf(ERROR_STRING, "unexpected 0x%x instead of ETX", response);
+			snprintf(ERROR_STRING,LLEN, "unexpected 0x%x instead of ETX", response);
 			WARN(ERROR_STRING);
 
 			/* we now clear up any 'trash' that may be present
@@ -564,7 +566,7 @@ static int recv_spec_headers(QSP_ARG_DECL  Pxl_Mode_Info *pxl_mode_info_p)
 		}
 
 		default:
-			sprintf(ERROR_STRING, "recv_spec_headers: Impossible pixel mode (%d)", pxl_case);
+			snprintf(ERROR_STRING,LLEN, "recv_spec_headers: Impossible pixel mode (%d)", pxl_case);
 			WARN(ERROR_STRING);
 			return -1;
 	}
@@ -654,13 +656,13 @@ static int get_spectrum(QSP_ARG_DECL  Spectral_Data *sdp, u_short *n_spec_recvd,
 		}
 	}
 
-	//sprintf(ERROR_STRING, "n_of_spectra received: %d", *n_spec_recvd);
+	//snprintf(ERROR_STRING,LLEN, "n_of_spectra received: %d", *n_spec_recvd);
 	//advise(ERROR_STRING);
 
 #ifdef DEBUG
 if( debug & usb2000_debug ){
 if(chk_sum_mode==ENABLE) {
-sprintf(ERROR_STRING, "check_sum(calculated): 0x%x", check_sum );
+snprintf(ERROR_STRING,LLEN, "check_sum(calculated): 0x%x", check_sum );
 advise(ERROR_STRING);
 }
 }
@@ -733,7 +735,7 @@ static void do_non_linear_crktion(Spectral_Data *sdp, int n_spec_recvd)
 
 		sdp->sd_spec_data[i] = N0 + N1*rd + N2*rd*rd + N3*rd*rd*rd + N4*rd*rd*rd*rd + N5*rd*rd*rd*rd*rd + N6*rd*rd*rd*rd*rd*rd + N7*rd*rd*rd*rd*rd*rd*rd;
 	/*
-	sprintf(ERROR_STRING, "xform7[%d]: %f", i, sdp->sd_spec_data[i] );
+	snprintf(ERROR_STRING,LLEN, "xform7[%d]: %f", i, sdp->sd_spec_data[i] );
 	advise(ERROR_STRING);
 	*/
 
@@ -783,12 +785,14 @@ int get_scan(QSP_ARG_DECL  Spectral_Data *sdp)
 
 }
 
+#define TMP_BUF_SIZE	5
+
 int spec_acq(QSP_ARG_DECL  Spectral_Data *sdp)
 {
 	const char *cmdp="S\0";
 	int check_sum;
 	int device_check_sum;
-	char tmp[5];
+	char tmp[TMP_BUF_SIZE];
 	u_short i;
 	int data_recvd;
 	int n;
@@ -822,18 +826,18 @@ int spec_acq(QSP_ARG_DECL  Spectral_Data *sdp)
 					tmp[i] = (u_char)data_recvd;
 				}
 
-				sprintf(tmp, "%.2x%.2x", tmp[0], tmp[1]);
+				snprintf(tmp,TMP_BUF_SIZE, "%.2x%.2x", tmp[0], tmp[1]);
 
 				tmp[4] = '\0';
 
 				device_check_sum = strtol( tmp, NULL, 16 );
 
 #ifdef DEBUG
-sprintf(ERROR_STRING, "check_sum(received): 0x%x ", check_sum );
+snprintf(ERROR_STRING,LLEN, "check_sum(received): 0x%x ", check_sum );
 advise(ERROR_STRING);
 #endif /* DEBUG */
 				if( device_check_sum != check_sum ) {
-					sprintf(ERROR_STRING, "ERROR: Unexpected check sum(0x%x) instead of 0x%x",
+					snprintf(ERROR_STRING,LLEN, "ERROR: Unexpected check sum(0x%x) instead of 0x%x",
 						check_sum, device_check_sum );
 					WARN(ERROR_STRING);
 					return -1;
@@ -851,11 +855,11 @@ advise(ERROR_STRING);
 
 #ifdef DEBUG
 if( debug & usb2000_debug ){
-sprintf(ERROR_STRING,"case:%d n:%d x:%d y:%d",pxl_mode_info.pxl_case,pxl_mode_info.n ,pxl_mode_info.x, pxl_mode_info.y);
+snprintf(ERROR_STRING,LLEN,"case:%d n:%d x:%d y:%d",pxl_mode_info.pxl_case,pxl_mode_info.n ,pxl_mode_info.x, pxl_mode_info.y);
 advise(ERROR_STRING);
 
 for(i=0;i<10;i++) {
-sprintf(ERROR_STRING,"pixel(%d):%d",i,pxl_mode_info.pixels[i]);
+snprintf(ERROR_STRING,LLEN,"pixel(%d):%d",i,pxl_mode_info.pixels[i]);
 advise(ERROR_STRING);
 }
 }
@@ -867,7 +871,7 @@ advise(ERROR_STRING);
 	return n_spec_recvd[0];
 }
 
-int get_ver(QSP_ARG_DECL  char *ver)
+int get_ver(QSP_ARG_DECL  char *ver,int bufsize)
 {
 	const char *pkt = "v";
 	int data_value;
@@ -891,12 +895,12 @@ int get_ver(QSP_ARG_DECL  char *ver)
 	if( get_tail(SINGLE_QSP_ARG) < 0 )
 		return -1;
 
-	sprintf(ver,"%d",data_value);
-	sprintf( ver, "%c.%c%c.%c",ver[0], ver[1], ver[2], ver[3]);
+	snprintf(ver,bufsize,"%d",data_value);
+	snprintf( ver,bufsize, "%c.%c%c.%c",ver[0], ver[1], ver[2], ver[3]);
 	return 0;
 }
 
-int get_temp(QSP_ARG_DECL  char *temp)
+int get_temp(QSP_ARG_DECL  char *temp,int bufsize)
 {
 	char pkt[] = "ot";
 	u_short i;
@@ -927,7 +931,8 @@ int get_temp(QSP_ARG_DECL  char *temp)
 	for( i=0; i<4; i++) {
 		if( ( char_recvd = recv_a_byte(SINGLE_QSP_ARG) ) < 0 )
 			return -1;
-		sprintf(&temp[index++], "%c", (char)char_recvd);
+		snprintf(&temp[index],bufsize-index, "%c", (char)char_recvd);
+		index++;
 	}
 
 	temp[index] = '\0';
@@ -947,7 +952,7 @@ int set_data_mode(QSP_ARG_DECL  Cmd_Index data_mode)
 	u_short i;
 
 	ucdp = &usb2000_cmd_tbl[data_mode];
-	sprintf(pkt, "%s", ucdp->ucd_cmd);
+	snprintf(pkt,3, "%s", ucdp->ucd_cmd);
 	len = strlen(pkt);
 
 	//send_serial( usb2000_fd, pkt, len );
@@ -1056,7 +1061,7 @@ int set_calib_const(QSP_ARG_DECL  Cmd_Index cmd_index, int calib_index, const ch
 
 	ucdp = &usb2000_cmd_tbl[cmd_index];
 
-	sprintf(pkt, "%s%d\n%s\n", ucdp->ucd_cmd, calib_index, coeff_value);
+	snprintf(pkt,PKT_BUF_SIZE, "%s%d\n%s\n", ucdp->ucd_cmd, calib_index, coeff_value);
 
 #ifdef DEBUG
 	dump_buf(pkt);
@@ -1091,7 +1096,7 @@ static u_short _wavlen_to_pxl(QSP_ARG_DECL  float wavlen)
 		}
 	}
 
-	sprintf(ERROR_STRING,"approximating %fnm to %fnm",
+	snprintf(ERROR_STRING,LLEN,"approximating %fnm to %fnm",
 		wavlen, best_wav);
 	advise(ERROR_STRING);
 
@@ -1111,7 +1116,7 @@ int round(float f)
 		f = (float)i;
 
 	#ifdef DEBUG
-	sprintf(ERROR_STRING,"my_int_round: %f to %d",f, (int)f);
+	snprintf(ERROR_STRING,LLEN,"my_int_round: %f to %d",f, (int)f);
 	advise(ERROR_STRING);
 	#endif /* DEBUG */
 
@@ -1182,7 +1187,7 @@ int set_pxl_mode(QSP_ARG_DECL  int pxl_mode, float x, float y, float n, float *w
 
 int do_calib_inq(QSP_ARG_DECL  Cmd_Index cmd_index, int calib_index, char *calib_const)
 {
-	char pkt[7];		/* (o) + ? + x + index + \n + \0 added by sprintf */
+	char pkt[7];		/* (o) + ? + x + index + \n + \0 added by snprintf */
 	USB2000_Cmd_Def *ucdp;
 	int byte_recvd = 0;
 	u_short i = 0;
@@ -1192,9 +1197,9 @@ int do_calib_inq(QSP_ARG_DECL  Cmd_Index cmd_index, int calib_index, char *calib
 	ucdp = &usb2000_cmd_tbl[cmd_index];
 
 	if( ucdp->ucd_index == LS_450_CALIB_CONST )
-		sprintf(pkt, "o?u%d\n", calib_index);
+		snprintf(pkt,7, "o?u%d\n", calib_index);
 	else
-		sprintf(pkt, "?x%d\n", calib_index);
+		snprintf(pkt,7, "?x%d\n", calib_index);
 
 	//send_serial( usb2000_fd, pkt, strlen(pkt) );
 	send_usb2000_packet(QSP_ARG   pkt, strlen(pkt) );

@@ -50,7 +50,7 @@
 #define BIN_WIDTH			3.1271311932	/* pixels per nm */
 #define WAVELENGTH_RANGE		(MAX_WAVELENGTH-MIN_WAVELENGTH)
 
-#define CH( x ) sprintf(error_string, "ch%d",x); advise(error_string);	/* used for debugging */
+#define CH( x ) snprintf(error_string,LLEN, "ch%d",x); advise(error_string);	/* used for debugging */
 
 typedef enum {
 
@@ -150,7 +150,7 @@ extern int get_scan(QSP_ARG_DECL  Spectral_Data *sdp);
 extern int set_trig_mode(QSP_ARG_DECL  int data_word);
 extern int set_checksum(QSP_ARG_DECL  int data_word);
 extern int set_timer(QSP_ARG_DECL  int data_word);
-extern int get_ver(QSP_ARG_DECL  char *ver);
+extern int get_ver(QSP_ARG_DECL  char *ver,int bufsize);
 extern int spec_acq(QSP_ARG_DECL  Spectral_Data *sdp);
 extern int set_data_mode(QSP_ARG_DECL  Cmd_Index data_mode);
 extern int set_pxl_mode(QSP_ARG_DECL  int pxl_mode, float x, float y, float n, float *wavelengths_p);
@@ -167,7 +167,7 @@ extern int get_trig_mode(SINGLE_QSP_ARG_DECL);
 extern int get_timer_type(SINGLE_QSP_ARG_DECL);
 extern int get_analog_op(SINGLE_QSP_ARG_DECL); 
 extern int get_led_mode(SINGLE_QSP_ARG_DECL);
-extern int get_temp(QSP_ARG_DECL  char *temp);
+extern int get_temp(QSP_ARG_DECL  char *temp, int bufsize);
 extern int do_calib_inq(QSP_ARG_DECL  Cmd_Index cmd_index, int calib_index, char *calib_const);
 
 

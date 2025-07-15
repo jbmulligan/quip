@@ -24,7 +24,7 @@ void _erode(QSP_ARG_DECL  Data_Obj *dpto,Data_Obj *dpfr)
 		WARN("source and destination should differ for erosion!?");
 
 	if( !is_contiguous(dpfr) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"source image %s must be contiguous for erosion",
 			OBJ_NAME(dpfr));
 		WARN(ERROR_STRING);
@@ -228,7 +228,7 @@ void _dilate(QSP_ARG_DECL  Data_Obj *dpto,Data_Obj *dpfr)
 		WARN("source and destination should differ for dilation!?");
 
 	if( !is_contiguous(dpfr) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"source image %s must be contiguous for dilation",
 			OBJ_NAME(dpfr));
 		WARN(ERROR_STRING);
@@ -443,19 +443,19 @@ static int flt_inside(long x, long y)
 
 	v=flt_pixelread(x,y);
 	if( verbose ){
-		sprintf(DEFAULT_MSG_STR,"value at %ld %ld is %g, orig_val = %g, tol = %g",
+		snprintf(DEFAULT_MSG_STR,LLEN,"value at %ld %ld is %g, orig_val = %g, tol = %g",
 			x,y,v,flt_ov,flt_tol);
 		_prt_msg(DEFAULT_QSP_ARG  DEFAULT_MSG_STR);
 	}
 	if( fabs(v - flt_ov) <= flt_tol ){
 		if( verbose ){
-			sprintf(DEFAULT_MSG_STR,"pixel at %ld %ld is inside fill region",x,y);
+			snprintf(DEFAULT_MSG_STR,LLEN,"pixel at %ld %ld is inside fill region",x,y);
 			_prt_msg(DEFAULT_QSP_ARG  DEFAULT_MSG_STR);
 		}
 		return(1);
 	} else {
 		if( verbose ){
-			sprintf(DEFAULT_MSG_STR,"pixel at %ld %ld is NOT inside fill region",x,y);
+			snprintf(DEFAULT_MSG_STR,LLEN,"pixel at %ld %ld is NOT inside fill region",x,y);
 			_prt_msg(DEFAULT_QSP_ARG  DEFAULT_MSG_STR);
 		}
 		return(0);
@@ -465,7 +465,7 @@ static int flt_inside(long x, long y)
 static void flt_fill(long x, long y)
 {
 	if( verbose ){
-		sprintf(DEFAULT_MSG_STR,"Filling pixel at %ld %ld with value %g",
+		snprintf(DEFAULT_MSG_STR,LLEN,"Filling pixel at %ld %ld with value %g",
 			x,y,flt_nv);
 		_prt_msg(DEFAULT_QSP_ARG  DEFAULT_MSG_STR);
 	}
@@ -490,7 +490,7 @@ void _ifl(QSP_ARG_DECL  Data_Obj *dp,dimension_t x,dimension_t y,double color,do
 	fill_dp = dp;
 	if( OBJ_PREC(dp) == PREC_UBY ){
 /*
-sprintf(ERROR_STRING,"ifl( %s, %ld, %ld, color = %g, tol = %g )",OBJ_NAME(dp),x,y,color,tol);
+snprintf(ERROR_STRING,LLEN,"ifl( %s, %ld, %ld, color = %g, tol = %g )",OBJ_NAME(dp),x,y,color,tol);
 advise(ERROR_STRING);
 */
 		ggem_fill(QSP_ARG  (int)x,(int)y,(int)OBJ_COLS(dp),(int)OBJ_ROWS(dp),(PIXTYPE)color,(int)tol);
@@ -502,7 +502,7 @@ advise(ERROR_STRING);
 
 		/* check that the inside rule fails for the new color */
 		if( fabs(flt_nv-flt_ov) <= flt_tol ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 "fill value (%g) too close to seed point value (%g) (tolerance = %g)",
 				flt_nv,flt_ov,flt_tol);
 			WARN(ERROR_STRING);
@@ -510,10 +510,10 @@ advise(ERROR_STRING);
 		}
 		gen_fill(x,y,dp,flt_inside,flt_fill);
 	} else {
-		sprintf(ERROR_STRING,"ifl:  Sorry, precision %s (object %s) is not supported",
+		snprintf(ERROR_STRING,LLEN,"ifl:  Sorry, precision %s (object %s) is not supported",
 			OBJ_MACH_PREC_NAME(dp),OBJ_NAME(dp));
 		WARN(ERROR_STRING);
-		sprintf(ERROR_STRING,"Supported precisions for ifl() are %s and %s",
+		snprintf(ERROR_STRING,LLEN,"Supported precisions for ifl() are %s and %s",
 			NAME_FOR_PREC_CODE(PREC_UBY),NAME_FOR_PREC_CODE(PREC_SP));
 		advise(ERROR_STRING);
 	}
@@ -579,13 +579,13 @@ void _morph_process( QSP_ARG_DECL  Data_Obj *dpto, Data_Obj *dpfr, Data_Obj *tbl
 	u_char *table;
 
 	if( OBJ_COLS(tbl_dp) != 512 ){
-		sprintf(ERROR_STRING,"Table vector %s (%d) should have 512 columns",
+		snprintf(ERROR_STRING,LLEN,"Table vector %s (%d) should have 512 columns",
 			OBJ_NAME(tbl_dp),OBJ_COLS(tbl_dp));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_MACH_PREC(tbl_dp) != PREC_UBY ){
-		sprintf(ERROR_STRING,"Table vector %s (%s) should have %s precision",
+		snprintf(ERROR_STRING,LLEN,"Table vector %s (%s) should have %s precision",
 			OBJ_NAME(tbl_dp),OBJ_PREC_NAME(tbl_dp),
 			NAME_FOR_PREC_CODE(PREC_UBY));
 		WARN(ERROR_STRING);
@@ -598,19 +598,19 @@ void _morph_process( QSP_ARG_DECL  Data_Obj *dpto, Data_Obj *dpfr, Data_Obj *tbl
 		/* BUG this will not catch subobjects that share data, so be careful! */
 	}
 	if( OBJ_PREC(dpto) != PREC_BIT ){
-		sprintf(ERROR_STRING,"target image %s (%s) must have %s precision",
+		snprintf(ERROR_STRING,LLEN,"target image %s (%s) must have %s precision",
 			OBJ_NAME(dpto),OBJ_PREC_NAME(dpto),NAME_FOR_PREC_CODE(PREC_BIT));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( OBJ_PREC(dpfr) != PREC_BIT ){
-		sprintf(ERROR_STRING,"source image %s (%s) must have %s precision",
+		snprintf(ERROR_STRING,LLEN,"source image %s (%s) must have %s precision",
 			OBJ_NAME(dpfr),OBJ_PREC_NAME(dpfr),NAME_FOR_PREC_CODE(PREC_BIT));
 		WARN(ERROR_STRING);
 		return;
 	}
 	if( !IS_CONTIGUOUS(dpto) || !IS_CONTIGUOUS(dpfr) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s and %s must be contiguous for morphological filter",
 			OBJ_NAME(dpto),OBJ_NAME(dpfr));
 		WARN(ERROR_STRING);

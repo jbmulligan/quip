@@ -76,5 +76,9 @@ int _async_play_sound(QSP_ARG_DECL  Data_Obj *dp)
     return 0;
 }
 
+#else
+
+foobar
+
 #endif // HAVE_APPLE_CORE_AUDIO
 

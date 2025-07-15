@@ -57,7 +57,7 @@ static COMMAND_FUNC( set_params )
 		unlock_all_tmp_objs();
 	}
 /*
-sprintf(error_string,"%d parameters read",n);
+snprintf(error_string,LLEN,"%d parameters read",n);
 advise(error_string);
 */
 }
@@ -79,7 +79,7 @@ static COMMAND_FUNC( select_package )
 {
 	Opt_Pkg *pkp;
 
-	insure_opt_pkg(SINGLE_QSP_ARG);
+	ensure_opt_pkg(SINGLE_QSP_ARG);
 
 	pkp=pick_opt_pkg("");
 	if( pkp!=NULL )
@@ -89,7 +89,7 @@ static COMMAND_FUNC( select_package )
 
 static COMMAND_FUNC( run_opt )
 {
-	insure_opt_pkg(SINGLE_QSP_ARG);
+	ensure_opt_pkg(SINGLE_QSP_ARG);
 
 	/*lookahead(); */
 	(*curr_opt_pkg->pkg_scr_func)(SINGLE_QSP_ARG);
@@ -97,7 +97,7 @@ static COMMAND_FUNC( run_opt )
 
 static COMMAND_FUNC( halt_opt )
 {
-	insure_opt_pkg(SINGLE_QSP_ARG);
+	ensure_opt_pkg(SINGLE_QSP_ARG);
 
 	(*curr_opt_pkg->pkg_halt_func)();
 }

@@ -68,13 +68,13 @@ static int port_listen(QSP_ARG_DECL  Port *mpp)
 
 	if( ! IS_SERVER(mpp) ){
 		warn(ERROR_STRING);
-		sprintf(ERROR_STRING,"port_listen:  %s is not a server port",mpp->mp_name);
+		snprintf(ERROR_STRING,LLEN,"port_listen:  %s is not a server port",mpp->mp_name);
 		return(-1);
 	}
 
 	/* first close old connection */
 	if( mpp->mp_sock != (-1) ){
-		sprintf(ERROR_STRING,"closing old connection on port %s (sock = 0x%x)",
+		snprintf(ERROR_STRING,LLEN,"closing old connection on port %s (sock = 0x%x)",
 			mpp->mp_name,mpp->mp_sock);
 		advise(ERROR_STRING);
 #ifdef BUILD_FOR_WINDOWS
@@ -124,7 +124,7 @@ int open_server_port(QSP_ARG_DECL  const char *name,int  port_no)
 	mpp=new_port(name);
 	if( mpp==NULL ){
 		if( verbose ){
-			sprintf(ERROR_STRING,"open_server_port %s %d failed to create port struct",
+			snprintf(ERROR_STRING,LLEN,"open_server_port %s %d failed to create port struct",
 				name,port_no);
 			warn(ERROR_STRING);
 		}
@@ -257,7 +257,7 @@ int get_connection(QSP_ARG_DECL  Port *mpp)
 
 	/* hang until someone requests a hookup */
 	if( verbose ){
-sprintf(ERROR_STRING,"\nWaiting for a new connection request on port %d...\n",
+snprintf(ERROR_STRING,LLEN,"\nWaiting for a new connection request on port %d...\n",
 mpp->mp_portnum);
 advise(ERROR_STRING);
 	}

@@ -77,7 +77,7 @@ static void ports_cleanup(void)
 static void set_port_text_var(QSP_ARG_DECL  Port *mpp, const char *s )
 {
 	if( mpp->mp_text_var_name != NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"set_port_text_var %s:  previous variable name '%s' never used!?",
 			mpp->mp_name, mpp->mp_text_var_name);
 		warn(ERROR_STRING);
@@ -102,7 +102,7 @@ COMMAND_FUNC( do_set_text_var )
 static void set_port_output_file(QSP_ARG_DECL  Port *mpp, const char *s )
 {
 	if( mpp->mp_output_filename != NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"set_port_output_file %s:  previous output filename '%s' never used!?",
 			mpp->mp_name, mpp->mp_output_filename);
 		warn(ERROR_STRING);
@@ -139,7 +139,7 @@ COMMAND_FUNC( do_port_xmit )
 	vp=(*(pdtp->data_func))(QSP_ARG  pdtp->pdt_prompt);
 
 	if( ! IS_CONNECTED(mpp) ){
-		sprintf(ERROR_STRING,"do_port_xmit:  Port %s is not connected",
+		snprintf(ERROR_STRING,LLEN,"do_port_xmit:  Port %s is not connected",
 			mpp->mp_name);
 		warn(ERROR_STRING);
 		goto oops;
@@ -158,7 +158,7 @@ oops:
 	// If it is a server port, then it will listen for a new connection,
 	// otherwise it will close itself...
 	if( NEEDS_RESET(mpp) ){
-		sprintf(ERROR_STRING,"Resetting port %s after write error...",
+		snprintf(ERROR_STRING,LLEN,"Resetting port %s after write error...",
 			mpp->mp_name);
 		advise(ERROR_STRING);
 		reset_port(QSP_ARG  mpp);
@@ -180,7 +180,7 @@ int _define_port_data_type(QSP_ARG_DECL  int code,const char *my_typename,const 
 #ifdef CAUTIOUS
 	// If this happens, it's a programming error...
 	if( code < 0 || code >= MAX_PORT_CODES ){
-		sprintf(ERROR_STRING,"CAUTIOUS:  define_port_data_type:  invalid port data type code (%d), should be in the range 0-%d",
+		snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  define_port_data_type:  invalid port data type code (%d), should be in the range 0-%d",
 			code,MAX_PORT_CODES-1);
 		warn(ERROR_STRING);
 		return(-1);
@@ -190,7 +190,7 @@ int _define_port_data_type(QSP_ARG_DECL  int code,const char *my_typename,const 
 #ifdef CAUTIOUS
 	pdtp = pdt_of(my_typename);
 	if( pdtp != NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"CAUTIOUS:  define_port_data_type:  %s already defined!?",
 			PORT_DATATYPE_NAME(pdtp));
 		warn(ERROR_STRING);
@@ -201,7 +201,7 @@ int _define_port_data_type(QSP_ARG_DECL  int code,const char *my_typename,const 
 	pdtp = new_pdt(my_typename);
 #ifdef CAUTIOUS
 	if( pdtp == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "CAUTIOUS:  define_port_data_type:  couldn't create new data type for %s!?",
 			my_typename);
 		warn(ERROR_STRING);
@@ -248,7 +248,7 @@ int reset_port(QSP_ARG_DECL  Port *mpp)
 
 		mpp->mp_flags &= ~(PORT_AUTHENTICATED|PORT_CONNECTED);
 
-sprintf(ERROR_STRING,"reset_port:  listening for a new connection on port %s",
+snprintf(ERROR_STRING,LLEN,"reset_port:  listening for a new connection on port %s",
 mpp->mp_name);
 advise(ERROR_STRING);
 
@@ -311,7 +311,7 @@ top:
 	}
 
 	if( code != PORT_MAGIC_NUMBER ){
-		sprintf(MSG_STR,"Bad magic number (0x%x), resetting port",
+		snprintf(MSG_STR,LLEN,"Bad magic number (0x%x), resetting port",
 			code);
 		log_message(MSG_STR);
 		if( reset_port(QSP_ARG  mpp) ) goto top;
@@ -335,7 +335,7 @@ top:
 
 	if( pdtp == NULL ) {
 		// shouldn't happen
-		sprintf(MSG_STR,
+		snprintf(MSG_STR,LLEN,
 			"Unrecognized packet code (0x%x), resetting port",code);
 		log_message(MSG_STR);
 		if( reset_port(QSP_ARG  mpp) ) goto top;
@@ -385,7 +385,7 @@ static void save_data_to_file(QSP_ARG_DECL  const char *filename, const char *bu
 	if( !fp ) return;
 
 	if( fwrite(buf,1,size,fp) != size ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"save_data_to_file:  fwrite error!?");
 		warn(ERROR_STRING);
 	}
@@ -420,7 +420,7 @@ COMMAND_FUNC( do_port_recv )
 	if( mpp==NULL || pdtp==NULL ) return;
 
 	if( ! IS_CONNECTED(mpp) ){
-		sprintf(ERROR_STRING,"do_port_recv:  Port %s is not connected",
+		snprintf(ERROR_STRING,LLEN,"do_port_recv:  Port %s is not connected",
 			mpp->mp_name);
 		warn(ERROR_STRING);
 		return;
@@ -440,7 +440,7 @@ COMMAND_FUNC( do_port_recv )
 			return;
 		}
 		if( pkp->pk_pdt != pdtp ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"Received %s packet after request for %s!?",
 				PORT_DATATYPE_NAME(pkp->pk_pdt),PORT_DATATYPE_NAME(pdtp));
 			warn(ERROR_STRING);
@@ -466,7 +466,7 @@ warn("do_port_recv text:  No variable name specified!?\n   --> Use text_variable
 		// data objects are added to the local database
 		// as they are received, nothing to do.
 	} else {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "do_port_recv:  no action implemented for %s packet!?",
 				PORT_DATATYPE_NAME(pkp->pk_pdt));
 		warn(ERROR_STRING);

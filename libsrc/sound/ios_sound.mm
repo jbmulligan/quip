@@ -137,7 +137,7 @@ static void _copy_sound_data(QSP_ARG_DECL  void *dest, Sound_Data *sdp, int fram
 		case PREC_BY:  COPY_SOUND(char,0) break;
 		case PREC_IN:  COPY_SOUND(short,0) break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"copy_sound_data:  unsupported sound precision %s!?",
 					PREC_NAME(sdp->src_prec_p));
 			warn(ERROR_STRING);
@@ -397,7 +397,7 @@ void set_samp_freq(QSP_ARG_DECL  unsigned int req_rate)
 {
 	CHECK_AUDIO(AUDIO_PLAY);
 
-	// BUG?  should we insure validity?
+	// BUG?  should we ensure validity?
 	the_sample_rate = req_rate;
 }
 
@@ -418,7 +418,7 @@ fprintf(stderr,"init_ios_audio_session:  already initialized!?\n");
 	[my_session setCategory:AVAudioSessionCategoryPlayAndRecord error:&error];
 
 	if( error ){
-		sprintf(ERROR_STRING,"Error setting session category");
+		snprintf(ERROR_STRING,LLEN,"Error setting session category");
 		warn(ERROR_STRING);
 		return -1;
 	}
@@ -427,13 +427,13 @@ fprintf(stderr,"init_ios_audio_session:  already initialized!?\n");
 	NSTimeInterval bufferDuration = .005;
 	[my_session setPreferredIOBufferDuration:bufferDuration error:&error];
 	if( error ){
-		sprintf(ERROR_STRING,"Error setting buffer duration");
+		snprintf(ERROR_STRING,LLEN,"Error setting buffer duration");
 		warn(ERROR_STRING);
 		return -1;
 	}
 	[my_session setPreferredSampleRate:44100 error:&error];
 	if( error ){
-		sprintf(ERROR_STRING,"Error setting sample rate");
+		snprintf(ERROR_STRING,LLEN,"Error setting sample rate");
 		warn(ERROR_STRING);
 		return -1;
 	}
@@ -460,7 +460,7 @@ fprintf(stderr,"init_ios_audio_session:  already initialized!?\n");
 	// activate the audio session
 	[[AVAudioSession sharedInstance] setActive:YES error:&error];
 	if( error ){
-		sprintf(ERROR_STRING,"Error activating audio session");
+		snprintf(ERROR_STRING,LLEN,"Error activating audio session");
 		warn(ERROR_STRING);
 		return -1;
 	}
@@ -784,7 +784,7 @@ void audio_init(QSP_ARG_DECL  int mode)
 
 #ifdef DEBUG
 	if( debug & sound_debug ){
-		sprintf(ERROR_STRING,"audio_init:  mode = %d",mode);
+		snprintf(ERROR_STRING,LLEN,"audio_init:  mode = %d",mode);
 		advise(ERROR_STRING);
 	}
 #endif /* DEBUG */
@@ -876,19 +876,19 @@ void pause_sound(SINGLE_QSP_ARG_DECL)
 static int good_for_sound(QSP_ARG_DECL  Data_Obj *dp)
 {
 	if( OBJ_PREC(dp) != EXPECTED_SOUND_PREC ){
-		sprintf(ERROR_STRING,"good_for_sound:  object %s (%s) should have %s precision!?",
+		snprintf(ERROR_STRING,LLEN,"good_for_sound:  object %s (%s) should have %s precision!?",
 			OBJ_NAME(dp),PREC_NAME(OBJ_PREC_PTR(dp)),NAME_FOR_PREC_CODE(EXPECTED_SOUND_PREC) );
 		warn(ERROR_STRING);
 		return 0;
 	}
 	if( OBJ_COMPS(dp) != 1 ){
-		sprintf(ERROR_STRING,"good_for_sound:  object %s should have 1 components!?",
+		snprintf(ERROR_STRING,LLEN,"good_for_sound:  object %s should have 1 components!?",
 			OBJ_NAME(dp) );
 		warn(ERROR_STRING);
 		return 0;
 	}
 	if( !IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,"good_for_sound:  object %s should be contiguous!?",
+		snprintf(ERROR_STRING,LLEN,"good_for_sound:  object %s should be contiguous!?",
 			OBJ_NAME(dp) );
 		warn(ERROR_STRING);
 		return 0;

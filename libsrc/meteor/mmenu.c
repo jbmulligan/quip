@@ -206,7 +206,7 @@ static COMMAND_FUNC( do_meteor_get_input )
 			return;
 	}
 
-	sprintf(msg_str,"Meteor input is %s",input_names[i]);
+	snprintf(msg_str,LLEN,"Meteor input is %s",input_names[i]);
 	prt_msg(msg_str);
 }
 
@@ -274,7 +274,7 @@ static COMMAND_FUNC( do_meteor_get_iformat )
 	}
 	if( i < 0 ) return;
 
-	sprintf(ERROR_STRING,"Format is %s",fmt_list[i]);
+	snprintf(ERROR_STRING,LLEN,"Format is %s",fmt_list[i]);
 	advise(ERROR_STRING);
 }
 
@@ -310,10 +310,10 @@ static COMMAND_FUNC( do_getc )
 	while( c!=EOF && c!='q' && c!=4 ){
 		c=fgetc(fp);
 		if( c!=EOF ){
-			sprintf(ERROR_STRING,"char is 0x%x",c);
+			snprintf(ERROR_STRING,LLEN,"char is 0x%x",c);
 			advise(ERROR_STRING);
 			c &= 0xff;
-			sprintf(ERROR_STRING,"char is 0x%x",c);
+			snprintf(ERROR_STRING,LLEN,"char is 0x%x",c);
 			advise(ERROR_STRING);
 			kill_sig(SINGLE_QSP_ARG);
 			n_eof=0;
@@ -322,7 +322,7 @@ static COMMAND_FUNC( do_getc )
 	}
 
 	fclose(fp);
-	sprintf(ERROR_STRING,"%d EOF's detected\n",n_eof);
+	snprintf(ERROR_STRING,LLEN,"%d EOF's detected\n",n_eof);
 	advise(ERROR_STRING);
 }
 
@@ -510,7 +510,7 @@ COMMAND_FUNC( do_meteor_menu )
 
 	if( ! inited ){
 advise("setting up default rawvol");
-		if( insure_default_rv(SINGLE_QSP_ARG) >= 0 ){
+		if( ensure_default_rv(SINGLE_QSP_ARG) >= 0 ){
 			/* create movie structs for any existing rv files */
 advise("initializing rawvol movies");
 			init_rv_movies();

@@ -40,7 +40,7 @@ dnl	SET_INDEX(this_index)
 dnl	What if we have to have blocks in 2 or more dims?
 dnl	The current approach is that we always ask for a 1-D array
 dnl	of kernel threads, and let the kernel logic sort out x and y.
-dnl	BUT we need to insure that we don't have a problem with CUDA
+dnl	BUT we need to ensure that we don't have a problem with CUDA
 dnl	or OpenCL regarding the maximum thread array size???
 
 define(`SET_INDEX',`							\

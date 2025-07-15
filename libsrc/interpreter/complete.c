@@ -418,7 +418,7 @@ static int fetch_termcap_entry(SINGLE_QSP_ARG_DECL)
 		if( stat==(-1) ){
 			warn("init_tty_chars:  can't open termcap file");
 		} else if( stat==0 ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 			"no termcap entry for terminal \"%s\"",s);
 			warn(ERROR_STRING);
 		} else {
@@ -435,7 +435,7 @@ static void init_tty_chars(SINGLE_QSP_ARG_DECL)
 {
 #ifdef HAVE_TERMCAP
 	char *tptr;
-	extern char *tgetstr();
+	/*extern char *tgetstr();*/
 	static char tbuf[32];
 
 	if( fetch_termcap_entry(SINGLE_QSP_ARG) < 0 )
@@ -464,7 +464,7 @@ static void init_tty_chars(SINGLE_QSP_ARG_DECL)
 #endif /* ! HAVE_TERMCAP */
 }
 
-static void insure_tty_chars(SINGLE_QSP_ARG_DECL)
+static void ensure_tty_chars(SINGLE_QSP_ARG_DECL)
 {
 	static int have_tty_chars=0;
 
@@ -510,9 +510,9 @@ static char edit_string[LLEN];
 
 #define IS_PICKING_ITEM		QS_PICKING_ITEM_ITP(THIS_QSP) != NULL
 
-#define insure_special_chars(fp) _insure_special_chars(QSP_ARG  fp)
+#define ensure_special_chars(fp) _ensure_special_chars(QSP_ARG  fp)
 
-static void _insure_special_chars(QSP_ARG_DECL  FILE *fp)
+static void _ensure_special_chars(QSP_ARG_DECL  FILE *fp)
 {
 	if( ers_char == 0 ){
 		ers_char = get_erase_chr(fileno(fp));
@@ -644,11 +644,11 @@ static int handle_escape_sequence(QSP_ARG_DECL  Completion_Data *cdp)
 		else if( c == 'D' )
 			c = LF_ARROW;
 		else {
-	sprintf(ERROR_STRING,"Unexpected arrow key char seen:  0%o !?",c);
+	snprintf(ERROR_STRING,LLEN,"Unexpected arrow key char seen:  0%o !?",c);
 	warn(ERROR_STRING);
 		}
 	} else {
-		sprintf(ERROR_STRING,"Unexpected char 0%o seenm after escape",c);
+		snprintf(ERROR_STRING,LLEN,"Unexpected char 0%o seenm after escape",c);
 		warn(ERROR_STRING);
 		return -1;
 	}
@@ -875,7 +875,7 @@ if( comp_debug <= 0 ) comp_debug=add_debug_module("completion");
 	assert( tty_in != NULL );
 	assert( tty_out != NULL );
 
-	insure_tty_chars(SINGLE_QSP_ARG);
+	ensure_tty_chars(SINGLE_QSP_ARG);
 
 	init_completion_data(&_this_completion,prompt,tty_out,tty_in);
 
@@ -887,7 +887,7 @@ if( comp_debug <= 0 ) comp_debug=add_debug_module("completion");
 	ttycbrk(fileno(tty_in));
 	echooff(fileno(tty_in));
 
-	insure_special_chars(tty_in);
+	ensure_special_chars(tty_in);
 
 	while(1){
 		if( strlen(_this_completion.chars_typed) > 0 ){	/* if something typed */

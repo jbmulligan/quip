@@ -319,7 +319,7 @@ typedef enum {
 } pseudo_prec;
 
 #define N_PSEUDOPREC_BITS	4	// Must be large enough for N_PSEUDO_PRECS
-					// BUG should have a software check to insure.
+					// BUG should have a software check to ensure.
 
 #define FIRST_PSEUDO_PREC	((pseudo_prec)0)
 

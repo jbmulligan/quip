@@ -86,9 +86,9 @@ static COMMAND_FUNC( do_pipe_info )
 	}
 #endif /* CAUTIOUS */
 
-	sprintf(msg_str,"Pipe:\t\t\"%s\", %s",pp->p_name,rw_choices[i]);
+	snprintf(msg_str,LLEN,"Pipe:\t\t\"%s\", %s",pp->p_name,rw_choices[i]);
 	prt_msg(msg_str);
-	sprintf(msg_str,"Command:\t\t\"%s\"",pp->p_cmd);
+	snprintf(msg_str,LLEN,"Command:\t\t\"%s\"",pp->p_cmd);
 	prt_msg(msg_str);
 }
 
@@ -114,13 +114,13 @@ static COMMAND_FUNC( do_pipe_redir )
 	if( pp == NULL ) return;
 
 	if( (pp->p_flgs & READ_PIPE) == 0 ) {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"do_pipe_redir:  pipe %s is not readable!?",pp->p_name);
 		warn(ERROR_STRING);
 		return;
 	}
 
-	sprintf(msg_str,"Pipe \"%s\"",pp->p_cmd);
+	snprintf(msg_str,LLEN,"Pipe \"%s\"",pp->p_cmd);
 	redir_from_pipe(pp, msg_str);
 }
 

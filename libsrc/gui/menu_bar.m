@@ -5,6 +5,8 @@
 #include "menu_bar.h"
 #include "gui_cmds.h"
 
+#import <AppKit/Appkit.h>
+
 //IOS_ITEM_INTERFACE_DECLARATIONS(Menu_Bar_Menu,menu_bar_menu)
 //IOS_ITEM_INTERFACE_DECLARATIONS(Menu_Bar_Item,menu_bar_item)
 

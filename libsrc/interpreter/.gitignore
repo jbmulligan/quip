@@ -9,4 +9,5 @@ Makefile
 Makefile.in
 memcheck
 t.scr
+junk
 

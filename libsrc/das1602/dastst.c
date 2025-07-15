@@ -70,7 +70,7 @@ static int nvram_fd=(-1);
 #define CONFIRM_DIO(channel)					\
 								\
 	if( dio_fd[ channel ] < 0 ){				\
-		sprintf(ERROR_STRING,				\
+		snprintf(ERROR_STRING,LLEN,			\
 			"dio channel %d not open",channel);	\
 		warn(ERROR_STRING);				\
 		return;						\
@@ -134,12 +134,12 @@ static COMMAND_FUNC( get_reg )
 		warn("error getting das1602 register");
 	}
 
-	sprintf(ERROR_STRING,"Reg %d %d:  0x%x (0x%x)",
+	snprintf(ERROR_STRING,LLEN,"Reg %d %d:  0x%x (0x%x)",
 		reg_setting.reg_blocki,reg_setting.reg_offset,
 		reg_setting.reg_data.u_s,reg_setting.reg_data.u_c);
 	advise(ERROR_STRING);
 
-	sprintf(ERROR_STRING,"0x%x",reg_setting.reg_data.u_s);
+	snprintf(ERROR_STRING,LLEN,"0x%x",reg_setting.reg_data.u_s);
 	assign_var("reg_data",ERROR_STRING);
 #else /* ! HAVE_DAS1602 */
 	NO_AIO_ALERT
@@ -178,11 +178,11 @@ static int get_adc_channel(QSP_ARG_DECL  const char *pmpt,
 {
 	int chno;
 
-	sprintf(msg_str,"%s (%d-%d)",pmpt,chmin,chmax);
+	snprintf(msg_str,LLEN,"%s (%d-%d)",pmpt,chmin,chmax);
 	chno = HOW_MANY(msg_str);
 
 	if( chno < chmin || chno > chmax ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"channel number (%d) must be between %d and %d",chno,chmin,chmax);
 		warn(ERROR_STRING);
 		return(-1);
@@ -197,7 +197,7 @@ static int get_dac_channel(SINGLE_QSP_ARG_DECL)
 	chno = HOW_MANY("channel number (0-1, or 2 for both)");
 
 	if( chno < 0 || chno > 2 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"channel number (%d) must be between 0 and 2",chno);
 		warn(ERROR_STRING);
 		return(-1);
@@ -230,14 +230,14 @@ static COMMAND_FUNC( open_adc )
 	}
 
 	if( last_adc_channel == first_adc_channel )
-		sprintf(fn,"/dev/adc%d",first_adc_channel);
+		snprintf(fn,16,"/dev/adc%d",first_adc_channel);
 	else
-		sprintf(fn,"/dev/adc%d%d",first_adc_channel,last_adc_channel);
+		snprintf(fn,16,"/dev/adc%d%d",first_adc_channel,last_adc_channel);
 
 	adc_fd = open(fn,O_RDONLY);
 	if( adc_fd < 0 ){
 		perror("open");
-		sprintf(ERROR_STRING,"Error opening adc file %s",fn);
+		snprintf(ERROR_STRING,LLEN,"Error opening adc file %s",fn);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -262,10 +262,10 @@ static COMMAND_FUNC( close_adc )
 													\
 		if( (nr=read(adc_fd,(addr),(n))) != (n) ){						\
 			if( nr < 0 ){									\
-				sprintf(ERROR_STRING,"read (errno=%d)",errno);				\
+				snprintf(ERROR_STRING,LLEN,"read (errno=%d)",errno);				\
 				perror(ERROR_STRING);							\
 			} else {									\
-				sprintf(ERROR_STRING,							\
+				snprintf(ERROR_STRING,LLEN,							\
 		"%d bytes requested, %d actually read,nw=%d", n,nr,nw);				\
 				advise(ERROR_STRING);							\
 			}										\
@@ -289,7 +289,7 @@ static COMMAND_FUNC( read_adc )
 
 #ifdef HAVE_DAS1602
 	if( ! VALID_ADC_PREC(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Object %s has precision %s, should be %s or %s for ADC data",
 			OBJ_NAME(dp),PREC_NAME(OBJ_MACH_PREC_PTR(dp)),
 			PREC_IN_NAME,PREC_UIN_NAME);
@@ -297,7 +297,7 @@ static COMMAND_FUNC( read_adc )
 		return;
 	}
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"read_adc:  object %s must be contiguous",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
@@ -313,17 +313,17 @@ static COMMAND_FUNC( read_adc )
 			GET_ADC_DATA(&tmp_data[0],nb)
 			nw++;
 if( verbose ){
-sprintf(ERROR_STRING,"polling %d for tmp_data[%d] = 0x%x to go below 0x%x",
+snprintf(ERROR_STRING,LLEN,"polling %d for tmp_data[%d] = 0x%x to go below 0x%x",
 nw,adc_trigger_channel,tmp_data[adc_trigger_channel-first_adc_channel],
 adc_trig_level);
 advise(ERROR_STRING);
 }
 		} while( tmp_data[adc_trigger_channel-first_adc_channel] > adc_trig_level );
 
-sprintf(ERROR_STRING,"after %d polls, signal 0x%x below threshold 0x%x",
+snprintf(ERROR_STRING,LLEN,"after %d polls, signal 0x%x below threshold 0x%x",
 nw, tmp_data[adc_trigger_channel-first_adc_channel], adc_trig_level );
 advise(ERROR_STRING);
-sprintf(ERROR_STRING,"tmp_data = 0x%x   0x%x   0x%x   0x%x   0x%x   0x%x",
+snprintf(ERROR_STRING,LLEN,"tmp_data = 0x%x   0x%x   0x%x   0x%x   0x%x   0x%x",
 tmp_data[0],tmp_data[1],tmp_data[2],tmp_data[3],tmp_data[4],tmp_data[5]);
 advise(ERROR_STRING);
 
@@ -333,19 +333,19 @@ advise(ERROR_STRING);
 			GET_ADC_DATA(&tmp_data[0],nb)
 			nw++;
 if( verbose ){
-sprintf(ERROR_STRING,"polling %d for tmp_data[%d] = 0x%x to go above 0x%x",
+snprintf(ERROR_STRING,LLEN,"polling %d for tmp_data[%d] = 0x%x to go above 0x%x",
 nw,adc_trigger_channel,tmp_data[adc_trigger_channel-first_adc_channel],
 adc_trig_level);
 advise(ERROR_STRING);
 }
 if( tmp_data[ adc_trigger_channel-first_adc_channel] == 0xffff ){
-sprintf(ERROR_STRING,"tmp_data = 0x%x   0x%x   0x%x   0x%x   0x%x   0x%x",
+snprintf(ERROR_STRING,LLEN,"tmp_data = 0x%x   0x%x   0x%x   0x%x   0x%x   0x%x",
 tmp_data[0],tmp_data[1],tmp_data[2],tmp_data[3],tmp_data[4],tmp_data[5]);
 advise(ERROR_STRING);
 }
 		} while( tmp_data[adc_trigger_channel-first_adc_channel] < adc_trig_level );
 
-sprintf(ERROR_STRING,"after %d polls, signal 0x%x above threshold 0x%x",
+snprintf(ERROR_STRING,LLEN,"after %d polls, signal 0x%x above threshold 0x%x",
 nw, tmp_data[adc_trigger_channel-first_adc_channel], adc_trig_level );
 advise(ERROR_STRING);
 
@@ -533,7 +533,7 @@ static COMMAND_FUNC( pacer_freq )
 	f=SetPacerFreq(f,&dividers[0],&dividers[1]);
 
 	if( verbose ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"SetPacerFreq: ctr1 %d   ctr2 %d   freq %g", dividers[0], dividers[1], f);
 		advise(msg_str);
 	}
@@ -567,7 +567,7 @@ static COMMAND_FUNC( set_trig_chan )
 	}
 #ifdef HAVE_DAS1602
 	if( n < first_adc_channel || n > last_adc_channel ){
-		sprintf(ERROR_STRING,"requested trigger channel (%d) is not in range of active adc channels (%d-%d)",
+		snprintf(ERROR_STRING,LLEN,"requested trigger channel (%d) is not in range of active adc channels (%d-%d)",
 			n,first_adc_channel,last_adc_channel);
 		warn(ERROR_STRING);
 		return;
@@ -590,7 +590,7 @@ static COMMAND_FUNC( do_ld_dac08 )
 	value = HOW_MANY("dac08 value");
 
 	if( value < 0 || value > MAX_BYTE_VALUE ){
-		sprintf(ERROR_STRING,"ld_dac08:  value %d must be in the range 0-255",value);
+		snprintf(ERROR_STRING,LLEN,"ld_dac08:  value %d must be in the range 0-255",value);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -615,13 +615,13 @@ static COMMAND_FUNC( do_ld_8402 )
 	value = HOW_MANY("8402 value");
 
 	if( addr < 0 || addr > 1 ) {
-		sprintf(ERROR_STRING,"ld_8402:  address %d must be 0 or 1",addr);
+		snprintf(ERROR_STRING,LLEN,"ld_8402:  address %d must be 0 or 1",addr);
 		warn(ERROR_STRING);
 		return;
 	}
 
 	if( value < 0 || value > MAX_BYTE_VALUE ){
-		sprintf(ERROR_STRING,"ld_8402:  value %d must be in the range 0-255",value);
+		snprintf(ERROR_STRING,LLEN,"ld_8402:  value %d must be in the range 0-255",value);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -758,13 +758,13 @@ static COMMAND_FUNC( open_dac )
 	if( dac_chno == 2 ){
 		strcpy(fn,"/dev/dac01");
 	} else {
-		sprintf(fn,"/dev/dac%d",dac_chno);
+		snprintf(fn,16,"/dev/dac%d",dac_chno);
 	}
 
 	dac_fd = open(fn,O_WRONLY);
 	if( dac_fd < 0 ){
 		perror("open");
-		sprintf(ERROR_STRING,"Error opening dac file %s",fn);
+		snprintf(ERROR_STRING,LLEN,"Error opening dac file %s",fn);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -799,7 +799,7 @@ static COMMAND_FUNC( write_dac )
 
 	if( dp == NULL ) return;
 	if( ! VALID_ADC_PREC(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"Object %s has precision %s, should be %s or %s",
 			OBJ_NAME(dp),PREC_NAME(OBJ_MACH_PREC_PTR(dp)),
 			PREC_IN_NAME,PREC_UIN_NAME);
@@ -809,7 +809,7 @@ static COMMAND_FUNC( write_dac )
 
 	nwant = sizeof(short)*OBJ_N_MACH_ELTS(dp);
 	if( (n=write(dac_fd,OBJ_DATA_PTR(dp),nwant)) != nwant ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Error writing object %s (%d bytes requested, %d actual)",
 			OBJ_NAME(dp),nwant,n);
 		warn(ERROR_STRING);
@@ -878,7 +878,7 @@ static COMMAND_FUNC( dac_pacer_freq )
 	f=SetPacerFreq(f,&dividers[0],&dividers[1]);
 
 	if( verbose ){
-		sprintf(msg_str,
+		snprintf(msg_str,LLEN,
 	"SetPacerFreq: ctr1 %d   ctr2 %d   freq %g", dividers[0], dividers[1], f);
 		advise(msg_str);
 	}
@@ -957,13 +957,13 @@ static COMMAND_FUNC( do_ld_8800 )
 	value = HOW_MANY("8800 value");
 
 	if( addr < 0 || addr > 7 ) {
-		sprintf(ERROR_STRING,"ld_8800:  address %d must between 0 and 7",addr);
+		snprintf(ERROR_STRING,LLEN,"ld_8800:  address %d must between 0 and 7",addr);
 		warn(ERROR_STRING);
 		return;
 	}
 
 	if( value < 0 || value > MAX_BYTE_VALUE ){
-		sprintf(ERROR_STRING,"ld_8800:  value %d must be in the range 0-255",value);
+		snprintf(ERROR_STRING,LLEN,"ld_8800:  value %d must be in the range 0-255",value);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -1014,7 +1014,7 @@ static int get_dio_channel(SINGLE_QSP_ARG_DECL)
 
 	i = HOW_MANY("dio port index (0-3)");
 	if( i < 0 || i > 3 ) {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Invalid dio port index %d, must be 0-3",i);
 		warn(ERROR_STRING);
 		return(-1);
@@ -1040,7 +1040,7 @@ static COMMAND_FUNC( open_dio )
 
 #ifdef HAVE_DAS1602
 
-	sprintf(dio_name,"/dev/dio%d",i);
+	snprintf(dio_name,32,"/dev/dio%d",i);
 
 	if( mode == 0 ){
 		dio_fd[i] = open(dio_name,O_RDONLY);
@@ -1050,7 +1050,7 @@ static COMMAND_FUNC( open_dio )
 
 	if( dio_fd[i] < 0 ){
 		perror("open");
-		sprintf(ERROR_STRING,"error opening dio port %d in %s mode",
+		snprintf(ERROR_STRING,LLEN,"error opening dio port %d in %s mode",
 			i,dio_mode_strs[mode]);
 		warn(ERROR_STRING);
 	}
@@ -1069,7 +1069,7 @@ static COMMAND_FUNC( close_dio )
 	CONFIRM_DIO(i)
 	if( close(dio_fd[i]) < 0 ) {
 		perror("close");
-		sprintf(ERROR_STRING,"error closing dio port %d",i);
+		snprintf(ERROR_STRING,LLEN,"error closing dio port %d",i);
 		warn(ERROR_STRING);
 	}
 	dio_fd[i]=(-1);
@@ -1098,7 +1098,7 @@ static COMMAND_FUNC( write_dio )
 
 
 	if( ! VALID_DIO_PREC(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"Object %s has %s precision, should be %s or %s for dio",
 			OBJ_NAME(dp),PREC_NAME(OBJ_MACH_PREC_PTR(dp)),
 			PREC_BY_NAME,PREC_UBY_NAME);
@@ -1107,7 +1107,7 @@ static COMMAND_FUNC( write_dio )
 	}
 
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,"Object %s must be contiguous for dio",
+		snprintf(ERROR_STRING,LLEN,"Object %s must be contiguous for dio",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
@@ -1115,7 +1115,7 @@ static COMMAND_FUNC( write_dio )
 
 	if( (n=write(dio_fd[i],OBJ_DATA_PTR(dp),OBJ_N_MACH_ELTS(dp))) != (int)OBJ_N_MACH_ELTS(dp) ){
 		if( n < 0 ) perror("write");
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"dio error writing object %s, %d bytes requested, %d actual",
 			OBJ_NAME(dp),OBJ_N_MACH_ELTS(dp),n);
 		warn(ERROR_STRING);
@@ -1145,7 +1145,7 @@ static COMMAND_FUNC( read_dio )
 
 
 	if( ! VALID_DIO_PREC(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"Object %s has %s precision, should be %s or %s for dio",
 			OBJ_NAME(dp),PREC_NAME(OBJ_MACH_PREC_PTR(dp)),
 			PREC_BY_NAME,PREC_UBY_NAME);
@@ -1154,7 +1154,7 @@ static COMMAND_FUNC( read_dio )
 	}
 
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,"Object %s must be contiguous for dio",
+		snprintf(ERROR_STRING,LLEN,"Object %s must be contiguous for dio",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
@@ -1162,7 +1162,7 @@ static COMMAND_FUNC( read_dio )
 
 	if( (n=read(dio_fd[i],OBJ_DATA_PTR(dp),OBJ_N_MACH_ELTS(dp))) != (int)OBJ_N_MACH_ELTS(dp) ){
 		if( n < 0 ) perror("read");
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"dio error reading object %s, %d bytes requested, %d actual",
 			OBJ_NAME(dp),OBJ_N_MACH_ELTS(dp),n);
 		warn(ERROR_STRING);
@@ -1245,7 +1245,7 @@ static COMMAND_FUNC( read_nvram )
 	if( nvram_fd < 0 ) error1("unable to open nvram");
 
 	if( ! VALID_NVRAM_PREC(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"Object %s has %s precision, should be %s or %s for nvram",
 			OBJ_NAME(dp),PREC_NAME(OBJ_MACH_PREC_PTR(dp)),
 			PREC_BY_NAME,PREC_UBY_NAME);
@@ -1254,7 +1254,7 @@ static COMMAND_FUNC( read_nvram )
 	}
 
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,"Object %s must be contiguous for nvram",
+		snprintf(ERROR_STRING,LLEN,"Object %s must be contiguous for nvram",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
@@ -1262,7 +1262,7 @@ static COMMAND_FUNC( read_nvram )
 
 	if( (n=read(nvram_fd,OBJ_DATA_PTR(dp),OBJ_N_MACH_ELTS(dp))) != (int)OBJ_N_MACH_ELTS(dp) ){
 		if( n < 0 ) perror("read nvram");
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"nvram error reading object %s, %d bytes requested, %d actual",
 			OBJ_NAME(dp),OBJ_N_MACH_ELTS(dp),n);
 		warn(ERROR_STRING);
@@ -1288,7 +1288,7 @@ static COMMAND_FUNC( write_nvram )		/* sq */
 	if( nvram_fd < 0 ) error1("unable to open nvram");
 
 	if( ! VALID_NVRAM_PREC(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"Object %s has %s precision, should be %s or %s for nvram",
 			OBJ_NAME(dp),PREC_NAME(OBJ_MACH_PREC_PTR(dp)),
 			PREC_BY_NAME,PREC_UBY_NAME);
@@ -1297,7 +1297,7 @@ static COMMAND_FUNC( write_nvram )		/* sq */
 	}
 
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,"Object %s must be contiguous for nvram",
+		snprintf(ERROR_STRING,LLEN,"Object %s must be contiguous for nvram",
 			OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
@@ -1305,7 +1305,7 @@ static COMMAND_FUNC( write_nvram )		/* sq */
 
 	if( (n=write(nvram_fd,OBJ_DATA_PTR(dp),OBJ_N_MACH_ELTS(dp))) != (int)OBJ_N_MACH_ELTS(dp) ){
 		if( n < 0 ) perror("write nvram");
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"nvram error writing object %s, %d bytes requested, %d actual",
 			OBJ_NAME(dp),OBJ_N_MACH_ELTS(dp),n);
 		warn(ERROR_STRING);
@@ -1343,28 +1343,28 @@ static COMMAND_FUNC( ld_nvram )		/*sq */
 	}
 
 	if( addr+OBJ_N_MACH_ELTS(dp) > NVRAM_SIZE ){
-		sprintf(ERROR_STRING,"NVRAM: Can't write requested number of bytes. Check address and size of object %s",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"NVRAM: Can't write requested number of bytes. Check address and size of object %s",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}
 
 
 	if( ! VALID_NVRAM_PREC(dp) ){
-		sprintf(ERROR_STRING,"Object %s has %s precision, should be %s or %s for nvram",
+		snprintf(ERROR_STRING,LLEN,"Object %s has %s precision, should be %s or %s for nvram",
 			OBJ_NAME(dp),PREC_NAME(OBJ_MACH_PREC_PTR(dp)),PREC_BY_NAME,PREC_UBY_NAME);
 		warn(ERROR_STRING);
 		return;
 	}
 
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,"Object %s must be contiguous for nvram",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"Object %s must be contiguous for nvram",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}
 
 	if( (n=write(nvram_fd,OBJ_DATA_PTR(dp),OBJ_N_MACH_ELTS(dp))) != (int)OBJ_N_MACH_ELTS(dp) ){
 		if( n < 0 ) perror("write nvram");
-		sprintf(ERROR_STRING, "nvram error writing object %s, %d bytes requested, %d actual",
+		snprintf(ERROR_STRING,LLEN, "nvram error writing object %s, %d bytes requested, %d actual",
 					OBJ_NAME(dp),OBJ_N_MACH_ELTS(dp),n);
 		warn(ERROR_STRING);
 	}
@@ -1404,14 +1404,14 @@ static COMMAND_FUNC( rd_nvram )		/*sq */
 	}
 
 	if( addr+OBJ_N_MACH_ELTS(dp) > NVRAM_SIZE ){
-		sprintf(ERROR_STRING,"NVRAM: Can't read requested number of bytes. Check address and size of object %s",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"NVRAM: Can't read requested number of bytes. Check address and size of object %s",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}
 
 
 	if( ! VALID_NVRAM_PREC(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 		"Object %s has %s precision, should be %s or %s for nvram",
 			OBJ_NAME(dp),PREC_NAME(OBJ_MACH_PREC_PTR(dp)),
 			PREC_BY_NAME,PREC_UBY_NAME);
@@ -1420,14 +1420,14 @@ static COMMAND_FUNC( rd_nvram )		/*sq */
 	}
 
 	if( ! IS_CONTIGUOUS(dp) ){
-		sprintf(ERROR_STRING,"Object %s must be contiguous for nvram",OBJ_NAME(dp));
+		snprintf(ERROR_STRING,LLEN,"Object %s must be contiguous for nvram",OBJ_NAME(dp));
 		warn(ERROR_STRING);
 		return;
 	}
 
 	if( (n=read(nvram_fd,OBJ_DATA_PTR(dp),OBJ_N_MACH_ELTS(dp))) != (int)OBJ_N_MACH_ELTS(dp) ){
 		if( n < 0 ) perror("read nvram");
-		sprintf(ERROR_STRING, "nvram error reading object %s, %d bytes requested, %d actual",
+		snprintf(ERROR_STRING,LLEN, "nvram error reading object %s, %d bytes requested, %d actual",
 					OBJ_NAME(dp),OBJ_N_MACH_ELTS(dp),n);
 		warn(ERROR_STRING);
 	}

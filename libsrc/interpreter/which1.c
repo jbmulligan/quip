@@ -58,24 +58,24 @@ int _which_one(QSP_ARG_DECL  const char *prompt, int n, const char** choices)
 			nmatches++;
 		}
 	if( nmatches==1 ){
-		sprintf(ERROR_STRING,"Unambiguous substring match of \"%s\" to \"%s\"",
+		snprintf(ERROR_STRING,LLEN,"Unambiguous substring match of \"%s\" to \"%s\"",
 			user_response,choices[lastmatch]);
 		//advise(ERROR_STRING);
 		warn(ERROR_STRING);
 		return(lastmatch);
 	}
 	else if( nmatches > 1 ){
-		sprintf(ERROR_STRING,"ambiguous choice \"%s\"",user_response);
+		snprintf(ERROR_STRING,LLEN,"ambiguous choice \"%s\"",user_response);
 		warn(ERROR_STRING);
 		return(-1);
 	}
 
-	sprintf(ERROR_STRING,"invalid choice \"%s\"",user_response);
+	snprintf(ERROR_STRING,LLEN,"invalid choice \"%s\"",user_response);
 	warn(ERROR_STRING);
-	sprintf(ERROR_STRING,"valid selections for %s are:",prompt);
+	snprintf(ERROR_STRING,LLEN,"valid selections for %s are:",prompt);
 	advise(ERROR_STRING);
 	for(i=0;i<n;i++){
-		sprintf(ERROR_STRING,"\t'%s'",choices[i]);
+		snprintf(ERROR_STRING,LLEN,"\t'%s'",choices[i]);
 		advise(ERROR_STRING);
 	}
 #ifdef HAVE_HISTORY

@@ -39,7 +39,7 @@
 #include <OpenGL/glu.h>
 #endif // BUILD_FOR_MACOS
 
-#define NOT_IMP(s)	{ sprintf(ERROR_STRING,"Sorry, %s not implemented yet.",s); warn(ERROR_STRING); }
+#define NOT_IMP(s)	{ snprintf(ERROR_STRING,LLEN,"Sorry, %s not implemented yet.",s); warn(ERROR_STRING); }
 
 #include "string.h"
 
@@ -59,12 +59,12 @@ static void _check_gl_error(QSP_ARG_DECL  char *s)
 	if( e == GL_NO_ERROR ) return;
 	switch(e){
 		case GL_INVALID_OPERATION:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 				"%s:  invalid operation",s);
 			WARN(ERROR_STRING);
 			break;
 		default:
-			sprintf(ERROR_STRING,"check_gl_error:  unhandled error code after %s",s);
+			snprintf(ERROR_STRING,LLEN,"check_gl_error:  unhandled error code after %s",s);
 			WARN(ERROR_STRING);
 			break;
 	}
@@ -177,7 +177,7 @@ static COMMAND_FUNC( do_gl_begin )
 
 		s=primitive_name(current_primitive);
 		if( s != NULL ){
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 		"Can't begin new primitive, already specifying %s", s );
 			warn(ERROR_STRING);
 			return;
@@ -211,7 +211,7 @@ static COMMAND_FUNC(	do_gl_vertex )
 	y=(float)HOW_MUCH("y coordinate");
 	z=(float)HOW_MUCH("z coordinate");
 
-	sprintf(ERROR_STRING,"glVertex3f %g %g %g",x,y,z);
+	snprintf(ERROR_STRING,LLEN,"glVertex3f %g %g %g",x,y,z);
 	GL_DEBUG_MSG(ERROR_STRING);
 
 	glVertex3f(x,y,z);
@@ -225,7 +225,7 @@ static COMMAND_FUNC(	do_gl_color )
 	g=(float)HOW_MUCH("green");
 	b=(float)HOW_MUCH("blue");
 
-	sprintf(ERROR_STRING,"glColor3f %g %g %g",r,g,b);	// should be ifdef'd
+	snprintf(ERROR_STRING,LLEN,"glColor3f %g %g %g",r,g,b);	// should be ifdef'd
 	GL_DEBUG_MSG(ERROR_STRING);
 
 	glColor3f(r,g,b);
@@ -248,7 +248,7 @@ static COMMAND_FUNC(	do_gl_normal )
 	y=(float)HOW_MUCH("y coordinate");
 	z=(float)HOW_MUCH("z coordinate");
 
-	sprintf(ERROR_STRING,"glNormal3f %g %g %g",x,y,z);	// BUG should be ifdef'd
+	snprintf(ERROR_STRING,LLEN,"glNormal3f %g %g %g",x,y,z);	// BUG should be ifdef'd
 	DEBUG_MSG(gl_debug,ERROR_STRING);
 
 	glNormal3f(x,y,z);
@@ -477,7 +477,7 @@ static COMMAND_FUNC( do_slct_obj )
 		for(j=0;j<n_names;j++){
 			this_hit=*ptr++;
 		}
-//		sprintf(ERROR_STRING,"Hit %d, %d from %g to %g, last is %d",
+//		snprintf(ERROR_STRING,LLEN,"Hit %d, %d from %g to %g, last is %d",
 //			i,n_names,z1,z2,this_hit);
 //		advise(ERROR_STRING);
 	}
@@ -495,9 +495,9 @@ static COMMAND_FUNC( do_slct_obj )
 		if( z_this == z_min )
 			the_hit=this_hit;
 	}
-//sprintf(ERROR_STRING,"front-most hit is %d",the_hit);
+//snprintf(ERROR_STRING,LLEN,"front-most hit is %d",the_hit);
 //advise(ERROR_STRING);
-	sprintf(ret_str,"%d",the_hit);
+	snprintf(ret_str,32,"%d",the_hit);
 	assign_reserved_var("selection_index",ret_str);
 
 	//if (hits != 0) {
@@ -514,7 +514,7 @@ static COMMAND_FUNC( do_load_name )
 	int n;
 
 	n=(int)HOW_MANY("'name' number");
-	sprintf(ERROR_STRING,"glLoadName %d",n);
+	snprintf(ERROR_STRING,LLEN,"glLoadName %d",n);
 	GL_DEBUG_MSG(ERROR_STRING);
 	glLoadName(n);
 	check_gl_error("glLoadName");
@@ -525,14 +525,14 @@ static COMMAND_FUNC( do_push_name )
 	int n;
 
 	n=(int)HOW_MANY("'name' number");
-	sprintf(ERROR_STRING,"glPushName %d",n);
+	snprintf(ERROR_STRING,LLEN,"glPushName %d",n);
 	GL_DEBUG_MSG(ERROR_STRING);
 	glPushName(n);
 }
 
 static COMMAND_FUNC( do_pop_name )
 {
-	sprintf(ERROR_STRING,"glPopName");
+	snprintf(ERROR_STRING,LLEN,"glPopName");
 	GL_DEBUG_MSG(ERROR_STRING);
 	glPopName();
 }
@@ -541,7 +541,7 @@ static COMMAND_FUNC( do_set_buf )
 {
 	GLenum buf;
 
-	sprintf(ERROR_STRING,"glDrawBuffer");
+	snprintf(ERROR_STRING,LLEN,"glDrawBuffer");
 	GL_DEBUG_MSG(ERROR_STRING);
 	buf=CHOOSE_DRAW_BUFFER("buffer for drawing");
 	glDrawBuffer(buf);
@@ -588,7 +588,7 @@ static COMMAND_FUNC( do_enable )
 		return;
 	}
 
-	sprintf(ERROR_STRING,"glEnable %s",gl_cap_string(cap));
+	snprintf(ERROR_STRING,LLEN,"glEnable %s",gl_cap_string(cap));
 	GL_DEBUG_MSG(ERROR_STRING);
 	glEnable(cap);
 }
@@ -600,7 +600,7 @@ static COMMAND_FUNC( do_disable )
 	cap = CHOOSE_CAP("capability");
 	if( cap == INVALID_CONSTANT ) return;
 
-	sprintf(ERROR_STRING,"glDisable %s",gl_cap_string(cap));
+	snprintf(ERROR_STRING,LLEN,"glDisable %s",gl_cap_string(cap));
 	GL_DEBUG_MSG(ERROR_STRING);
 	glDisable(cap);
 }
@@ -802,7 +802,7 @@ void set_texture_image(QSP_ARG_DECL  Data_Obj *dp)
 	if(OBJ_COMPS(dp)==1) code=GL_LUMINANCE;
 	else if( OBJ_COMPS(dp) == 3 ) code=GL_RGB;
 	else {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"set_texture_image:  Object %s has type dimension %d, expected 1 or 3",
 			OBJ_NAME(dp),OBJ_COMPS(dp));
 		warn(ERROR_STRING);
@@ -812,7 +812,7 @@ void set_texture_image(QSP_ARG_DECL  Data_Obj *dp)
 	if( OBJ_PREC(dp) == PREC_SP ) prec=GL_FLOAT;
 	else if( OBJ_PREC(dp) == PREC_UBY ) prec=GL_UNSIGNED_BYTE;
 	else {
-		sprintf(ERROR_STRING,"set_texture_image:  Object %s has precision %s, expected %s or %s",
+		snprintf(ERROR_STRING,LLEN,"set_texture_image:  Object %s has precision %s, expected %s or %s",
 			OBJ_NAME(dp),PREC_NAME(OBJ_PREC_PTR(dp)),
 			NAME_FOR_PREC_CODE(PREC_SP),NAME_FOR_PREC_CODE(PREC_UBY));
 		warn(ERROR_STRING);
@@ -857,7 +857,7 @@ static COMMAND_FUNC( set_pt_size )
 
 	s=(float)HOW_MUCH("width in pixels for rendered points");
 	if( s <= 0 ){
-		sprintf(ERROR_STRING,"Requested point size (%g) must be positive",s);
+		snprintf(ERROR_STRING,LLEN,"Requested point size (%g) must be positive",s);
 		WARN(ERROR_STRING);
 		return;
 	}
@@ -871,7 +871,7 @@ static COMMAND_FUNC( set_line_width )
 
 	w=(float)HOW_MUCH("width in pixels for rendered lines");
 	if( w <= 0 ){
-		sprintf(ERROR_STRING,"Requested line width (%g) must be positive",w);
+		snprintf(ERROR_STRING,LLEN,"Requested line width (%g) must be positive",w);
 		WARN(ERROR_STRING);
 		return;
 	}
@@ -1124,11 +1124,11 @@ static COMMAND_FUNC( do_push_mat )
 {
 	if( max_matrices < 0 ){
 		glGetIntegerv(GL_MAX_MODELVIEW_STACK_DEPTH,&max_matrices);
-		sprintf(ERROR_STRING,"%d matrices max. in stack",max_matrices);
+		snprintf(ERROR_STRING,LLEN,"%d matrices max. in stack",max_matrices);
 		advise(ERROR_STRING);
 	}
 	if( n_pushed_matrices >= max_matrices ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Modelview matrix stack already contains %d items, can't push",n_pushed_matrices);
 		WARN(ERROR_STRING);
 		return;
@@ -1204,7 +1204,7 @@ static COMMAND_FUNC( do_sel_light )
 #define CHECK_LIGHT(s)							\
 									\
 	if( which_light == INVALID_CONSTANT ){				\
-		sprintf(ERROR_STRING,					\
+		snprintf(ERROR_STRING,LLEN,					\
 			"Must select a light before specifying %s",s);	\
 		WARN(ERROR_STRING);					\
 		return;							\
@@ -1437,7 +1437,7 @@ static COMMAND_FUNC( do_create_fb )
 
 	fbp = create_framebuffer(QSP_ARG  s,w,h);
 	if( fbp == NULL ) {
-		sprintf(ERROR_STRING,"Error creating framebuffer %s",s);
+		snprintf(ERROR_STRING,LLEN,"Error creating framebuffer %s",s);
 		WARN(ERROR_STRING);
 	}
 }
@@ -1573,7 +1573,7 @@ static COMMAND_FUNC( do_new_gl_buffer )
 	/* Make sure this name isn't already in use... */
 	dp = dobj_of(s);
 	if( dp != NULL ){
-		sprintf(ERROR_STRING,"Data object name '%s' is already in use, can't use for GL buffer object.",s);
+		snprintf(ERROR_STRING,LLEN,"Data object name '%s' is already in use, can't use for GL buffer object.",s);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -1591,7 +1591,7 @@ static COMMAND_FUNC( do_new_gl_buffer )
 	ds.ds_dimension[4]=1;
 	dp = _make_dp(QSP_ARG  s,&ds,PREC_FOR_CODE(PREC_UBY));
 	if( dp == NULL ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"Error creating data_obj header for %s",s);
 		error1(ERROR_STRING);
 	}
@@ -1622,7 +1622,7 @@ static COMMAND_FUNC( do_new_gl_buffer )
 	// BUG glGenBuffers seems to require v1.5???
 	glGenBuffers(1, OBJ_BUF_ID_P(dp) );	// first arg is # buffers to generate?
 
-//sprintf(ERROR_STRING,"glGenBuffers gave us buf_id = %d",OBJ_BUF_ID(dp));
+//snprintf(ERROR_STRING,LLEN,"glGenBuffers gave us buf_id = %d",OBJ_BUF_ID(dp));
 //advise(ERROR_STRING);
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER,  OBJ_BUF_ID(dp) ); 
 

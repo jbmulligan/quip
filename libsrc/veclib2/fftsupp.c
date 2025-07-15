@@ -72,7 +72,7 @@ static int log_2(dimension_t n)
 static int _fft_row_size_ok(QSP_ARG_DECL  Data_Obj *dp, const char * funcname )
 {
 	if( log_2(OBJ_COLS(dp)) == -1 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"%s:  number of columns of image %s (%d) is not a power of two for FFT",
 			funcname,OBJ_NAME(dp),OBJ_COLS(dp));
 		WARN(ERROR_STRING);
@@ -88,7 +88,7 @@ static int _fft_row_size_ok(QSP_ARG_DECL  Data_Obj *dp, const char * funcname )
 static int _dim_is_power_of_two( QSP_ARG_DECL  Data_Obj *dp, int dim_idx, const char *funcname )
 {
 	if( log_2( OBJ_DIMENSION(dp,dim_idx) ) == -1 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"%s:  Number of %ss of image %s (%d) is not a power of two!?", funcname,
 			dimension_name[dim_idx],OBJ_NAME(dp),OBJ_DIMENSION(dp,dim_idx));
 		WARN(ERROR_STRING);
@@ -107,7 +107,7 @@ static int _fft_col_size_ok(QSP_ARG_DECL  Data_Obj *dp, const char *funcname )
 	return dim_is_power_of_two(dp, 2, funcname );
 	/*
 	if( log_2(OBJ_ROWS(dp)) == -1 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"Number of rows of image %s (%d) is not a power of two for FFT",
 			OBJ_NAME(dp),OBJ_ROWS(dp));
 		WARN(ERROR_STRING);
@@ -132,7 +132,7 @@ static int _fft_size_ok(QSP_ARG_DECL  Data_Obj *dp, const char * funcname )
 static int _good_xform_size( QSP_ARG_DECL  Data_Obj *real_dp,Data_Obj *cpx_dp, int dim_idx, const char *funcname)
 {
 	if( (OBJ_DIMENSION(cpx_dp,dim_idx)-1) != (OBJ_DIMENSION(real_dp,dim_idx)/2) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "%s:  complex %s %ss (%d) should be 1 plus half real %s %ss (%d)",
 			funcname,OBJ_NAME(cpx_dp),dimension_name[dim_idx],OBJ_DIMENSION(cpx_dp,dim_idx),
 			         OBJ_NAME(real_dp),dimension_name[dim_idx],OBJ_DIMENSION(real_dp,dim_idx));
@@ -147,26 +147,26 @@ static int _good_xform_size( QSP_ARG_DECL  Data_Obj *real_dp,Data_Obj *cpx_dp, i
 static int _real_cpx_objs_ok( QSP_ARG_DECL  Data_Obj *real_dp,Data_Obj *cpx_dp, const char *funcname )
 {
 	if( ! IS_COMPLEX(cpx_dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s:  %s must be complex",funcname,OBJ_NAME(cpx_dp));
 		WARN(ERROR_STRING);
 		return FALSE;
 	}
 	if( ! IS_REAL(real_dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s:  %s must be real",funcname,OBJ_NAME(real_dp));
 		WARN(ERROR_STRING);
 		return FALSE;
 	}
 	if( ! FLOATING_OBJ( cpx_dp ) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s:  precision must be float or double",funcname);
 		WARN(ERROR_STRING);
 		return FALSE;
 	}
 
 	if( !dp_same_mach_prec(cpx_dp,real_dp,funcname) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"%s:  complex object (%s,%s) and target (%s,%s) must have same precision",
 			funcname,OBJ_NAME(cpx_dp),OBJ_MACH_PREC_NAME(cpx_dp),
 			OBJ_NAME(real_dp),OBJ_MACH_PREC_NAME(real_dp));
@@ -180,7 +180,7 @@ int real_row_fft_ok(QSP_ARG_DECL  Data_Obj *real_dp,Data_Obj *cpx_dp,const char 
 {
 	if( ! good_xform_size( real_dp, cpx_dp, 1, funcname ) ) return FALSE;
 	if( OBJ_ROWS(cpx_dp) != OBJ_ROWS(real_dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s:  row count mismatch, %s (%d) and %s (%d)",
 			funcname,OBJ_NAME(cpx_dp),OBJ_ROWS(cpx_dp),
 			OBJ_NAME(real_dp),OBJ_ROWS(real_dp));
@@ -212,7 +212,7 @@ int real_fft_type(QSP_ARG_DECL  Data_Obj *real_dp,Data_Obj *cpx_dp,const char *f
 		if( ! dim_is_power_of_two(real_dp, 1, funcname ) ) return -1;
 		return FFT2D_REAL_XFORM_COLS;
 	} else {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "%s:  real data %s (%d x %d) and transform %s (%d x %d) must have one matching dimension!?",
 			funcname,OBJ_NAME(real_dp),OBJ_ROWS(real_dp),OBJ_COLS(real_dp),
 			         OBJ_NAME(cpx_dp),OBJ_ROWS(cpx_dp),OBJ_COLS(cpx_dp));
@@ -227,7 +227,7 @@ int real_fft_type(QSP_ARG_DECL  Data_Obj *real_dp,Data_Obj *cpx_dp,const char *f
 int row_fft_ok(QSP_ARG_DECL  Data_Obj *dp, const char * funcname )
 {
 	if( ! IS_COMPLEX(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s:  image %s is not complex!?",funcname,OBJ_NAME(dp));
 		WARN(ERROR_STRING);
 		return FALSE;
@@ -242,7 +242,7 @@ int row_fft_ok(QSP_ARG_DECL  Data_Obj *dp, const char * funcname )
 int cpx_fft_ok(QSP_ARG_DECL  Data_Obj *dp, const char *funcname )
 {
 	if( ! IS_COMPLEX(dp) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"%s:  image %s is not complex",funcname,OBJ_NAME(dp));
 		WARN(ERROR_STRING);
 		return FALSE;

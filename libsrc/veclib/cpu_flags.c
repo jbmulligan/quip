@@ -20,7 +20,7 @@ static int _cpu_flag_set(QSP_ARG_DECL  char *string)
 
 	fp=popen("grep flags /proc/cpuinfo | head -1 | awk -F ':' '{print $2}'","r");
 	if( fp == NULL ) {
-		sprintf(ERROR_STRING,"cpu_flag_set:  error opening pipe to read /proc/cpuinfo");
+		snprintf(ERROR_STRING,LLEN,"cpu_flag_set:  error opening pipe to read /proc/cpuinfo");
 		warn(ERROR_STRING);
 		return(0);
 	}

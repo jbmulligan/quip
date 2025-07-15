@@ -51,7 +51,7 @@ void _enable_image_events(QSP_ARG_DECL  Spink_Cam *skc_p, void (*func)(spinImage
 	if( IS_EVENTFUL(skc_p) ) return;
 
 fprintf(stderr,"enable_image_events:  enabling events for %s\n",skc_p->skc_name);
-	insure_current_camera(skc_p);
+	ensure_current_camera(skc_p);
 	assert( skc_p->skc_current_handle != NULL );
 
 #ifdef THREAD_SAFE_QUERY
@@ -104,12 +104,12 @@ static int _report_image_status(QSP_ARG_DECL  spinImageStatus status)
 	char buf[LLEN];
 
 	if( get_image_status_description(status,NULL,&len) < 0 ){
-		sprintf(ERROR_STRING,"report_image_status:  Error getting image status description length!?");
+		snprintf(ERROR_STRING,LLEN,"report_image_status:  Error getting image status description length!?");
 		warn(ERROR_STRING);
 		return -1;
 	}
 	if( len >= LLEN ){
-		sprintf(ERROR_STRING,"report_image_status:  status description needs %ld chars, but only %d provided!?",
+		snprintf(ERROR_STRING,LLEN,"report_image_status:  status description needs %ld chars, but only %d provided!?",
 			len,LLEN);
 		warn(ERROR_STRING);
 		return -1;
@@ -117,7 +117,7 @@ static int _report_image_status(QSP_ARG_DECL  spinImageStatus status)
 
 	len=LLEN;
 	if( get_image_status_description(status,buf,&len) < 0 ){
-		sprintf(ERROR_STRING,"report_image_status:  Error getting image status description!?");
+		snprintf(ERROR_STRING,LLEN,"report_image_status:  Error getting image status description!?");
 		warn(ERROR_STRING);
 		return -1;
 	}
@@ -130,8 +130,25 @@ static int _report_image_status(QSP_ARG_DECL  spinImageStatus status)
 static void _set_script_var(QSP_ARG_DECL  const char *varname, int value)
 {
 	char buf[32];
-	sprintf(buf,"%d",value);
+	snprintf(buf,32,"%d",value);
 	assign_reserved_var(varname,buf);
+}
+
+#define SECTOR_SIZE	1024	// BUG check?
+static void *check_alignment(QSP_ARG_DECL  void *ptr)
+{
+	void *aligned_ptr;
+	long diff;
+	aligned_ptr = (void *) ((((uint64_t)ptr) + SECTOR_SIZE-1)
+							& ~(SECTOR_SIZE-1));
+	diff = aligned_ptr - ptr;
+	if( diff != 0 ){
+		snprintf(ERROR_STRING,LLEN,
+	"check_alignment:  Aligned ptr at 0x%lx, %ld bytes discarded\n",
+			(long)aligned_ptr,diff);
+		warn(ERROR_STRING);
+	}
+	return aligned_ptr;
 }
 
 Data_Obj * _grab_spink_cam_frame(QSP_ARG_DECL  Spink_Cam * skc_p )
@@ -139,26 +156,28 @@ Data_Obj * _grab_spink_cam_frame(QSP_ARG_DECL  Spink_Cam * skc_p )
 	spinImage hImage;
 	spinImageStatus status;
 	void *data_ptr;
+	void *aligned_ptr;
 	int index;
 	Data_Obj *dp;
 
 	if( ! IS_CAPTURING(skc_p) ){
-		sprintf(ERROR_STRING,"grab_spink_cam_frame:  %s is not capturing!?",skc_p->skc_name);
+		snprintf(ERROR_STRING,LLEN,"grab_spink_cam_frame:  %s is not capturing!?",skc_p->skc_name);
 		warn(ERROR_STRING);
 		return NULL;
 	}
 
 	if( next_spink_image(&hImage,skc_p) < 0 ){
-		sprintf(ERROR_STRING,"grab_spink_cam_frame:  Error getting image!?");
+		snprintf(ERROR_STRING,LLEN,"grab_spink_cam_frame:  Error getting image!?");
 		warn(ERROR_STRING);
 		return NULL;
 	}
 
 	if( get_image_status(hImage,&status) < 0 ){
-		sprintf(ERROR_STRING,"grab_spink_cam_frame:  Error getting image status!?");
+		snprintf(ERROR_STRING,LLEN,"grab_spink_cam_frame:  Error getting image status!?");
 		warn(ERROR_STRING);
 		return NULL;
 	}
+//fprintf(stderr,"status = 0x%x\n",status);
 	if( status != IMAGE_NO_ERROR ){
 		if( report_image_status(status) < 0 ) return NULL;
 	}
@@ -183,25 +202,15 @@ Data_Obj * _grab_spink_cam_frame(QSP_ARG_DECL  Spink_Cam * skc_p )
 		dp = NULL;
 	}
 
-fprintf(stderr,"Frame %d data ptr at 0x%lx\n",index,(long)data_ptr);
-{
-void *aligned_ptr;
-long diff;
-#define SECTOR_SIZE	1024	// BUG check?
-aligned_ptr = (void *) ((((uint64_t)data_ptr) + SECTOR_SIZE-1) & ~(SECTOR_SIZE-1));
-diff = aligned_ptr - data_ptr;
-fprintf(stderr,"Aligned ptr at 0x%lx, %ld bytes discarded\n",(long)aligned_ptr,diff);
+//fprintf(stderr,"Frame %d data ptr at 0x%lx\n",index,(long)data_ptr);
 
+	aligned_ptr = check_alignment(QSP_ARG  data_ptr);
+	point_obj_to_ext_data(dp,aligned_ptr);
+	if( aligned_ptr != data_ptr ){
+		SET_OBJ_UNALIGNED_PTR(dp,data_ptr);
+	}
 
-
-	point_obj_to_ext_data(dp,aligned_ptr /* data_ptr */ );
-	SET_OBJ_UNALIGNED_PTR(dp,data_ptr);
-
-fprintf(stderr,"object %s has %d rows and %d columns\n",OBJ_NAME(dp),OBJ_ROWS(dp),OBJ_COLS(dp));
-	// BUG need to take off a few rows???
-}
-
-fprintf(stderr,"TRACE grab_spink_cam_frame buffer %d hImage at 0x%lx\n",index,(long)hImage);
+//fprintf(stderr,"TRACE grab_spink_cam_frame buffer %d hImage at 0x%lx\n",index,(long)hImage);
 	SET_OBJ_EXTRA(dp,hImage);
 	skc_p->skc_newest = index;
 	if( skc_p->skc_oldest < 0 ) skc_p->skc_oldest = index;
@@ -216,14 +225,14 @@ fprintf(stderr,"TRACE grab_spink_cam_frame buffer %d hImage at 0x%lx\n",index,(l
 static int _check_release_ok(QSP_ARG_DECL  Spink_Cam *skc_p)
 {
 	if( ! IS_CAPTURING(skc_p) ){
-		sprintf(ERROR_STRING,"release_oldest_spink_frame:  %s is not capturing!?",
+		snprintf(ERROR_STRING,LLEN,"release_oldest_spink_frame:  %s is not capturing!?",
 			skc_p->skc_name);
 		warn(ERROR_STRING);
 		return -1;
 	}
 
 	if( skc_p->skc_oldest < 0 ){
-		sprintf(ERROR_STRING,"No frames have been grabbed by %s, can't release!?",
+		snprintf(ERROR_STRING,LLEN,"No frames have been grabbed by %s, can't release!?",
 			skc_p->skc_name);
 		warn(ERROR_STRING);
 		return -1;
@@ -246,9 +255,9 @@ void _release_spink_frame(QSP_ARG_DECL  Spink_Cam *skc_p, int index)
 	//hImage = OBJ_EXTRA(dp);
 	hImage = gfi_p->gfi_hImage;
 
-fprintf(stderr,"TRACE release_spink_frame buffer %d hImage at 0x%lx\n",index,(long)hImage);
+//fprintf(stderr,"TRACE release_spink_frame buffer %d hImage at 0x%lx\n",index,(long)hImage);
 	if( release_spink_image(hImage) < 0 ){
-		sprintf(ERROR_STRING,"release_oldest_spink_frame %s:  Error releasing image %d",skc_p->skc_name,index);
+		snprintf(ERROR_STRING,LLEN,"release_oldest_spink_frame %s:  Error releasing image %d",skc_p->skc_name,index);
 		warn(ERROR_STRING);
 	}
 	dp = gfi_p->gfi_dp;
@@ -294,7 +303,7 @@ static Data_Obj * _init_frame_by_index(QSP_ARG_DECL  Spink_Cam *skc_p, int idx)
 	char fname[64];
 	Dimension_Set ds1;
 
-	sprintf(fname,"cam%d.frame%d",skc_p->skc_sys_idx,idx);
+	snprintf(fname,64,"cam%d.frame%d",skc_p->skc_sys_idx,idx);
 	//assign_var("newest",fname+5);
 
 	dp = dobj_of(fname);
@@ -343,7 +352,7 @@ void _set_n_spink_buffers(QSP_ARG_DECL  Spink_Cam *skc_p, int n)
 
 void _show_n_buffers(QSP_ARG_DECL  Spink_Cam *skc_p)
 {
-	sprintf(MSG_STR,"%s:  %d buffers",skc_p->skc_name,skc_p->skc_n_buffers);
+	snprintf(MSG_STR,LLEN,"%s:  %d buffers",skc_p->skc_name,skc_p->skc_n_buffers);
 	prt_msg(MSG_STR);
 }
 
@@ -365,7 +374,7 @@ int _next_spink_image(QSP_ARG_DECL  spinImage *img_p, Spink_Cam *skc_p)
 	spinCamera hCam;
 	bool8_t isIncomplete = False;
 
-	insure_current_camera(skc_p);
+	ensure_current_camera(skc_p);
 	hCam = skc_p->skc_current_handle;
 
 	if( get_next_image(hCam,img_p) < 0 ) return -1;
@@ -440,7 +449,7 @@ static void test_event_handler(spinImage hImg, void *user_data)
 //#endif // THREAD_SAFE_QUERY
 		//spink_stop_capture(skc_p);
 
-		//sprintf(varname,"%s_is_capturing",spc_p->skc_name)
+		//snprintf(varname,LLEN,"%s_is_capturing",spc_p->skc_name)
 		//assign_var(varname,"0");
 
 		// The camera is still capturing, but we use this flag
@@ -455,14 +464,14 @@ int _spink_start_capture(QSP_ARG_DECL  Spink_Cam *skc_p)
 	spinCamera hCam;
 fprintf(stderr,"spink_start_capture %s BEGIN\n",skc_p->skc_name);
 	if( IS_CAPTURING(skc_p) ){
-		sprintf(ERROR_STRING,"spink_start_capture:  %s is already capturing!?",
+		snprintf(ERROR_STRING,LLEN,"spink_start_capture:  %s is already capturing!?",
 			skc_p->skc_name);
 		warn(ERROR_STRING);
 		return 0;
 	}
 
 fprintf(stderr,"spink_start_capture %s insuring current camera...\n",skc_p->skc_name);
-	insure_current_camera(skc_p);
+	ensure_current_camera(skc_p);
 fprintf(stderr,"spink_start_capture %s initializing oldest and newest...\n",skc_p->skc_name);
 	skc_p->skc_newest = -1;
 	skc_p->skc_oldest = -1;
@@ -502,13 +511,13 @@ int _spink_stop_capture(QSP_ARG_DECL  Spink_Cam *skc_p)
 	spinCamera hCam;
 	
 	if( ! IS_CAPTURING(skc_p) ){
-		sprintf(ERROR_STRING,"spink_stop_capture:  %s is not capturing!?",
+		snprintf(ERROR_STRING,LLEN,"spink_stop_capture:  %s is not capturing!?",
 			skc_p->skc_name);
 		warn(ERROR_STRING);
 		return 0;
 	}
 
-	insure_current_camera(skc_p);
+	ensure_current_camera(skc_p);
 	hCam = skc_p->skc_current_handle;
 	skc_p->skc_flags &= ~(SPINK_CAM_CAPTURING|SPINK_CAM_CAPT_REQUESTED);
 
@@ -529,18 +538,18 @@ void _set_camera_node(QSP_ARG_DECL  Spink_Cam *skc_p, const char *node_name, con
 		return;
 
 	if( fetch_spink_node(hMap, node_name, &hNode) < 0 ){
-		sprintf(ERROR_STRING,"set_camera_node:  error getting %s node!?",node_name);
+		snprintf(ERROR_STRING,LLEN,"set_camera_node:  error getting %s node!?",node_name);
 		warn(ERROR_STRING);
 		return;
 	}
 
 	if( ! spink_node_is_available(hNode) ){
-		sprintf(ERROR_STRING,"set_camera_node:  %s node is not available!?",node_name);
+		snprintf(ERROR_STRING,LLEN,"set_camera_node:  %s node is not available!?",node_name);
 		warn(ERROR_STRING);
 		return;
 	}
 	if( ! spink_node_is_readable(hNode) ){
-		sprintf(ERROR_STRING,"set_camera_node:  %s node is not readable!?",node_name);
+		snprintf(ERROR_STRING,LLEN,"set_camera_node:  %s node is not readable!?",node_name);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -551,31 +560,31 @@ void _set_camera_node(QSP_ARG_DECL  Spink_Cam *skc_p, const char *node_name, con
 	}
 
 	if( ! spink_node_is_available(hEntry) ){
-		sprintf(ERROR_STRING,"set_camera_node:  %s node is not available!?",entry_name);
+		snprintf(ERROR_STRING,LLEN,"set_camera_node:  %s node is not available!?",entry_name);
 		warn(ERROR_STRING);
 		return;
 	}
 	if( ! spink_node_is_readable(hEntry) ){
-		sprintf(ERROR_STRING,"set_camera_node:  %s node is not readable!?",entry_name);
+		snprintf(ERROR_STRING,LLEN,"set_camera_node:  %s node is not readable!?",entry_name);
 		warn(ERROR_STRING);
 		return;
 	}
 
 	if( get_enum_int_val(hEntry,&int_val) < 0 ){
-		sprintf(ERROR_STRING,"set_camera_node:  error getting enumeration int val for %s!?",entry_name);
+		snprintf(ERROR_STRING,LLEN,"set_camera_node:  error getting enumeration int val for %s!?",entry_name);
 		warn(ERROR_STRING);
 		return;
 	}
 
 	if( ! spink_node_is_writable(hNode) ){
-		sprintf(ERROR_STRING,"set_camera_node:  %s node is not readable!?",node_name);
+		snprintf(ERROR_STRING,LLEN,"set_camera_node:  %s node is not readable!?",node_name);
 		warn(ERROR_STRING);
 		return;
 	}
 
 	// Set integer as new value of enumeration node
 	if( set_enum_int_val(hNode,int_val) < 0 ) {
-		sprintf(ERROR_STRING,"set_camera_node:  error setting %s node to %s!?",node_name,entry_name);
+		snprintf(ERROR_STRING,LLEN,"set_camera_node:  error setting %s node to %s!?",node_name,entry_name);
 		warn(ERROR_STRING);
 		return;
 	}

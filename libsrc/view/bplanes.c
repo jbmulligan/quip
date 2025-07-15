@@ -36,7 +36,7 @@ extern double t_cos(double);
 void _set_lvls_per_comp(QSP_ARG_DECL  int n)
 {
 	if( n < 2 || n > MAX_LEVELS ){
-		sprintf(ERROR_STRING, "bad number of bits per component, using %d",
+		snprintf(ERROR_STRING,LLEN, "bad number of bits per component, using %d",
 			MAX_LEVELS);
 		warn(ERROR_STRING);
 		n = MAX_LEVELS;
@@ -95,7 +95,7 @@ void _count(QSP_ARG_DECL  int digit,int offset)
 void _set_ncomps(QSP_ARG_DECL  int n)
 {
 	if( n > MAX_COMPS ) {
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 			"set_ncomps:  too many image components specified, using %d",
 			MAX_COMPS);
 		warn(ERROR_STRING);
@@ -150,7 +150,7 @@ void _sine_mod_amp(QSP_ARG_DECL  int nframes,float *phases,int period,float *env
 
 	arginc = (float)(8*atan(1)/period);
 	for(i=0;i<nframes;i++){
-		sprintf(str,"%s%d",lutstem,i);
+		snprintf(str,32,"%s%d",lutstem,i);
 		if( new_colormap(str) == NULL )
 			error1("error creating LUT buffer");
 		if( envelope != ((float *)NULL) )

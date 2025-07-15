@@ -25,7 +25,7 @@
 #define CHECK_SCRNOBJ_VOID(sop,sender,whence,warnflag)			\
 	if( sop == NULL ){						\
 		if( warnflag ){						\
-			sprintf(DEFAULT_ERROR_STRING,			\
+			snprintf(DEFAULT_ERROR_STRING,LLEN,		\
 	"CAUTIOUS:  %s:  Couldn't find screen object for 0x%lx!?\n",	\
 				#whence,(u_long)sender);		\
 			NWARN(DEFAULT_ERROR_STRING);			\
@@ -36,7 +36,7 @@
 #define CHECK_SCRNOBJ_BOOL(sop,sender,whence,warnflag)				\
 	if( sop == NULL ){						\
 		if( warnflag ){						\
-			sprintf(DEFAULT_ERROR_STRING,			\
+			snprintf(DEFAULT_ERROR_STRING,LLEN,		\
 	"CAUTIOUS:  %s:  Couldn't find screen object for 0x%lx!?\n",	\
 				#whence,(u_long)sender);		\
 			NWARN(DEFAULT_ERROR_STRING);			\
@@ -47,7 +47,7 @@
 #define CHECK_SCRNOBJ_INT(sop,sender,whence,warnflag)			\
 	if( sop == NULL ){						\
 		if( warnflag ){						\
-			sprintf(DEFAULT_ERROR_STRING,			\
+			snprintf(DEFAULT_ERROR_STRING,LLEN,		\
 	"CAUTIOUS:  %s:  Couldn't find screen object for 0x%lx!?\n",	\
 				#whence,(u_long)sender);		\
 			NWARN(DEFAULT_ERROR_STRING);			\
@@ -58,7 +58,7 @@
 #define CHECK_SCRNOBJ_STR(sop,sender,whence,warnflag)			\
 	if( sop == NULL ){						\
 		if( warnflag ){						\
-			sprintf(DEFAULT_ERROR_STRING,			\
+			snprintf(DEFAULT_ERROR_STRING,LLEN,		\
 	"CAUTIOUS:  %s:  Couldn't find screen object for 0x%lx!?\n",	\
 				#whence,(u_long)sender);		\
 			NWARN(DEFAULT_ERROR_STRING);			\
@@ -339,7 +339,7 @@ static void add_selection_to_choice( Screen_Obj *sop, NSIndexPath *path )
 		cat_string(choice_sbp,strings[r]);
 		n_choices ++;
 	}
-	sprintf(varname,"choice_%d",n_choices);	// BUG? use snprint?
+	snprintf(varname,16,"choice_%d",n_choices);	// BUG? use snprint?
 	assign_var(DEFAULT_QSP_ARG varname, strings[r] );
 }
 
@@ -355,7 +355,7 @@ static void updateMultipleChoices(Screen_Obj *sop)
 
 	n = path_iterate(sop,add_selection_to_choice);
 
-	sprintf(val_string,"%d",n);	// BUG? use snprint?
+	snprintf(val_string,16,"%d",n);	// BUG? use snprint?
 	assign_var(DEFAULT_QSP_ARG "n_selections", val_string );
 
 	if( sb_buffer(choice_sbp) == NULL )	// no selections
@@ -484,7 +484,7 @@ static void updateMultipleChoices(Screen_Obj *sop)
 		// We cast this because NSInteger can be int or long,
 		// depending on platform.
 		// (See Platform Dependencies in String Programming Guide)
-		sprintf(choice_idx,"%ld",(long)component+1);
+		snprintf(choice_idx,16,"%ld",(long)component+1);
 		assign_var(DEFAULT_QSP_ARG "choice_index", choice_idx );
 		assign_var(DEFAULT_QSP_ARG "choice", SOB_SELECTOR_AT_IDX(sop,(int)component,(int)row) );
 	}
@@ -613,7 +613,7 @@ event_done:
 	// but we don't scale to the range of this slider
 	// because we reset the range when we make the slider...
 
-	sprintf(DEFAULT_ERROR_STRING,"%d",
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"%d",
 		(int) round( value ) );
 	assign_var(DEFAULT_QSP_ARG  "slider_val",DEFAULT_ERROR_STRING);
 
@@ -707,7 +707,7 @@ ipad_pro_9_7:
 					goto ipad_pro_9_7;
 				default:
 					dev_type = DEV_TYPE_DEFAULT;
-					sprintf(DEFAULT_ERROR_STRING,
+					snprintf(DEFAULT_ERROR_STRING,LLEN,
 						"Unexpected display size %d x %d!?",h,w);
 					NWARN(DEFAULT_ERROR_STRING);
 					break;
@@ -715,7 +715,7 @@ ipad_pro_9_7:
 			break;
 		default:
 			dev_type = DEV_TYPE_DEFAULT;
-			sprintf(DEFAULT_ERROR_STRING,
+			snprintf(DEFAULT_ERROR_STRING,LLEN,
 				"Unexpected view width %d!?\n",w);
 			NWARN(DEFAULT_ERROR_STRING);
 			break;
@@ -819,7 +819,7 @@ static const char *get_display_height(SINGLE_QSP_ARG_DECL)
 
 	h=(int)globalAppDelegate.dev_size.height;
 
-	sprintf(hstr,"%d",h);
+	snprintf(hstr,16,"%d",h);
 	return hstr;
 }
 
@@ -832,7 +832,7 @@ static const char *get_display_width(SINGLE_QSP_ARG_DECL)
 
 	w=(int)globalAppDelegate.dev_size.width;
 
-	sprintf(wstr,"%d",w);
+	snprintf(wstr,16,"%d",w);
 	return wstr;
 }
 
@@ -1169,7 +1169,7 @@ static double accel[3]={0,0,0};
 	accel[1] = acceleration->y * kFilteringFactor + accel[1] * (1.0 - kFilteringFactor);
 	accel[2] = acceleration->z * kFilteringFactor + accel[2] * (1.0 - kFilteringFactor);
 
-	sprintf(DEFAULT_ERROR_STRING,"accel:  %g %g %g	  %g %g %g\n",
+	snprintf(DEFAULT_ERROR_STRING,LLEN,"accel:  %g %g %g	  %g %g %g\n",
 	acceleration->x,acceleration->y,acceleration->z,
 	accel[0],accel[1],accel[2]);
 	NADVISE(DEFAULT_ERROR_STRING);
@@ -1219,7 +1219,7 @@ static double accel[3]={0,0,0};
 }
 #endif // THREAD_SAFE_QUERY
 
--(void) insure_wakeup
+-(void) ensure_wakeup
 {
 	if( wakeup_timer == NULL ){
 		wakeup_timer = [CADisplayLink
@@ -1520,7 +1520,7 @@ static void chdir_to_file(const char *filename)
         //fprintf(stderr,"will cd to %s\n",s);
         if( chdir(s) < 0 ){
             tell_sys_error("chdir");
-            sprintf(ERROR_STRING,"Failed to chdir to %s",s);
+            snprintf(ERROR_STRING,LLEN,"Failed to chdir to %s",s);
             WARN(ERROR_STRING);
         }
     }

@@ -66,7 +66,7 @@ int xioctl(int fd, int request, void *arg)
 
 void _errno_warn(QSP_ARG_DECL  const char *s)
 {
-	sprintf(ERROR_STRING,"%s:  %s",s,strerror(errno));
+	snprintf(ERROR_STRING,LLEN,"%s:  %s",s,strerror(errno));
 	warn(ERROR_STRING);
 }
 
@@ -158,9 +158,9 @@ static void print_v4l2_buf_info(struct v4l2_buffer *bufp)
 		(long)bufp,name_for_type(bufp->type),name_for_mem(bufp->memory),bufp->index);
 }
 
-static inline void get_name_for_buffer(char *name,My_Buffer *mbp)
+static inline void get_name_for_buffer(char *name,bufsize,My_Buffer *mbp)
 {
-	sprintf(name,"%s.buffer%d",mbp->mb_vdp->vd_name,mbp->mb_index);
+	snprintf(name,bufsize,"%s.buffer%d",mbp->mb_vdp->vd_name,mbp->mb_index);
 }
 #endif // HAVE_V4L2
 
@@ -290,7 +290,7 @@ static void _create_object_for_buffer(QSP_ARG_DECL  My_Buffer *mbp, Dimension_Se
 	char name[128];
 	Data_Obj *dp;
 
-	get_name_for_buffer(name,mbp);
+	get_name_for_buffer(name,128,mbp);
 	dp = make_dp(name,dsp,PREC_FOR_CODE(PREC_UBY));
 #ifdef CAUTIOUS
 	if( dp == NULL ) error1("CAUTIOUS:  error creating data_obj for video buffer");
@@ -347,10 +347,10 @@ static inline int _try_buffer_request(QSP_ARG_DECL  const char *msg, Video_Devic
 fprintf(stderr,"try_buffer_request, mem = 0x%x   type = 0x%x    count = %d\n",reqp->memory,reqp->type,reqp->count);
 	if( xioctl(vdp->vd_fd, VIDIOC_REQBUFS, reqp) < 0 ){
 		if(EINVAL == errno) {
-			sprintf(ERROR_STRING, "%s does not support %s", vdp->vd_name,msg);
+			snprintf(ERROR_STRING,LLEN, "%s does not support %s", vdp->vd_name,msg);
 			advise(ERROR_STRING);
 		} else {
-			sprintf(ERROR_STRING,"VIDIOC_REQBUFS (try_buffer_request %s):  %s",
+			snprintf(ERROR_STRING,LLEN,"VIDIOC_REQBUFS (try_buffer_request %s):  %s",
 				msg,strerror(errno));
 			warn(ERROR_STRING);
 		}
@@ -396,9 +396,9 @@ fprintf(stderr,"request_mmap_buffers setting using flag!\n");
 		vdp->vd_flags |= VD_USING_MMAP_BUFFERS | VD_HAS_BUFFERS;
 		vdp->vd_flags &= ~VD_USING_USERSPACE_BUFFERS;
 		if( req.count == nreq ){
-			sprintf(MSG_STR,"%d buffers allocated",nreq);
+			snprintf(MSG_STR,LLEN,"%d buffers allocated",nreq);
 		} else {
-			sprintf(MSG_STR,"%d buffers requested, but %d allocated",nreq,req.count);
+			snprintf(MSG_STR,LLEN,"%d buffers requested, but %d allocated",nreq,req.count);
 		}
 		advise(MSG_STR);
 		return req.count;
@@ -466,22 +466,22 @@ static int _check_capabilities(QSP_ARG_DECL  Video_Device *vdp)
 
 	if(-1 == xioctl(vdp->vd_fd, VIDIOC_QUERYCAP, &cap)) {
 		if( errno == EINVAL ){
-			sprintf(ERROR_STRING, "%s is not a V4L2 device!?", vdp->vd_name);
+			snprintf(ERROR_STRING,LLEN, "%s is not a V4L2 device!?", vdp->vd_name);
 		} else {
-			sprintf(ERROR_STRING,"VIDIOC_QUERYCAP:  %s",strerror(errno));
+			snprintf(ERROR_STRING,LLEN,"VIDIOC_QUERYCAP:  %s",strerror(errno));
 		}
 		warn(ERROR_STRING);
 		return -1;
 	}
 
 	if(!(cap.capabilities & V4L2_CAP_VIDEO_CAPTURE)) {
-		sprintf(ERROR_STRING,"%s does not have video capture capability",vdp->vd_name);
+		snprintf(ERROR_STRING,LLEN,"%s does not have video capture capability",vdp->vd_name);
 		warn(ERROR_STRING);
 		return -1;
 	}
 
 	if(!(cap.capabilities & V4L2_CAP_STREAMING)) {
-		sprintf(ERROR_STRING,"%s does not support streaming i/o",vdp->vd_name);
+		snprintf(ERROR_STRING,LLEN,"%s does not support streaming i/o",vdp->vd_name);
 		warn(ERROR_STRING);
 		return -1;
 	}
@@ -617,7 +617,7 @@ static int _setup_video_format(QSP_ARG_DECL  Video_Device *vdp)
 	fmt.fmt.pix.field	= vfld_tbl[vfld_index].vfld_code;
 
 	if(-1 == xioctl(vdp->vd_fd, VIDIOC_S_FMT, &fmt)){
-		sprintf(ERROR_STRING,"VIDIOC_S_FMT:  %s",strerror(errno));
+		snprintf(ERROR_STRING,LLEN,"VIDIOC_S_FMT:  %s",strerror(errno));
 		warn(ERROR_STRING);
 		return -1;
 	}
@@ -636,7 +636,7 @@ static int _setup_video_format(QSP_ARG_DECL  Video_Device *vdp)
 
 	// read back to be sure!
 	if(-1 == xioctl(vdp->vd_fd, VIDIOC_G_FMT, &fmt)){
-		sprintf(ERROR_STRING,"VIDIOC_G_FMT:  %s",strerror(errno));
+		snprintf(ERROR_STRING,LLEN,"VIDIOC_G_FMT:  %s",strerror(errno));
 		warn(ERROR_STRING);
 		return -1;
 	}
@@ -690,9 +690,9 @@ static int _init_video_device(QSP_ARG_DECL  Video_Device *vdp, int fd)
 
 #define REPORT_FLAG(bit,set_string,clr_string)			\
 	if( flags & bit )					\
-		sprintf(msg_str,"\t\t0x%x\t%s",bit,set_string);	\
+		snprintf(msg_str,LLEN,"\t\t0x%x\t%s",bit,set_string);	\
 	else							\
-		sprintf(msg_str,"\t\t0x0\t%s",clr_string);	\
+		snprintf(msg_str,LLEN,"\t\t0x0\t%s",clr_string);	\
 	prt_msg(msg_str);					\
 	flags &= ~(bit);
 
@@ -703,9 +703,9 @@ static void _report_status(QSP_ARG_DECL  Video_Device *vdp)
 {
 	int flags;
 
-	sprintf(msg_str,"Device %s:",vdp->vd_name);
+	snprintf(msg_str,LLEN,"Device %s:",vdp->vd_name);
 	prt_msg(msg_str);
-	sprintf(msg_str,"\tFlags:\t0x%x",vdp->vd_flags);
+	snprintf(msg_str,LLEN,"\tFlags:\t0x%x",vdp->vd_flags);
 	prt_msg(msg_str);
 	flags = vdp->vd_flags;
 
@@ -718,7 +718,7 @@ static void _report_status(QSP_ARG_DECL  Video_Device *vdp)
 
 #ifdef CAUTIOUS
 	if( flags != 0 ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"CAUTIOUS:  report_status:  Flags for video device %s (0x%x) corrupted by unknown bits 0x%x!?",
 			vdp->vd_name,vdp->vd_flags,flags);
 		error1(ERROR_STRING);
@@ -781,13 +781,13 @@ int _start_capturing(QSP_ARG_DECL  Video_Device *vdp)
 	enum v4l2_buf_type type;
 
 	if( IS_CAPTURING( vdp ) ){
-		sprintf(ERROR_STRING,"start_capturing:  Video device %s is already capturing!?",vdp->vd_name);
+		snprintf(ERROR_STRING,LLEN,"start_capturing:  Video device %s is already capturing!?",vdp->vd_name);
 		warn(ERROR_STRING);
 		return -1;
 	}
 
 	if( verbose ){
-		sprintf(ERROR_STRING,"start_capturing:  starting video device %s.",vdp->vd_name);
+		snprintf(ERROR_STRING,LLEN,"start_capturing:  starting video device %s.",vdp->vd_name);
 		advise(ERROR_STRING);
 	}
 #ifdef QUIP_DEBUG
@@ -847,7 +847,7 @@ static inline int _wait_for_video_data(QSP_ARG_DECL  Video_Device *vdp)
 	}
 
 	if( r == 0 ) {
-		sprintf(ERROR_STRING, "select timeout");
+		snprintf(ERROR_STRING,LLEN, "select timeout");
 		warn(ERROR_STRING);
 		return -1;
 	}
@@ -886,14 +886,14 @@ bufp->index,(long)bufp,bufp->flags);
 
 #ifdef CAUTIOUS
 	if( bufp->index >= (unsigned int) vdp->vd_n_buffers ){
-		sprintf(ERROR_STRING,"CAUTIOUS:  Unexpected buffer number (%d) from VIDIOC_DQBUF, expected 0-%d",
+		snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  Unexpected buffer number (%d) from VIDIOC_DQBUF, expected 0-%d",
 			bufp->index,vdp->vd_n_buffers-1);
 		warn(ERROR_STRING);
 		return -1;
 	}
 #endif /* CAUTIOUS */
 
-sprintf(ERROR_STRING,"Buffer %d (of %d)  de-queued",bufp->index,vdp->vd_n_buffers);
+snprintf(ERROR_STRING,LLEN,"Buffer %d (of %d)  de-queued",bufp->index,vdp->vd_n_buffers);
 advise(ERROR_STRING);
 
 	return(0);
@@ -908,7 +908,7 @@ static void _get_next_frame(QSP_ARG_DECL  Video_Device *vdp)
 	struct v4l2_buffer buf;
 
 	if( ! IS_CAPTURING(vdp) ){
-		sprintf(ERROR_STRING,"get_next_frame:  Video device %s is not capturing!?",
+		snprintf(ERROR_STRING,LLEN,"get_next_frame:  Video device %s is not capturing!?",
 			vdp->vd_name);
 		warn(ERROR_STRING);
 		return;
@@ -1174,7 +1174,7 @@ int _check_queue_status(QSP_ARG_DECL  Video_Device *vdp)
 	int status;
 
 	if( ! IS_CAPTURING(vdp) ){
-		sprintf(ERROR_STRING,"check_queue_status:  Video device %s is not capturing!?",vdp->vd_name);
+		snprintf(ERROR_STRING,LLEN,"check_queue_status:  Video device %s is not capturing!?",vdp->vd_name);
 		warn(ERROR_STRING);
 		return -1;
 	}
@@ -1209,7 +1209,7 @@ int _stop_capturing(QSP_ARG_DECL  Video_Device *vdp)
 	enum v4l2_buf_type type;
 
 	if( ! IS_CAPTURING(vdp) ){
-		sprintf(ERROR_STRING,"stop_capturing:  Video device %s is not capturing!?",vdp->vd_name);
+		snprintf(ERROR_STRING,LLEN,"stop_capturing:  Video device %s is not capturing!?",vdp->vd_name);
 		warn(ERROR_STRING);
 		return -1;
 	}
@@ -1223,7 +1223,7 @@ int _stop_capturing(QSP_ARG_DECL  Video_Device *vdp)
 	vdp->vd_flags &= ~VD_CAPTURING;
 
 	if( verbose ){
-		sprintf(ERROR_STRING,"Video device %s has been stopped.",
+		snprintf(ERROR_STRING,LLEN,"Video device %s has been stopped.",
 			vdp->vd_name);
 		advise(ERROR_STRING);
 	}
@@ -1244,20 +1244,20 @@ static int _open_video_device(QSP_ARG_DECL  const char *dev_name)
 	/* first make sure this device is not already open */
 	vdp = video_dev_of(dev_name);
 	if( vdp != NO_VIDEO_DEVICE ){
-		sprintf(ERROR_STRING,"open_video_device:  device %s is already open!?",dev_name);
+		snprintf(ERROR_STRING,LLEN,"open_video_device:  device %s is already open!?",dev_name);
 		warn(ERROR_STRING);
 		return -1;
 	}
 
 	if( stat(dev_name, &st) < 0 ) {
-		sprintf(ERROR_STRING, "Cannot identify '%s': %d, %s\n",
+		snprintf(ERROR_STRING,LLEN, "Cannot identify '%s': %d, %s\n",
 			dev_name, errno, strerror( errno));
 		warn(ERROR_STRING);
 		return -1;
 	}
 
 	if( !S_ISCHR( st.st_mode)) {
-		sprintf(ERROR_STRING, "%s is no device\n", dev_name);
+		snprintf(ERROR_STRING,LLEN, "%s is no device\n", dev_name);
 		warn(ERROR_STRING);
 		return -1;
 	}
@@ -1265,7 +1265,7 @@ static int _open_video_device(QSP_ARG_DECL  const char *dev_name)
 	fd = open( dev_name, O_RDWR /* required */ | O_NONBLOCK, 0);
 
 	if( -1 == fd) {
-		sprintf(ERROR_STRING, "Cannot open '%s': %d, %s\n",
+		snprintf(ERROR_STRING,LLEN, "Cannot open '%s': %d, %s\n",
 			dev_name, errno, strerror( errno));
 		warn(ERROR_STRING);
 		return -1;
@@ -1274,7 +1274,7 @@ static int _open_video_device(QSP_ARG_DECL  const char *dev_name)
 	vdp = new_video_dev(dev_name);
 #ifdef CAUTIOUS
 	if( vdp == NO_VIDEO_DEVICE ){
-		sprintf(ERROR_STRING,"CAUTIOUS:  open_video_device:  unable to create new Video_Device struct for %s",dev_name);
+		snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  open_video_device:  unable to create new Video_Device struct for %s",dev_name);
 		warn(ERROR_STRING);
 		return -1;
 	}
@@ -1317,7 +1317,7 @@ static COMMAND_FUNC( do_open )
 
 	s=NAMEOF("video device");
 	if( open_video_device(s) < 0 ){
-		sprintf(ERROR_STRING,"Error opening video device %s",s);
+		snprintf(ERROR_STRING,LLEN,"Error opening video device %s",s);
 		warn(ERROR_STRING);
 	}
 }
@@ -1427,15 +1427,15 @@ static int _query_control(QSP_ARG_DECL  struct v4l2_queryctrl *ctlp)
 	/* the structure should now have the range of values... */
 	switch(ctlp->type){
 		case V4L2_CTRL_TYPE_INTEGER:
-			sprintf(ERROR_STRING,"%s, integer control %d - %d",ctlp->name,ctlp->minimum,ctlp->maximum); break;
+			snprintf(ERROR_STRING,LLEN,"%s, integer control %d - %d",ctlp->name,ctlp->minimum,ctlp->maximum); break;
 		case V4L2_CTRL_TYPE_MENU:
-			sprintf(ERROR_STRING,"%s, menu control",ctlp->name); break;
+			snprintf(ERROR_STRING,LLEN,"%s, menu control",ctlp->name); break;
 		case V4L2_CTRL_TYPE_BOOLEAN:
-			sprintf(ERROR_STRING,"%s, boolean control",ctlp->name); break;
+			snprintf(ERROR_STRING,LLEN,"%s, boolean control",ctlp->name); break;
 		case V4L2_CTRL_TYPE_BUTTON:
-			sprintf(ERROR_STRING,"%s, button control",ctlp->name); break;
+			snprintf(ERROR_STRING,LLEN,"%s, button control",ctlp->name); break;
 #ifdef CAUTIOUS
-		default: sprintf(ERROR_STRING,"CAUTIOUS:  unknown control"); break;
+		default: snprintf(ERROR_STRING,LLEN,"CAUTIOUS:  unknown control"); break;
 #endif /* CAUTIOUS */
 	}
 	advise(ERROR_STRING);
@@ -1457,21 +1457,21 @@ static void _set_integer_control(QSP_ARG_DECL uint32_t id)
 
 	ctrl.id = id;
 	if( ioctl(curr_vdp->vd_fd,VIDIOC_G_CTRL,&ctrl) < 0 ){
-		sprintf(ERROR_STRING,"error getting current %s setting",qry.name);
+		snprintf(ERROR_STRING,LLEN,"error getting current %s setting",qry.name);
 		warn(ERROR_STRING);
 		return;
 	}
-	sprintf(ERROR_STRING,"Current value of %s is %d",qry.name,ctrl.value);
+	snprintf(ERROR_STRING,LLEN,"Current value of %s is %d",qry.name,ctrl.value);
 	advise(ERROR_STRING);
 
 	/* BUG assumes integer control */
-	sprintf(prompt,"%s (%d - %d)",qry.name,qry.minimum,qry.maximum);
+	snprintf(prompt,LLEN,"%s (%d - %d)",qry.name,qry.minimum,qry.maximum);
 	v = HOW_MANY(prompt);
 
 	ctrl.value = v;
 
 	if( ioctl(curr_vdp->vd_fd,VIDIOC_S_CTRL,&ctrl) < 0 ){
-		sprintf(ERROR_STRING,"error getting current %s setting",qry.name);
+		snprintf(ERROR_STRING,LLEN,"error getting current %s setting",qry.name);
 		warn(ERROR_STRING);
 		return;
 	}
@@ -1489,7 +1489,7 @@ static int get_integer_control(QSP_ARG_DECL uint32_t id)
 
 	ctrl.id = id;
 	if( ioctl(curr_vdp->vd_fd,VIDIOC_G_CTRL,&ctrl) < 0 ){
-		sprintf(ERROR_STRING,"error getting current %s setting",qry.name);
+		snprintf(ERROR_STRING,LLEN,"error getting current %s setting",qry.name);
 		warn(ERROR_STRING);
 		return(0);
 	}
@@ -1517,13 +1517,13 @@ static int get_integer_control(QSP_ARG_DECL uint32_t id)
 
 #define _NO_V4L2_MSG(label,value)					\
 									\
-	sprintf(ERROR_STRING,						\
+	snprintf(ERROR_STRING,LLEN,						\
 	"program not configured with V4L2 support, can't set %s to %d!?",label,value);	\
 	warn(ERROR_STRING);
 
 #define NO_V4L2_MSG2(label,string)					\
 									\
-	sprintf(ERROR_STRING,						\
+	snprintf(ERROR_STRING,LLEN,						\
 	"program not configured with V4L2 support, can't set %s to %s!?",label,string);	\
 	warn(ERROR_STRING);
 
@@ -1561,7 +1561,7 @@ static void do_get_control( QSP_ARG_DECL const char *varname, int ctl_index )
 
 	CHECK_DEVICE(get_control)
 	v=get_integer_control(QSP_ARG ctl_index);
-	sprintf(msg_str,"%d",v);
+	snprintf(msg_str,LLEN,"%d",v);
 	assign_var(varname,msg_str);
 }
 #endif // HAVE_V4L2
@@ -1798,11 +1798,11 @@ static void _set_standard( QSP_ARG_DECL  int id )
 	        exit (EXIT_FAILURE);
 	}
 
-//sprintf(ERROR_STRING,"set_standard:  input.std = 0x%lx",input.std);
+//snprintf(ERROR_STRING,LLEN,"set_standard:  input.std = 0x%lx",input.std);
 ////advise(ERROR_STRING);
 
 	if( (input.std & id) == 0 ){
-		sprintf(ERROR_STRING,"Oops, %s input does not support requested standard",
+		snprintf(ERROR_STRING,LLEN,"Oops, %s input does not support requested standard",
 			input.name);
 		warn(ERROR_STRING);
 		return;
@@ -1992,7 +1992,7 @@ fprintf(stderr,"v4l2_init performing one-time initializations\n");
 #endif // QUIP_DEBUG
 
 #ifdef HAVE_RAWVOL
-	if( insure_default_rv(SINGLE_QSP_ARG) < 0 ){
+	if( ensure_default_rv(SINGLE_QSP_ARG) < 0 ){
 		warn("error opening default raw volume");
 	} else {
 		/* create movie structs for any existing rv files */

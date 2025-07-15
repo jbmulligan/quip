@@ -123,7 +123,8 @@ void set_alarm_time(QSP_ARG_DECL  float f)
 		dispatch_resume( qap.timer );
 		qap.ticking = YES;	// BUG? race problem???
 	} else {
-		sprintf(ERROR_STRING,"set_alarm_time:  please specify alarm script before setting alarm time");
+		snprintf(ERROR_STRING,LLEN,
+"set_alarm_time:  please specify alarm script before setting alarm time");
 		WARN(ERROR_STRING);
 	}
 }

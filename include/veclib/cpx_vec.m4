@@ -6,9 +6,9 @@ my_include(`veclib/cpx_args.m4')
 
 // for debugging...
 define(`SHOW_CPX_3',
-	sprintf(error_string,"csrc1 = %g  %g",csrc1.re,csrc1.im);
+	snprintf(error_string,LLEN,"csrc1 = %g  %g",csrc1.re,csrc1.im);
 	advise(error_string);
-	sprintf(error_string,"csrc2 = %g  %g",csrc2.re,csrc2.im);
+	snprintf(error_string,LLEN,"csrc2 = %g  %g",csrc2.re,csrc2.im);
 	advise(error_string);
 )
 

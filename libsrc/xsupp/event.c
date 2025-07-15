@@ -195,7 +195,7 @@ static int _HandleEvent( QSP_ARG_DECL  XEvent *event, int *donep )
 	int done=0, retval=0;
 	Viewer *vp;
 	Window win;
-	char string[256];
+	char string[LLEN];
 	int x,y;
 	Canvas_Event_Code ce_code=CE_INVALID_CODE;
 
@@ -238,7 +238,7 @@ static int _HandleEvent( QSP_ARG_DECL  XEvent *event, int *donep )
 				 */
 #ifdef QUIP_DEBUG
 if( debug & xdebug ){
-sprintf(ERROR_STRING,"redrawing viewer %s after expose event",vp->vw_name);
+snprintf(ERROR_STRING,LLEN,"redrawing viewer %s after expose event",vp->vw_name);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -266,7 +266,7 @@ advise(ERROR_STRING);
 				switch(button_number){
 					// Sometimes this happens on the mac???
 					case 0:
-						sprintf(DEFAULT_ERROR_STRING,
+						snprintf(DEFAULT_ERROR_STRING,LLEN,
 				"Huh?  Button press with button number 0!?");
 						advise(DEFAULT_ERROR_STRING);
 						// just return for now
@@ -295,7 +295,7 @@ advise(ERROR_STRING);
 			} else {	// ButtonRelease
 				switch(button_number){
 					case 0:
-						sprintf(DEFAULT_ERROR_STRING,
+						snprintf(DEFAULT_ERROR_STRING,LLEN,
 				"Huh?  Button release with button number 0!?");
 						advise(DEFAULT_ERROR_STRING);
 						// just return for now
@@ -331,20 +331,20 @@ advise(ERROR_STRING);
 
 			if( y < 0 ) {
 if( verbose ){
-sprintf(ERROR_STRING,"HandleEvent 2:  clipping y value %d from below at 0",y);
+snprintf(ERROR_STRING,LLEN,"HandleEvent 2:  clipping y value %d from below at 0",y);
 advise(ERROR_STRING);
 }
 				y=0;
 			} else if( y >= vp->vw_height ){
 if( verbose ){
-sprintf(ERROR_STRING,"HandleEvent 2:  clipping y value %d from above at %d",y,vp->vw_height-1);
+snprintf(ERROR_STRING,LLEN,"HandleEvent 2:  clipping y value %d from above at %d",y,vp->vw_height-1);
 advise(ERROR_STRING);
 }
 				y=vp->vw_height-1;
 			}
-			sprintf(string,"%d",x);
+			snprintf(string,LLEN,"%d",x);
 			assign_reserved_var("view_xpos",string);
-			sprintf(string,"%d",y);
+			snprintf(string,LLEN,"%d",y);
 			assign_reserved_var("view_ypos",string);
 
 			win = event->xbutton.window;
@@ -381,11 +381,11 @@ advise(ERROR_STRING);
 						 * when using the touchpad... ???
 						 */
 						if( verbose ){
-							sprintf(ERROR_STRING,"Ignoring event w/ button #0");
+							snprintf(ERROR_STRING,LLEN,"Ignoring event w/ button #0");
 							advise(ERROR_STRING);
 						}
 					} else {
-						sprintf(ERROR_STRING,
+						snprintf(ERROR_STRING,LLEN,
 						"wacky button number %d",button_number);
 						warn(ERROR_STRING);
 					}
@@ -425,7 +425,7 @@ advise(ERROR_STRING);
 			vp->vw_flags |= VIEW_MAPPED;
 #ifdef QUIP_DEBUG
 if( debug & xdebug ){
-sprintf(ERROR_STRING,"redrawing viewer %s after MapNotify event",vp->vw_name);
+snprintf(ERROR_STRING,LLEN,"redrawing viewer %s after MapNotify event",vp->vw_name);
 advise(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -474,26 +474,26 @@ adjust_event:
 			 */
 			if( y < 0 ) {
 if( verbose ){
-sprintf(ERROR_STRING,"HandleEvent:  clipping y value %d from below at 0",y);
+snprintf(ERROR_STRING,LLEN,"HandleEvent:  clipping y value %d from below at 0",y);
 advise(ERROR_STRING);
 }
 				y=0;
 			} else if( y >= vp->vw_height ){
 if( verbose ){
-sprintf(ERROR_STRING,"HandleEvent:  clipping y value %d from above at %d",y,vp->vw_height-1);
+snprintf(ERROR_STRING,LLEN,"HandleEvent:  clipping y value %d from above at %d",y,vp->vw_height-1);
 advise(ERROR_STRING);
 }
 				y=vp->vw_height-1;
 			}
 
-			sprintf(string,"%d",x);
+			snprintf(string,LLEN,"%d",x);
 			assign_reserved_var("view_xpos",string);
-			sprintf(string,"%d",y);
+			snprintf(string,LLEN,"%d",y);
 			assign_reserved_var("view_ypos",string);
 
-			sprintf(string,"%d",button_number);
+			snprintf(string,LLEN,"%d",button_number);
 			assign_reserved_var("button",string);
-			sprintf(string,"%d", event->type);
+			snprintf(string,LLEN,"%d", event->type);
 			assign_reserved_var("event_type",string);
 
 			chew_text(vp->vw_text,"(button motion event)");
@@ -572,7 +572,7 @@ VW_X(vp),VW_Y(vp),VW_X_REQUESTED(vp),VW_Y_REQUESTED(vp));
 #ifdef FOOBAR
 #ifdef QUIP_DEBUG
 if( debug & xdebug ){
-sprintf(ERROR_STRING,"do-nothing event type %d",event->type);
+snprintf(ERROR_STRING,LLEN,"do-nothing event type %d",event->type);
 warn(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -586,7 +586,7 @@ warn(ERROR_STRING);
 fprintf(stderr,"enter/leave event type %d\n",event->type);
 #ifdef QUIP_DEBUG
 if( debug ){
-sprintf(ERROR_STRING,"enter/leave event type %d",event->type);
+snprintf(ERROR_STRING,LLEN,"enter/leave event type %d",event->type);
 warn(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -595,7 +595,7 @@ warn(ERROR_STRING);
 		case 14:
 #ifdef QUIP_DEBUG
 if( debug ){
-sprintf(ERROR_STRING,"mysterious event14 type %d",event->type);
+snprintf(ERROR_STRING,LLEN,"mysterious event14 type %d",event->type);
 warn(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
@@ -607,7 +607,7 @@ warn(ERROR_STRING);
 			ks_len = XLookupString((XKeyEvent *)event,
 				keystr,KEYBYTES,NULL,NULL);
 			if( ks_len > 1 ){
-				sprintf(ERROR_STRING,"keystring has length %d",
+				snprintf(ERROR_STRING,LLEN,"keystring has length %d",
 					ks_len);
 				warn(ERROR_STRING);
 			} else if( ks_len == 0 ){
@@ -638,11 +638,11 @@ warn(ERROR_STRING);
 		default: 
 #ifdef QUIP_DEBUG
 if( debug ){
-sprintf(ERROR_STRING,"uncaught event type %d",event->type);
+snprintf(ERROR_STRING,LLEN,"uncaught event type %d",event->type);
 warn(ERROR_STRING);
 }
 #endif /* QUIP_DEBUG */
-sprintf(ERROR_STRING,"uncaught event type %d",event->type);
+snprintf(ERROR_STRING,LLEN,"uncaught event type %d",event->type);
 warn(ERROR_STRING);
 			break;		/* ignore unexpected events */
 	}

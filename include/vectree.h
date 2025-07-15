@@ -36,10 +36,10 @@ extern Keyword ml_native_func_tbl[];
 #define VERIFY_DATA_TYPE( enp , type , where )				\
 									\
 if( VN_DATA_TYPE(enp) != type ){					\
-	sprintf(ERROR_STRING,						\
+	snprintf(ERROR_STRING,LLEN,					\
 "CAUTIOUS:  %s:  %s has data type code %d (%s), expected %d (%s)",	\
 	where, node_desc(enp),VN_DATA_TYPE(enp),			\
-	node_data_type_desc(VN_DATA_TYPE(enp)),	\
+	node_data_type_desc(VN_DATA_TYPE(enp)),				\
 				type,node_data_type_desc(type));	\
 	error1(ERROR_STRING);						\
 }
@@ -390,7 +390,7 @@ extern void		_early_calltime_resolve(QSP_ARG_DECL  Subrt *srp, Vec_Expr_Node *ar
 #define early_calltime_resolve(srp,enp,dst_dp)	_early_calltime_resolve(QSP_ARG srp,enp,dst_dp)
 
 /* ml_supp.c */
-void insure_object_size(QSP_ARG_DECL  Data_Obj *dp,index_t index);
+void ensure_object_size(QSP_ARG_DECL  Data_Obj *dp,index_t index);
 
 /* evaltree.c */
 

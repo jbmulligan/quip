@@ -303,7 +303,7 @@ dnl		/* Clear the flag */
 	} while( h_flag );
 
 	if( verbose ){
-		sprintf(DEFAULT_ERROR_STRING,"Fill completed after %d iterations",n_iterations);
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"Fill completed after %d iterations",n_iterations);
 		NADVISE(DEFAULT_ERROR_STRING);
 	}
 }
@@ -374,7 +374,7 @@ dnl	// Fill the seed point
 
 
 	if( verbose ){
-		sprintf(DEFAULT_ERROR_STRING,"Fill completed after %d iterations",n_iterations);
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"Fill completed after %d iterations",n_iterations);
 		NADVISE(DEFAULT_ERROR_STRING);
 	}
 }

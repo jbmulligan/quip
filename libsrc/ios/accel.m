@@ -91,10 +91,10 @@ static COMMAND_FUNC( do_read_accel )
 
 	// used to keep filtered values in accel array, but without regular
 	// time sampling that makes no sense...
-	//sprintf(ERROR_STRING,"accel:  %g %g %g	  %g %g %g\n",
+	//snprintf(ERROR_STRING,LLEN,"accel:  %g %g %g	  %g %g %g\n",
 	//	a->x,a->y,a->z,
 	//	accel[0],accel[1],accel[2]);
-	sprintf(ERROR_STRING,"accel:  %g %g %g\n",
+	snprintf(ERROR_STRING,LLEN,"accel:  %g %g %g\n",
 		d.acceleration.x,d.acceleration.y,d.acceleration.z);
 	advise(ERROR_STRING);
 

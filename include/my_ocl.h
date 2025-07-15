@@ -73,9 +73,9 @@ extern cl_kernel _ocl_create_kernel(QSP_ARG_DECL  cl_program program,
 extern void * _ocl_make_kernel( QSP_ARG_DECL  const char *src, const char *name, Platform_Device *pdp );
 #define ocl_make_kernel(src,name,pdp) _ocl_make_kernel(QSP_ARG  src,name,pdp )
 
-extern void _insure_ocl_device(QSP_ARG_DECL  Data_Obj *dp);
+extern void _ensure_ocl_device(QSP_ARG_DECL  Data_Obj *dp);
 
-#define insure_ocl_device(dp) _insure_ocl_device(QSP_ARG  dp)
+#define ensure_ocl_device(dp) _ensure_ocl_device(QSP_ARG  dp)
 
 extern void h_ocl_set_seed(int seed);
 

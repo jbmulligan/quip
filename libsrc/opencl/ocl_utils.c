@@ -102,12 +102,12 @@ ERROR_CASE( CL_INVALID_DEVICE_PARTITION_COUNT,	"invalid device partition count"	
 
 		default:
 			msg="unhandled";
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"report_ocl_error:  Unhandled error code %d (0x%x)!?",status,status);
 			WARN(ERROR_STRING);
 			break;
 	}
-	sprintf(ERROR_STRING,"%s:  %s",whence,msg);
+	snprintf(ERROR_STRING,LLEN,"%s:  %s",whence,msg);
 	WARN(ERROR_STRING);
 }
 
@@ -279,23 +279,23 @@ static void display_dev_param(QSP_ARG_DECL  OCL_Dev_Param_Spec *psp,
 	if( status != CL_SUCCESS ){
 		switch(status){
 			case CL_INVALID_DEVICE:
-				sprintf(MSG_STR,"\t%s:  %s",PS_NAME(psp), "invalid device");
+				snprintf(MSG_STR,LLEN,"\t%s:  %s",PS_NAME(psp), "invalid device");
 				prt_msg(MSG_STR);
 				return;
 			case CL_INVALID_VALUE:
-				sprintf(MSG_STR,"\t%s:  %s",PS_NAME(psp), "invalid value");
+				snprintf(MSG_STR,LLEN,"\t%s:  %s",PS_NAME(psp), "invalid value");
 				prt_msg(MSG_STR);
 				return;
 			case CL_OUT_OF_RESOURCES:
-				sprintf(MSG_STR,"\t%s:  %s",PS_NAME(psp), "out of resources");
+				snprintf(MSG_STR,LLEN,"\t%s:  %s",PS_NAME(psp), "out of resources");
 				prt_msg(MSG_STR);
 				return;
 			case CL_OUT_OF_HOST_MEMORY:
-				sprintf(MSG_STR,"\t%s:  %s",PS_NAME(psp), "out of host memory");
+				snprintf(MSG_STR,LLEN,"\t%s:  %s",PS_NAME(psp), "out of host memory");
 				prt_msg(MSG_STR);
 				return;
 			default:
-				sprintf(MSG_STR,"\t%s:  %s",PS_NAME(psp), "unhandled error");
+				snprintf(MSG_STR,LLEN,"\t%s:  %s",PS_NAME(psp), "unhandled error");
 				prt_msg(MSG_STR);
 				report_ocl_error(status,"clGetDeviceInfo");
 				return;
@@ -306,31 +306,31 @@ static void display_dev_param(QSP_ARG_DECL  OCL_Dev_Param_Spec *psp,
 		case PS_UINT:
 			// cl_uint
 			uip = (cl_uint *) param_data;
-			sprintf(MSG_STR,"\t%s:  %d",PS_NAME(psp),*uip);
+			snprintf(MSG_STR,LLEN,"\t%s:  %d",PS_NAME(psp),*uip);
 			prt_msg(MSG_STR);
 			break;
 		case PS_BOOL:
 			// cl_bool
 			bp = (cl_bool *) param_data;
-			sprintf(MSG_STR,"\t%s:  %s",PS_NAME(psp),
+			snprintf(MSG_STR,LLEN,"\t%s:  %s",PS_NAME(psp),
 				(*bp)?"yes":"no");
 			prt_msg(MSG_STR);
 			break;
 		case PS_STR:
 			// char[]
-			sprintf(MSG_STR,"\t%s:  %s",PS_NAME(psp), (char *) param_data);
+			snprintf(MSG_STR,LLEN,"\t%s:  %s",PS_NAME(psp), (char *) param_data);
 			prt_msg(MSG_STR);
 			break;
 		case PS_UL:
 			// cl_ulong
 			ulp = (cl_ulong *) param_data;
-			sprintf(MSG_STR,"\t%s:  %llu",PS_NAME(psp),*ulp);
+			snprintf(MSG_STR,LLEN,"\t%s:  %llu",PS_NAME(psp),*ulp);
 			prt_msg(MSG_STR);
 			break;
 		case PS_SIZ:
 			// size_t
 			szp = (size_t *) param_data;
-			sprintf(MSG_STR,"\t%s:  %ld",PS_NAME(psp),*szp);
+			snprintf(MSG_STR,LLEN,"\t%s:  %ld",PS_NAME(psp),*szp);
 			prt_msg(MSG_STR);
 			break;
 
@@ -345,7 +345,7 @@ static void display_dev_param(QSP_ARG_DECL  OCL_Dev_Param_Spec *psp,
 			CHECK_BIT(CL_DEVICE_TYPE_ACCELERATOR,accelerator)
 			CHECK_BIT(CL_DEVICE_TYPE_DEFAULT,default)
 			CHECK_BIT(CL_DEVICE_TYPE_CUSTOM,custom)
-			sprintf(MSG_STR,"\t%s:  %s",PS_NAME(psp),str);
+			snprintf(MSG_STR,LLEN,"\t%s:  %s",PS_NAME(psp),str);
 			prt_msg(MSG_STR);
 
 			break;
@@ -362,12 +362,12 @@ static void display_dev_param(QSP_ARG_DECL  OCL_Dev_Param_Spec *psp,
 			// cl_device_fp_config (enum)
 		case PS_EXCAP:
 			// cl_device_exec_capabilities (enum)
-			sprintf(MSG_STR,"\t%s:  %s",PS_NAME(psp),
+			snprintf(MSG_STR,LLEN,"\t%s:  %s",PS_NAME(psp),
 				"unhandled type case");
 			prt_msg(MSG_STR);
 			break;
 		default:
-			sprintf(ERROR_STRING,
+			snprintf(ERROR_STRING,LLEN,
 	"CAUTIOUS:  display_dev_param:  unexpected parameter type (%d)!?",
 				PS_TYPE(psp));
 			WARN(ERROR_STRING);
@@ -386,7 +386,7 @@ static void display_dev_params(QSP_ARG_DECL  Platform_Device *pdp, OCL_Dev_Param
 
 static void print_pfdev_info_short(QSP_ARG_DECL  Platform_Device *pdp)
 {
-	sprintf(MSG_STR,"Device %s (%s platform):",PFDEV_NAME(pdp),PLATFORM_NAME(PFDEV_PLATFORM(pdp)));
+	snprintf(MSG_STR,LLEN,"Device %s (%s platform):",PFDEV_NAME(pdp),PLATFORM_NAME(PFDEV_PLATFORM(pdp)));
 	prt_msg(MSG_STR);
 	display_dev_params(QSP_ARG  pdp,dev_param_tbl_short,N_DEV_PARAMS_SHORT);
 }
@@ -416,14 +416,14 @@ static const char *load_file(QSP_ARG_DECL  const char *pathname, size_t *len)
 	char *buf=NULL;
 
  	if( ! path_exists(QSP_ARG  pathname) ){
-		sprintf(ERROR_STRING,"load_file:  file %s does not exist!?",pathname);
+		snprintf(ERROR_STRING,LLEN,"load_file:  file %s does not exist!?",pathname);
 		WARN(ERROR_STRING);
 		goto done;
 	}
 
  	siz = file_content_size(QSP_ARG  pathname);
 	if( siz == (off_t) -1 ){
-		sprintf(ERROR_STRING,"load_file:  couldn't determine size of file %s!?",pathname);
+		snprintf(ERROR_STRING,LLEN,"load_file:  couldn't determine size of file %s!?",pathname);
 		WARN(ERROR_STRING);
 		goto done;
 	}
@@ -434,7 +434,7 @@ static const char *load_file(QSP_ARG_DECL  const char *pathname, size_t *len)
 	buf = getbuf(siz);
 	n_read = fread( buf, 1, siz, fp );
 	if( n_read != siz ){
-		sprintf(ERROR_STRING,"load_file %s:  read error, expected %ld bytes, got %ld!?",
+		snprintf(ERROR_STRING,LLEN,"load_file %s:  read error, expected %ld bytes, got %ld!?",
 			pathname,siz,n_read);
 		WARN(ERROR_STRING);
 		givbuf(buf);
@@ -576,14 +576,14 @@ cl_kernel _ocl_create_kernel(QSP_ARG_DECL  cl_program program,
 
 	//create a kernel object with specified name
 	if( verbose ){
-		sprintf(ERROR_STRING,"ocl_create_kernel:  creating kernel with name '%s'\n",name);
+		snprintf(ERROR_STRING,LLEN,"ocl_create_kernel:  creating kernel with name '%s'\n",name);
 		advise(ERROR_STRING);
 	}
 	kernel = clCreateKernel(program, name, &status);
 	if( status != CL_SUCCESS ){
 		report_ocl_error(status,"clCreateKernel");
 		if( status == CL_INVALID_KERNEL_NAME ){
-			sprintf(ERROR_STRING,"Name:  \"%s\"",name);
+			snprintf(ERROR_STRING,LLEN,"Name:  \"%s\"",name);
 			advise(ERROR_STRING);
 		}
 		return NULL;

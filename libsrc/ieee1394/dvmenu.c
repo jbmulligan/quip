@@ -216,7 +216,7 @@ static void dv_grab(QSP_ARG_DECL  int n)
 
 	if( grab_lp == NULL ) grab_lp = new_list();
 
-//sprintf(DEFAULT_ERROR_STRING,"Setting up to capture %d frames",n);
+//snprintf(DEFAULT_ERROR_STRING,LLEN,"Setting up to capture %d frames",n);
 //advise(DEFAULT_ERROR_STRING);
 	setup_capture();
 	while( (n > 0) && (g_reader_active == TRUE) ){
@@ -232,7 +232,7 @@ static void dv_grab(QSP_ARG_DECL  int n)
 advise("no next frame!?");
 			break;
 		}
-//sprintf(DEFAULT_ERROR_STRING,"after GetNextFrame, reader_active == %d",g_reader_active);
+//snprintf(DEFAULT_ERROR_STRING,LLEN,"after GetNextFrame, reader_active == %d",g_reader_active);
 //advise(DEFAULT_ERROR_STRING);
 		if (IsComplete(frmp)) {
 			Node *np;
@@ -264,14 +264,14 @@ advise("incomplete frame, done...");
 		// the output_buffer is not empty. - brollyx
 		IncreaseBufferQueue();
 
-//sprintf(DEFAULT_ERROR_STRING,"bottom of loop, reader_active == %d",g_reader_active);
+//snprintf(DEFAULT_ERROR_STRING,LLEN,"bottom of loop, reader_active == %d",g_reader_active);
 //advise(DEFAULT_ERROR_STRING);
 	}
 	if( n == 0 ) {
 		g_reader_active=FALSE;
 		g_alldone = TRUE;
 	} else {
-		sprintf(DEFAULT_ERROR_STRING,"dv_grab:  reader_active set FALSE, with n = %d",n);
+		snprintf(DEFAULT_ERROR_STRING,LLEN,"dv_grab:  reader_active set FALSE, with n = %d",n);
 		advise(DEFAULT_ERROR_STRING);
 	}
 	/* BUG need to stop reader here */
@@ -347,7 +347,7 @@ advise("reader is not active...");
 
 		GetTimeCode(frmp,&timeCode);
 		GetRecordingDateTime(frmp,&recDate);
-		sprintf( ERROR_STRING, "buffer underrun near: timecode %2.2d:%2.2d:%2.2d.%2.2d date %4.4d.%2.2d.%2.2d %2.2d:%2.2d:%2.2d\n",
+		snprintf( ERROR_STRING,LLEN, "buffer underrun near: timecode %2.2d:%2.2d:%2.2d.%2.2d date %4.4d.%2.2d.%2.2d %2.2d:%2.2d:%2.2d\n",
 			timeCode.hour, timeCode.min, timeCode.sec, timeCode.frame,
 			recDate.tm_year + 1900, recDate.tm_mon + 1, recDate.tm_mday,
 			recDate.tm_hour, recDate.tm_min, recDate.tm_sec);
@@ -365,7 +365,7 @@ advise("reader is not active...");
 
 		GetTimeCode(frmp,&timeCode);
 		GetRecordingDateTime(frmp,&recDate);
-		sprintf( ERROR_STRING, "frame dropped: timecode %2.2d:%2.2d:%2.2d.%2.2d date %4.4d.%2.2d.%2.2d %2.2d:%2.2d:%2.2d\n",
+		snprintf( ERROR_STRING,LLEN, "frame dropped: timecode %2.2d:%2.2d:%2.2d.%2.2d date %4.4d.%2.2d.%2.2d %2.2d:%2.2d:%2.2d\n",
 			timeCode.hour, timeCode.min, timeCode.sec, timeCode.frame,
 			recDate.tm_year + 1900, recDate.tm_mon + 1, recDate.tm_mday,
 			recDate.tm_hour, recDate.tm_min, recDate.tm_sec);
@@ -427,7 +427,7 @@ static COMMAND_FUNC( do_dv_grab )
 	}
 	dv_grab(QSP_ARG  n);
 
-	sprintf(msg_str,"%d frames grabbed",eltcount(grab_lp));
+	snprintf(msg_str,LLEN,"%d frames grabbed",eltcount(grab_lp));
 	prt_msg(msg_str);
 }
 
@@ -436,11 +436,11 @@ static COMMAND_FUNC( do_dv_info )
 	int n;
 
 	n=eltcount(g_output_queue);
-	sprintf(msg_str,"Output queue has %d frames",n);
+	snprintf(msg_str,LLEN,"Output queue has %d frames",n);
 	prt_msg(msg_str);
 
 	n=eltcount(grab_lp);
-	sprintf(msg_str,"Grab list has %d frames",n);
+	snprintf(msg_str,LLEN,"Grab list has %d frames",n);
 	prt_msg(msg_str);
 }
 
@@ -458,7 +458,7 @@ static COMMAND_FUNC( do_dv_extract )
 	if( np == NULL ) return;
 	frmp = (Frame *)np->n_data;
 	// BUG check the size, type, contiguity here
-//sprintf(ERROR_STRING,"do_dv_extract:  frame %d, frmp = 0x%lx",n,(u_long)frmp);
+//snprintf(ERROR_STRING,LLEN,"do_dv_extract:  frame %d, frmp = 0x%lx",n,(u_long)frmp);
 //advise(ERROR_STRING);
 
 	ExtractHeader(frmp);

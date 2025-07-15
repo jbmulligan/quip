@@ -88,7 +88,7 @@ static void setup_generic_macro_arg(Macro_Arg *map, int idx)
 {
 	char str[32];
 	map->ma_itp=NULL;		// default
-	sprintf(str,"argument %d",idx+1);
+	snprintf(str,32,"argument %d",idx+1);
 	map->ma_prompt = savestr(str);	// memory leak?  BUG?  where freed?
 }
 

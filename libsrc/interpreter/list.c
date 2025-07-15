@@ -28,13 +28,13 @@ int n_active_threads=0;
 
 void report_node_data(SINGLE_QSP_ARG_DECL)
 {
-        sprintf(ERROR_STRING,"%ld nodes allocated",total_nodes);
+        snprintf(ERROR_STRING,LLEN,"%ld nodes allocated",total_nodes);
         advise(ERROR_STRING);
 
         if( free_node_list == NULL )
                 advise("no nodes freed");
         else {
-                sprintf(ERROR_STRING,
+                snprintf(ERROR_STRING,LLEN,
                         "%d free nodes available",eltcount(free_node_list));
                 advise(ERROR_STRING);
         }
@@ -42,7 +42,7 @@ void report_node_data(SINGLE_QSP_ARG_DECL)
         if( free_list_list == NULL )
                 advise("no lists freed");
         else {
-                sprintf(ERROR_STRING,
+                snprintf(ERROR_STRING,LLEN,
                         "%d free lists available",eltcount(free_list_list));
                 advise(ERROR_STRING);
         }
@@ -205,7 +205,7 @@ void rls_node(Node *np)
 {
 #ifdef QUIP_DEBUG
 //if( debug & node_debug ){
-//sprintf(DEFAULT_ERROR_STRING,"releasing node 0x%lx",(u_long)np);
+//snprintf(DEFAULT_ERROR_STRING,LLEN,"releasing node 0x%lx",(u_long)np);
 //NADVISE(DEFAULT_ERROR_STRING);
 //}
 #endif /* QUIP_DEBUG */
@@ -239,14 +239,14 @@ static Node *newnode(void)			/**/
 
 #ifdef QUIP_DEBUG
 //if( debug & node_debug ){
-//sprintf(DEFAULT_ERROR_STRING,"allocating memory for %d more nodes (old total=%ld)",
+//snprintf(DEFAULT_ERROR_STRING,LLEN,"allocating memory for %d more nodes (old total=%ld)",
 //n_per_page,total_nodes);
 //NADVISE(DEFAULT_ERROR_STRING);
 //}
 #endif /* QUIP_DEBUG */
 		np = (Node *) malloc( n_per_page * sizeof(Node) );
 		if( np == NULL ){
-			sprintf(DEFAULT_ERROR_STRING,
+			snprintf(DEFAULT_ERROR_STRING,LLEN,
 				"no more memory for nodes (%ld allocated)",
 				total_nodes);
 			NERROR1(DEFAULT_ERROR_STRING);
@@ -271,7 +271,7 @@ static Node *newnode(void)			/**/
 	np->n_data = NULL;
 #ifdef QUIP_DEBUG
 //if( debug & node_debug ){
-//sprintf(DEFAULT_ERROR_STRING,"newnode:  np = 0x%lx",(u_long)np);
+//snprintf(DEFAULT_ERROR_STRING,LLEN,"newnode:  np = 0x%lx",(u_long)np);
 //NADVISE(DEFAULT_ERROR_STRING);
 //}
 #endif /* QUIP_DEBUG */
@@ -583,7 +583,7 @@ void p_sort( List* lp )		/** sort list with highest priority at head */
 		while( NODE_NEXT(np) != NULL && np!=_LIST_TAIL(lp) ){
 			if( NODE_NEXT(np)->n_pri > np->n_pri ){
 /*
-sprintf(ERROR_STRING,"exchanging nodes w/ priorities %d, %d",
+snprintf(ERROR_STRING,LLEN,"exchanging nodes w/ priorities %d, %d",
 NODE_NEXT(np)->n_pri,np->n_pri);
 NADVISE(ERROR_STRING);
 */
@@ -591,7 +591,7 @@ NADVISE(ERROR_STRING);
 				done=0;
 			} else {
 /*
-sprintf(ERROR_STRING,"leaving node w/ pri %d",np->n_pri);
+snprintf(ERROR_STRING,LLEN,"leaving node w/ pri %d",np->n_pri);
 NADVISE(ERROR_STRING);
 */
 				np=NODE_NEXT(np);

@@ -50,10 +50,25 @@
 // 24 chars total, subtract 6 for spaces and parens leaves 18, or 6 digits per... is that enough?
 // NOT if we need 6 more characters for hex!?
 // used to be %-24d and %-24f
-#define INT_NODE_DEC_FMT_STR	"%-6ld (%-6ld - %-6ld)"
-#define INT_NODE_HEX_FMT_STR	"0x%-6lx (0x%-6lx - 0x%-6lx)"
+#define INT_NODE_DEC_FMT_STR	"%-6lld (%-6lld - %-6lld)"
+#define INT_NODE_HEX_FMT_STR	"0x%-6llx (0x%-6llx - 0x%-6llx)"
 #define FLT_NODE_FMT_STR	"%-6f (%-6f - %-6f)"
 #define STRING_NODE_FMT_STR	"%-24s"
+
+#define IMAGE_NO_ERROR	0
+
+// These definitions are for backwards (forward?) compatibility?
+#define GENICAM_ERR_INVALID_ARGUMENT	SPINNAKER_ERR_GENICAM_INVALID_ARGUMENT
+#define GENICAM_ERR_OUT_OF_RANGE	SPINNAKER_ERR_GENICAM_OUT_OF_RANGE
+#define GENICAM_ERR_PROPERTY		SPINNAKER_ERR_GENICAM_PROPERTY
+#define GENICAM_ERR_RUN_TIME		SPINNAKER_ERR_GENICAM_RUN_TIME
+#define GENICAM_ERR_LOGICAL		SPINNAKER_ERR_GENICAM_LOGICAL
+#define GENICAM_ERR_ACCESS		SPINNAKER_ERR_GENICAM_ACCESS
+#define GENICAM_ERR_TIMEOUT		SPINNAKER_ERR_GENICAM_TIMEOUT
+#define GENICAM_ERR_DYNAMIC_CAST	SPINNAKER_ERR_GENICAM_DYNAMIC_CAST
+#define GENICAM_ERR_GENERIC		SPINNAKER_ERR_GENICAM_GENERIC
+#define GENICAM_ERR_BAD_ALLOCATION	SPINNAKER_ERR_GENICAM_BAD_ALLOCATION
+
 
 // a couple of globals...
 #ifdef HAVE_LIBSPINNAKER
@@ -305,6 +320,7 @@ ITEM_INTERFACE_PROTOTYPES(Spink_Cam,spink_cam)
 #define list_spink_cams(fp)	_list_spink_cams(QSP_ARG  fp)
 #define pick_spink_cam(s)	_pick_spink_cam(QSP_ARG  s)
 #define spink_cam_list()	_spink_cam_list(SINGLE_QSP_ARG)
+#define init_spink_cams()	_init_spink_cams(SINGLE_QSP_ARG)
 
 /* flag bits */
 
@@ -393,8 +409,8 @@ extern void _report_spink_error(QSP_ARG_DECL  spinError error, const char *whenc
 
 // spink_node_map.c
 
-extern void _insure_current_camera(QSP_ARG_DECL  Spink_Cam *skc_p);
-#define insure_current_camera(skc_p) _insure_current_camera(QSP_ARG  skc_p)
+extern void _ensure_current_camera(QSP_ARG_DECL  Spink_Cam *skc_p);
+#define ensure_current_camera(skc_p) _ensure_current_camera(QSP_ARG  skc_p)
 
 extern int _release_current_camera(QSP_ARG_DECL  int verbose);
 #define release_current_camera(v) _release_current_camera(QSP_ARG  v)
@@ -511,8 +527,8 @@ extern void _fetch_chunk_data(QSP_ARG_DECL  Chunk_Data *cd_p, Data_Obj *dp);
 #define fetch_chunk_data(cd_p, dp) _fetch_chunk_data(QSP_ARG  cd_p, dp)
 extern void _enable_chunk_data(QSP_ARG_DECL  Spink_Cam *skc_p, Chunk_Data *cd_p);
 #define enable_chunk_data(skc_p, cd_p) _enable_chunk_data(QSP_ARG  skc_p, cd_p)
-extern void _format_chunk_data(QSP_ARG_DECL  char *buf, Chunk_Data *cd_p);
-#define format_chunk_data(buf, cd_p) _format_chunk_data(QSP_ARG  buf, cd_p)
+extern void _format_chunk_data(QSP_ARG_DECL  char *buf, int bufsize, Chunk_Data *cd_p);
+#define format_chunk_data(buf, s, cd_p) _format_chunk_data(QSP_ARG  buf, s, cd_p)
 
 extern void _pop_map_contexts(SINGLE_QSP_ARG_DECL);
 extern void _push_map_contexts(QSP_ARG_DECL  Spink_Map *skm_p);

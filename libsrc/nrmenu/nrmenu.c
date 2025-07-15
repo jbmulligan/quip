@@ -77,7 +77,7 @@ static COMMAND_FUNC( do_jacobi )
 
 	dp_jacobi(v_dp,d_dp,a_dp,&nrot);
 
-	// sprintf(msg_str,"%d rotations performed",nrot);
+	// snprintf(msg_str,LLEN,"%d rotations performed",nrot);
 	// prt_msg(msg_str);
 }
 
@@ -112,19 +112,19 @@ static COMMAND_FUNC( do_plgndr )
 	x=(float)how_much("x");
 
 	if( m < 0 || m > l ){
-		sprintf(ERROR_STRING,"parameter m (%d) must be between 0 and l (%d)",m,l);
+		snprintf(ERROR_STRING,LLEN,"parameter m (%d) must be between 0 and l (%d)",m,l);
 		warn(ERROR_STRING);
 		return;
 	}
 	if( x < -1 || x > 1 ){
-		sprintf(ERROR_STRING,"parameter x (%g) must be between -1 and 1",x);
+		snprintf(ERROR_STRING,LLEN,"parameter x (%g) must be between -1 and 1",x);
 		warn(ERROR_STRING);
 		return;
 	}
 
 	r = plgndr(l,m,x);
 
-	sprintf(msg_str,"P_%d,%d(%g) = %g",l,m,x,r);
+	snprintf(msg_str,LLEN,"P_%d,%d(%g) = %g",l,m,x,r);
 	prt_msg(msg_str);
 }
 
@@ -147,9 +147,16 @@ static COMMAND_FUNC( do_zroots )
 	dp_zroots(r_dp,a_dp,polish_roots);
 }
 
+static COMMAND_FUNC(do_nr_version){
+	const char *msg = get_numrec_version();
+	snprintf(MSG_STR,LLEN,"Numrec version: %s",msg);
+	prt_msg(MSG_STR);
+}
+
 #define ADD_CMD(s,f,h)	ADD_COMMAND(numrec_menu,s,f,h)
 
 MENU_BEGIN(numrec)
+ADD_CMD( nr_version,	do_nr_version,	report library version )
 ADD_CMD( svd,		do_svd,		singular value decomposition )
 ADD_CMD( svbk,		do_svbksb,	back substitute into SVD )
 ADD_CMD( jacobi,	do_jacobi,	compute eigenvectors & eigenvalues )

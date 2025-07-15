@@ -243,6 +243,7 @@ define(`CHECK_MM',`
 // max indices.  The subsequent passes need to use these indices to
 // lookup data to make the comparison...
 
+// vmaxi, vmini, ?
 
 define(`H_CALL_PROJ_2V_IDX',`
 
@@ -251,7 +252,6 @@ static void HOST_FAST_CALL_NAME($1)(LINK_FUNC_ARG_DECLS)
 	index_type *indices;
 	std_type *src1_values;
 	std_type *src2_values;
-	std_type *orig_src_values;
 	index_type *idx1_values,*idx2_values;
 	index_type *dst_to_free=(index_type *)NULL;
 	index_type *src_to_free=(index_type *)NULL;
@@ -261,7 +261,6 @@ static void HOST_FAST_CALL_NAME($1)(LINK_FUNC_ARG_DECLS)
 	src1_values = (std_type *) VA_SRC1_PTR(vap);
 	len = VA_SRC1_LEN(vap);
 	SETUP_IDX_ITERATION(src1_values,src2_values,$1)
-	orig_src_values = src1_values;
 	/*max_threads_per_block = OBJ_MAX_THREADS_PER_BLOCK(OA_DEST(oap));*/
 	CALL_GPU_FAST_INDEX_SETUP_FUNC($1)
 	FINISH_IDX_MM_ITERATION($1)
@@ -283,7 +282,7 @@ static void HOST_TYPED_CALL_NAME($1,type_code)(HOST_CALL_ARG_DECLS )
 	Vector_Args va1, *vap=(&va1);
 
 	if( OBJ_MACH_PREC(OA_DEST(oap)) != INDEX_PREC ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "%s:  destination index %s has %s precision, should be %s",
 			STRINGIFY(HOST_TYPED_CALL_NAME($1,type_code)),
 			OBJ_NAME(OA_DEST(oap)),
@@ -495,7 +494,7 @@ static void HOST_TYPED_CALL_NAME($1,type_code)(HOST_CALL_ARG_DECLS )
 
 	/* BUG? - isnt precision check done elsewhere??? */
 	if( OBJ_MACH_PREC(OA_DEST(oap)) != INDEX_PREC ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 	"%s:  destination index %s has %s precision, should be %s",
 	"$1",OBJ_NAME(OA_DEST(oap)),
 	PREC_NAME(OBJ_MACH_PREC_PTR(OA_DEST(oap))),
@@ -506,7 +505,7 @@ static void HOST_TYPED_CALL_NAME($1,type_code)(HOST_CALL_ARG_DECLS )
 
 	if( OBJ_N_TYPE_ELTS(OA_DEST(oap)) !=
 		OBJ_N_TYPE_ELTS(oap->oa_dp[0]) ){
-		sprintf(ERROR_STRING,
+		snprintf(ERROR_STRING,LLEN,
 "%s:  number of elements of index array %s (%d) must match source %s (%d)",
 			"$1", OBJ_NAME(OA_DEST(oap)),
 			OBJ_N_TYPE_ELTS(OA_DEST(oap)),
@@ -748,7 +747,7 @@ dnl	Data_Obj *disp_dp;	// for debugging
 	SET_OA_DEST(prod_oap,prod_dp);
 	HOST_TYPED_CALL_NAME($4,type_code)(QSP_ARG  FVMUL,prod_oap);
 
-dnl	disp_dp = insure_ram_obj(prod_dp);
+dnl	disp_dp = ensure_ram_obj(prod_dp);
 dnl	assert(disp_dp!=NULL);
 dnl	fprintf(stderr,"displaying intermediate result:\n");
 dnl	pntvec(QSP_ARG  disp_dp,stderr);

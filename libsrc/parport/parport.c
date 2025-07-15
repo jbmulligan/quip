@@ -42,20 +42,20 @@ ParPort * _open_parport(QSP_ARG_DECL  const char *name)
 	if( name == NULL || *name == 0 ){
 		name = default_parport;
 		if( verbose ){
-			sprintf(ERROR_STRING,"open_parport:  using default parallel port %s",name);
+			snprintf(ERROR_STRING,LLEN,"open_parport:  using default parallel port %s",name);
 			advise(ERROR_STRING);
 		}
 	}
 	ppp = parport_of(name);
 	if( ppp != NULL ){
-		sprintf(ERROR_STRING,"ParPort %s is already open",name);
+		snprintf(ERROR_STRING,LLEN,"ParPort %s is already open",name);
 		warn(ERROR_STRING);
 		return NULL;
 	}
 
 	ppp = new_parport(name);
 	if( ppp == NULL ) {
-		sprintf(ERROR_STRING,"Unable to create new parallel port structure %s",name);
+		snprintf(ERROR_STRING,LLEN,"Unable to create new parallel port structure %s",name);
 		warn(ERROR_STRING);
 		return NULL;
 	}
