@@ -49,6 +49,7 @@ SUBDIRS =			\
 		psych		\
 		gui		\
 		opengl		\
+		metal		\
 		polhemus	\
 		usb2000		\
 		rawvol		\

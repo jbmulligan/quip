@@ -535,18 +535,6 @@ if test "x${use_opencl}" = xyes; then
   have_libopencl=yes
 fi
 
-##################################################
-##
-## metal Metal checks
-##
-####################################################
-#
-## how to do this on Mac?
-## until we figure this out, we enable by default...
-
-if test "x${use_metal}" = xyes; then
-  have_libmetal=yes
-fi
 
 ##################################################
 
@@ -1398,34 +1386,69 @@ if test "x${use_metal}" = xyes; then
   # On mac, this is not in user lib, rather it's included with a -framework option!?
   # EOF
   AC_MSG_CHECKING([for Metal])
-  cat>mtl_test.c<<EOF
+  cat>mtl_test.m<<EOF
 #ifdef __APPLE__ //Mac OSX has a different name for the header file
-#include <Metal/Metal.h>
+#import <Metal/Metal.h>
 #endif
- 
   int main(int ac,char **av)
   {
+        id<MTLDevice> device = MTLCreateSystemDefaultDevice();
   }
 EOF
-#  echo $CC $CPPFLAGS $LDFLAGS mtl_test.c $LIBS
-  if $CC $CPPFLAGS $LDFLAGS mtl_test.c $LIBS 2> /tmp/mtl_errs # /dev/null
+#  echo $CC $CPPFLAGS $LDFLAGS mtl_test.m $LIBS
+  if $CC $CPPFLAGS $LDFLAGS mtl_test.m $LIBS 2> /tmp/mtl_errs # /dev/null
   then
-    have_libmetal=yes
+    AC_MSG_RESULT([yes])
+    have_metal=yes
   else
+    AC_MSG_RESULT([no])
     # try adding -framework option
     AC_MSG_CHECKING([for Metal with -framework option])
-    if $CC $CPPFLAGS $LDFLAGS -framework Metal mtl_test.c $LIBS 2> /dev/null
+    if $CC $CPPFLAGS $LDFLAGS -framework Metal mtl_test.m $LIBS 2> /dev/null
     then
       LDFLAGS="$LDFLAGS -framework Metal"
-      have_libmetal=yes
+      have_metal=yes
       /bin/rm a.out
+      AC_MSG_RESULT([yes])
     else
-      have_libmetal=no
+      AC_MSG_RESULT([no])
+      have_metal=no
     fi
   fi
-  /bin/rm mtl_test.c
-  echo have_libmetal = $have_libmetal
+  /bin/rm mtl_test.m
 fi
+
+# This version of the Metal test was written by ChatGPT
+#
+#AC_MSG_CHECKING([for macOS Metal framework])
+#have_metal=no
+#
+#case "$host_os" in
+#  darwin*)
+#    AC_LANG_PUSH([C++])
+#    AC_COMPILE_IFELSE(
+#      [AC_LANG_PROGRAM(
+#        [[#import <Metal/Metal.h>]],
+#        [[id<MTLDevice> device = MTLCreateSystemDefaultDevice();]]
+#      )],
+#      [
+#        AC_MSG_RESULT([yes])
+#        AC_DEFINE([HAVE_METAL], [1], [Define if Metal framework is available])
+#        have_metal=yes
+#      ],
+#      [
+#        AC_MSG_RESULT([no])
+#        have_metal=no
+#      ]
+#    )
+#    AC_LANG_POP([C++])
+#    ;;
+#  *)
+#    AC_MSG_RESULT([not macOS])
+#    ;;
+#esac
+#AM_CONDITIONAL([HAVE_METAL], [test "$have_metal" = "yes"])
+
 
 if test "x${use_cuda}" = xyes; then
   # cuda libraries
@@ -1659,9 +1682,10 @@ if test "x${use_opencl}" = xyes; then
   AC_CHECK_HEADERS([clFFT.h])
 fi
 
-if test "x${use_metal}" = xyes; then
-  AC_CHECK_HEADERS([Metal.h])
-fi
+# This fails even though the file is included in the library check above!?
+#if test "x${use_metal}" = xyes; then
+#  AC_CHECK_HEADERS([Metal/Metal.h])
+#fi
 
 if test "x${use_dv}" = xyes; then
   # libdv
@@ -2242,12 +2266,14 @@ Building without OpenCL support.
 fi
 
 if test "x${use_metal}" = xyes; then
-  if test "x{$have_metal}" = xyes; then
+  if test "x${have_metal}" = xyes; then
+    echo yes
     AC_DEFINE([HAVE_METAL], 1, [GPU operations with Metal enabled])
   else
+    echo no
     AC_MSG_WARN([
 -------------------------------------------------
-Unable to find libmetal (although requested).
+Unable to find Metal library.
 Building without Metal support.
 -------------------------------------------------])
   fi
@@ -2560,16 +2586,6 @@ if test "x${use_opencl}" = xyes; then
 ---------------------------------------------
 Unable to find OpenCL library.
 Building without OpenCL support...
----------------------------------------------])
-  fi
-fi
-
-if test "x${use_metal}" = xyes; then
-  if test "x${have_libmetal}" = xno ;  then
-    AC_MSG_WARN([
----------------------------------------------
-Unable to find Metal library.
-Building without Metal support...
 ---------------------------------------------])
   fi
 fi
