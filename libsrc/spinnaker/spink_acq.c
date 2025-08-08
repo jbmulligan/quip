@@ -50,7 +50,6 @@ void _enable_image_events(QSP_ARG_DECL  Spink_Cam *skc_p, void (*func)(spinImage
 {
 	if( IS_EVENTFUL(skc_p) ) return;
 
-fprintf(stderr,"enable_image_events:  enabling events for %s\n",skc_p->skc_name);
 	ensure_current_camera(skc_p);
 	assert( skc_p->skc_current_handle != NULL );
 
@@ -61,14 +60,10 @@ fprintf(stderr,"enable_image_events:  enabling events for %s\n",skc_p->skc_name)
 	// BUG - is it safe to use a single ev1 struct, when we have multiple
 	// cameras?  If it isn't needed after register_cam_image_event,
 	// then can it be a stack variable that goes away?
-fprintf(stderr,"enable_image_events:  creating image event\n");
 	if( create_image_event(&ev1,func,(void *)(skc_p) ) < 0 ) return;
-fprintf(stderr,"enable_image_events:  registering image event\n");
 	if( register_cam_image_event(skc_p->skc_current_handle, ev1) < 0 ) return;
 
 	skc_p->skc_flags |= SPINK_CAM_EVENTS_READY;
-	//assign_var("image_ready","0");
-fprintf(stderr,"enable_image_events %s DONE\n",skc_p->skc_name);
 }
 
 #ifdef NOT_USED
@@ -121,7 +116,6 @@ static int _report_image_status(QSP_ARG_DECL  spinImageStatus status)
 		warn(ERROR_STRING);
 		return -1;
 	}
-//fprintf(stderr,"image_status: %s\n",buf);
 	return 0;
 }
 
@@ -177,7 +171,6 @@ Data_Obj * _grab_spink_cam_frame(QSP_ARG_DECL  Spink_Cam * skc_p )
 		warn(ERROR_STRING);
 		return NULL;
 	}
-//fprintf(stderr,"status = 0x%x\n",status);
 	if( status != IMAGE_NO_ERROR ){
 		if( report_image_status(status) < 0 ) return NULL;
 	}
@@ -202,15 +195,12 @@ Data_Obj * _grab_spink_cam_frame(QSP_ARG_DECL  Spink_Cam * skc_p )
 		dp = NULL;
 	}
 
-//fprintf(stderr,"Frame %d data ptr at 0x%lx\n",index,(long)data_ptr);
-
 	aligned_ptr = check_alignment(QSP_ARG  data_ptr);
 	point_obj_to_ext_data(dp,aligned_ptr);
 	if( aligned_ptr != data_ptr ){
 		SET_OBJ_UNALIGNED_PTR(dp,data_ptr);
 	}
 
-//fprintf(stderr,"TRACE grab_spink_cam_frame buffer %d hImage at 0x%lx\n",index,(long)hImage);
 	SET_OBJ_EXTRA(dp,hImage);
 	skc_p->skc_newest = index;
 	if( skc_p->skc_oldest < 0 ) skc_p->skc_oldest = index;
@@ -224,15 +214,21 @@ Data_Obj * _grab_spink_cam_frame(QSP_ARG_DECL  Spink_Cam * skc_p )
 
 static int _check_release_ok(QSP_ARG_DECL  Spink_Cam *skc_p)
 {
+	/*
 	if( ! IS_CAPTURING(skc_p) ){
-		snprintf(ERROR_STRING,LLEN,"release_oldest_spink_frame:  %s is not capturing!?",
+		// This warning is triggered when the last frame
+		// is released?
+		snprintf(ERROR_STRING,LLEN,
+			"release_oldest_spink_frame:  %s is not capturing!?",
 			skc_p->skc_name);
 		warn(ERROR_STRING);
 		return -1;
 	}
+	*/
 
 	if( skc_p->skc_oldest < 0 ){
-		snprintf(ERROR_STRING,LLEN,"No frames have been grabbed by %s, can't release!?",
+		snprintf(ERROR_STRING,LLEN,
+			"No frames have been grabbed by %s, can't release!?",
 			skc_p->skc_name);
 		warn(ERROR_STRING);
 		return -1;
@@ -255,7 +251,6 @@ void _release_spink_frame(QSP_ARG_DECL  Spink_Cam *skc_p, int index)
 	//hImage = OBJ_EXTRA(dp);
 	hImage = gfi_p->gfi_hImage;
 
-//fprintf(stderr,"TRACE release_spink_frame buffer %d hImage at 0x%lx\n",index,(long)hImage);
 	if( release_spink_image(hImage) < 0 ){
 		snprintf(ERROR_STRING,LLEN,"release_oldest_spink_frame %s:  Error releasing image %d",skc_p->skc_name,index);
 		warn(ERROR_STRING);
@@ -273,7 +268,6 @@ void _release_spink_frame(QSP_ARG_DECL  Spink_Cam *skc_p, int index)
 static void update_oldest(Spink_Cam *skc_p, int released_idx)
 {
 	if( skc_p->skc_newest == released_idx ){
-//fprintf(stderr,"release_oldest_spink_frame:  last frame was released\n");
 		skc_p->skc_newest = -1;
 		skc_p->skc_oldest = -1;
 	} else {
@@ -281,7 +275,6 @@ static void update_oldest(Spink_Cam *skc_p, int released_idx)
 		new_index = released_idx + 1;
 		if( new_index >= skc_p->skc_n_buffers ) new_index = 0;
 		skc_p->skc_oldest = new_index;
-//fprintf(stderr,"release_oldest_spink_frame:  oldest frame is now %d\n",index);
 	}
 }
 
@@ -356,6 +349,67 @@ void _show_n_buffers(QSP_ARG_DECL  Spink_Cam *skc_p)
 	prt_msg(MSG_STR);
 }
 
+// From system include file:
+/* Image has missing packets. Potential fixes include enabling
+ * jumbo packets and adjusting packet size/delay. For more information see
+ * https://www.flir.com/support-center/iis/machine-vision/application-note/troubleshooting-image-consistency-errors/
+ */
+
+static char * describe_image_status(spinImageStatus imageStatus)
+{
+	char *m;
+
+	switch( imageStatus ){
+		case SPINNAKER_IMAGE_STATUS_UNKNOWN_ERROR:
+			m = "unknown error";
+			break;
+		case SPINNAKER_IMAGE_STATUS_NO_ERROR:
+			m = "no error";
+			break;
+		case SPINNAKER_IMAGE_STATUS_CRC_CHECK_FAILED:
+			m = "image CRC check failed";
+			break;
+		case SPINNAKER_IMAGE_STATUS_DATA_OVERFLOW:
+			m = "image data overflow";
+			break;
+		case SPINNAKER_IMAGE_STATUS_MISSING_PACKETS:
+			m = "missing packets";
+			break;
+		case SPINNAKER_IMAGE_STATUS_LEADER_BUFFER_SIZE_INCONSISTENT:
+			m = "inconsistent leader buffer size";
+			break;
+		case SPINNAKER_IMAGE_STATUS_TRAILER_BUFFER_SIZE_INCONSISTENT:
+			m = "inconsistent trailer buffer size";
+			break;
+		case SPINNAKER_IMAGE_STATUS_PACKETID_INCONSISTENT:
+			m = "inconsistent packet ID";
+			break;
+		case SPINNAKER_IMAGE_STATUS_MISSING_LEADER:
+			m = "image status missing leader (missing packets?)";
+			break;
+		case SPINNAKER_IMAGE_STATUS_MISSING_TRAILER:
+			m = "image status missing trailer (missing packets?)";
+			break;
+		case SPINNAKER_IMAGE_STATUS_DATA_INCOMPLETE:
+			m = "image status data incomplete (missing packets?)";
+			break;
+		case SPINNAKER_IMAGE_STATUS_INFO_INCONSISTENT:
+			m = "corrupted image info (missing packets?)";
+			break;
+		case SPINNAKER_IMAGE_STATUS_CHUNK_DATA_INVALID:
+			m = "invalid chunk data";
+			break;
+		case SPINNAKER_IMAGE_STATUS_NO_SYSTEM_RESOURCES:
+			m = "no system resources";
+			break;
+		default:
+			m = "unexpected status case";
+			break;
+	}
+
+	return m;
+}
+
 //
 // Retrieve next received image
 //
@@ -373,6 +427,7 @@ int _next_spink_image(QSP_ARG_DECL  spinImage *img_p, Spink_Cam *skc_p)
 {
 	spinCamera hCam;
 	bool8_t isIncomplete = False;
+	char *m;
 
 	ensure_current_camera(skc_p);
 	hCam = skc_p->skc_current_handle;
@@ -403,6 +458,8 @@ int _next_spink_image(QSP_ARG_DECL  spinImage *img_p, Spink_Cam *skc_p)
 			return 0;
 		}
 		printf("Image incomplete with image status %d...\n", imageStatus);
+		m = describe_image_status(imageStatus);
+		printf("%s\n",m);
 		if( release_spink_image(*img_p) < 0 ) return -1;
 		return 0;
 	}
@@ -438,8 +495,6 @@ static void test_event_handler(spinImage hImg, void *user_data)
 //#endif // THREAD_SAFE_QUERY
 
 	skc_p = (Spink_Cam *) user_data;
-//fprintf(stderr,"Event! (%s, %d of %d)\n",skc_p->skc_name,skc_p->skc_event_info.ei_next_frame,
-//skc_p->skc_event_info.ei_n_frames);
 	skc_p->skc_event_info.ei_next_frame ++;
 
 	if( skc_p->skc_event_info.ei_next_frame >= skc_p->skc_event_info.ei_n_frames ){
@@ -462,7 +517,6 @@ static void test_event_handler(spinImage hImg, void *user_data)
 int _spink_start_capture(QSP_ARG_DECL  Spink_Cam *skc_p)
 {
 	spinCamera hCam;
-fprintf(stderr,"spink_start_capture %s BEGIN\n",skc_p->skc_name);
 	if( IS_CAPTURING(skc_p) ){
 		snprintf(ERROR_STRING,LLEN,"spink_start_capture:  %s is already capturing!?",
 			skc_p->skc_name);
@@ -470,9 +524,7 @@ fprintf(stderr,"spink_start_capture %s BEGIN\n",skc_p->skc_name);
 		return 0;
 	}
 
-fprintf(stderr,"spink_start_capture %s insuring current camera...\n",skc_p->skc_name);
 	ensure_current_camera(skc_p);
-fprintf(stderr,"spink_start_capture %s initializing oldest and newest...\n",skc_p->skc_name);
 	skc_p->skc_newest = -1;
 	skc_p->skc_oldest = -1;
 	hCam = skc_p->skc_current_handle;
@@ -481,20 +533,15 @@ fprintf(stderr,"spink_start_capture %s initializing oldest and newest...\n",skc_
 				// should cleanup events when stopping capture?
 	// for testing!
 	if( using_image_events ){
-fprintf(stderr,"spink_start_capture %s enabling image events...\n",skc_p->skc_name);
 		enable_image_events(skc_p,test_event_handler);
 	}
 
-fprintf(stderr,"spink_start_capture %s will call begin_acquisition...\n",skc_p->skc_name);
 	if( begin_acquisition(hCam) < 0 ){
-fprintf(stderr,"spink_start_capture %s error return after failing to begin acquisition...\n",skc_p->skc_name);
 		return -1;
 	}
 
-fprintf(stderr,"spink_start_capture %s setting capture flags...\n",skc_p->skc_name);
 	skc_p->skc_flags |= SPINK_CAM_CAPTURING | SPINK_CAM_CAPT_REQUESTED;
 
-fprintf(stderr,"spink_start_capture %s DONE\n",skc_p->skc_name);
 	return 0;
 }
 
