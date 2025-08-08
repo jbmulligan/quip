@@ -103,9 +103,9 @@ FIO_OPEN_FUNC( rvfio )
 
 		if( inp != NULL ){
 			/* overwrite of an existing file.
-			 * destroy the old one to make sure we get the size right.
+			 * destroy the old one to make sure
+			 * we get the size right.
 			 */
-fprintf(stderr,"rvfio_open:  file %s already exists, will remove...\n",name);
 			rv_rmfile(name);
 		}
 		_n_disks = creat_rv_file(name,size,rv_fd_arr);
@@ -122,33 +122,30 @@ fprintf(stderr,"rvfio_open:  file %s already exists, will remove...\n",name);
 		ifp = img_file_of(name);
 		/* BUG make sure that it is type RV here! */
 		if( ifp != NULL ){
-fprintf(stderr,"rv file already exists for %s\n",name);
 			if( ! IS_READABLE(ifp) ){
-				/*
-				snprintf(ERROR_STRING,LLEN,"Setting READABLE flag on rv file %s",
-						ifp->if_name);
-				advise(ERROR_STRING);
-				*/
 				ifp->if_flags |= FILE_READ;
 			}
 			if( IS_READABLE(ifp) ){
-				if( (_n_disks=queue_rv_file(inp,rv_fd_arr)) < 0 ){
-			snprintf(ERROR_STRING,LLEN,"Error queueing file %s",ifp->if_name);
+				_n_disks=queue_rv_file(inp,rv_fd_arr);
+				if( _n_disks < 0 ){
+					snprintf(ERROR_STRING,LLEN,
+				"Error queueing file %s",ifp->if_name);
 					warn(ERROR_STRING);
 				}
 				return(ifp);
 			}
-			/* If we've just recorded this file, go ahead and change it */ 
-			/* BUG?  what if we are assembling it? */
+			// If we've just recorded this file,
+			// go ahead and change it
+			// BUG?  what if we are assembling it?
 
 			/* NOTREACHED */
-			snprintf(ERROR_STRING,LLEN,"File %s is not readable!?",ifp->if_name);
+			snprintf(ERROR_STRING,LLEN,"File %s is not readable!?",
+				ifp->if_name);
 			warn(ERROR_STRING);
 			return(NULL);
 		}
 	}
 
-fprintf(stderr,"Calling init_new_img_file for %s\n",name);
 	ifp = init_new_img_file(name,rw);
 
 	SET_IF_TYPE(ifp,FILETYPE_FOR_CODE(IFT_RV));
@@ -171,21 +168,21 @@ fprintf(stderr,"Calling init_new_img_file for %s\n",name);
 
 		// Need to set precision...
 		SET_OBJ_PREC_PTR( ifp->if_dp, PREC_FOR_CODE( PREC_UBY ) );
-//fprintf(stderr,"obj prec at 0x%lx\n",(long)OBJ_PREC_PTR(ifp->if_dp));
 
-		/* not hashed into database! */
-		/* give it a name so it has a name to print in case of accident */
+		// not hashed into database!
+		// give it a name so it has a name to print
+		// in case of accident
 		snprintf(tnam,LLEN,"dp.%s",ifp->if_name);
 		SET_OBJ_NAME(ifp->if_dp, savestr(tnam));
 		rv_to_dp(ifp->if_dp,inp);
 
-		/* queue the disk to this file.
-		 *
-		 * BUG - things will not work properly if we have more than
-		 * one file open at a time, because we are not keeping
-		 * per-file seek offsets around...  but this should work
-		 * if we are reading from a single file.
-		 */
+		// queue the disk to this file.
+		//
+		// BUG - things will not work properly if we have more than
+		// one file open at a time, because we are not keeping
+		// per-file seek offsets around...  but this should work
+		// if we are reading from a single file.
+		//
 		if( (_n_disks=queue_rv_file(inp,rv_fd_arr)) < 0 ){
 			snprintf(ERROR_STRING,LLEN,"Error queueing file %s",ifp->if_name);
 			warn(ERROR_STRING);
@@ -312,14 +309,10 @@ off64_t retoff;
 
 	bpi = (OBJ_COMPS(dp) * OBJ_COLS(dp) * OBJ_ROWS(dp) );	// bytes per image
 	bpf = (bpi +  BLOCK_SIZE - 1) & ~(BLOCK_SIZE-1);	// bytes per frame
-fprintf(stderr,"bpi = %ld (0x%lx), bpf = %ld (0x%lx)\n",bpi,bpi,bpf,bpf);
-
 	disk_index = (int)(ifp->if_nfrms % n_disks);
 
 retoff = my_lseek64(rv_fd_arr[disk_index],(off64_t) 0,SEEK_CUR);
-fprintf(stderr,"Current file position is 0x%"PRIx64"\n",retoff);
 
-fprintf(stderr,"writing %ld (0x%lx) bytes of data from 0x%lx\n",bpi,bpi,(u_long)OBJ_DATA_PTR(dp));
 	if( (nw=write(rv_fd_arr[disk_index],OBJ_DATA_PTR(dp),bpi)) != bpi ){
 		if( nw < 0 ) tell_sys_error("write");
 		snprintf(ERROR_STRING,LLEN,
@@ -338,7 +331,6 @@ fprintf(stderr,"writing %ld (0x%lx) bytes of data from 0x%lx\n",bpi,bpi,(u_long)
 	 */
 
 	if( bpf > bpi ){
-fprintf(stderr,"writing %ld pad bytes of data from 0x%lx\n",bpf-bpi,(u_long)OBJ_DATA_PTR(dp));
 		if( (nw=write(rv_fd_arr[disk_index],OBJ_DATA_PTR(dp),bpf-bpi)) != bpf-bpi ){
 			if( nw < 0 ) tell_sys_error("write");
 			snprintf(ERROR_STRING,LLEN,
