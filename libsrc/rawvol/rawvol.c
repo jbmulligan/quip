@@ -665,7 +665,6 @@ static void scan_inode(QSP_ARG_DECL  RV_Inode *dk_inp)
 		/* the image file might be open already if we are rescanning */
 		ifp = img_file_of(RV_NAME(inp));
 		if( ifp != NULL ){
-fprintf(stderr,"Closing existing rv file %s\n",ifp->if_name);
 			close_image_file(ifp);
 		}
 
@@ -1448,7 +1447,6 @@ static RV_Inode *search_directory(RV_Inode *inp, int index)
 static int _perform_seek(QSP_ARG_DECL  int fd, off64_t offset )
 {
 	off64_t retoff;
-fprintf(stderr,"perform_seek 0x%"PRIx64"\n",offset);
 	retoff = my_lseek64(fd,offset,SEEK_SET);
 	if( retoff != offset ){
 		snprintf(ERROR_STRING,LLEN,"perform_write_test:  Error seeking on raw disk");
@@ -2019,13 +2017,9 @@ void _rv_info(QSP_ARG_DECL  RV_Inode *inp)
 {
 	rv_ls_inode(QSP_ARG  inp);
 	rv_ls_extra(QSP_ARG  inp);
-fprintf(stderr,"flags = 0x%x\n",inp->rvi_inode.rvi_flags);
 	report_rvi_flags(QSP_ARG  inp);
 	if( IS_REGULAR_FILE(inp) ){
-fprintf(stderr,"rv_info will describe shape for regular file...\n");
 		describe_shape(RV_MOVIE_SHAPE(inp));
-	} else {
-fprintf(stderr,"rv_info will NOT describe shape, not a regular file...\n");
 	}
 }
 
