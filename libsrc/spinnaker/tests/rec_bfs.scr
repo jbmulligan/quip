@@ -20,7 +20,8 @@ Init_Chunk_Data $cam0
 
 advise "Initializing raw volume..."
 rawvol
-  default
+#  default
+  volume /Users/jeff/working/quip/libsrc/rawvol/test_disk1
   ls_cwd
   quit
 
@@ -32,7 +33,8 @@ spinnaker
   capture
     set_n_buffers 40
     #verbose yes
-    record foo1 500 1 $cam0
+    #record foo1 500 1 $cam0
+    record foo1 5 1 $cam0
     advise 'Back from record command'
 #    Pause
     quit

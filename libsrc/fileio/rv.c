@@ -122,6 +122,7 @@ fprintf(stderr,"rvfio_open:  file %s already exists, will remove...\n",name);
 		ifp = img_file_of(name);
 		/* BUG make sure that it is type RV here! */
 		if( ifp != NULL ){
+fprintf(stderr,"rv file already exists for %s\n",name);
 			if( ! IS_READABLE(ifp) ){
 				/*
 				snprintf(ERROR_STRING,LLEN,"Setting READABLE flag on rv file %s",
@@ -147,16 +148,9 @@ fprintf(stderr,"rvfio_open:  file %s already exists, will remove...\n",name);
 		}
 	}
 
-	ifp = new_img_file(name);
-	if( ifp==NULL ) return(ifp);
+fprintf(stderr,"Calling init_new_img_file for %s\n",name);
+	ifp = init_new_img_file(name,rw);
 
-	ifp->if_flags = rw;
-	ifp->if_nfrms = 0;			/* number of frames written or read */
-
-	ifp->if_pathname = ifp->if_name;	/* default */
-	/* update_pathname(ifp); */
-
-	ifp->if_dp = NULL;
 	SET_IF_TYPE(ifp,FILETYPE_FOR_CODE(IFT_RV));
 
 	HDR_P_LVAL(ifp) = inp;

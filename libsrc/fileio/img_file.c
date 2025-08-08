@@ -119,6 +119,8 @@ List *image_file_list(SINGLE_QSP_ARG_DECL)
 
 static void update_pathname(Image_File *ifp)
 {
+	// BUG - should do nothing for rawvol files!?
+
 	if( ifp->if_pathname != ifp->if_name ){
 		rls_str((char *)ifp->if_pathname);
 	}
@@ -359,16 +361,20 @@ void _delete_image_file(QSP_ARG_DECL  Image_File *ifp)
 		/* If we are reading from a file, then this is a dummy object
 		 * and should be freed... but what about writing???
 		 */
+fprintf(stderr,"releasing data object\n");
 		givbuf(ifp->if_dp);
 		ifp->if_dp = NULL;
 	}
 	if( ifp->if_extra_p != NULL ){
+fprintf(stderr,"releasing extra\n");
 		givbuf(ifp->if_extra_p);
 		ifp->if_extra_p = NULL;
 	}
 	if( ifp->if_pathname != ifp->if_name ){
+fprintf(stderr,"releasing pathname string\n");
 		rls_str((char *)ifp->if_pathname);
 	}
+fprintf(stderr,"releasing ifp\n");
 	del_img_file(ifp);	// frees the name
 
 	/* don't free the struct pointer, it's marked available
@@ -645,6 +651,28 @@ void image_file_clobber(int flag)
 	else no_clobber=1;
 }
 
+/* Allocate a new file struct and initialize the basic fields.
+ * This used to be done as part if img_file_creat, but equivalent
+ * code in rv.c had omitted initialization of if_extra_p.  Better
+ * to have a single routine to handle the initialization!
+ */
+
+Image_File * _init_new_img_file(QSP_ARG_DECL  const char *name, int rw){
+	Image_File *ifp;
+	ifp = new_img_file(name);
+
+	ifp->if_flags = (short) rw;
+	ifp->if_nfrms = 0;
+
+	ifp->if_pathname = ifp->if_name;	/* default */
+
+	ifp->if_dp = NULL;
+fprintf(stderr,"Setting extra_p to NULL, ifp = %s\n",ifp->if_name);
+	ifp->if_extra_p = NULL;	// most filetypes don't use this...
+
+	return ifp;
+}
+
 /*
  * This routine creates and initializes an image file struct,
  * and then opens the file using a method appropriate to the file type.
@@ -672,17 +700,10 @@ Image_File *_img_file_creat(QSP_ARG_DECL  const char *name,int rw,Filetype * ftp
 		return(NULL);
 	}
 
-	ifp = new_img_file(name);
+	ifp = init_new_img_file(name,rw);
 	if( ifp==NULL ) return(ifp);
 
-	ifp->if_flags = (short) rw;
-	ifp->if_nfrms = 0;
-
-	ifp->if_pathname = ifp->if_name;	/* default */
 	update_pathname(ifp);
-
-	ifp->if_dp = NULL;
-	ifp->if_extra_p = NULL;			// most filetypes don't use this...
 
 	// what is the "dummy" used for, and when do we release it?
 	if( IS_READABLE(ifp) ) setup_dummy(ifp);
@@ -842,6 +863,9 @@ void _if_info(QSP_ARG_DECL  Image_File *ifp)
 		snprintf(msg_str,LLEN,"Extra info at 0x%lx",(long)ifp->if_extra_p);
 		prt_msg(msg_str);
 	}
+else {
+fprintf(stderr,"if_extra_p is NULL for %s\n",ifp->if_name);
+}
 	if( IS_READABLE(ifp) ){
 		prt_msg("\topen for reading");
 		snprintf(msg_str,LLEN,"\t%d frame%s already read",
@@ -1133,6 +1157,7 @@ Image_File *_read_image_file(QSP_ARG_DECL  const char *name)
 	}
 
 	/* pathname hasn't been set yet... */
+fprintf(stderr,"Calling type-specific open func for %s\n",name);
 	ifp=(*ftp->op_func)( QSP_ARG  name, FILE_READ );
 
 	if( ifp == NULL ) {

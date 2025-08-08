@@ -29,8 +29,10 @@ all:	$(TARGETS) quip.pdf
 #	cp -R quip.html ../docs/quip_web_manual
 #	BUG ../docs/quip_web_manual must exist!
 # html subdir here used to be quip_html???
-#	cp -R quip_html/*.html ../docs/quip_web_manual
-	cp -R quip/*.html ../docs/quip_web_manual
+# Then it was quip - now it's quip_html again!?
+# We need to write a script to copy the files from whereever...
+	cp -R quip_html/*.html ../docs/quip_web_manual
+#	cp -R quip/*.html ../docs/quip_web_manual
 
 .PHONY:	html
 html:	version.texi $(HTML_DOCS)

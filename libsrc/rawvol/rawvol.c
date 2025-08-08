@@ -665,6 +665,7 @@ static void scan_inode(QSP_ARG_DECL  RV_Inode *dk_inp)
 		/* the image file might be open already if we are rescanning */
 		ifp = img_file_of(RV_NAME(inp));
 		if( ifp != NULL ){
+fprintf(stderr,"Closing existing rv file %s\n",ifp->if_name);
 			close_image_file(ifp);
 		}
 
