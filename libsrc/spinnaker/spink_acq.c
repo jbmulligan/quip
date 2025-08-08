@@ -173,9 +173,6 @@ Data_Obj * _grab_spink_cam_frame(QSP_ARG_DECL  Spink_Cam * skc_p )
 		return NULL;
 	}
 
-fprintf(stderr,"After next_spink_image, have image handle?\n");
-
-fprintf(stderr,"Getting image status...\n");
 	if( get_image_status(hImage,&status) < 0 ){
 		snprintf(ERROR_STRING,LLEN,"grab_spink_cam_frame:  Error getting image status!?");
 		warn(ERROR_STRING);
@@ -214,7 +211,6 @@ fprintf(stderr,"Getting image status...\n");
 		SET_OBJ_UNALIGNED_PTR(dp,data_ptr);
 	}
 
-//fprintf(stderr,"TRACE grab_spink_cam_frame buffer %d hImage at 0x%lx\n",index,(long)hImage);
 	SET_OBJ_EXTRA(dp,hImage);
 	skc_p->skc_newest = index;
 	if( skc_p->skc_oldest < 0 ) skc_p->skc_oldest = index;
@@ -228,15 +224,21 @@ fprintf(stderr,"Getting image status...\n");
 
 static int _check_release_ok(QSP_ARG_DECL  Spink_Cam *skc_p)
 {
+	/*
 	if( ! IS_CAPTURING(skc_p) ){
-		snprintf(ERROR_STRING,LLEN,"release_oldest_spink_frame:  %s is not capturing!?",
+		// This warning is triggered when the last frame
+		// is released?
+		snprintf(ERROR_STRING,LLEN,
+			"release_oldest_spink_frame:  %s is not capturing!?",
 			skc_p->skc_name);
 		warn(ERROR_STRING);
 		return -1;
 	}
+	*/
 
 	if( skc_p->skc_oldest < 0 ){
-		snprintf(ERROR_STRING,LLEN,"No frames have been grabbed by %s, can't release!?",
+		snprintf(ERROR_STRING,LLEN,
+			"No frames have been grabbed by %s, can't release!?",
 			skc_p->skc_name);
 		warn(ERROR_STRING);
 		return -1;
@@ -259,7 +261,6 @@ void _release_spink_frame(QSP_ARG_DECL  Spink_Cam *skc_p, int index)
 	//hImage = OBJ_EXTRA(dp);
 	hImage = gfi_p->gfi_hImage;
 
-//fprintf(stderr,"TRACE release_spink_frame buffer %d hImage at 0x%lx\n",index,(long)hImage);
 	if( release_spink_image(hImage) < 0 ){
 		snprintf(ERROR_STRING,LLEN,"release_oldest_spink_frame %s:  Error releasing image %d",skc_p->skc_name,index);
 		warn(ERROR_STRING);
@@ -443,7 +444,6 @@ int _next_spink_image(QSP_ARG_DECL  spinImage *img_p, Spink_Cam *skc_p)
 	ensure_current_camera(skc_p);
 	hCam = skc_p->skc_current_handle;
 
-fprintf(stderr,"calling get_next_image...\n");
 	if( get_next_image(hCam,img_p) < 0 ) return -1;
 
 	//
@@ -479,7 +479,6 @@ fprintf(stderr,"Releasing incomplete image after failing to get status!?\n");
 		return 0;
 	}
 
-fprintf(stderr,"next_spink_image returning normally\n");
 	return 0;
 }
 

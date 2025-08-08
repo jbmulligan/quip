@@ -361,20 +361,16 @@ void _delete_image_file(QSP_ARG_DECL  Image_File *ifp)
 		/* If we are reading from a file, then this is a dummy object
 		 * and should be freed... but what about writing???
 		 */
-fprintf(stderr,"releasing data object\n");
 		givbuf(ifp->if_dp);
 		ifp->if_dp = NULL;
 	}
 	if( ifp->if_extra_p != NULL ){
-fprintf(stderr,"releasing extra\n");
 		givbuf(ifp->if_extra_p);
 		ifp->if_extra_p = NULL;
 	}
 	if( ifp->if_pathname != ifp->if_name ){
-fprintf(stderr,"releasing pathname string\n");
 		rls_str((char *)ifp->if_pathname);
 	}
-fprintf(stderr,"releasing ifp\n");
 	del_img_file(ifp);	// frees the name
 
 	/* don't free the struct pointer, it's marked available
@@ -667,7 +663,6 @@ Image_File * _init_new_img_file(QSP_ARG_DECL  const char *name, int rw){
 	ifp->if_pathname = ifp->if_name;	/* default */
 
 	ifp->if_dp = NULL;
-fprintf(stderr,"Setting extra_p to NULL, ifp = %s\n",ifp->if_name);
 	ifp->if_extra_p = NULL;	// most filetypes don't use this...
 
 	return ifp;
@@ -863,9 +858,6 @@ void _if_info(QSP_ARG_DECL  Image_File *ifp)
 		snprintf(msg_str,LLEN,"Extra info at 0x%lx",(long)ifp->if_extra_p);
 		prt_msg(msg_str);
 	}
-else {
-fprintf(stderr,"if_extra_p is NULL for %s\n",ifp->if_name);
-}
 	if( IS_READABLE(ifp) ){
 		prt_msg("\topen for reading");
 		snprintf(msg_str,LLEN,"\t%d frame%s already read",
@@ -1157,7 +1149,6 @@ Image_File *_read_image_file(QSP_ARG_DECL  const char *name)
 	}
 
 	/* pathname hasn't been set yet... */
-fprintf(stderr,"Calling type-specific open func for %s\n",name);
 	ifp=(*ftp->op_func)( QSP_ARG  name, FILE_READ );
 
 	if( ifp == NULL ) {

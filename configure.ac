@@ -1064,6 +1064,16 @@ AC_SEARCH_LIBS([asctime],[c],[have_asctime=yes],[have_asctime=no])
 AC_SEARCH_LIBS([localtime_r],[c],[have_localtime_r=yes],[have_localtime_r=no])
 AC_SEARCH_LIBS([posix_memalign],[c],[have_posix_memalign=yes],[have_posix_memalign=no])
 
+# We can link mlock/mlockall on darwin, but when executed
+# a "not implemented" failure occurs...
+# Ideally we would provide a test program to check this,
+# but for now we're taking the easy way out to suppress the warning.
+if [[ $os_is_darwin == "no" ]]; then
+  have_mlock=yes
+else
+  have_mlock=no
+fi
+
 # optional libraries
 # -lX11		X
 # -lpthread	pthreads
@@ -2033,6 +2043,9 @@ Building without default encryption key.
 ---------------------------------])
 fi
 
+if test "x${have_mlock}" = xyes; then
+  AC_DEFINE([HAVE_MLOCK], 1, [mlock system call is available])
+fi
 
 if test "x${have_secret_key}" = xyes; then
   AC_DEFINE([HAVE_SECRET_KEY], 1, [custom secret encryption key provided])
