@@ -208,10 +208,13 @@ static Visual *_GetSpecifiedVisual(QSP_ARG_DECL  Disp_Obj * dop, int depth )
 
 	XVisualInfo *vi_p;
 	Visual *vis_p;
-	GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, depth, GLX_DOUBLEBUFFER, None };
+fprintf(stderr,"depth = %d\n",depth);
+	//GLint att[] = { GLX_RGBA, GLX_DEPTH_SIZE, depth, GLX_DOUBLEBUFFER, None };
+	GLint att[] = { GLX_RGBA, GLX_RED_SIZE, 4, GLX_GREEN_SIZE, 4, GLX_BLUE_SIZE, 4, None };
+// Mac Mini M4 does not have a 32-bit visual!?
 if( depth == 24 ){
 //fprintf(stderr,"GetSpecifiedVisual:  changing bit depth 24 to 32...\n");
-	depth=32;
+	//depth=32;
 }
 
 	vi_p = glXChooseVisual(DO_DISPLAY(dop),0,att);
@@ -764,7 +767,11 @@ void window_sys_init(SINGLE_QSP_ARG_DECL)
 	if( window_sys_inited ) return;
 
 #ifdef QUIP_DEBUG
+	// There is a problem here, because we can't turn on the debugging
+	// flag if there is a failure right away!?
 	xdebug = add_debug_module("xsupp");
+	debug |= xdebug;  // turn on debugging (comment out when not needed)
+
 #endif /* QUIP_DEBUG */
 
 //int (*XSetErrorHandler(handler))()

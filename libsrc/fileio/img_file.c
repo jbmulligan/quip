@@ -119,6 +119,8 @@ List *image_file_list(SINGLE_QSP_ARG_DECL)
 
 static void update_pathname(Image_File *ifp)
 {
+	// BUG - should do nothing for rawvol files!?
+
 	if( ifp->if_pathname != ifp->if_name ){
 		rls_str((char *)ifp->if_pathname);
 	}
@@ -645,6 +647,27 @@ void image_file_clobber(int flag)
 	else no_clobber=1;
 }
 
+/* Allocate a new file struct and initialize the basic fields.
+ * This used to be done as part if img_file_creat, but equivalent
+ * code in rv.c had omitted initialization of if_extra_p.  Better
+ * to have a single routine to handle the initialization!
+ */
+
+Image_File * _init_new_img_file(QSP_ARG_DECL  const char *name, int rw){
+	Image_File *ifp;
+	ifp = new_img_file(name);
+
+	ifp->if_flags = (short) rw;
+	ifp->if_nfrms = 0;
+
+	ifp->if_pathname = ifp->if_name;	/* default */
+
+	ifp->if_dp = NULL;
+	ifp->if_extra_p = NULL;	// most filetypes don't use this...
+
+	return ifp;
+}
+
 /*
  * This routine creates and initializes an image file struct,
  * and then opens the file using a method appropriate to the file type.
@@ -672,17 +695,10 @@ Image_File *_img_file_creat(QSP_ARG_DECL  const char *name,int rw,Filetype * ftp
 		return(NULL);
 	}
 
-	ifp = new_img_file(name);
+	ifp = init_new_img_file(name,rw);
 	if( ifp==NULL ) return(ifp);
 
-	ifp->if_flags = (short) rw;
-	ifp->if_nfrms = 0;
-
-	ifp->if_pathname = ifp->if_name;	/* default */
 	update_pathname(ifp);
-
-	ifp->if_dp = NULL;
-	ifp->if_extra_p = NULL;			// most filetypes don't use this...
 
 	// what is the "dummy" used for, and when do we release it?
 	if( IS_READABLE(ifp) ) setup_dummy(ifp);

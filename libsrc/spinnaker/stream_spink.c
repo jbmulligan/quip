@@ -81,7 +81,10 @@
 static int recording_in_process;
 static int n_enqueued;
 static int n_frames_read=0;
+static int n_frames_written=0;
+#ifdef HAVE_MLOCK
 static int mem_locked=0;
+#endif // HAVE_MLOCK
 
 /* data passed to the video reader */
 
@@ -150,11 +153,10 @@ static int async_capture=0;
 
 #ifdef TRACE_FLOW
 
-static int m_status=0;
-static char mstatstr[]="IwcrbdA";
-static char statstr[]="itwWDbx";
+#ifdef TERSE_TRACE
 
-static char estring[MAX_DISKS][LLEN];
+static char m_stat_char[]="IwcrbdA";
+static char dw_stat_char[]="itwWDbx";
 
 static const char *master_codes=
 	"Master Codes:\n"
@@ -176,95 +178,50 @@ static const char *dw_codes=
 	"b	bottom of loop\n"
 	"x	exiting\n";
 
+#else // ! TERSE_TRACE
+
+static const char *m_stat_str[]={
+	"init",
+	"waiting",
+	"check",
+	"release",
+	"bottom",
+	"done",
+	"alarm"
+};
+
+static const char *dw_stat_str[]={
+	"init",
+	"top",
+	"waiting",
+	"write",
+	"done",
+	"bottom",
+	"exit"
+};
+
+#endif // TERSE_TRACE
+
+static char estring[MAX_DISKS][LLEN];
+
 #define STATUS_HELP(str)					\
 	if( verbose ){						\
 		NADVISE(str);					\
 	}
 
+// BUG???  is this still correct??
 static const char *column_doc=
 	"thread status newest n_read status next_to_wt ...\n";
 
-#define MSTATUS(code)						\
-m_status = code;						\
-if( verbose ){							\
-snprintf(ERROR_STRING,LLEN,					\
-"M %c\t%d\t%d\t%c %d/%d\t%c %d/%d\t%c %d/%d",			\
-mstatstr[m_status],newest,n_frames_read,			\
-statstr[ppi[0].ppi_status],					\
-ppi[0].ppi_n_frames_written,					\
-ppi[0].ppi_n_enqueued,						\
-statstr[ppi[1].ppi_status],					\
-ppi[1].ppi_n_frames_written,					\
-ppi[1].ppi_n_enqueued,						\
-statstr[ppi[2].ppi_status],					\
-ppi[2].ppi_n_frames_written,					\
-ppi[2].ppi_n_enqueued						\
-);								\
-advise(ERROR_STRING);						\
-}
+#define M_STATUS(code)						\
+	print_m_status(code,m_ppi);
 
-#define STATUS(code)						\
-pip->ppi_status = code;						\
-if( verbose ){							\
-snprintf(estring[pip->ppi_index],LLEN,				\
-"%c %c\t%d\t%d\t%c %d/%d\t%c %d/%d\t%c %d/%d",			\
-'0'+pip->ppi_index,mstatstr[m_status],newest,n_frames_read,	\
-statstr[ppi[0].ppi_status],					\
-ppi[0].ppi_n_frames_written,					\
-ppi[0].ppi_n_enqueued,					\
-statstr[ppi[1].ppi_status],					\
-ppi[1].ppi_n_frames_written,					\
-ppi[1].ppi_n_enqueued,					\
-statstr[ppi[2].ppi_status],					\
-ppi[2].ppi_n_frames_written,					\
-ppi[2].ppi_n_enqueued					\
-);								\
-NADVISE(estring[pip->ppi_index]);				\
-}
+#define DW_STATUS(code)		print_dw_status(code,pip);
 
-/* RSTATUS doesn't seem to be used anywere??? */
-
-#define RSTATUS(code)						\
-pip->ppi_status = code;						\
-if( verbose ){							\
-snprintf(estring[pip->ppi_index],LLEN,				\
-"%c %c\t%d\t%c %d\t%c %d\t%c %d\t%c %d",			\
-'0'+pip->ppi_index,rmstatstr[m_status],				\
-read_frame_want,						\
-rstatstr[ppi[0].ppi_status],					\
-ppi[0].ppi_n_enqueued,					\
-rstatstr[ppi[1].ppi_status],					\
-ppi[1].ppi_n_enqueued,					\
-rstatstr[ppi[2].ppi_status],					\
-ppi[2].ppi_n_enqueued,					\
-rstatstr[ppi[3].ppi_status],					\
-ppi[3].ppi_n_enqueued);					\
-NADVISE(estring[pip->ppi_index]);				\
-}
-
-#define RMSTATUS(code)						\
-m_status = code;						\
-if( verbose ){							\
-snprintf(ERROR_STRING,LLEN,						\
-"M %c\t%d\t%c %d\t%c %d\t%c %d\t%c %d",				\
-rmstatstr[m_status],						\
-read_frame_want,						\
-rstatstr[ppi[0].ppi_status],					\
-ppi[0].ppi_n_enqueued,					\
-rstatstr[ppi[1].ppi_status],					\
-ppi[1].ppi_n_enqueued,					\
-rstatstr[ppi[2].ppi_status],					\
-ppi[2].ppi_n_enqueued,					\
-rstatstr[ppi[3].ppi_status],					\
-ppi[3].ppi_n_enqueued);					\
-NADVISE(ERROR_STRING);						\
-}
 #else /* ! TRACE_FLOW */
 
-#define MSTATUS(code)		/* nop */
-#define STATUS(code)		/* nop */
-#define RSTATUS(code)		/* nop */
-#define RMSTATUS(code)		/* nop */
+#define M_STATUS(code)		/* nop */
+#define DW_STATUS(code)		/* nop */
 
 #endif /* ! TRACE_FLOW */
 
@@ -337,19 +294,17 @@ typedef struct per_proc_info {
 	int	ppi_n_dequeued;
 
 #ifdef RECORD_CAPTURE_COUNT
-	int	ppi_ccount[MAXCAPT];	/* capture count after each write */
-#endif	/* RECORD_CAPTURE_COUNT */
+	int	ppi_ccount[MAXCAPT];	// capture count after each write
+#endif	// RECORD_CAPTURE_COUNT
 	int	ppi_tot_disks;
-	int	ppi_my_disks;		/* number of disks that this thread uses */
+	int	ppi_my_disks;		// number of disks that this thread uses
 #ifdef TRACE_FLOW
-	int	ppi_status;		/* holds disk_writer state */
-#endif /* TRACE_FLOW */
+	int	ppi_status;		// holds disk_writer state
+	int	ppi_last_status;	// to avoid dup messages
+#endif // TRACE_FLOW
 	Spink_Cam *	ppi_cam_p;
 	Video_Reader_Args *ppi_vra_p;
 } Proc_Info;
-
-//#define ppi_next_to_write	ppi_next_frm
-//#define ppi_next_to_read	ppi_next_frm
 
 
 /* flag bits */
@@ -362,7 +317,8 @@ typedef struct per_proc_info {
 
 /* These global variables are used for inter-thread communication... */
 
-static Proc_Info ppi[MAX_DISKS];
+static Proc_Info ppi[MAX_DISKS+1];
+static Proc_Info *m_ppi = (&ppi[MAX_DISKS]);
 static int thread_write_enabled[MAX_DISKS]={1,1,1,1,1,1,1,1};
 
 static int oldest, newest;	/* indices into ringbuf
@@ -372,13 +328,70 @@ static int oldest, newest;	/* indices into ringbuf
 				 */
 static int n_ready_bufs;
 
-#ifdef NOT_USED
-static void thread_write_enable(QSP_ARG_DECL  int index, int flag)
+#ifdef TRACE_FLOW
+
+static void append_dw_info(char *msg)
 {
-	assert( index >= 0 && index < MAX_DISKS );
-	thread_write_enabled[index]=flag;
+	int i;
+
+	for(i=0;i<n_disk_writer_threads;i++){
+		char str[32];
+#ifdef TERSE_TRACE
+		snprintf(str,32,"\t%c %d/%d",
+			dw_stat_char[ppi[i].ppi_status],
+			ppi[i].ppi_n_frames_written,
+			ppi[i].ppi_n_enqueued);
+#else // ! TERSE_TRACE
+		snprintf(str,32,"\t%8s %d/%d",
+			dw_stat_str[ppi[i].ppi_status],
+			ppi[i].ppi_n_frames_written,
+			ppi[i].ppi_n_enqueued);
+#endif // ! TERSE_TRACE
+		strcat(msg,str);
+	}
 }
-#endif // NOT_USED
+
+static void print_thread_status(char thread_code, int code, Proc_Info *pip)
+{
+	// don't print duplicate messages
+	if( pip->ppi_last_status == code ){ return; }
+
+	pip->ppi_status = code;
+	if( verbose ){
+		int m_status = m_ppi->ppi_status;
+		char *msg = estring[pip->ppi_index];
+#ifdef TERSE_TRACE
+		snprintf(msg, LLEN,
+			"%c %c\t%d\t%d",
+			thread_code,
+			m_stat_char[m_status],
+			newest,
+			n_frames_read);
+#else // ! TERSE_TRACE
+		snprintf(msg, LLEN,
+			"%c %8s\t%d\t%d",
+			thread_code,
+			m_stat_str[m_status],
+			newest,
+			n_frames_read);
+#endif // ! TERSE_TRACE
+		append_dw_info(msg);
+		NADVISE(estring[pip->ppi_index]);
+	}
+	pip->ppi_last_status = code;
+}
+
+static void print_dw_status(int code, Proc_Info *pip)
+{
+	print_thread_status('0'+pip->ppi_index,code,pip);
+}
+
+static void print_m_status(int code, Proc_Info *pip)
+{
+	print_thread_status('M',code,pip);
+}
+
+#endif // TRACE_FLOW
 
 #ifdef DEBUG_TIMERS
 
@@ -463,7 +476,7 @@ static void dw_wait_until_ready(Proc_Info *pip)
 			ready=1;
 
 		if( ! ready ){
-STATUS(DW_WAIT)
+DW_STATUS(DW_WAIT)
 			/* YIELD_PROC here does not work...
 			 * we get into a deadlock situation,
 			 * where some writes never complete...
@@ -512,13 +525,13 @@ static void *disk_writer(void *argp)
 	int fd;
 	int32_t j;
 	int i_frag;
-#ifdef FOOBAR
-struct timeval tmp_time1,tmp_time2;
-struct timezone tmp_tz;
-#endif /* FOOBAR */
 
 	pip = (Proc_Info*) argp;
-STATUS(DW_INIT)
+#ifdef TRACE_FLOW
+	pip->ppi_last_status = (-1);	// invalid value flags no prev status
+#endif // TRACE_FLOW
+
+DW_STATUS(DW_INIT)
 
 	pip->ppi_pid = getpid();
 
@@ -533,22 +546,18 @@ STATUS(DW_INIT)
 		int queue_idx, buf_idx;
 
 		/* See if we have data available to write.  */
-STATUS(DW_TOP)
+DW_STATUS(DW_TOP)
 
 		dw_wait_until_ready(pip);
 		// we need to figure out which queue entry to look at...
 		queue_idx = j % DW_QUEUE_LEN;
 		buf_idx = pip->ppi_queue[ queue_idx ];
-fprintf(stderr,"disk_writer %d:  queue_idx = %d   buf_idx = %d\n",
-pip->ppi_index,queue_idx,buf_idx);
-
 
 		buf = OBJ_DATA_PTR( _cam_frame_with_index(DEFAULT_QSP_ARG  pip->ppi_cam_p,buf_idx) );
-//fprintf(stderr,"disk_writer:  buffer address is 0x%lx\n",(long)buf);
 
 		/* write out the next frame */
 
-STATUS(DW_WRITE)
+DW_STATUS(DW_WRITE)
 
 		/* n_really_to_write was used for testing disk
 		 * performance and bus saturation...
@@ -563,19 +572,19 @@ STATUS(DW_WRITE)
 
 		if( thread_write_enabled[pip->ppi_index] ){
 			for(i_frag=0;i_frag<N_FRAGMENTS;i_frag++){
-fprintf(stderr,"disk_writer %d:  NOT writing fragment %d\n",
-pip->ppi_index,i_frag);
-				if( (n_written = write(fd,buf+i_frag*pip->ppi_vra_p->vr_n_bytes_per_write,pip->ppi_vra_p->vr_n_bytes_per_write))
-						!= pip->ppi_vra_p->vr_n_bytes_per_write ){
+				char *addr;
+				int nb;
+				nb = pip->ppi_vra_p->vr_n_bytes_per_write;
+				addr = buf + i_frag*nb;
+				if( (n_written = write(fd,addr,nb)) != nb ){
 					PRINT_WRITE_ERROR_WARNING
 					return(NULL);
 				}
 			}
 		}
 
-STATUS(DW_DONE)
+DW_STATUS(DW_DONE)
 
-fprintf(stderr,"TRACE disk_writer thread %d will release buffer %d\n",pip->ppi_index,buf_idx);
 		_release_spink_frame(DEFAULT_QSP_ARG  pip->ppi_cam_p,buf_idx);
 		pip->ppi_n_frames_written ++;
 		pip->ppi_n_dequeued ++;
@@ -586,9 +595,9 @@ fprintf(stderr,"TRACE disk_writer thread %d will release buffer %d\n",pip->ppi_i
 		pip->ppi_ccount[j]=_mm->frames_captured - starting_count;
 #endif	/* RECORD_CAPTURE_COUNT */
 
-STATUS(DW_BOT)
+DW_STATUS(DW_BOT)
 	}
-STATUS(DW_EXIT)
+DW_STATUS(DW_EXIT)
 
 	pip->ppi_flags |= DW_EXITING;
 
@@ -621,11 +630,12 @@ static void start_dw_threads(QSP_ARG_DECL  Video_Reader_Args *vra_p, Spink_Cam *
 	 * n_disk_writer_threads disks.
 	 */
 
-if( (vra_p->vr_n_disks % n_disk_writer_threads) != 0 ){
-	snprintf(ERROR_STRING,LLEN,"n_disk_writer_threads (%d) must evenly divide n_disks (%d)",
+	if( (vra_p->vr_n_disks % n_disk_writer_threads) != 0 ){
+		snprintf(ERROR_STRING,LLEN,
+	"n_disk_writer_threads (%d) must evenly divide n_disks (%d)",
 			n_disk_writer_threads,vra_p->vr_n_disks);
-	error1(ERROR_STRING);
-}
+		error1(ERROR_STRING);
+	}
 
 	disks_per_thread = vra_p->vr_n_disks / n_disk_writer_threads;
 
@@ -633,7 +643,9 @@ if( (vra_p->vr_n_disks % n_disk_writer_threads) != 0 ){
 		int j;
 
 		ppi[i].ppi_index=i;
-		ppi[i].ppi_n_frames_to_write = (vra_p->vr_n_frames+(n_disk_writer_threads-1)-i)/n_disk_writer_threads;
+		ppi[i].ppi_n_frames_to_write =
+			(vra_p->vr_n_frames+(n_disk_writer_threads-1)-i)
+			/n_disk_writer_threads;
 		ppi[i].ppi_n_frames_written = 0;
 
 		ppi[i].ppi_queue_rd_idx = (-1);	// nothing to send to disk
@@ -643,7 +655,8 @@ if( (vra_p->vr_n_disks % n_disk_writer_threads) != 0 ){
 
 		ppi[i].ppi_flags = 0;
 		for(j=0;j<disks_per_thread;j++){
-			ppi[i].ppi_fd[j] = vra_p->vr_fd_arr[ i + j*n_disk_writer_threads ];
+			ppi[i].ppi_fd[j] = vra_p->vr_fd_arr[ i +
+						j*n_disk_writer_threads ];
 		}
 		ppi[i].ppi_tot_disks = vra_p->vr_n_disks;
 		ppi[i].ppi_my_disks = disks_per_thread;
@@ -652,7 +665,6 @@ if( (vra_p->vr_n_disks % n_disk_writer_threads) != 0 ){
 		ppi[i].ppi_vra_p = vra_p;
 
 		pthread_create(&dw_thr[i],&attr1,disk_writer,&ppi[i]);
-		/* pthread_create(&dw_thr[i],NULL,disk_writer,&ppi[i]); */
 	}
 } // start_dw_threads
 
@@ -671,7 +683,7 @@ do_date();
 show_tmrs(SGL_DEFAULT_QSP_ARG);
 #endif /* DEBUG_TIMERS */
 
-	/* MSTATUS(MS_ALARM); */
+	/* M_STATUS(MS_ALARM); */
 
 	exit(1);
 }
@@ -859,10 +871,9 @@ static void _enqueue_next_frame(QSP_ARG_DECL  Spink_Cam *skc_p, Video_Reader_Arg
 
 		// get the next frame
 	dp = grab_spink_cam_frame(skc_p);
-n_frames_read++;
+	n_frames_read++;
 
 	assert( dp != NULL );
-fprintf(stderr,"video_reader:  grabbed %s\n",OBJ_NAME(dp));
 
 	/* See if all the disk writers have written another frame */
 
@@ -876,39 +887,25 @@ fprintf(stderr,"video_reader:  grabbed %s\n",OBJ_NAME(dp));
 	 * there can be several frames that are ready to go.
 	 */
 
-MSTATUS(MS_CHECKING)
+M_STATUS(MS_CHECKING)
 
 	check_disk_performance(skc_p,vra_p);
 
-//expected_newest=newest+1;
-//if( expected_newest >= skc_p->skc_n_buffers ) expected_newest=0;
-
 	newest = skc_p->skc_newest;
-
-//if( newest != expected_newest )
-//fprintf(stderr,"newest = %d, expected %d!? (n_frames_read = %d)\n",
-//newest,expected_newest,n_frames_read);
 
 	// Determine which disk writer should receive this frame
 
 	dw_idx = (n_frames_read-1) % n_disk_writer_threads;
 
-if( (ppi[dw_idx].ppi_n_enqueued - ppi[dw_idx].ppi_n_dequeued) >
-				(skc_p->skc_n_buffers/n_disk_writer_threads) )
-fprintf(stderr,"video_reader %d:  dw_idx = %d, %d enqueued   %d dequeued\n",
-n_frames_read,dw_idx,ppi[dw_idx].ppi_n_enqueued,ppi[dw_idx].ppi_n_dequeued);
-
 	// make sure the disk_writer is ready to enqueue
 
 	queue_idx = ( (n_frames_read-1) / n_disk_writer_threads ) % DW_QUEUE_LEN;
-fprintf(stderr,"video_reader:  will enqueue frame %d with disk_writer %d, queue position %d\n",
-newest,dw_idx,queue_idx);
 	ppi[dw_idx].ppi_queue[queue_idx] = newest;
 	ppi[dw_idx].ppi_queue_wt_idx = queue_idx;
 	ppi[dw_idx].ppi_n_enqueued ++;
 
 	n_enqueued ++;
-MSTATUS(MS_BOT)
+M_STATUS(MS_BOT)
 }
 
 #define check_if_halting(vra_p) _check_if_halting(QSP_ARG  vra_p)
@@ -918,7 +915,7 @@ static void _check_if_halting(QSP_ARG_DECL  Video_Reader_Args *vra_p)
 	/* shut things down if the user has given a halt command */
 
 	if( record_state & RECORD_HALTING ){	/* halt requested */
-advise("video_reader HALTING");
+//advise("video_reader HALTING");
 		/* we capture n_disks more frames so that none of
 		 * the disk writer processes hang waiting for data.
 		 * We round up to a multiple of n_disks, so that each
@@ -985,15 +982,17 @@ static void *video_reader(void *argp)
 	Query_Stack *qsp; // needed for thread-safe-query
 #endif // THREAD_SAFE_QUERY
 
+#ifdef TERSE_TRACE
 	STATUS_HELP(master_codes);
 	STATUS_HELP(dw_codes);
+#endif // TERSE_TRACE
 	STATUS_HELP(column_doc);
 
 	vra_p = (Video_Reader_Args*) argp;
 	skc_p = vra_p->vr_cam_p;
 
 	orig_n_frames_wanted = n_frames_wanted = vra_p->vr_n_frames;
-fprintf(stderr,"video_reader:  n_frames_wanted = %d\n",n_frames_wanted);
+//fprintf(stderr,"video_reader:  n_frames_wanted = %d\n",n_frames_wanted);
 	stream_ifp = vra_p->vr_ifp;
 #ifdef THREAD_SAFE_QUERY
 	qsp = vra_p->vr_qsp;
@@ -1009,7 +1008,11 @@ fprintf(stderr,"video_reader:  n_frames_wanted = %d\n",n_frames_wanted);
 	/* Wait for all threads to get ready before starting grabber */
 	wait_for_all_threads();
 
-MSTATUS(MS_INIT)
+#ifdef TRACE_FLOW
+	m_ppi->ppi_last_status = (-1);	// invalid value flags no prev status
+#endif // TRACE_FLOW
+
+M_STATUS(MS_INIT)
 
 	// metor capture was started here...
 	// Now capture is started in main record func, to determine
@@ -1031,7 +1034,7 @@ MSTATUS(MS_INIT)
 		YIELD_PROC(100)		// 100 usec sleep if not rt_sched
 		check_if_halting(vra_p);
 	} /* end main video read loop */
-MSTATUS(MS_DONE)
+M_STATUS(MS_DONE)
 
 	signal(SIGALRM,SIG_IGN);
 
@@ -1057,7 +1060,6 @@ advise(ERROR_STRING);
 #endif /* DEBUG_TIMER */
 
 if( verbose ) advise("main thread stopping capture");
-fprintf(stderr,"TRACE stopping capture");
 	spink_stop_capture(skc_p);
 
 	/* check the total number of dropped frames */
@@ -1067,11 +1069,6 @@ fprintf(stderr,"TRACE stopping capture");
 	/* wait for disk writer threads to finish */
 
 	for(i=0;i<n_disk_writer_threads;i++){
-#ifdef FOOBAR
-		if( unassoc_pids(master_pid,ppi[i].ppi_pid) < 0 )
-			error1("error unassociating disk writer process id");
-#endif /* FOOBAR */
-
 		if( pthread_join(dw_thr[i],NULL) != 0 ){
 			snprintf(ERROR_STRING,LLEN,"Error joining disk writer thread %d",i);
 			warn(ERROR_STRING);
@@ -1166,6 +1163,7 @@ fprintf(stderr,"TRACE stopping capture");
 
 	finish_recording( QSP_ARG  stream_ifp );
 
+#ifdef HAVE_MLOCK
 	if( mem_locked ){
 		if( munlockall() < 0 ){
 			tell_sys_error("munlockall");
@@ -1173,6 +1171,7 @@ fprintf(stderr,"TRACE stopping capture");
 		}
 		mem_locked=0;
 	}
+#endif // HAVE_MLOCK
 
 	return(NULL);
 
@@ -1180,16 +1179,6 @@ fprintf(stderr,"TRACE stopping capture");
 
 static void *video_reader_thread(void *argp)
 {
-#ifdef FOOBAR
-	grabber_pid=getpid();
-
-snprintf(ERROR_STRING,LLEN,"video_reader_thread:  grabber_pid = %d",grabber_pid);
-advise(ERROR_STRING);
-
-	if( assoc_pids(master_pid,grabber_pid) < 0 )
-		error1("video_reader_thread:  error associating pid");
-#endif /* FOOBAR */
-
 	return( video_reader(argp) );
 }
 
@@ -1478,20 +1467,25 @@ fprintf(stderr,"number of disks to be used for recording is %d\n",vra_p->vr_n_di
 
 	// spink_stream_record starts the disk writers first, so they
 	// will be ready...
-fprintf(stderr,"starting disk_writer threads\n");
 	start_dw_threads(QSP_ARG  vra_p, skc_p);
 
 	// Have we initialized vra1 completely??
 	n_frames_read = 0;
+	n_frames_written = 0;
 
 	record_state = RECORDING;
 
+#ifdef HAVE_MLOCK
+	// mlockall not documented on macos!?
+	// It is provided as part of mlock, it links but
+	// when executed a "not implemented" error code is returned...
 	if( mlockall(MCL_FUTURE) < 0 ){
 		tell_sys_error("mlockall");
 		warn("Failed to lock process memory!?");
 	} else {
 		mem_locked=1;
 	}
+#endif // HAVE_MLOCK
 
 	if( async_capture ){
 		start_grab_thread(QSP_ARG  &vra1);
@@ -1503,7 +1497,8 @@ fprintf(stderr,"starting disk_writer threads\n");
 		/* Because the disk writers don't use the fileio library,
 		 * the ifp doesn't know how many frames have been written.
 		 */
-		ifp->if_nfrms = n_frames_wanted;	/* BUG? is this really what happened? */
+		ifp->if_nfrms = n_frames_wanted;
+				/* BUG? is this really what happened? */
 	}
 } /* end spink_stream_record */
 
@@ -1520,13 +1515,6 @@ show_tmrs(SINGLE_QSP_ARG);
 	}
 
 	/* BUG make sure this thread is still running! */
-
-#ifdef FOOBAR
-	assert( grabber_pid != 0 );
-
-	if( unassoc_pids(master_pid,grabber_pid) < 0 )
-		error1("error unassociating grabber pid");
-#endif /* FOOBAR */
 
 advise("joining w/ grab thread...");
 	if( pthread_join(grab_thr,NULL) != 0 ){

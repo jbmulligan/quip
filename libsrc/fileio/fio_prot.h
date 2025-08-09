@@ -46,6 +46,8 @@ extern void image_file_init(SINGLE_QSP_ARG_DECL);
 
 extern Image_File *_img_file_creat(QSP_ARG_DECL  const char *,int rw,Filetype * ftp);
 #define img_file_creat(fn,m,t)	_img_file_creat(QSP_ARG  fn,m,t)
+extern Image_File *_init_new_img_file(QSP_ARG_DECL  const char *,int);
+#define init_new_img_file(fn,rw)	_init_new_img_file(QSP_ARG  fn,rw)
 extern int same_dimensions(QSP_ARG_DECL  Data_Obj *dp,Image_File *ifp);
 extern int same_size(QSP_ARG_DECL  Data_Obj *dp,Image_File *ifp);
 extern void copy_dimensions(Data_Obj *dpto,Data_Obj *dpfr);

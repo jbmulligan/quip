@@ -1,0 +1,9 @@
+
+rawvol
+  admin
+    mkfs 2
+      /Users/jeff/working/quip/libsrc/rawvol/test_disk1
+      /Users/jeff/working/quip/libsrc/rawvol/test_disk2
+      1024 1024
+    Pause
+    exit

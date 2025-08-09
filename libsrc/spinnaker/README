@@ -1,3 +1,15 @@
 Support for FLIR Imaging (formerly Point Grey Research) spinnaker camera library.
 This library supercedes the flycapture2 library for USB3 and GigE cameras.
 
+When building on a clean mac, the library is not found after building quip:
+
+spin.lucia <36> ./quip
+dyld[46897]: Library not loaded: libSpinVideo_C.dylib.3.2.0.62
+  Referenced from: <8AAB568F-BBB3-3544-BF99-842EE68F53AC> /Users/larsinte/jbm/working/quip/src/quip
+  Reason: tried: 'libSpinVideo_C.dylib.3.2.0.62' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibSpinVideo_C.dylib.3.2.0.62' (no such file), 'libSpinVideo_C.dylib.3.2.0.62' (no such file), '/Users/larsinte/jbm/working/quip/src/libSpinVideo_C.dylib.3.2.0.62' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/Users/larsinte/jbm/working/quip/src/libSpinVideo_C.dylib.3.2.0.62' (no such file), '/Users/larsinte/jbm/working/quip/src/libSpinVideo_C.dylib.3.2.0.62' (no such file)
+Abort trap: 6
+
+
+An environment variable must be set to tell quip where to find the library...
+The libraries are located in /Applications/Spinnaker/lib
+

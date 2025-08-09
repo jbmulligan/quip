@@ -1,0 +1,11 @@
+# set up a fake raw volume on nitsuga
+# test_disk1
+
+rawvol 
+  admin 
+    mkfs 1 ./test_disk1 1024 1024 
+    quit 
+  quit 
+
+exit
+
