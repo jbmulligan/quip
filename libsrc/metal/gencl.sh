@@ -1,0 +1,1 @@
+../opencl/gencl.sh

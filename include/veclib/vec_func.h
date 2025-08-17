@@ -13,17 +13,6 @@ typedef struct vector_function {
 	uint32_t	vf_flags;
 	uint32_t	vf_precmask;
 	int		vf_typemask;
-
-#ifdef FOOBAR
-	// We will make these tables part of the platform struct...
-	void		(*vl2_func)(HOST_CALL_ARG_DECLS);
-#ifdef HAVE_OPENCL
-	void		(*ocl_func)(HOST_CALL_ARG_DECLS);
-#endif // HAVE_OPENCL
-#ifdef HAVE_CUDA
-	void		(*cu2_func)(HOST_CALL_ARG_DECLS);
-#endif // HAVE_CUDA
-#endif // FOOBAR
 } Vector_Function;
 
 // Flag bits
@@ -174,57 +163,6 @@ typedef struct platform_func {
 	.vf_precmask	=	precmask,				\
 	.vf_typemask	=	typemask,				\
 },
-
-#ifdef FOOBAR
-#ifdef HAVE_CUDA
-
-#ifdef HAVE_OPENCL
-
-#define VEC_FUNCS(func)							\
-	.vl2_func	=	h_vl2_##func,				\
-	.ocl_func	=	h_ocl_##func,				\
-	.cu2_func	=	h_cu2_##func,
-
-#define CPU_FUNC(func)							\
-	.vl2_func	=	h_vl2_##func,				\
-	.ocl_func	=	NULL,					\
-	.cu2_func	=	NULL,
-
-#else // ! HAVE_OPENCL
-
-#define VEC_FUNCS(func)							\
-	.vl2_func	=	h_vl2_##func,				\
-	.cu2_func	=	h_cu2_##func,
-
-#define CPU_FUNC(func)							\
-	.vl2_func	=	h_vl2_##func,				\
-	.cu2_func	=	NULL,
-
-#endif // ! HAVE_OPENCL
-
-#else // ! HAVE_CUDA
-
-#ifdef HAVE_OPENCL
-
-#define VEC_FUNCS(func)							\
-	.vl2_func	=	h_vl2_##func,				\
-	.ocl_func	=	h_ocl_##func,
-
-#define CPU_FUNC(func)							\
-	.vl2_func	=	h_vl2_##func,				\
-	.ocl_func	=	NULL,
-
-#else // ! HAVE_OPENCL
-
-#define VEC_FUNCS(func)							\
-	.vl2_func	=	h_vl2_##func,
-
-#define CPU_FUNC(func)							\
-	.vl2_func	=	h_vl2_##func,
-
-#endif  // ! HAVE_OPENCL
-#endif // ! HAVE_CUDA
-#endif // FOOBAR
 
 #endif // ! BUILD_FOR_OBJC
 

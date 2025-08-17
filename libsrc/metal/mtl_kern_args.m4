@@ -1,4 +1,3 @@
-dnl Not very much of this file is platform-specific???
 
 my_include(`../../include/veclib/gen_kern_args.m4')
 
@@ -40,32 +39,42 @@ define(`SET_KERNEL_ARG_2',`_SET_KERNEL_ARG(dev_kernel2[pd_idx],$1,$2)')
 
 define(`SET_KERNEL_ARGS_FAST',SET_KERNEL_ARGS_FAST_$1$2$4$3)
 
+dnl	// Create Metal buffers
+dnl	id<MTLBuffer> bufferA = [device newBufferWithBytes:arrayA length:sizeof(arrayA) options:MTLResourceStorageModeShared];
+
+dnl [encoder setBuffer:bufferA offset:0 atIndex:0];
+
 dnl _SET_KERNEL_ARG(kernel,type,value)
 define(`_SET_KERNEL_ARG',`
-	status = clSetKernelArg($1,	ki_idx++, sizeof($2), $3);
-	if( status != CL_SUCCESS )
-		report_ocl_error(status, "clSetKernelArg" );
+	fprintf(stderr,"warning: _SET""_KER""NEL_ARG type = %s\n","$2");
+	{
+	// BUG - need to multiply by array size!?
+	id<MTLBuffer> buf = [mtl_device newBufferWithBytes:$3 length:sizeof($2) options:MTLResourceStorageModeShared];
+	// BUG - encoder should come from kernel???
+	[encoder setBuffer:buf offset:0 atIndex:ki_idx];
+	}
+	ki_idx ++;
 ')
 
 
-define(`SET_KERNEL_ARGS_DEST_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_DEST_OFFSET(vap) )')
+define(`SET_KERNEL_ARGS_DEST_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_DEST_OFFSET(vap) )')
 
-define(`SET_KERNEL_ARGS_SRC1_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SRC1_OFFSET(vap) )')
-define(`SET_KERNEL_ARGS_BSRC1_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SRC1_OFFSET(vap) )')
-define(`SET_KERNEL_ARGS_SSRC1_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SRC1_OFFSET(vap) )')
+define(`SET_KERNEL_ARGS_SRC1_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SRC1_OFFSET(vap) )')
+define(`SET_KERNEL_ARGS_BSRC1_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SRC1_OFFSET(vap) )')
+define(`SET_KERNEL_ARGS_SSRC1_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SRC1_OFFSET(vap) )')
 
-define(`SET_KERNEL_ARGS_SRC2_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SRC2_OFFSET(vap) )')
-define(`SET_KERNEL_ARGS_MAP_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SRC2_OFFSET(vap) )')
+define(`SET_KERNEL_ARGS_SRC2_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SRC2_OFFSET(vap) )')
+define(`SET_KERNEL_ARGS_MAP_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SRC2_OFFSET(vap) )')
 
-define(`SET_KERNEL_ARGS_SRC3_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SRC3_OFFSET(vap) )')
+define(`SET_KERNEL_ARGS_SRC3_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SRC3_OFFSET(vap) )')
 
-define(`SET_KERNEL_ARGS_SRC4_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SRC4_OFFSET(vap) )')
+define(`SET_KERNEL_ARGS_SRC4_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SRC4_OFFSET(vap) )')
 
-dnl define(`SET_KERNEL_ARGS_SBM_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SBM_OFFSET(vap) )')
-dnl define(`SET_KERNEL_ARGS_SBM1_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SBM1_OFFSET(vap) )')
-dnl define(`SET_KERNEL_ARGS_SBM2_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SBM2_OFFSET(vap) )')
+dnl define(`SET_KERNEL_ARGS_SBM_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SBM_OFFSET(vap) )')
+dnl define(`SET_KERNEL_ARGS_SBM1_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SBM1_OFFSET(vap) )')
+dnl define(`SET_KERNEL_ARGS_SBM2_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SBM2_OFFSET(vap) )')
 
-dnl define(`SET_KERNEL_ARGS_DBM_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_DBM_OFFSET(vap) )')
+dnl define(`SET_KERNEL_ARGS_DBM_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_DBM_OFFSET(vap) )')
 
 define(`SET_KERNEL_ARGS_DBM_GPU_INFO',`SET_KERNEL_ARG( void *, &VA_DBM_GPU_INFO_PTR(vap) )')
 

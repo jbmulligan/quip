@@ -2,8 +2,9 @@
 #include "quip_prot.h"
 #include "pf_viewer.h"	// has to come first to pick up glew.h first
 #include "quip_prot.h"
-#include "platform.h"
 #include "ocl_platform.h"
+#include "mtl_platform.h"
+#include "platform.h"
 #include "debug.h"	// AERROR
 
 ITEM_INTERFACE_DECLARATIONS( Platform_Device, pfdev, 0 )
@@ -73,6 +74,14 @@ static void _init_platform_defaults(QSP_ARG_DECL  Compute_Platform *cpp, platfor
 		case PLATFORM_CPU:
 			SET_PF_PREFIX_STR(cpp,"cpu");
 			break;
+#ifdef HAVE_METAL
+		case PLATFORM_METAL:
+			SET_PF_PREFIX_STR(cpp,"mtl");
+			// allocate the memory structures
+			PF_MPD(cpp) = getbuf(sizeof(*PF_MPD(cpp)));
+			break;
+#endif // HAVE_METAL
+
 #ifdef HAVE_OPENCL
 		case PLATFORM_OPENCL:
 			SET_PF_PREFIX_STR(cpp,"ocl");

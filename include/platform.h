@@ -14,8 +14,15 @@ struct vector_function;
 #endif // BUILD_FOR_OPENCL
 #endif // HAVE_OPENCL
 
+#ifdef HAVE_METAL
+#include "mtl_platform.h"
+#endif // HAVE_METAL
+
 struct opencl_kernel_info;
 typedef struct opencl_kernel_info OpenCL_Kernel_Info;
+
+struct metal_kernel_info;
+typedef struct metal_kernel_info Metal_Kernel_Info;
 
 typedef union {
 #ifdef HAVE_OPENCL
@@ -24,6 +31,9 @@ typedef union {
 #ifdef HAVE_CUDA
 	CUDA_Kernel_Info *cuda_kernel_info_p;
 #endif // HAVE_CUDA
+#ifdef HAVE_METAL
+	Metal_Kernel_Info *mtl_kernel_info_p;
+#endif // HAVE_METAL
 	void *any_kernel_info_p;
 } Kernel_Info_Ptr;
 
@@ -42,6 +52,7 @@ typedef enum {
 	PLATFORM_CPU,
 	PLATFORM_CUDA,
 	PLATFORM_OPENCL,
+	PLATFORM_METAL,
 	N_PLATFORM_TYPES
 } platform_type;
 
@@ -62,6 +73,7 @@ typedef enum {
 // platform or API?
 
 typedef struct ocl_platform_data OCL_Platform_Data;
+typedef struct mtl_platform_data MTL_Platform_Data;
 
 typedef struct dispatch_function {
 	const int	df_index;
@@ -120,6 +132,11 @@ typedef struct compute_platform {
 
 	union {
 
+#ifdef HAVE_METAL
+		MTL_Platform_Data *	u_mpd_p;
+#define PF_MDP(pfp)		(pfp)->cp_u.u_mpd_p
+#endif // HAVE_METAL
+
 #ifdef HAVE_OPENCL
 		OCL_Platform_Data *	u_opd_p;
 #define PF_ODP(pfp)		(pfp)->cp_u.u_opd_p
@@ -169,10 +186,12 @@ ITEM_INTERFACE_PROTOTYPES( Compute_Platform, platform )
 #define PF_RUN_KERNEL_FN(cpp)		(cpp)->cp_run_kernel_func
 #define PF_SET_KERNEL_ARG_FN(cpp)	(cpp)->cp_set_kernel_arg_func
 
+#ifdef HAVE_PF_FFT
 #define PF_FFT2D_FN(cpp)		(cpp)->cp_fft2d_func
 #define PF_IFT2D_FN(cpp)		(cpp)->cp_ift2d_func
 #define PF_FFTROWS_FN(cpp)		(cpp)->cp_fftrows_func
 #define PF_IFTROWS_FN(cpp)		(cpp)->cp_iftrows_func
+#endif // HAVE_PF_FFT
 
 #define IS_CPU_DEVICE(pdp)	IS_CPU_PLATFORM( PFDEV_PLATFORM(pdp) )
 
@@ -234,6 +253,7 @@ ITEM_INTERFACE_PROTOTYPES( Compute_Platform, platform )
 #define IS_CPU_PLATFORM(cpp)	(PF_TYPE(cpp)==PLATFORM_CPU)
 
 #define PF_OPD(cpp)	PF_DATA(cpp).u_opd_p
+#define PF_MPD(cpp)	PF_DATA(cpp).u_mpd_p
 
 #define OCLPF_ID(cpp)			OPD_ID(PF_OPD(cpp))
 #define OCLPF_PROFILE(cpp)		OPD_PROFILE(PF_ODP(cpp))
@@ -249,6 +269,12 @@ ITEM_INTERFACE_PROTOTYPES( Compute_Platform, platform )
 
 struct cuda_dev_info;
 typedef struct cuda_dev_info Cuda_Dev_Info;
+
+#ifdef HAVE_METAL
+struct mtl_dev_info;
+typedef struct mtl_dev_info MTL_Dev_Info;
+#endif // HAVE_METAL
+
 
 #ifdef HAVE_CUDA
 #ifdef BUILD_FOR_CUDA
@@ -291,6 +317,7 @@ struct cuda_dev_info {
 #ifdef HAVE_OPENCL
 typedef struct ocl_dev_info  OCL_Dev_Info;
 
+// BUG - these are redundant!?  see above
 #define PFDEV_ODI(pdp)		(pdp)->pd_dev_info.u_odi_p
 #define SET_PFDEV_ODI(pdp,v)	(pdp)->pd_dev_info.u_odi_p = v
 
@@ -327,6 +354,11 @@ struct platform_device {
 #ifdef HAVE_CUDA
 		Cuda_Dev_Info *	u_cdi_p;
 #endif // HAVE_CUDA
+
+#ifdef HAVE_METAL
+		MTL_Dev_Info * u_mdi_p;
+#endif // HAVE_METAL
+
 	} pd_dev_info;
 #endif // HAVE_ANY_GPU
 } ;
@@ -339,6 +371,11 @@ struct platform_device {
 
 #define PFDEV_OCL_DEV_INFO(pdp)		((pdp)->pd_dev_info.u_odi_p)
 #define SET_PFDEV_OCL_DEV_INFO(pdp,v)	((pdp)->pd_dev_info.u_odi_p) = v
+
+//#define PFDEV_MTL_DEV_INFO(pdp)		((pdp)->pd_dev_info.u_mdi_p)
+//#define SET_PFDEV_MTL_DEV_INFO(pdp,v)	((pdp)->pd_dev_info.u_mdi_p) = v
+#define PFDEV_MDI(pdp)		((pdp)->pd_dev_info.u_mdi_p)
+#define SET_PFDEV_MDI(pdp,v)	((pdp)->pd_dev_info.u_mdi_p) = v
 
 #define PFDEV_NAME(pdp)			(pdp)->pd_item.item_name
 
@@ -435,6 +472,10 @@ extern void cu2_init_platform(SINGLE_QSP_ARG_DECL);
 }
 #endif // __cplusplus
 #endif // HAVE_CUDA
+
+#ifdef HAVE_METAL
+extern void mtl_init_platform(SINGLE_QSP_ARG_DECL);
+#endif // HAVE_METAL
 
 extern void _push_pfdev(QSP_ARG_DECL  Platform_Device *pdp);
 extern Platform_Device * _pop_pfdev(SINGLE_QSP_ARG_DECL);

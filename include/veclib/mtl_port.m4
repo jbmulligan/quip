@@ -1,4 +1,4 @@
-/* ocl_port.m4 BEGIN */
+/* mtl_port.m4 BEGIN */
 
 include(`../../include/veclib/gen_port.m4')
 
@@ -11,7 +11,7 @@ ifdef(`QUATERNION_SUPPORT',`
 #define QUATERNION_SUPPORT
 ',`')
 
-define(`pf_str',`ocl')
+define(`pf_str',`mtl')
 define(`KERNEL_ARG_QUALIFIER',`__global')
 define(`OS_ARG',GEN_SEP($1) $1`_'$2`_OFFSET')
 
@@ -44,6 +44,7 @@ extern void *TMPVEC_NAME`(QSP_ARG_DECL  Platform_Device *pdp, size_t size, size_
 extern void FREETMP_NAME`(QSP_ARG_DECL  void *a, const char *whence);'
 extern int get_max_threads_per_block(Data_Obj *odp);
 extern int max_threads_per_block;
+extern id<MTLDevice> mtl_device;
 
-/* ocl_port.m4 END */
+/* mtl_port.m4 END */
 

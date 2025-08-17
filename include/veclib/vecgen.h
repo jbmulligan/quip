@@ -406,6 +406,9 @@ extern void check_vl2_vfa_tbl(SINGLE_QSP_ARG_DECL);
 #ifdef HAVE_OPENCL
 extern void check_ocl_vfa_tbl(SINGLE_QSP_ARG_DECL);
 #endif // HAVE_OPENCL
+#ifdef HAVE_METAL
+extern void check_mtl_vfa_tbl(SINGLE_QSP_ARG_DECL);
+#endif // HAVE_METAL
 
 
 #ifdef __cplusplus

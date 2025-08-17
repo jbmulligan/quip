@@ -19,6 +19,7 @@ AC_INIT([quip],[1.0.02],[jeffrey.b.mulligan@nasa.gov])
 
 AC_CONFIG_SRCDIR([src/quip_main.c])
 AC_CONFIG_HEADERS([config.h])
+AC_PROG_OBJC			# for mac/metal only?
 
 AC_CANONICAL_HOST
 #echo Canonical host is $host, cpu $host_cpu, vendor $host_vendor, os $host_os
@@ -1437,6 +1438,34 @@ EOF
     fi
   fi
   /bin/rm mtl_test.m
+  # If we are building for metal, then we also need the foundation classes
+  if test "x${have_metal}" = xyes; then
+    AC_MSG_CHECKING([for Apple foundation classes])
+    cat>nss_test.m<<EOF
+      #import <Foundation/NSString.h>
+      int main(int ac,char **av)
+      {
+	NSString *s = @<:@NSString stringWithUTF8String:"hello"@:>@;
+      }
+EOF
+    if $CC $CPPFLAGS $LDFLAGS nss_test.m $LIBS 2> /tmp/nss_errs # /dev/null
+    then
+      AC_MSG_RESULT([yes])
+    else
+      AC_MSG_RESULT([no])
+      # try adding -framework option
+      AC_MSG_CHECKING([for NSString with -framework option])
+      if $CC $CPPFLAGS $LDFLAGS -framework Foundation nss_test.m $LIBS 2> /dev/null
+      then
+        AC_MSG_RESULT([yes])
+        LDFLAGS="$LDFLAGS -framework Foundation"
+      else
+        AC_MSG_RESULT([no])
+	# BUG LDFLAGS still has Metal!?
+        have_metal=no
+      fi
+    fi
+  fi
 fi
 
 # This version of the Metal test was written by ChatGPT

@@ -643,7 +643,6 @@ void cu2_init_platform(SINGLE_QSP_ARG_DECL)
 	static int inited=0;
 
 	if( inited ){
-		//WARN("Redundant call to cu2_init_platform!?");
 		advise("Redundant call to cu2_init_platform!?");
 		return;
 	}
@@ -681,70 +680,6 @@ void cu2_init_platform(SINGLE_QSP_ARG_DECL)
 #define MAXD(m,n)	(m>n?m:n)
 #define MAX2(szi_p)	MAXD(szi_p->szi_dst_dim[i_dim],szi_p->szi_src_dim[1][i_dim])
 #define MAX3(szi_p)	MAXD(MAX2(szi_p),szi_p->szi_src_dim[1][i_dim])
-
-#ifdef FOOBAR
-//CUFFT
-//static const char* getCUFFTError(cufftResult_t status)
-
-void g_fwdfft(QSP_ARG_DECL  Data_Obj *dst_dp, Data_Obj *src1_dp)
-{
-	//Variable declarations
-	int NX = 256;
-	//int BATCH = 10;
-	int BATCH = 1;
-	cufftResult_t status;
-
-	//Declare plan for FFT
-	cufftHandle plan;
-	//cufftComplex *data;
-	//cufftComplex *result;
-	void *data;
-	void *result;
-	cudaError_t drv_err;
-
-	//Allocate RAM
-	//cutilSafeCall(cudaMalloc(&data, sizeof(cufftComplex)*NX*BATCH));	
-	//cutilSafeCall(cudaMalloc(&result, sizeof(cufftComplex)*NX*BATCH));
-	drv_err = cudaMalloc(&data, sizeof(cufftComplex)*NX*BATCH);
-	if( drv_err != cudaSuccess ){
-		WARN("error allocating cuda data buffer for fft!?");
-		return;
-	}
-	drv_err = cudaMalloc(&result, sizeof(cufftComplex)*NX*BATCH);
-	if( drv_err != cudaSuccess ){
-		WARN("error allocating cuda result buffer for fft!?");
-		// BUG clean up previous malloc...
-		return;
-	}
-
-	//Create plan for FFT
-	status = cufftPlan1d(&plan, NX, CUFFT_C2C, BATCH);
-	if (status != CUFFT_SUCCESS) {
-		snprintf(ERROR_STRING,LLEN, "Error in cufftPlan1d: %s\n", getCUFFTError(status));
-		warn(ERROR_STRING);
-	}
-
-	//Run forward fft on data
-	status = cufftExecC2C(plan, (cufftComplex *)data,
-			(cufftComplex *)result, CUFFT_FORWARD);
-	if (status != CUFFT_SUCCESS) {
-		snprintf(ERROR_STRING,LLEN, "Error in cufftExecC2C: %s\n", getCUFFTError(status));
-		warn(ERROR_STRING);
-	}
-
-	//Run inverse fft on data
-	/*status = cufftExecC2C(plan, data, result, CUFFT_INVERSE);
-	if (status != CUFFT_SUCCESS)
-	{
-		snprintf(ERROR_STRING,LLEN, "Error in cufftExecC2C: %s\n", getCUFFTError(status));
-		warn(ERROR_STRING);
-	}*/
-
-	//Free resources
-	cufftDestroy(plan);
-	cudaFree(data);
-}
-#endif // FOOBAR
 
 #define CUDA_DRIVER_ERROR_RETURN(calling_funcname, cuda_funcname )	\
 								\

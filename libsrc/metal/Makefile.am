@@ -1,4 +1,7 @@
 
+#GENERATED_SRCS=	mtl_rand_expanded.c mtl_veclib_expanded.c mtl_fft_expanded.c
+GENERATED_SRCS=	mtl_veclib_expanded.c mtl_fft_expanded.c mtl_rand_expanded.c
+
 all:	libmtl.a
 	cp libmtl.a ../../libs
 
@@ -10,10 +13,9 @@ libmtl_a_CPPFLAGS = -I$(top_srcdir)/include -Wall -Wmissing-prototypes
 #AM_CFLAGS= -framework OpenGL
 AM_CFLAGS= -I/System/Library/Frameworks/OpenGL.framework/Headers
 
-GENERATED_SRCS=	mtl_rand_expanded.c mtl_veclib_expanded.c mtl_fft_expanded.c
 
 clean-local:
-	rm -rf $(GENERATED_SRCS) vuni.i
+	rm -rf $(GENERATED_SRCS) vuni.metal
 
 #libmvimenu_a_CPPFLAGS = -I$(top_srcdir)/include -Wall -Wmissing-prototypes
 
@@ -33,15 +35,20 @@ mtl_veclib_expanded.c:	mtl_veclib.m4 $(LOCAL_M4FILES) $(INC_M4FILES)
 mtl_fft_expanded.c:	mtl_fft_funcs.m4 $(LOCAL_M4FILES) $(INC_M4FILES)
 	m4 $(M4OPTS) $(srcdir)/mtl_fft_funcs.m4 > $(builddir)/mtl_fft_expanded.c
 
+m4_mtl_veclib.m:	$(GENERATED_SRCS)
+	
 libmtl_a_SOURCES =			\
-			mtl_veclib.c
+			mtl_supp.m	\
+			mtl_fft.m	\
+			mtl_rand.m	\
+			m4_mtl_veclib.m
 
 #			mtl_streams.c	\
+#			mtl_veclib.c	\
 #			mtl.c		\
 #			mtl_menu.c	\
 #			mtl_rand.c	\
 #			mtl_utils.c	\
-#			mtl_fft.c	\
 #			mtl_veclib.c
 
 $(srcdir)/mtl_veclib.c:	mtl_veclib_expanded.c
@@ -51,6 +58,8 @@ $(srcdir)/mtl_fft.c:	mtl_fft_expanded.c
 	touch $(srcdir)/mtl_fft.c
 
 #../../include/veclib/vecgen.m4:
+
+#			mtl_kern_args.m4
 
 LOCAL_M4FILES=						\
 			mtl_typed_fft_funcs.m4		\
@@ -145,51 +154,20 @@ INC_M4FILES=							\
 			$(M4_INCDIR)/xfer_args.m4
 
 
-$(srcdir)/mtl_rand.c:	vuni.i mtl_rand_expanded.c
-	touch $(srcdir)/mtl_rand.c
+$(srcdir)/mtl_rand.m:	vuni.metal mtl_rand_expanded.c
+	touch $(srcdir)/mtl_rand.m
 
-$(srcdir)/vuni.i:	$(srcdir)/vuni.mtl
-	$(srcdir)/gencl.sh $(srcdir)/vuni.mtl vuni.i
+$(srcdir)/vuni.metal:	$(srcdir)/vuni.mtl
+	$(srcdir)/gencl.sh $(srcdir)/vuni.mtl vuni.metal
 
-#			mtl_func_tbl.c
 
-#noinst_HEADERS = my_mtl.h
-
-#mtl_veclib_expanded.c:	_mtl_veclib.c
-#	gcc -E -I../.. -I$(top_srcdir)/include `test -f _mtl_veclib.c || echo $(srcdir)/`_mtl_veclib.c > mtl_veclib_expanded.c || rm mtl_veclib_expanded.c
-#
-#mtl_veclib_stripped.c:		mtl_veclib_expanded.c
-#	./strip_it.sh
-#
-#mtl_veclib.c:	mtl_veclib_stripped.c
-
-#./strip_it2.sh
-#			mtl_api.h
-
-#			conversions.h
-#			enum_menu_calls.h
-#			host_conv_prot.h
-#			kern_src.h
-#			mtl_host_call_defs.h
-#			mtl_host_untyped_call_defs.h
-#			mtl_kern_args.h
-#			mtl_kern_call_defs.h
-#			mtl_kernel_src.h
-#			type_undefs.h
-#			undefs.h
-#			mtl_host_funcs.c
-#			mtl_kernels.c
-#			mtl_typed_fft.c			\
-#			mtl_typtbl.c
+# formerly in noinst_HEADERS
+#			mtl_rand.m4
+#			gencl.sh
+#			vuni.mtl
 
 noinst_HEADERS =					\
 			mtl_veclib.m4			\
-			mtl_rand.m4			\
-			$(LOCAL_M4FILES)		\
-							\
-			gencl.sh			\
-			vuni.mtl
+			$(LOCAL_M4FILES)
 
-
-#	-rm -rf mtl_veclib_expanded.c mtl_veclib_stripped.c vuni.i
 

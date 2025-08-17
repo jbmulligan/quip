@@ -26,7 +26,6 @@ dnl GET_MAX_THREADS(dp)
 
 define(`GET_MAX_THREADS',`
 
-	/* ensure_cuda_device( $1 ); */
 	ensure_mtl_device( $1 );
 	max_threads_per_block = get_max_threads_per_block($1);
 	// BUG OpenCL does not use max_threads_per_block!?
@@ -94,26 +93,27 @@ define(`PF_GPU_FAST_CALL',`fprintf(stderr,
 
 
 // Make this a nop if not waiting for kernels
-define(`DECLARE_OCL_EVENT',`cl_event event;')
+dnl define(`DECLARE_MTL_EVENT',`cl_event event;')
+define(`DECLARE_MTL_EVENT',`')
 
-dnl BUG we need a different OCL kernel for every device...
+dnl BUG we need a different MTL kernel for every device...
 dnl We could 
-dnl BUG - the initialization here needs to be changed if we change MAX_OPENCL_DEVICES
+dnl BUG - the initialization here needs to be changed if we change MAX_METAL_DEVICES
 dnl But - we are probably safe, because the compiler will set un-specified
 dnl elements to 0...
 
-define(`DECLARE_OCL_VARS',`
-	static cl_kernel dev_kernel[MAX_OPENCL_DEVICES] = {NULL,NULL,NULL,NULL};
-	DECLARE_OCL_COMMON_VARS
+define(`DECLARE_MTL_VARS',`
+	static id<MTLFunction> dev_kernel[MAX_METAL_DEVICES] = {NULL,NULL,NULL,NULL};
+	DECLARE_MTL_COMMON_VARS
 ')
 
-define(`DECLARE_OCL_COMMON_VARS',`
+define(`DECLARE_MTL_COMMON_VARS',`
 
 	/*static cl_program program = NULL;*/
-	cl_int status;
-	DECLARE_OCL_EVENT
-	int ki_idx=0;
+	/*cl_int status;*/
+	DECLARE_MTL_EVENT
 	int pd_idx; /* need to set! */
+	int ki_idx=0;
 	const char *ksrc;
 	/* define the global size and local size
 	 * (grid size and block size in CUDA) */
@@ -123,11 +123,11 @@ define(`DECLARE_OCL_COMMON_VARS',`
 
 // two different kernels used in one call (e.g. vmaxg - nocc_setup, nocc_helper
 
-define(`DECLARE_OCL_VARS_2',`
+define(`DECLARE_MTL_VARS_2',`
+	static id<MTLFunction> dev_kernel1[MAX_METAL_DEVICES] = {NULL,NULL,NULL,NULL};
+	static id<MTLFunction> dev_kernel2[MAX_METAL_DEVICES] = {NULL,NULL,NULL,NULL};
 
-	static cl_kernel dev_kernel1[MAX_OPENCL_DEVICES] = {NULL,NULL,NULL,NULL};
-	static cl_kernel dev_kernel2[MAX_OPENCL_DEVICES] = {NULL,NULL,NULL,NULL};
-	DECLARE_OCL_COMMON_VARS
+	DECLARE_MTL_COMMON_VARS
 ')
 
 define(`CHECK_NOSPEED_KERNEL',`CHECK_KERNEL($1,,GPU_CALL_NAME($1))')
@@ -149,17 +149,20 @@ dnl _CHECK_KERNEL(k,name,ktyp,kname)
 
 define(`_CHECK_KERNEL',`
 	/* _check_kernel $1 $2 $3 $4 */
+	id<MTLFunction> kernelFunction;
 	pd_idx = PFDEV_SERIAL(VA_PFDEV(vap));
 dnl fprintf(stderr,"_check_kernel $2:  pd_idx = %d\n",pd_idx);
 	if( $1[pd_idx] == NULL ){	/* one-time initialization */
-		cl_kernel kernel;
 		ksrc = KERN_SOURCE_NAME($2,$3);
 dnl fprintf(stderr,"_check_kernel $2:  creating kernel\n");
-		kernel = mtl_make_kernel(ksrc, "$4", VA_PFDEV(vap));
-		if( kernel == NULL )
+		kernelFunction = mtl_make_kernel(ksrc, "$4", VA_PFDEV(vap));
+		if( kernelFunction == NULL )
 			NERROR1("kernel creation failure!?");
-		$1[pd_idx] = kernel;
+		$1[pd_idx] = kernelFunction;
+	} else {
+		kernelFunction = $1[pd_idx];
 	}
+	SETUP_ENCODER
 ')
 
 
@@ -271,8 +274,8 @@ define(`CALL_GPU_FAST_PROJ_3V_SETUP_FUNC',`
 
 define(`CALL_GPU_FAST_PROJ_3V_HELPER_FUNC',`
 	CHECK_FAST_KERNEL_2($1`_helper')
-dnl fprintf(stderr,"setting helper kernel args...\n");
 	SET_KERNEL_ARGS_FAST_PROJ_3V_HELPER
+dnl fprintf(stderr,"setting helper kernel args...\n");
 dnl fprintf(stderr,"DONE setting helper kernel args...\n");
 	/* BUG?  set global_work_size ??? */
 	CALL_FAST_KERNEL_2($1`_helper',,,,)
@@ -310,25 +313,45 @@ dnl define this to NULL if don't care
 define(`KERNEL_FINISH_EVENT',`&event')
 
 
+dnl dev_kernel
 dnl  FINISH_KERNEL_CALL(k,n_dims)
 
 define(`FINISH_KERNEL_CALL',`
 
-	REPORT_KERNEL_ENQUEUE($2)
-	status = clEnqueueNDRangeKernel(
-		OCLDEV_QUEUE( VA_PFDEV(vap) ),
-		$1[pd_idx],
-		$2,	/* work_dim, 1-3 */
-		NULL,
-		global_work_size,
-		/*local_work_size*/ NULL,
-		0,	/* num_events_in_wait_list */
-		NULL,	/* event_wait_list */
-		KERNEL_FINISH_EVENT	/* event */
-		);
-	if( status != CL_SUCCESS )
-		report_mtl_error(status, "clEnqueueNDRangeKernel" );
-	WAIT_FOR_KERNEL
+	NSError *error = nil;
+	const int arrayLength = global_work_size[0];
+
+	id<MTLComputePipelineState> pipelineState = [mtl_device
+		newComputePipelineStateWithFunction:kernelFunction
+		error:&error];
+
+	if (!pipelineState) {
+		printf("Failed to create pipeline state: %s\n", [[error localizedDescription] UTF8String]);
+		return;
+	}
+
+	[encoder setComputePipelineState:pipelineState];
+
+	// BUG - these belong in SET _KERNEL _ARG macros???
+	//[encoder setBuffer:bufferA offset:0 atIndex:0];
+	//[encoder setBuffer:bufferB offset:0 atIndex:1];
+	//[encoder setBuffer:bufferResult offset:0 atIndex:2];
+
+	// Dispatch threads
+	MTLSize gridSize = MTLSizeMake(arrayLength, 1, 1);
+	NSUInteger threadGroupSize =
+				pipelineState.maxTotalThreadsPerThreadgroup;
+	if (threadGroupSize > arrayLength) {
+		threadGroupSize = arrayLength;
+	}
+	MTLSize threadgroupSize = MTLSizeMake(threadGroupSize, 1, 1);
+
+	[encoder dispatchThreads:gridSize
+					threadsPerThreadgroup:threadgroupSize];
+	[encoder endEncoding];
+
+	[commandBuffer commit];
+	[commandBuffer waitUntilCompleted];
 ')
 
 define(`DECLARE_FAST_VARS_3',`')
@@ -336,8 +359,8 @@ define(`DECLARE_EQSP_VARS_3',`')
 define(`DECLARE_FAST_VARS_2',`')
 define(`DECLARE_EQSP_VARS_2',`')
 
-define(`DECLARE_PLATFORM_VARS',`DECLARE_OCL_VARS')
-define(`DECLARE_PLATFORM_VARS_2',`DECLARE_OCL_VARS_2')
+define(`DECLARE_PLATFORM_VARS',`DECLARE_MTL_VARS')
+define(`DECLARE_PLATFORM_VARS_2',`DECLARE_MTL_VARS_2')
 
 
 define(`DECLARE_PLATFORM_FAST_VARS',`DECLARE_PLATFORM_VARS')
@@ -349,21 +372,29 @@ dnl SETUP_KERNEL_FAST_CALL(name,bitmap,typ,scalars,vectors)
 define(`SETUP_KERNEL_FAST_CALL',`
 
 	CHECK_FAST_KERNEL($1)
-	SET_KERNEL_ARGS_FAST($2,$3,$4,$5)
 	REPORT_KERNEL_CALL($1)
+	SET_KERNEL_ARGS_FAST($2,$3,$4,$5)
 	dnl `SETUP_FAST_BLOCKS_'$2
 	SETUP_FAST_BLOCKS($2)
 	REPORT_FAST_ARGS($2,$3,$4,$5)
 ')
 
+define(`SETUP_ENCODER',`
+	// Create command buffer and encoder
+	id<MTLCommandQueue> commandQueue = [mtl_device newCommandQueue];
+	id<MTLCommandBuffer> commandBuffer = [commandQueue commandBuffer];
+	id<MTLComputeCommandEncoder> encoder =
+				[commandBuffer computeCommandEncoder];
+
+')
 
 dnl SETUP_KERNEL_FAST_CALL_CONV( , , , dest_type )
 define(`SETUP_KERNEL_FAST_CALL_CONV',`
 
 	/* setup_kernel_fast_call_conv "$1"  "$2"  "$3"  "$4" */
 	CHECK_FAST_KERNEL($1)
-	SET_KERNEL_ARGS_FAST_CONV($4)
 	REPORT_KERNEL_CALL($1)
+	SET_KERNEL_ARGS_FAST_CONV($4)
 	dnl `SETUP_FAST_BLOCKS_'$2
 	SETUP_FAST_BLOCKS($2)
 	REPORT_FAST_ARGS($2,$3,`',`2')
@@ -373,8 +404,8 @@ define(`SETUP_KERNEL_FAST_CALL_CONV',`
 define(`SETUP_KERNEL_EQSP_CALL',`
 
 	CHECK_EQSP_KERNEL($1)
-	SET_KERNEL_ARGS_EQSP($2,$3,$4,$5)
 	REPORT_KERNEL_CALL($1)
+	SET_KERNEL_ARGS_EQSP($2,$3,$4,$5)
 	SETUP_EQSP_BLOCKS($2)
 	REPORT_EQSP_ARGS($2,$3,$4,$5)
 ')
@@ -417,7 +448,7 @@ define(`SETUP_KERNEL_SLOW_CALL_CONV',`
 	REPORT_SLOW_ARGS($2,$3,`',2)
 ')
 
-define(`HELPER_FUNC_PRELUDE',`DECLARE_OCL_VARS')
+define(`HELPER_FUNC_PRELUDE',`DECLARE_MTL_VARS')
 
 dnl BUG Need to put things here for MM_NOCC etc!
 

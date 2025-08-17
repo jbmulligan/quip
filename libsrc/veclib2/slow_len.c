@@ -2,6 +2,7 @@
 #include "quip_config.h"
 
 #include "quip_prot.h"
+#include "my_vl2.h"
 
 //#ifdef HAVE_ANY_GPU
 

@@ -30,6 +30,7 @@ typedef enum {
 	SWF_NUMREC,
 	SWF_CUDA,
 	SWF_OPENCL,
+	SWF_METAL,
 	SWF_LIBAVCODEC,
 	SWF_X11,
 	SWF_X11_EXT,
@@ -91,6 +92,7 @@ static SW_Feature swf_tbl[N_SW_FEATURES]={
 { UNKNOWN, SWF_NUMREC,		"Numerical Recipes library"	},
 { UNKNOWN, SWF_CUDA,		"nVidia CUDA"			},
 { UNKNOWN, SWF_OPENCL,		"OpenCL acceleration"		},
+{ UNKNOWN, SWF_METAL,		"Apple Metal acceleration"	},
 { UNKNOWN, SWF_LIBAVCODEC,	"AVI files (w/ libavcodec)"	},
 { UNKNOWN, SWF_X11,		"X11 window system"	},
 { UNKNOWN, SWF_X11_EXT,		"shared memory display w/ libXext"	},
@@ -170,6 +172,13 @@ static void get_feature_states(SINGLE_QSP_ARG_DECL)
 	FEATURE_PRESENT(SWF_OPENCL);
 #else
 	FEATURE_ABSENT(SWF_OPENCL);
+#endif
+
+
+#ifdef HAVE_METAL
+	FEATURE_PRESENT(SWF_METAL);
+#else
+	FEATURE_ABSENT(SWF_METAL);
 #endif
 
 

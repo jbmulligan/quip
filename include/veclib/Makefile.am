@@ -1,10 +1,16 @@
 
 all:	$(GENERATED_SOURCE)
 
-GENERATED_SOURCE=	vl2_veclib_prot.h ocl_veclib_prot.h cu2_veclib_prot.h
+GENERATED_SOURCE=	vl2_veclib_prot.h	\
+			ocl_veclib_prot.h	\
+			cu2_veclib_prot.h	\
+			mtl_veclib_prot.h
 
 clean-local:
 	rm -rf $(GENERATED_SOURCE)
+
+mtl_veclib_prot.h:	mtl_veclib_prot.m4 mtl_port.m4 gen_port.m4 mtl_func_prot.m4 vecgen.m4
+	m4 -I $(srcdir) -I$(top_srcdir)/include < $(srcdir)/mtl_veclib_prot.m4 > $(builddir)/mtl_veclib_prot.h
 
 cu2_veclib_prot.h:	cu2_veclib_prot.m4 cu2_port.m4 gen_port.m4 cu2_func_prot.m4 vecgen.m4
 	m4 -I $(srcdir) -I$(top_srcdir)/include < $(srcdir)/cu2_veclib_prot.m4 > $(builddir)/cu2_veclib_prot.h

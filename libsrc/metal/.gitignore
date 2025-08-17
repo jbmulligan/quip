@@ -19,3 +19,10 @@ m.m
 samples
 makefile.test
 array_addition
+add_arrays.metal
+ocl
+tmp
+build_demo*.sh
+MetalAdder.*
+array_addition.metal
+vuni.metal

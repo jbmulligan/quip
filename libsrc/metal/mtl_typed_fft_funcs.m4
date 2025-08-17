@@ -1,7 +1,7 @@
 
 ifdef(`BUILDING_KERNELS',`',`
 
-/* cu2_fft_funcs.m4 `type_code' = type_code */
+/* mtl_typed_fft_funcs.m4 `type_code' = type_code */
 void HOST_TYPED_CALL_NAME(rvfft,type_code)(HOST_CALL_ARG_DECLS)
 { warn("HOST_TYPED_CALL_NAME(rvfft,type_code) not implemented!?"); }
 

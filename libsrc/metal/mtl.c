@@ -1,5 +1,5 @@
 
-/* jbm's interface to opencl devices */
+/* jbm's interface to metal devices */
 
 /* This file contains the menu-callable functions, which in turn call
  * host functions which are typed and take an oap argument.
@@ -17,7 +17,7 @@
 #define BUILD_FOR_METAL
 
 #include "quip_prot.h"
-#include "my_metal.h"	// 
+#include "my_mtl.h"	// 
 #include "mtl_platform.h"	// 
 #include "veclib_api.h"
 
@@ -797,48 +797,6 @@ static int mtl_unmap_buf(QSP_ARG_DECL  Data_Obj *dp)
 		return;							\
 		/* BUG make sure to return cleanly... */		\
 	}
-
-static void init_mtl_platform(QSP_ARG_DECL  cl_platform_id platform_id)
-{
-	Compute_Platform *cpp;
-	cl_int status;
-	//char param_data[MAX_PARAM_SIZE];
-	char *platform_str;
-	size_t ret_size;
-
-	GET_PLATFORM_STRING(CL_PLATFORM_NAME)
-
-	cpp = creat_platform(QSP_ARG  platform_str, PLATFORM_METAL);
-	givbuf(platform_str);
-
-	GET_PLATFORM_STRING(CL_PLATFORM_PROFILE)
-	SET_OCLPF_PROFILE(cpp,platform_str);
-
-	GET_PLATFORM_STRING(CL_PLATFORM_VERSION)
-	SET_OCLPF_VERSION(cpp,platform_str);
-
-	GET_PLATFORM_STRING(CL_PLATFORM_VENDOR)
-	SET_OCLPF_VENDOR(cpp,platform_str);
-
-	GET_PLATFORM_STRING(CL_PLATFORM_EXTENSIONS)
-	SET_OCLPF_EXTENSIONS(cpp,platform_str);
-
-	SET_PF_OPD_ID(cpp,platform_id);
-
-	SET_PLATFORM_FUNCTIONS(cpp,mtl)
-
-	SET_PF_FUNC_TBL(cpp,mtl_vfa_tbl);
-
-	// BUG need to set vfa_tbl here too!
-
-	//icp = create_item_context(QSP_ARG  pfdev_itp, PLATFORM_NAME(cpp) );
-	//push_item_context(QSP_ARG  pfdev_itp, icp );
-	push_pfdev_context(QSP_ARG  PF_CONTEXT(cpp) );
-	init_mtl_devices(QSP_ARG  cpp);
-	if( pop_pfdev_context(SINGLE_QSP_ARG) == NULL )
-		ERROR1("init_mtl_platform:  Failed to pop platform device context!?");
-}
-
 //In general Intel CPU and NV/AMD's GPU are in different platforms
 //But in Mac OSX, all the OpenCL devices are in the platform "Apple"
 

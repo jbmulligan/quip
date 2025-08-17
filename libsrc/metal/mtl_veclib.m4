@@ -18,7 +18,9 @@ undefine(`BUILDING_KERNELS')
 
 void _ensure_mtl_device(QSP_ARG_DECL  Data_Obj *dp)
 {
-	warn("ensure_mtl_device:  not implemented!?");
+	if( mtl_device == NULL ){
+		mtl_device = MTLCreateSystemDefaultDevice();
+	}
 }
 
 my_include(`mtl_host_funcs.m4')
