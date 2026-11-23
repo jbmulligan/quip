@@ -24,7 +24,8 @@ int exp_flags=0;
 
 Experiment expt1;	// a singleton
 
-static int get_response_from_keyboard=1;
+// NO LONGER USED???  FIXME
+/* static int get_response_from_keyboard=1; */
 
 const char *response_choices[N_RESPONSES];
 static int exp_inited=0;
@@ -55,9 +56,9 @@ static int ensure_exp_is_ready(SINGLE_QSP_ARG_DECL)	/* make sure there is someth
 
 #define present_stim(stc_p) _present_stim(QSP_ARG stc_p)
 
-static int _present_stim(QSP_ARG_DECL Staircase *stc_p)
+static Response_Info * _present_stim(QSP_ARG_DECL Staircase *stc_p)
 {
-	int rsp=REDO_INDEX;
+	Response_Info *rsp_info_p;
 	Trial_Class *tc_p;
 
 	assert(stc_p!=NULL);
@@ -65,14 +66,15 @@ static int _present_stim(QSP_ARG_DECL Staircase *stc_p)
 	tc_p = STAIR_CLASS(stc_p);
 	assert(tc_p!=NULL);
 
-	if( ensure_exp_is_ready(SINGLE_QSP_ARG) == -1 ) return(-1);
+	if( ensure_exp_is_ready(SINGLE_QSP_ARG) == -1 ) return(NULL);
 
 	assert( CLASS_XVAL_OBJ(tc_p) != NULL );
 
 	(* EXPT_STIM_FUNC( STAIR_EXPT(stc_p) ) )(QSP_ARG stc_p);
 
-	rsp = (* EXPT_RSP_FUNC( STAIR_EXPT(stc_p) ) )(QSP_ARG  stc_p,&expt1);
-	return(rsp);
+	rsp_info_p =
+		(* EXPT_RSP_FUNC( STAIR_EXPT(stc_p) ) )(QSP_ARG  stc_p,&expt1);
+	return(rsp_info_p);
 }
 
 #define present_stim_for_stair(stc_p) _present_stim_for_stair(QSP_ARG  stc_p)
@@ -97,7 +99,7 @@ static void _present_stim_for_stair(QSP_ARG_DECL  Staircase *stc_p)
 static COMMAND_FUNC( do_one_trial )	/** present a stimulus, tally response */
 {
 	short v;
-	int rsp;
+	Response_Info *rsp_info_p;
 	Trial_Class *tc_p;
 	Staircase st1;
 
@@ -109,9 +111,9 @@ static COMMAND_FUNC( do_one_trial )	/** present a stimulus, tally response */
 	INIT_DUMMY_STAIR(st1)
 	SET_STAIR_VAL(&st1,v);
 
-	rsp=present_stim(&st1);
+	rsp_info_p = present_stim(&st1);
 
-	process_response(rsp,&st1);
+	process_response(rsp_info_p,&st1);
 }
 
 static Staircase *get_current_stair(Experiment *exp_p)
@@ -149,26 +151,28 @@ static COMMAND_FUNC( do_next_stim )	/** present the stimulus for the next stairc
 static COMMAND_FUNC( do_next_resp )
 {
 	Staircase *stc_p;
-	int rsp;
+	Response_Info * rsp_info_p;
 
 	stc_p = get_current_stair(&expt1);
 	assert(stc_p!=NULL);
 
-	rsp = get_response(stc_p,&expt1);
-	process_response(rsp,stc_p);	// updates staircase and saves data
+	rsp_info_p = get_response(stc_p,&expt1);
+	// update staircase and saves data
+	process_response(rsp_info_p,stc_p);
 }
 
 static COMMAND_FUNC( do_one_response )	/** give a response to a staircase and step it! */
 {
-	int rsp;
+	Response_Info * rsp_info_p;
 	Staircase *stc_p;
 
 	stc_p = pick_stair("");
 	if( stc_p == NULL ) return;
 
-	rsp = get_response(stc_p,&expt1);
+	rsp_info_p = get_response(stc_p,&expt1);
 fprintf(stderr,"do_one_response will call process_response...\n");
-	process_response(rsp,stc_p);	// updates staircase and saves data
+	// update staircase and save data
+	process_response(rsp_info_p,stc_p);
 }
 
 //#define IS_VALID_RESPONSE(r)	( r == REDO_INDEX || r == ABORT_INDEX || r == YES_INDEX || r == NO )
@@ -176,7 +180,8 @@ fprintf(stderr,"do_one_response will call process_response...\n");
 
 static COMMAND_FUNC( do_test_stim )		/** demo a stimulus for this experiment */
 {
-	int v,r;
+	int v;
+	Response_Info *rsp_info_p;
 	Trial_Class *tc_p;
 	Staircase st1;
 
@@ -189,13 +194,18 @@ static COMMAND_FUNC( do_test_stim )		/** demo a stimulus for this experiment */
 	SET_STAIR_CLASS(&st1,tc_p);
 	SET_STAIR_VAL(&st1,v);
 
-	r=present_stim(&st1);
-	assert( IS_VALID_RESPONSE(r) );
+	rsp_info_p = present_stim(&st1);
+	assert( IS_VALID_RESPONSE(rsp_info_p->ri_rsp_idx) );
 }
 
 static COMMAND_FUNC( do_run_exp )
 {
-	if( ensure_exp_is_ready(SINGLE_QSP_ARG) == -1 ) return;
+	if( ensure_exp_is_ready(SINGLE_QSP_ARG) == -1 ){
+fprintf(stderr,"do_run_exp: experiment is not ready!?\n");
+		return;
+	}
+
+fprintf(stderr,"do_run_exp: calling run_stairs...\n");
 
 	run_stairs(&expt1);
 }
@@ -248,7 +258,11 @@ static void revert_to_default_response(Response_Index idx)
 
 static COMMAND_FUNC( do_use_kb )
 {
-	get_response_from_keyboard = askif("use keyboard for responses");
+	if( askif("use keyboard for responses") ){
+		SET_EXPT_FLAG_BITS(&expt1,KEYBOARD_RESPONSE);
+	} else {
+		CLEAR_EXPT_FLAG_BITS(&expt1,KEYBOARD_RESPONSE);
+	}
 }
 
 static COMMAND_FUNC( setyesno )
@@ -282,6 +296,10 @@ static COMMAND_FUNC( do_expt_info )
 {
 	print_expt_info(&expt1);
 }
+
+// save data writes already collected data, but we used to "dribble" the data
+// on a trial-by-trial basis.  That was useful in the event that an experiment
+// crashed after a number of trials had been run...
 
 static COMMAND_FUNC( do_save_data )
 {

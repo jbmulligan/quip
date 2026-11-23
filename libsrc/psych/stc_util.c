@@ -79,21 +79,23 @@ static void _get_this_xval(QSP_ARG_DECL  Trial_Class *tc_p, int val_idx)
 	assign_var("val",buf);
 }
 
-int _default_response(QSP_ARG_DECL  Staircase *stc_p, Experiment *exp_p)
+Response_Info * _default_response(QSP_ARG_DECL  Staircase *stc_p,
+							Experiment *exp_p)
 {
-	int rsp;
+	Response_Info *rsp_info_p;
 
-	rsp = get_response(stc_p,exp_p);
+	rsp_info_p = get_response(stc_p,exp_p);
 
 	// BUG better to have a general feedback scheme?
 	if( verbose ){
-		if( rsp == STAIR_CRCT_RSP(stc_p) )
+		if( rsp_info_p->ri_rsp_idx == STAIR_CRCT_RSP(stc_p) ){
 			advise("correct");
-		else
+		} else {
 			advise("incorrect");
+		}
 	}
 
-	return(rsp);
+	return(rsp_info_p);
 }
 
 #define set_class_index(stc_p) _set_class_index(QSP_ARG  stc_p)
