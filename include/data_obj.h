@@ -36,6 +36,8 @@ typedef struct data_area {
 	void *			da_extra_p;	// use this for both OpenCL and CUDA!
 } Data_Area;
 
+#define MAX_AREA_NAME_LEN	80
+
 // could use a union...
 #define da_cd_p		da_extra_p
 #define da_ocldev_p	da_extra_p
@@ -59,13 +61,21 @@ typedef struct data_area {
 /* Data area flag bits */
 enum data_area_type {
 	DA_RAM_BIT,
+
 	DA_CUDA_GLOBAL_BIT,
 	DA_CUDA_HOST_BIT,
 	DA_CUDA_HOST_MAPPED_BIT,
 	/* DA_CUDA_CONSTANT_BIT, */	// not currently used...
+
 	DA_OCL_GLOBAL_BIT,
 	DA_OCL_HOST_BIT,
 	DA_OCL_HOST_MAPPED_BIT,
+
+	// Does Metal have these three types???
+	DA_MTL_GLOBAL_BIT,
+	DA_MTL_HOST_BIT,
+	DA_MTL_HOST_MAPPED_BIT,
+
 	N_DATA_AREA_TYPES
 };
 
@@ -83,6 +93,10 @@ enum data_area_type {
 #define DA_OCL_GLOBAL		(1<<DA_OCL_GLOBAL_BIT)
 #define DA_OCL_HOST		(1<<DA_OCL_HOST_BIT)
 #define DA_OCL_HOST_MAPPED	(1<<DA_OCL_HOST_MAPPED_BIT)
+
+#define DA_MTL_GLOBAL		(1<<DA_MTL_GLOBAL_BIT)
+#define DA_MTL_HOST		(1<<DA_MTL_HOST_BIT)
+#define DA_MTL_HOST_MAPPED	(1<<DA_MTL_HOST_MAPPED_BIT)
 
 #define DA_TYPE_MASK	((1<<N_DATA_AREA_TYPES)-1)
 

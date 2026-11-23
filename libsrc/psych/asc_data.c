@@ -610,7 +610,8 @@ int _read_exp_data(QSP_ARG_DECL  FILE *fp)
 void _save_data( QSP_ARG_DECL  Experiment *exp_p, FILE *fp )
 {
 	if( EXPT_SEQ_DTBL(exp_p) == NULL ){
-		snprintf(ERROR_STRING,LLEN,"save_data:  experiment has no sequential data!?");
+		snprintf(ERROR_STRING,LLEN,
+			"save_data:  experiment has no sequential data!?");
 		warn(ERROR_STRING);
 		return;
 	}

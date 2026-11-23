@@ -7,6 +7,8 @@
 #ifdef HAVE_METAL
 
 #define MAX_METAL_DEVICES	4
+#define MAX_MTL_GLOBAL_OBJECTS	128
+#define MAX_MTL_MAPPED_OBJECTS	128
 
 #import <Metal/Metal.h>
 
@@ -25,6 +27,8 @@ extern Vec_Func_Array mtl_vfa_tbl[N_VEC_FUNCS];
 
 
 extern void _ensure_mtl_device( QSP_ARG_DECL   Data_Obj *dp );
+
+extern id<MTLBuffer> mtl_buf_for(const void *);
 
 extern id<MTLDevice> _get_metal_dev(SINGLE_QSP_ARG_DECL);
 #define get_metal_dev()	_get_metal_dev(SINGLE_QSP_ARG)

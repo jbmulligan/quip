@@ -34,7 +34,8 @@ define(`_GENERIC_SLOW_VEC_FUNC',`char KERN_SOURCE_NAME($1,slow)[]= QUOTE_IT( __G
 
 
 // For cuda, this is __global__
-define(`KERNEL_FUNC_QUALIFIER',`__kernel')
+// For Metal, kernel
+define(`KERNEL_FUNC_QUALIFIER',`kernel')
 
 
 dnl	What are the args???

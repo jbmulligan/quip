@@ -96,9 +96,9 @@ define(`_VEC_FUNC_2V_CONV',`
 _GENERIC_EQSP_CONV_FUNC($1,$2)
 ')
 
-define(`GENERIC_FUNC_DECLS',`
-GENERIC_EF_DECL($1,$2,$3,$4,$5,$6,$7)
-')
+dnl  define(`GENERIC_FUNC_DECLS',`
+dnl  GENERIC_EF_DECL($1,$2,$3,$4,$5,$6,$7)
+dnl  ')
 
 define(`_VEC_FUNC_1V_3SCAL',`')	dnl   No eqsp vramp2d
 

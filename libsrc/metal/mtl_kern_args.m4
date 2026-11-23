@@ -31,6 +31,8 @@ else fprintf(stderr,"\t_SHOW_KERNEL_ARG:  unhandled case for type %s\n","$1");
 */
 ')
 
+dnl SET_KERNEL_ARG seems ot be used for vectors, but what about scalars???
+
 dnl SET_KERNEL_ARG(type,value)
 
 define(`SET_KERNEL_ARG',`_SET_KERNEL_ARG(dev_kernel[pd_idx],$1,$2)')
@@ -44,37 +46,44 @@ dnl	id<MTLBuffer> bufferA = [device newBufferWithBytes:arrayA length:sizeof(arra
 
 dnl [encoder setBuffer:bufferA offset:0 atIndex:0];
 
+dnl Why not have one or more buffers declared once, and used
+dnl over and over again for scalars???
+dnl
+dnl This is wrong - metal buffers should be allocated when gpu objects
+dnl are created!
+
 dnl _SET_KERNEL_ARG(kernel,type,value)
 define(`_SET_KERNEL_ARG',`
-	fprintf(stderr,"warning: _SET""_KER""NEL_ARG type = %s\n","$2");
+	fprintf(stderr,"warning: _SET""_KER""NEL_ARG type = %s, val = 0x%lx\n",
+		"$2", (unsigned long) $3);
 	{
 	// BUG - need to multiply by array size!?
-	id<MTLBuffer> buf = [mtl_device newBufferWithBytes:$3 length:sizeof($2) options:MTLResourceStorageModeShared];
+	//id<MTLBuffer> buf = [mtl_device newBufferWithBytes:$3 length:sizeof($2) options:MTLResourceStorageModeShared];
 	// BUG - encoder should come from kernel???
-	[encoder setBuffer:buf offset:0 atIndex:ki_idx];
+	[encoder setBuffer:mtl_buf_for($3) offset:0 atIndex:ki_idx];
 	}
 	ki_idx ++;
 ')
 
 
-define(`SET_KERNEL_ARGS_DEST_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_DEST_OFFSET(vap) )')
+define(`SET_KERNEL_ARGS_DEST_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_DEST_OFFSET(vap) )')
 
-define(`SET_KERNEL_ARGS_SRC1_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SRC1_OFFSET(vap) )')
-define(`SET_KERNEL_ARGS_BSRC1_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SRC1_OFFSET(vap) )')
-define(`SET_KERNEL_ARGS_SSRC1_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SRC1_OFFSET(vap) )')
+define(`SET_KERNEL_ARGS_SRC1_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SRC1_OFFSET(vap) )')
+define(`SET_KERNEL_ARGS_BSRC1_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SRC1_OFFSET(vap) )')
+define(`SET_KERNEL_ARGS_SSRC1_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SRC1_OFFSET(vap) )')
 
-define(`SET_KERNEL_ARGS_SRC2_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SRC2_OFFSET(vap) )')
-define(`SET_KERNEL_ARGS_MAP_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SRC2_OFFSET(vap) )')
+define(`SET_KERNEL_ARGS_SRC2_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SRC2_OFFSET(vap) )')
+define(`SET_KERNEL_ARGS_MAP_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SRC2_OFFSET(vap) )')
 
-define(`SET_KERNEL_ARGS_SRC3_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SRC3_OFFSET(vap) )')
+define(`SET_KERNEL_ARGS_SRC3_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SRC3_OFFSET(vap) )')
 
-define(`SET_KERNEL_ARGS_SRC4_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SRC4_OFFSET(vap) )')
+define(`SET_KERNEL_ARGS_SRC4_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SRC4_OFFSET(vap) )')
 
-dnl define(`SET_KERNEL_ARGS_SBM_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SBM_OFFSET(vap) )')
-dnl define(`SET_KERNEL_ARGS_SBM1_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SBM1_OFFSET(vap) )')
-dnl define(`SET_KERNEL_ARGS_SBM2_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_SBM2_OFFSET(vap) )')
+dnl define(`SET_KERNEL_ARGS_SBM_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SBM_OFFSET(vap) )')
+dnl define(`SET_KERNEL_ARGS_SBM1_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SBM1_OFFSET(vap) )')
+dnl define(`SET_KERNEL_ARGS_SBM2_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_SBM2_OFFSET(vap) )')
 
-dnl define(`SET_KERNEL_ARGS_DBM_OFFSET',`SET_KERNEL_ARG( OCL_OFFSET_TYPE, &VA_DBM_OFFSET(vap) )')
+dnl define(`SET_KERNEL_ARGS_DBM_OFFSET',`SET_KERNEL_ARG( MTL_OFFSET_TYPE, &VA_DBM_OFFSET(vap) )')
 
 define(`SET_KERNEL_ARGS_DBM_GPU_INFO',`SET_KERNEL_ARG( void *, &VA_DBM_GPU_INFO_PTR(vap) )')
 

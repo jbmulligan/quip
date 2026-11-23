@@ -84,9 +84,6 @@ dnl
 dnl/* why no left-shift on GPU?? */
 dnl/* CUDA impementation is broken */
 dnl	ifdef(`BUILD_FOR_CUDA',`
-dnl	dnl KERN_CALL_VV_LS(vshl, dst, src1, src2)
-dnl	dnl KERN_CALL_VS_LS(vsshl, dst, src1, scalar1_val)
-dnl	dnl KERN_CALL_VS_LS(vsshl2, dst, scalar1_val, src1)
 dnl	_VEC_FUNC_3V( vshl,		dst = (dest_type)(src1 << src2)		)
 dnl	_VEC_FUNC_2V_SCAL( vsshl,	dst = (dest_type)(src1 << scalar1_val)	)
 dnl	_VEC_FUNC_2V_SCAL( vsshl2,	dst = (dest_type)(scalar1_val << src1)	)

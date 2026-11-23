@@ -184,6 +184,7 @@ dnl	_VEC_FUNC_1V_3SCAL(name,s1,s2,s3)
 define(`_VEC_FUNC_1V_3SCAL',`_VEC_FUNC_SLOW_1V_3SCAL($1,$2,$3,$4)')
 
 
+dnl	args for generic_gpu_func_call: name, stat, ?, ?, scalars, vectors, code
 ifdef(`BUILD_FOR_CUDA',`
 
 define(`GENERIC_GPU_FUNC_CALL',`
@@ -229,8 +230,9 @@ define(`_VEC_FUNC_2V_CONV',`
 	_GENERIC_SLOW_CONV_FUNC($1,$2)
 ')
 
-define(`GENERIC_FUNC_DECLS',`
-	GENERIC_SF_DECL($1,$2,$3,$4,$5,$6,$7)
-')
+dnl  NOT USED???
+dnl  define(`GENERIC_FUNC_DECLS',`
+dnl  	GENERIC_SF_DECL($1,$2,$3,$4,$5,$6,$7)
+dnl  ')
 
 ')	dnl	endif // ! BUILD_FOR_CUDA

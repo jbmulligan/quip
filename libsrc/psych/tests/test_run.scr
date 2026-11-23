@@ -1,28 +1,36 @@
-#max_warnings 2
+max_warnings 1
 
 Define Trial1 0
 advise "Trial1 xval = $xval   class = $class"
 .
 
+Vector xvals 21 1 float
+Ramp1D xvals 0 -0.1
+
 experiments
-  xvals
-    n_vals 21
-    range 0 -2
-    advise "x value range set"
-    step_type linear
-    advise "x value step type set"
-    save /dev/tty
-    quit
+  import_xvals xvals
   classes
     new class1 Trial1
     quit
   Set response_string "x value greater than -1.4"
-  present class1 0
-  staircases
-    change n_updn 1
-    change n_data 20
+  parameters
+    staircases
+      change n_updn 1
+      quit
+    trials
+      change n_data 20
+      quit
     quit
-#  run foo_summ1
-  dribble yes
-  run foo_dribble1
-  Pause
+  advise "Presenting test stimulus"
+  present_stim staircase.class1.0
+  advise "Presenting test trial"
+  present_trial class1 0 yes
+
+  save foo_dribble1
+  advise "Initializing trial block..."
+  init_block
+  use_keyboard yes
+  run
+  advise "Saving data"
+  save foo_dribble2
+  exit

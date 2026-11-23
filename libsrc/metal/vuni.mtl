@@ -1,7 +1,7 @@
 
 #include "Random123/threefry.h"
 
-__kernel void g_mtl_fast_sp_vuni(__global float *a,int counter) {
+kernel void g_mtl_fast_sp_vuni(__global float *a,int counter) {
 	union {
 	    threefry4x32_ctr_t c;
 	    int4 i;

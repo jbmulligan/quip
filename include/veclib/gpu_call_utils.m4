@@ -97,10 +97,17 @@ define(`DECL_EXTRA_RAMP1D',`GPU_INDEX_TYPE ramp_idx;');
 /*********************** init_indices *****************/
 
 dnl	INIT_INDICES(bitmaps,vectors)
-dnl	DBM is set first, but SBM is set second...
-define(`INIT_INDICES',`DECL_INDICES_$1 DECL_INDICES_$2 SET_BITMAP_INDICES1_$1 SET_INDICES_$2 SET_BITMAP_INDICES2_$1')
+
+define(`INIT_INDICES',`					\
+/* init_indices($1,$2) */				\
+DECL_INDICES_$1 DECL_INDICES_$2 SET_INDICES_$1 SET_INDICES_$2')
+
+define(`INIT_OFFSETS',`DECL_OFFSETS_$1 DECL_OFFSETS_$2 SET_OFFSETS_$1 SET_OFFSETS_$2')
 
 define(`SET_EXTRA_INDICES',`SET_INDICES_$1')
+
+dnl  Is it OK to have declarations after statements?  If not, then offsets
+dnl  will have to be declared with the indices...
 
 define(`INIT_INDICES_1',`DECL_INDICES_1 SET_INDICES_1')
 define(`INIT_INDICES_2',`DECL_INDICES_2 SET_INDICES_2')
@@ -108,12 +115,18 @@ define(`INIT_INDICES_3',`DECL_INDICES_3 SET_INDICES_3')
 define(`INIT_INDICES_4',`DECL_INDICES_4 SET_INDICES_4')
 define(`INIT_INDICES_5',`DECL_INDICES_5 SET_INDICES_5')
 
+define(`INIT_OFFSETS_1',`DECL_OFFSETS_1 SET_OFFSETS_1')
+define(`INIT_OFFSETS_2',`DECL_OFFSETS_2 SET_OFFSETS_2')
+define(`INIT_OFFSETS_3',`DECL_OFFSETS_3 SET_OFFSETS_3')
+define(`INIT_OFFSETS_4',`DECL_OFFSETS_4 SET_OFFSETS_4')
+define(`INIT_OFFSETS_5',`DECL_OFFSETS_5 SET_OFFSETS_5')
+
 define(`INIT_INDICES_2SRCS',`DECL_INDICES_2SRCS SET_INDICES_2SRCS')
 dnl	define(`INIT_INDICES_SBM_1',`DECL_INDICES_SBM_1 SET_INDICES_SBM_1')
 dnl	define(`INIT_INDICES_SBM_2',`DECL_INDICES_SBM_2 SET_INDICES_SBM_2')
 dnl	define(`INIT_INDICES_SBM_3',`DECL_INDICES_SBM_3 SET_INDICES_SBM_3')
 
-define(`INIT_INDICES_DBM_',`DECL_INDICES_DBM_ SET_BITMAP_INDICES1_DBM_')
+define(`INIT_INDICES_DBM_',`DECL_INDICES_DBM_ SET_INDICES1_DBM_')
 dnl	define(`INIT_INDICES_DBM_2SRCS',`DECL_INDICES_DBM_2SRCS SET_INDICES_DBM_2SRCS')
 dnl	define(`INIT_INDICES_DBM_1SRC',`DECL_INDICES_DBM_1SRC SET_INDICES_DBM_1SRC')
 dnl	define(`INIT_INDICES_DBM__1S',DECL_INDICES_DBM__1S SET_INDICES_DBM__1S)
@@ -127,8 +140,8 @@ define(`SET_INDICES_',`')
 define(`SET_INDICES_SBM',`/* set_indices_sbm is not implemented!? - should be speed-dependent?? */')
 define(`SET_INDICES_2SBM',`/* set_indices_2sbm is not implemented!? - should be speed-dependent?? */')
 define(`SET_INDICES_1SBM',`/* set_indices_1sbm is not implemented!? - should be speed-dependent?? */')
-define(`SET_BITMAP_INDICES1_',`')
-define(`SET_BITMAP_INDICES2_',`')
+define(`SET_INDICES1_',`')
+define(`SET_INDICES2_',`')
 define(`SET_INDICES_1',`SET_INDEX(index1)')
 define(`SET_INDICES_RAMP1D',`ramp_idx = index1;')
 define(`SET_INDICES_T1',`')
@@ -140,8 +153,8 @@ define(`SET_INDICES_SRC1',`index2 = $1;')
 define(`SET_INDICES_SRC2',`index3 = index2;')
 define(`SET_INDICES_SRC3',`index4 = index3;')
 define(`SET_INDICES_SRC4',`index5 = index4;')
-define(`SET_BITMAP_INDICES1_SBM_',`')
-define(`SET_BITMAP_INDICES2_SBM_',`sbm_bit_offset = index1;')
+define(`SET_INDICES_SBM_',`sbm_bit_offset = index1;')
+define(`SET_INDICES_DBM_',`dbm_bit_offset = index1;')
 
 define(`SET_INDICES_2',`SET_INDICES_1 SET_INDICES_SRC1(index1)')
 define(`SET_INDICES_LUTMAP_B',`SET_INDICES_2')
@@ -158,8 +171,6 @@ dnl	define(`SET_INDICES_SBM_1',`SET_INDICES_1 SET_INDICES_SBM')
 dnl	define(`SET_INDICES_SBM_2',`SET_INDICES_2 SET_INDICES_SBM')
 dnl	define(`SET_INDICES_SBM_3',`SET_INDICES_3 SET_INDICES_SBM')
 
-define(`SET_BITMAP_INDICES1_DBM_',`SET_INDICES_DBM')
-define(`SET_BITMAP_INDICES2_DBM_',`')
 
 dnl	 this one is speed-sensitive
 dnl	define(`SET_INDICES_DBM__1S',`SET_INDICES_DBM')

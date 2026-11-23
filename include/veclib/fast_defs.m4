@@ -80,9 +80,10 @@ define(`GENERIC_VEC_FUNC_DBM',`GENERIC_FAST_VEC_FUNC_DBM($1,$2,$3,$4,$5)')
 dnl	_VEC_FUNC_2V_CONV( name , dest_type )
 define(`_VEC_FUNC_2V_CONV',`_GENERIC_FAST_CONV_FUNC($1,$2)')
 
-define(`GENERIC_FUNC_DECLS',`
-GENERIC_FF_DECL($1,$2,$3,$4,$5,$6,$7)
-')
+dnl  BUG?  no defn of GENERIC_FF_DECL???
+dnl define(`GENERIC_FUNC_DECLS',`
+dnl GENERIC_FF_DECL($1,$2,$3,$4,$5,$6,$7)
+dnl ')
 
 define(`_VEC_FUNC_1V_3SCAL',`')	dnl   No fast vramp2d
 

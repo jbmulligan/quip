@@ -233,9 +233,10 @@ define(`KERN_ARGS_SBM_GPU_INFO',VA_SBM_GPU_INFO_PTR(vap))
 // by switching the kernel to use dest_type, but that broke vsatan2 (cuda),
 // and doesn't make sense anyway...
 
-define(`DECLARE_KERN_ARGS_1S',`std_type scalar1_val')
-define(`DECLARE_KERN_ARGS_2S',`DECLARE_KERN_ARGS_1S, std_type scalar2_val')
-define(`DECLARE_KERN_ARGS_3S',`DECLARE_KERN_ARGS_2S, std_type scalar3_val')
+dnl These need to be different for Metal!?
+dnl define(`DECLARE_KERN_ARGS_1S',`std_type scalar1_val')
+dnl define(`DECLARE_KERN_ARGS_2S',`DECLARE_KERN_ARGS_1S, std_type scalar2_val')
+dnl define(`DECLARE_KERN_ARGS_3S',`DECLARE_KERN_ARGS_2S, std_type scalar3_val')
 
 define(`DECLARE_KERN_ARGS_CPX_1S',`std_cpx cscalar1_val')
 define(`DECLARE_KERN_ARGS_CPX_2S',`DECLARE_KERN_ARGS_CPX_1S, std_cpx cscalar2_val')
@@ -246,16 +247,19 @@ define(`DECLARE_KERN_ARGS_QUAT_2S',`DECLARE_KERN_ARGS_QUAT_1S, std_quat qscalar2
 define(`DECLARE_KERN_ARGS_SLOW_SIZE',`dim5 szarr')
 define(`DECLARE_KERN_ARGS_SLOW_SIZE_OFFSET',`')
 
-define(`DECLARE_KERN_ARGS_FAST_CONV_DEST',KERNEL_ARG_QUALIFIER $1`* a')
-define(`DECLARE_KERN_ARGS_FAST_1',`KERNEL_ARG_QUALIFIER dest_type* a')
-define(`DECLARE_KERN_ARGS_FAST_SRC1',`KERNEL_ARG_QUALIFIER std_type* b')
-define(`DECLARE_KERN_ARGS_FAST_BSRC1',`KERNEL_ARG_QUALIFIER u_char* b')
-define(`DECLARE_KERN_ARGS_FAST_SSRC1',`KERNEL_ARG_QUALIFIER u_short* b')
-define(`DECLARE_KERN_ARGS_FAST_SRC2',`KERNEL_ARG_QUALIFIER std_type* c')
-define(`DECLARE_KERN_ARGS_FAST_SRC3',`KERNEL_ARG_QUALIFIER std_type* d')
-define(`DECLARE_KERN_ARGS_FAST_SRC4',`KERNEL_ARG_QUALIFIER std_type* e')
-define(`DECLARE_KERN_ARGS_FAST_MAP_B',`KERNEL_ARG_QUALIFIER std_type* map')
-define(`DECLARE_KERN_ARGS_FAST_MAP_S',`KERNEL_ARG_QUALIFIER std_type* map, dimension_t map_size')
+define(`DECLARE_KERN_ARGS_FAST_CONV_DEST',KERNEL_ARG_QUALIFIER $1`* a DEST_BUF_SPEC')
+define(`DECLARE_KERN_ARGS_FAST_1',`KERNEL_ARG_QUALIFIER dest_type* a DEST_BUF_SPEC')
+define(`DECLARE_KERN_ARGS_FAST_SRC1',`KERNEL_ARG_QUALIFIER std_type* b SRC1_BUF_SPEC')
+define(`DECLARE_KERN_ARGS_FAST_BSRC1',`KERNEL_ARG_QUALIFIER u_char* b SRC1_BUF_SPEC')
+define(`DECLARE_KERN_ARGS_FAST_SSRC1',`KERNEL_ARG_QUALIFIER u_short* b SRC1_BUF_SPEC')
+define(`DECLARE_KERN_ARGS_FAST_SRC2',`KERNEL_ARG_QUALIFIER std_type* c SRC2_BUF_SPEC')
+define(`DECLARE_KERN_ARGS_FAST_SRC3',`KERNEL_ARG_QUALIFIER std_type* d SRC3_BUF_SPEC')
+define(`DECLARE_KERN_ARGS_FAST_SRC4',`KERNEL_ARG_QUALIFIER std_type* e SRC4_BUF_SPEC')
+define(`DECLARE_KERN_ARGS_FAST_MAP_B',`KERNEL_ARG_QUALIFIER std_type* map MAP_BUF_SPEC')
+define(`DECLARE_KERN_ARGS_FAST_MAP_S',`KERNEL_ARG_QUALIFIER std_type* map MAP_BUF_SPEC, MAP_SIZE_DECL')
+
+dnl  This needs to be fixed for metal!
+define(`MAP_SIZE_DECL',`dimension_t map_size')
 
 // complex stuff
 
