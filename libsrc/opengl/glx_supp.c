@@ -196,21 +196,10 @@ static void check_gl_capabilities(SINGLE_QSP_ARG_DECL)
 
 	curr_renderer_info_p = getbuf( sizeof(Renderer_Info) );
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-/*
-fprintf(stderr,"getting GL_VENDOR\n");
 	curr_renderer_info_p->glr_vendor = (char *) glGetString(GL_VENDOR);
-fprintf(stderr,"getting GL_RENDERER\n");
 	curr_renderer_info_p->glr_renderer = (char *) glGetString(GL_RENDERER);
-fprintf(stderr,"getting GL_VERSION\n");
 	curr_renderer_info_p->glr_version = (char *) glGetString(GL_VERSION);
-fprintf(stderr,"getting GL_EXTENSIONS\n");
 	curr_renderer_info_p->glr_extensions = (char *) glGetString(GL_EXTENSIONS);
-	*/
 
 	if( verbose )
 		show_renderer_info(QSP_ARG  curr_renderer_info_p);
