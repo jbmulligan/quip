@@ -377,6 +377,8 @@ static void _update_remaining_trials( QSP_ARG_DECL  Experiment *exp_p )
 
 void _process_response(QSP_ARG_DECL  Response_Info *rsp_info_p,Staircase *st_p)
 {
+	if( rsp_info_p == NULL ){ return; }
+
 	Response_Index rsp = rsp_info_p->ri_rsp_idx;
 
 	/* give feedback if feedback string is set */

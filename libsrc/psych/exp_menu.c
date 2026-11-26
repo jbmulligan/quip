@@ -45,6 +45,17 @@ static COMMAND_FUNC( modify )
 	(* EXPT_MOD_FUNC(&expt1) )(QSP_ARG tc_p);
 }
 
+static int ensure_class_is_ready(QSP_ARG_DECL  Trial_Class *tc_p){
+	if( CLASS_XVAL_OBJ(tc_p) == NULL ){
+		sprintf(error_string(SINGLE_QSP_ARG),
+			"Trial class %s has no associated x values",
+			CLASS_NAME(tc_p));
+		warn(error_string(SINGLE_QSP_ARG));
+		return -1;
+	}
+	return 0;
+}
+
 static int ensure_exp_is_ready(SINGLE_QSP_ARG_DECL)	/* make sure there is something to run */
 {
 	if( eltcount(trial_class_list()) <= 0 ){
@@ -67,6 +78,7 @@ static Response_Info * _present_stim(QSP_ARG_DECL Staircase *stc_p)
 	assert(tc_p!=NULL);
 
 	if( ensure_exp_is_ready(SINGLE_QSP_ARG) == -1 ) return(NULL);
+	if( ensure_class_is_ready(QSP_ARG  tc_p) == -1 ) return(NULL);
 
 	assert( CLASS_XVAL_OBJ(tc_p) != NULL );
 
