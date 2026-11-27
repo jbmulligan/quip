@@ -62,7 +62,6 @@ Summary_Data_Tbl *_new_summary_data_tbl(SINGLE_QSP_ARG_DECL)
 void rls_summ_dtbl(Summary_Data_Tbl *sdt_p)
 {
 	if( SUMM_DTBL_DATA_OBJ(sdt_p) != NULL ){
-fprintf(stderr,"rls_summ_dtbl will remove reference to the data table object...\n");
 		remove_reference( SUMM_DTBL_DATA_OBJ(sdt_p) );
 	}
 
@@ -296,9 +295,12 @@ static Transition_Code iftrans(Staircase *st_p,int rsp)	/* see if this response 
 	return(retval);
 }
 
-static void append_trial( Experiment *exp_p, Staircase *st_p , int rsp )
+static void append_trial( Experiment *exp_p, Staircase *st_p,
+				Response_Info *rsp_info_p )
 {
 	Sequence_Datum *qd_p;
+	int rsp = rsp_info_p->ri_rsp_idx;
+	time_t rt_ms = rsp_info_p->ri_rt_ms;
 
 	qd_p = getbuf(sizeof(Sequence_Datum));
 
@@ -308,6 +310,7 @@ static void append_trial( Experiment *exp_p, Staircase *st_p , int rsp )
 	SET_SEQ_DATUM_XVAL_IDX(qd_p, STAIR_VAL(st_p) );
 	SET_SEQ_DATUM_RESPONSE(qd_p, rsp );
 	SET_SEQ_DATUM_CRCT_RSP(qd_p, STAIR_CRCT_RSP(st_p) );
+	SET_SEQ_DATUM_RT_MSECS(qd_p, rt_ms);
 
 	save_datum(exp_p,qd_p);
 }
@@ -326,7 +329,8 @@ void save_datum(Experiment *exp_p, Sequence_Datum *qd_p)
 	SET_QDT_FLAG_BITS(EXPT_SEQ_DTBL(exp_p),SEQUENTIAL_DATA_DIRTY);
 }
 
-static void tally(Staircase *st_p,int rsp)			/* record new data */
+// record new data
+static void tally(Staircase *st_p,Response_Info *rsp_info_p)	
 {
 	assert(st_p!=NULL);
 	assert(STAIR_CLASS(st_p)!=NULL);
@@ -335,7 +339,7 @@ static void tally(Staircase *st_p,int rsp)			/* record new data */
 
 	// We used to tally summary data here, but it's redundant with the sequential data,
 	// so we don't bother.
-	append_trial(STAIR_EXPT(st_p),st_p,rsp);
+	append_trial(STAIR_EXPT(st_p),st_p,rsp_info_p);
 }
 
 
@@ -370,8 +374,12 @@ static void _update_remaining_trials( QSP_ARG_DECL  Experiment *exp_p )
 
 /* save_reponse not only saves the response, it also updates the staircase!?  a misnomer... */
 
-void _process_response(QSP_ARG_DECL  int rsp,Staircase *st_p)
+void _process_response(QSP_ARG_DECL  Response_Info *rsp_info_p,Staircase *st_p)
 {
+	if( rsp_info_p == NULL ){ return; }
+
+	Response_Index rsp = rsp_info_p->ri_rsp_idx;
+
 	/* give feedback if feedback string is set */
 
 	if( correct_feedback_string != NULL )
@@ -383,7 +391,7 @@ void _process_response(QSP_ARG_DECL  int rsp,Staircase *st_p)
 	 * but can't know what stim_func does!
 	 */
 
-	tally(st_p,rsp);
+	tally(st_p,rsp_info_p);
 
 	if( NORMAL_RESPONSE(rsp) ){
 		Transition_Code _trans;
@@ -406,9 +414,9 @@ void _process_response(QSP_ARG_DECL  int rsp,Staircase *st_p)
 
 #define step(st_p,exp_p) _step(QSP_ARG st_p,exp_p)
 
-static int _step(QSP_ARG_DECL Staircase *st_p, Experiment *exp_p)
+static Response_Index _step(QSP_ARG_DECL Staircase *st_p, Experiment *exp_p)
 {
-	int rsp;
+	Response_Info *rsp_info_p;
 
 	if( st_p->stair_val == (-1) ) return(0);	/* discarded */
 
@@ -419,10 +427,10 @@ static int _step(QSP_ARG_DECL Staircase *st_p, Experiment *exp_p)
 
 	(* EXPT_STIM_FUNC(exp_p) )( QSP_ARG st_p );
 
-	rsp=(* EXPT_RSP_FUNC(exp_p) )( QSP_ARG st_p, exp_p );
+	rsp_info_p = (* EXPT_RSP_FUNC(exp_p) )( QSP_ARG st_p, exp_p );
 
-	process_response(rsp,st_p);
-	return(rsp);
+	process_response(rsp_info_p,st_p);
+	return(rsp_info_p->ri_rsp_idx);
 }
 
 // reset_class clears the data and resets the staircases
@@ -690,6 +698,8 @@ static int _init_trial_tbl(QSP_ARG_DECL  Experiment *exp_p)
 	return 0;
 }
 
+// NOT USED???
+
 void _init_trial_block( QSP_ARG_DECL  Experiment *exp_p )
 {
 	int n_staircases;
@@ -732,9 +742,8 @@ void _init_trial_block( QSP_ARG_DECL  Experiment *exp_p )
 
 	snprintf(MSG_STR,LLEN,"%d",EXPT_N_TOTAL_TRIALS(exp_p));
 	assign_reserved_var("n_trials_remaining",MSG_STR);
-fprintf(stderr,"init_trial_block:  n_trials_remaining set to %s\n",MSG_STR);
 
-}
+}	// init_trial_block
 
 
 static void stair_trials(QSP_ARG_DECL  Experiment *exp_p)
@@ -764,6 +773,7 @@ void _run_stairs(QSP_ARG_DECL  Experiment *exp_p )	/** this does most everything
 {
 advise("calling _run_init");
 	_run_init(SINGLE_QSP_ARG);
+advise("calling stair_trials");
 	stair_trials(QSP_ARG exp_p);
 	//do_save_data(SINGLE_QSP_ARG);
 }
@@ -995,20 +1005,16 @@ static void update_summary( Summary_Data_Tbl *sdt_p, Sequence_Datum *qd_p )
 	// This just counts trials and number correct - what about RT???
 
 	if( NORMAL_RESPONSE(rsp) ){
-		if( DATUM_NTOTAL( SUMM_DTBL_ENTRY(sdt_p,val) ) == 0 ){	// first record at this level?
+		if( DATUM_NTOTAL( SUMM_DTBL_ENTRY(sdt_p,val) ) == 0 ){
+			// first record at this level
 			SET_SUMM_DTBL_N(sdt_p, 1 + SUMM_DTBL_N(sdt_p) );
 		}
-
 		SET_DATUM_NTOTAL( SUMM_DTBL_ENTRY(sdt_p,val),
 			1 + DATUM_NTOTAL( SUMM_DTBL_ENTRY(sdt_p,val) ) );
 		if( rsp == SEQ_DATUM_CRCT_RSP(qd_p) ){
 			SET_DATUM_NCORR( SUMM_DTBL_ENTRY(sdt_p,val),
 				1 + DATUM_NCORR( SUMM_DTBL_ENTRY(sdt_p,val) ) );
 		}
-		/* else {
-fprintf(stderr,"update_class_summary:  response was incorrect\n");
-
-		} */
 	}
 }
 

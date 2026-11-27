@@ -67,16 +67,17 @@ static void get_response_parts(int *ip, const char **sp, Response_Index idx)
 	*sp = s+1;
 }
 
-static void init_response_prompt(char *target_prompt_string,const char *question_string)
+static void init_response_prompt(char *target_prompt_string, int pmpt_max_len,
+						const char *question_string)
 {
-	int c1_yes, c1_no, c1_redo;
-	const char *s2_yes, *s2_no, *s2_redo;
+	int c1_yes, c1_no, c1_redo;		// single char responses
+	const char *s2_yes, *s2_no, *s2_redo;	// full strings less 1st char
 
 	get_response_parts(&c1_yes,&s2_yes,YES_INDEX);
 	get_response_parts(&c1_no,&s2_no,NO_INDEX);
 	get_response_parts(&c1_redo,&s2_redo,REDO_INDEX);
 
-	snprintf(target_prompt_string,LLEN,
+	snprintf(target_prompt_string,pmpt_max_len,
 "%s? [(%c)%s (yes), (%c)%s (no), (%c)%s (redo), (a)bort, (u)ndo previous finger error] : ",
 		question_string, c1_yes,s2_yes, c1_no,s2_no, c1_redo,s2_redo);
 }
@@ -131,13 +132,20 @@ static const char ** init_response_choices(void)
 
 #define collect_response(exp_p) _collect_response(QSP_ARG  exp_p)
 
-static int _collect_response(QSP_ARG_DECL  Experiment * exp_p)
+static Response_Info * _collect_response(QSP_ARG_DECL  Experiment * exp_p)
 {
 	static const char **response_choices=NULL;
-	int n;
-	char rpmtstr[128];	// BUG? possible buffer overflow?
+	static Response_Info rsp_info;
+	Response_Index rsp_idx;
+	char rpmtstr[LLEN];
+	struct timeval tv0, tv1;
+	time_t rt_ms;
 
-	init_response_prompt(rpmtstr,EXPT_QUESTION(exp_p));
+	if( gettimeofday(&tv0,NULL) < 0 ){
+		warn("error getting time of day for t0");
+	}
+
+	init_response_prompt(rpmtstr,LLEN,EXPT_QUESTION(exp_p));
 
 	if( IS_USING_KEYBOARD(exp_p) ){
 #ifndef BUILD_FOR_OBJC
@@ -153,36 +161,53 @@ static int _collect_response(QSP_ARG_DECL  Experiment * exp_p)
 		response_choices = init_response_choices();
 	}
 
+	
+	// We keep asking until we get a valid response...
+	// The interpretation of RT is a little messed up if there are
+	// invalid responses!?
 	do {
 		inhibit_next_prompt_format(SINGLE_QSP_ARG);	// prompt already formatted!
-		n = which_one(rpmtstr,N_RESPONSES,response_choices);
+		rsp_idx = which_one(rpmtstr,N_RESPONSES,response_choices);
 		enable_prompt_format(SINGLE_QSP_ARG);
-	} while( n < 0 );
+	} while( rsp_idx < 0 );
+
+	// Get the RT
+	if( gettimeofday(&tv1,NULL) < 0 ){
+		warn("error getting time of day for RT");
+	}
+
 
 	if( IS_USING_KEYBOARD(exp_p) ){
 		pop_file();		/* back to default input */
 	}
 
-	switch(n){
-		case YES_INDEX:		return(n); break;
-		case NO_INDEX:		return(n); break;
+	// compute and set the RT
+	rt_ms = 1000*(tv1.tv_sec - tv0.tv_sec) +
+			(tv1.tv_usec - tv0.tv_usec)/1000;
+
+	rsp_info.ri_rsp_idx = rsp_idx;
+	rsp_info.ri_rt_ms = rt_ms;
+	switch(rsp_idx){
+		case YES_INDEX:		return(&rsp_info); break;
+		case NO_INDEX:		return(&rsp_info); break;
 		case REDO_INDEX:
 			SET_EXPT_FLAG_BITS(exp_p,EXPT_REDO);
-			return(n);
+			return(&rsp_info);
 			break;
 		case UNDO_INDEX:
 			SET_EXPT_FLAG_BITS(exp_p,EXPT_UNDO);
-			return(n);
+			return(&rsp_info);
 			break;
 		case ABORT_INDEX:
 			SET_EXPT_FLAG_BITS(exp_p,EXPT_ABORT);
-			return(REDO_INDEX);
+			rsp_info.ri_rsp_idx = REDO_INDEX;
+			return(&rsp_info);
 			break;
 		default:
 			assert( AERROR("response:  crazy response value") );
 	}
 	/* should never be reached */
-	return(ABORT_INDEX);
+	return(NULL);
 }
 
 #define consider_coin(stc_p) _consider_coin(QSP_ARG  stc_p)
@@ -227,9 +252,9 @@ static void _check_response_string(QSP_ARG_DECL  Experiment *exp_p)
 	// not worth a warning if this isn't set.
 }
 
-int _get_response(QSP_ARG_DECL  Staircase *stc_p, Experiment *exp_p)
+Response_Info * _get_response(QSP_ARG_DECL  Staircase *stc_p, Experiment *exp_p)
 {
-	int rsp;
+	Response_Info * rsp_info_p;
 
 	if( stc_p == NULL ){
 		warn("get_response passed null staircase!?");
@@ -240,11 +265,11 @@ int _get_response(QSP_ARG_DECL  Staircase *stc_p, Experiment *exp_p)
 	// better to set in in the experiment struct...
 
 	check_response_string(exp_p);	// $response_string will override if set
-	rsp = collect_response(exp_p);
+	rsp_info_p = collect_response(exp_p);
 	if( IS_2AFC(exp_p) ){
 		consider_coin(stc_p);
 	}
-	return rsp;
+	return rsp_info_p;
 }
 
 #define INIT_RESPONSE_WORD(idx,dflt_val)				\

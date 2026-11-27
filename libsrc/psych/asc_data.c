@@ -117,19 +117,8 @@ void _retabulate_classes(SINGLE_QSP_ARG_DECL)
 void _print_class_summary(QSP_ARG_DECL  Trial_Class * tc_p)
 {
 	if( CLASS_SUMM_DTBL(tc_p) == NULL ){
-fprintf(stderr,"print_class_summary calling init_class_summary\n");
 		init_class_summary(tc_p);
 	}
-
-	/*
-	if( verbose ){
-		snprintf(msg_str,LLEN,"class = %s, %d points",
-			CLASS_NAME(tc_p),SUMM_DTBL_N(CLASS_SUMM_DTBL(tc_p)));
-		prt_msg(msg_str);
-		snprintf(msg_str,LLEN,"val\txval\t\tntot\tncorr\t%% corr\n");
-		prt_msg(msg_str);
-	}
-	*/
 
 	write_class_summ_data(tc_p,tell_msgfile());
 }
@@ -610,7 +599,8 @@ int _read_exp_data(QSP_ARG_DECL  FILE *fp)
 void _save_data( QSP_ARG_DECL  Experiment *exp_p, FILE *fp )
 {
 	if( EXPT_SEQ_DTBL(exp_p) == NULL ){
-		snprintf(ERROR_STRING,LLEN,"save_data:  experiment has no sequential data!?");
+		snprintf(ERROR_STRING,LLEN,
+			"save_data:  experiment has no sequential data!?");
 		warn(ERROR_STRING);
 		return;
 	}

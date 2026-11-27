@@ -3,6 +3,7 @@
 #define _STC_H_
 
 #include <stdio.h>
+#include <sys/time.h>
 #include "quip_prot.h"
 #include "dobj_prot.h"
 #include "item_obj.h"
@@ -15,6 +16,11 @@ typedef enum {
 	ABORT_INDEX,	//	4
 	N_RESPONSES	//	5
 } Response_Index;
+
+typedef struct response_info {
+	Response_Index	ri_rsp_idx;
+	time_t		ri_rt_ms;
+} Response_Info;
 
 typedef struct response_word {
 	Response_Index		code;
@@ -150,7 +156,7 @@ typedef struct sequence_datum {
 #define SET_SEQ_DATUM_XVAL_IDX(qd_p,v)	(qd_p)->sqd_xval_idx = v
 #define SET_SEQ_DATUM_RESPONSE(qd_p,v)	(qd_p)->sqd_response = v
 #define SET_SEQ_DATUM_CRCT_RSP(qd_p,v)	(qd_p)->sqd_correct_response = v
-#define SET_SEQ_RT_MSECS(qd_p,v)	(qd_p)->sqd_rt_msecs = v
+#define SET_SEQ_DATUM_RT_MSECS(qd_p,v)	(qd_p)->sqd_rt_msecs = v
 
 // x values are per-experiment, not per-class???
 struct sequential_data_tbl {
@@ -310,7 +316,7 @@ struct experiment {
 	int		expt_flags;
 
 	void		(*expt_stim_func)(QSP_ARG_DECL  Staircase *); // = _default_stim;
-	int		(*expt_response_func)(QSP_ARG_DECL  Staircase *, Experiment *); // = _default_response;
+	Response_Info *	(*expt_response_func)(QSP_ARG_DECL  Staircase *, Experiment *); // = _default_response;
 	void		(*expt_init_func)(void);			// =null_init;
 	void		(*expt_mod_func)(QSP_ARG_DECL Trial_Class *);	// =null_mod;
 
@@ -513,8 +519,8 @@ extern void _clear_sequential_data(QSP_ARG_DECL  Sequential_Data_Tbl *qdt_p);
 extern Trial_Class *_new_class_for_index(QSP_ARG_DECL  int index);
 #define new_class_for_index(index) _new_class_for_index(QSP_ARG  index)
 
-extern void _process_response(QSP_ARG_DECL  int rsp,Staircase *st_p);
-#define process_response(rsp,st_p) _process_response(QSP_ARG  rsp,st_p)
+extern void _process_response(QSP_ARG_DECL  Response_Info *,Staircase *st_p);
+#define process_response(ri_p,st_p) _process_response(QSP_ARG  ri_p,st_p)
 
 extern void _run_init(SINGLE_QSP_ARG_DECL);
 #define run_init() _run_init(SINGLE_QSP_ARG)
@@ -529,8 +535,6 @@ extern void _save_data( QSP_ARG_DECL  Experiment *exp_p, FILE *fp );
 
 extern void _run_stairs(QSP_ARG_DECL  Experiment *exp_p);
 #define run_stairs(exp_p) _run_stairs(QSP_ARG  exp_p)
-
-//extern void set_dribble_file(FILE *fp);
 
 extern void _add_stair(QSP_ARG_DECL  int type,Trial_Class *tc_p);
 #define add_stair(type,tc_p) _add_stair(QSP_ARG  type,tc_p)
@@ -581,7 +585,7 @@ extern COMMAND_FUNC( do_exp_menu );
 extern void _get_rsp_word(QSP_ARG_DECL Response_Index idx);
 #define get_rsp_word(idx) _get_rsp_word(QSP_ARG idx)
 
-extern int _get_response(QSP_ARG_DECL  Staircase *stc_p, Experiment *exp_p);
+extern Response_Info * _get_response(QSP_ARG_DECL  Staircase *stc_p, Experiment *exp_p);
 #define get_response(stc_p,exp_p) _get_response(QSP_ARG  stc_p,exp_p)
 
 extern void init_rps(char *target,const char *s);
@@ -640,11 +644,6 @@ extern void _write_sequential_data(QSP_ARG_DECL  Sequential_Data_Tbl *sdt_p, FIL
 extern void _clean_sequential_data(QSP_ARG_DECL  Sequential_Data_Tbl *sdt_p );
 #define clean_sequential_data(sdt_p ) _clean_sequential_data(QSP_ARG  sdt_p )
 
-extern int dribbling(void);
-extern void dribble(Staircase *st_p, int rsp);
-extern void close_dribble(void);
-extern void init_dribble_file(SINGLE_QSP_ARG_DECL);
-extern void mark_drib(FILE *fp);
 extern void _write_exp_data(QSP_ARG_DECL  FILE *fp);
 extern int  _read_exp_data(QSP_ARG_DECL  FILE *fp);
 #define write_exp_data(fp) _write_exp_data(QSP_ARG  fp)
@@ -664,7 +663,7 @@ extern COMMAND_FUNC( do_staircase_menu );
 
 extern void general_mod(QSP_ARG_DECL Trial_Class * );
 extern void _default_stim(QSP_ARG_DECL Staircase *stairp);
-extern int _default_response(QSP_ARG_DECL  Staircase *stc_p, Experiment *exp_p);
+extern Response_Info * _default_response(QSP_ARG_DECL  Staircase *stc_p, Experiment *exp_p);
 #define default_stim(stc_p) _default_stim(QSP_ARG  stc_p)
 #define default_response(stc_p,exp_p) _default_response(QSP_ARG  stc_p,exp_p)
 

@@ -306,16 +306,16 @@ static float generic_likelihood(SINGLE_QSP_ARG_DECL)	// return likelihood of tri
 		}
 
 		pc = (*prediction_func)(QSP_ARG  the_fdp, xv);
-//fprintf(stderr,"original xv = %g, xv = %g, predicted pc = %g\n",*xv_p,xv,pc);
 
-		// This is the crux of the model - we ought to be able to put any other function here???
 		// This seems like a hack...
 		if( pc == 1.0 ) pc = (float) 0.99;
 		else if( pc == 0.0 ) pc = (float) 0.01;
 
 		// pc is the theoretical % correct at this xval
 
-		lhinc = (float)( nc * log( pc ) + ( ntt - nc ) * log( 1 - pc ) );
+		lhinc = (float)(
+			nc * log( pc ) + ( ntt - nc ) * log( 1 - pc )
+			);
 		lh -= lhinc;
 	}
 
