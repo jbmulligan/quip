@@ -182,7 +182,6 @@ static COMMAND_FUNC( do_one_response )	/** give a response to a staircase and st
 	if( stc_p == NULL ) return;
 
 	rsp_info_p = get_response(stc_p,&expt1);
-fprintf(stderr,"do_one_response will call process_response...\n");
 	// update staircase and save data
 	process_response(rsp_info_p,stc_p);
 }
@@ -213,12 +212,9 @@ static COMMAND_FUNC( do_test_stim )		/** demo a stimulus for this experiment */
 static COMMAND_FUNC( do_run_exp )
 {
 	if( ensure_exp_is_ready(SINGLE_QSP_ARG) == -1 ){
-fprintf(stderr,"do_run_exp: experiment is not ready!?\n");
+		warn("do_run_exp: experiment is not ready!?\n");
 		return;
 	}
-
-fprintf(stderr,"do_run_exp: calling run_stairs...\n");
-
 	run_stairs(&expt1);
 }
 
@@ -363,7 +359,12 @@ static COMMAND_FUNC( do_import_xvals )
 	}
 	SET_EXPT_XVAL_OBJ(&expt1,dp);
 	add_reference(dp);	// so it doesn't get deleted?
-fprintf(stderr,"do_import_xvals:  experiment xval obj set to %s\n",OBJ_NAME(dp));
+	if( verbose ){
+		snprintf(msg_str,LLEN,
+			"do_import_xvals:  experiment xval obj set to %s\n",
+			OBJ_NAME(dp));
+		prt_msg(msg_str);
+	}
 }
 
 #undef ADD_CMD

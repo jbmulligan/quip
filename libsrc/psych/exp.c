@@ -73,10 +73,7 @@ static void init_response_prompt(char *target_prompt_string, int pmpt_max_len,
 	int c1_yes, c1_no, c1_redo;		// single char responses
 	const char *s2_yes, *s2_no, *s2_redo;	// full strings less 1st char
 
-fprintf(stderr,"init_response_prompt: question_string = \"%s\"\n",question_string);
 	get_response_parts(&c1_yes,&s2_yes,YES_INDEX);
-fprintf(stderr,"init_response_prompt: c1_yes = '%c' s2_yes = '%s'\n",
-		c1_yes,s2_yes);
 	get_response_parts(&c1_no,&s2_no,NO_INDEX);
 	get_response_parts(&c1_redo,&s2_redo,REDO_INDEX);
 

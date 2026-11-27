@@ -62,7 +62,6 @@ Summary_Data_Tbl *_new_summary_data_tbl(SINGLE_QSP_ARG_DECL)
 void rls_summ_dtbl(Summary_Data_Tbl *sdt_p)
 {
 	if( SUMM_DTBL_DATA_OBJ(sdt_p) != NULL ){
-fprintf(stderr,"rls_summ_dtbl will remove reference to the data table object...\n");
 		remove_reference( SUMM_DTBL_DATA_OBJ(sdt_p) );
 	}
 
@@ -738,16 +737,11 @@ void _init_trial_block( QSP_ARG_DECL  Experiment *exp_p )
 		}
 	}
 
-fprintf(stderr,"init_trial_block: n_staircases = %d\n",
-n_staircases);
-fprintf(stderr,"init_trial_block: n_rounds = %d\n",
-n_rounds);
 	SET_EXPT_N_TOTAL_TRIALS(exp_p,n_staircases*n_rounds);
 	SET_EXPT_CURR_TRIAL_IDX(exp_p,0);
 
 	snprintf(MSG_STR,LLEN,"%d",EXPT_N_TOTAL_TRIALS(exp_p));
 	assign_reserved_var("n_trials_remaining",MSG_STR);
-fprintf(stderr,"init_trial_block:  n_trials_remaining set to %s\n",MSG_STR);
 
 }	// init_trial_block
 
@@ -760,7 +754,6 @@ static void stair_trials(QSP_ARG_DECL  Experiment *exp_p)
 
 	n_trials_remaining = EXPT_N_TOTAL_TRIALS(exp_p);
 
-fprintf(stderr,"stair_trials: n_trials_remaining = %d\n",n_trials_remaining);
 	while( (! IS_ABORTING(exp_p) ) && n_trials_remaining > 0 ) {
 		Staircase *st_p;
 
@@ -1012,20 +1005,16 @@ static void update_summary( Summary_Data_Tbl *sdt_p, Sequence_Datum *qd_p )
 	// This just counts trials and number correct - what about RT???
 
 	if( NORMAL_RESPONSE(rsp) ){
-		if( DATUM_NTOTAL( SUMM_DTBL_ENTRY(sdt_p,val) ) == 0 ){	// first record at this level?
+		if( DATUM_NTOTAL( SUMM_DTBL_ENTRY(sdt_p,val) ) == 0 ){
+			// first record at this level
 			SET_SUMM_DTBL_N(sdt_p, 1 + SUMM_DTBL_N(sdt_p) );
 		}
-
 		SET_DATUM_NTOTAL( SUMM_DTBL_ENTRY(sdt_p,val),
 			1 + DATUM_NTOTAL( SUMM_DTBL_ENTRY(sdt_p,val) ) );
 		if( rsp == SEQ_DATUM_CRCT_RSP(qd_p) ){
 			SET_DATUM_NCORR( SUMM_DTBL_ENTRY(sdt_p,val),
 				1 + DATUM_NCORR( SUMM_DTBL_ENTRY(sdt_p,val) ) );
 		}
-		/* else {
-fprintf(stderr,"update_class_summary:  response was incorrect\n");
-
-		} */
 	}
 }
 
